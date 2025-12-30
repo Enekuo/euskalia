@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "diff-match-patch": "^1.0.5",
+    "firebase": "^12.7.0",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.292.0",
     "openai": "^6.5.0",
