@@ -3059,8 +3059,8 @@ proHelp: {
     EUS: "Ezarpenak",
   },
   settings_subtitle: {
-    ES: "Personaliza tu experiencia en Olondo.AI.",
-    EUS: "Pertsonalizatu zure esperientzia Olondo.AI-n.",
+    ES: "Personaliza tu experiencia en Euskalia.",
+    EUS: "Pertsonalizatu zure esperientzia Euskalian.",
   },
   //PERFIL
   settings_profile_title: {
