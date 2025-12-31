@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "@/lib/translations";
 import { Gem, CheckCircle } from "lucide-react";
+import AuthModal from "@/components/Auth/AuthModal";
+import { auth } from "@/lib/firebase";
 
 export default function PricingPage() {
   const { t } = useTranslation();
   const tr = (k, fallback = "") => t(k) || fallback;
+
+  const [authOpen, setAuthOpen] = useState(false);
 
   const plans = [
     // PLAN PRO (actual)
@@ -61,8 +65,25 @@ export default function PricingPage() {
     },
   ];
 
+  const handlePlanClick = (planId) => {
+    if (planId === "pro") {
+      if (!auth?.currentUser) {
+        setAuthOpen(true);
+        return;
+      }
+      // Aquí en el futuro: iniciar checkout / activar plan
+      return;
+    }
+  };
+
   return (
     <main className="min-h-[calc(100vh-4rem)] flex flex-col items-center relative bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100 p-6 pt-12 md:pt-20">
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onSuccess={() => setAuthOpen(false)}
+      />
+
       {/* Título / subtítulo */}
       <div className="text-center mb-10 md:mb-16">
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 mb-3">
@@ -141,6 +162,7 @@ export default function PricingPage() {
               ) : (
                 <button
                   type="button"
+                  onClick={() => handlePlanClick(p.id)}
                   className={`w-full py-3 text-base font-semibold ${p.buttonGradient} text-white rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 hover:scale-[1.02]`}
                 >
                   {tr(p.buttonKey)}
@@ -152,4 +174,4 @@ export default function PricingPage() {
       </div>
     </main>
   );
-} 
+}
