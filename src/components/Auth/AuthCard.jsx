@@ -6,7 +6,14 @@ import { auth, googleProvider } from "@/lib/firebase";
 
 export default function AuthCard({ variant = "page", onSuccess }) {
   const { t } = useTranslation?.() || { t: () => null };
-  const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
+
+  // ✅ Evita que se muestren claves literales cuando falta traducción
+  const tr = (k, f = "") => {
+    const val = typeof t === "function" ? t(k) : null;
+    if (!val) return f;
+    if (val === k) return f;
+    return val;
+  };
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -19,12 +26,17 @@ export default function AuthCard({ variant = "page", onSuccess }) {
       if (typeof onSuccess === "function") onSuccess();
     } catch (e) {
       console.error("Google login error:", e);
-      const msg = typeof t === "function" ? t("registerPage_error_google") : "";
-      setErr(
-        !msg || msg === "registerPage_error_google"
-          ? (e?.code || e?.message || "No se pudo iniciar sesión con Google.")
-          : msg
+
+      // ✅ Si falta traducción, NO mostramos la clave. Mostramos fallback.
+      const friendly = tr(
+        "registerPage_error_google",
+        "No se pudo iniciar sesión con Google."
       );
+
+      // Si quieres ver el error técnico, lo dejamos como alternativa
+      const tech = e?.code || e?.message;
+
+      setErr(tech || friendly);
     } finally {
       setLoading(false);
     }
@@ -80,9 +92,7 @@ export default function AuthCard({ variant = "page", onSuccess }) {
         </button>
 
         {/* Error */}
-        {err ? (
-          <p className="text-[12px] text-center text-red-600">{err}</p>
-        ) : null}
+        {err ? <p className="text-[12px] text-center text-red-600">{err}</p> : null}
       </div>
 
       {/* TEXTOS INFERIORES */}
