@@ -18,7 +18,13 @@ export default function AuthCard({ variant = "page", onSuccess }) {
       await signInWithPopup(auth, googleProvider);
       if (typeof onSuccess === "function") onSuccess();
     } catch (e) {
-      setErr(tr("registerPage_error_google", "No se pudo iniciar sesión con Google."));
+      console.error("Google login error:", e);
+      const msg = typeof t === "function" ? t("registerPage_error_google") : "";
+      setErr(
+        !msg || msg === "registerPage_error_google"
+          ? (e?.code || e?.message || "No se pudo iniciar sesión con Google.")
+          : msg
+      );
     } finally {
       setLoading(false);
     }
@@ -73,6 +79,7 @@ export default function AuthCard({ variant = "page", onSuccess }) {
           {tr("registerPage_microsoft", "Registrarte con Microsoft")}
         </button>
 
+        {/* Error */}
         {err ? (
           <p className="text-[12px] text-center text-red-600">{err}</p>
         ) : null}
