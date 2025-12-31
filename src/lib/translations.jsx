@@ -935,7 +935,89 @@ registerPage_login: {
   ES: "Iniciar sesión",
   EUS: "Hasi saioa",
 },
-     
+registerPage_title: {
+  ES: "Crea tu cuenta",
+  EUS: "Sortu zure kontua",
+  EN: "Create your account",
+  FR: "Créez votre compte",
+},
+
+registerPage_google: {
+  ES: "Registrarte con Google",
+  EUS: "Erregistratu Google-rekin",
+  EN: "Continue with Google",
+  FR: "Continuer avec Google",
+},
+
+registerPage_google_loading: {
+  ES: "Conectando...",
+  EUS: "Konektatzen...",
+  EN: "Connecting...",
+  FR: "Connexion...",
+},
+
+registerPage_microsoft: {
+  ES: "Registrarte con Microsoft",
+  EUS: "Erregistratu Microsoft-ekin",
+  EN: "Continue with Microsoft",
+  FR: "Continuer avec Microsoft",
+},
+
+registerPage_microsoft_soon: {
+  ES: "Próximamente",
+  EUS: "Laster",
+  EN: "Coming soon",
+  FR: "Bientôt disponible",
+},
+
+registerPage_error_google: {
+  ES: "No se pudo iniciar sesión con Google. Inténtalo de nuevo.",
+  EUS: "Ezin izan da Google-rekin saioa hasi. Saiatu berriro.",
+  EN: "Could not sign in with Google. Please try again.",
+  FR: "Impossible de se connecter avec Google. Réessayez.",
+},
+
+registerPage_termsPrefix: {
+  ES: "Al continuar, aceptas nuestros",
+  EUS: "Jarraituz gero, gure",
+  EN: "By continuing, you agree to our",
+  FR: "En continuant, vous acceptez nos",
+},
+
+registerPage_terms: {
+  ES: "Términos",
+  EUS: "Baldintzak",
+  EN: "Terms",
+  FR: "Conditions",
+},
+
+registerPage_and: {
+  ES: "y",
+  EUS: "eta",
+  EN: "and",
+  FR: "et",
+},
+
+registerPage_privacy: {
+  ES: "Política de Privacidad",
+  EUS: "Pribatutasun Politika",
+  EN: "Privacy Policy",
+  FR: "Politique de confidentialité",
+},
+
+registerPage_haveAccount: {
+  ES: "¿Ya tienes cuenta?",
+  EUS: "Baduzu kontua?",
+  EN: "Already have an account?",
+  FR: "Vous avez déjà un compte ?",
+},
+
+registerPage_login: {
+  ES: "Iniciar sesión",
+  EUS: "Hasi saioa",
+  EN: "Sign in",
+  FR: "Se connecter",
+},     
 
 
 
