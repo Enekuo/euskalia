@@ -31,11 +31,14 @@ export default function AuthCard({ variant = "page", onSuccess }) {
         variant === "modal" ? "p-10" : "p-12",
       ].join(" ")}
     >
+      {/* TÍTULO */}
       <h1 className="text-[32px] font-bold mb-10 text-slate-800 tracking-tight">
         {tr("registerPage_title", "Crea tu cuenta")}
       </h1>
 
+      {/* BOTONES SOCIALES */}
       <div className="w-full space-y-4">
+        {/* Google (FUNCIONA) */}
         <button
           type="button"
           onClick={handleGoogle}
@@ -55,11 +58,27 @@ export default function AuthCard({ variant = "page", onSuccess }) {
             : tr("registerPage_google", "Registrarte con Google")}
         </button>
 
+        {/* Microsoft (SE VE, PERO NO FUNCIONA) */}
+        <button
+          type="button"
+          disabled
+          title={tr("registerPage_microsoft_soon", "Próximamente")}
+          className="w-full flex items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3.5 text-sm font-medium text-slate-700 shadow-sm opacity-60 cursor-not-allowed"
+        >
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            alt="Microsoft"
+            className="h-5 w-5"
+          />
+          {tr("registerPage_microsoft", "Registrarte con Microsoft")}
+        </button>
+
         {err ? (
           <p className="text-[12px] text-center text-red-600">{err}</p>
         ) : null}
       </div>
 
+      {/* TEXTOS INFERIORES */}
       <p className="mt-8 text-[12px] text-center text-slate-500 max-w-[300px] leading-relaxed">
         {tr("registerPage_termsPrefix", "Al continuar, aceptas nuestros")}{" "}
         <Link
