@@ -25,18 +25,16 @@ export default function AuthCard({ variant = "page", onSuccess }) {
       await signInWithPopup(auth, googleProvider);
       if (typeof onSuccess === "function") onSuccess();
     } catch (e) {
+      // ✅ El detalle técnico solo en consola (para ti)
       console.error("Google login error:", e);
 
-      // ✅ Si falta traducción, NO mostramos la clave. Mostramos fallback.
-      const friendly = tr(
-        "registerPage_error_google",
-        "No se pudo iniciar sesión con Google."
+      // ✅ En UI siempre mensaje humano (nunca e.code / e.message)
+      setErr(
+        tr(
+          "registerPage_error_google",
+          "No se pudo iniciar sesión con Google. Inténtalo más tarde."
+        )
       );
-
-      // Si quieres ver el error técnico, lo dejamos como alternativa
-      const tech = e?.code || e?.message;
-
-      setErr(tech || friendly);
     } finally {
       setLoading(false);
     }
@@ -92,7 +90,9 @@ export default function AuthCard({ variant = "page", onSuccess }) {
         </button>
 
         {/* Error */}
-        {err ? <p className="text-[12px] text-center text-red-600">{err}</p> : null}
+        {err ? (
+          <p className="text-[12px] text-center text-red-600">{err}</p>
+        ) : null}
       </div>
 
       {/* TEXTOS INFERIORES */}
