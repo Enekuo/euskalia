@@ -99,14 +99,14 @@ export default function AuthCard({ variant = "page", onSuccess }) {
       <p className="mt-8 text-[12px] text-center text-slate-500 max-w-[300px] leading-relaxed">
         {tr("registerPage_termsPrefix", "Al continuar, aceptas nuestros")}{" "}
         <Link
-          to="/terminos"
+          to="/terminos-condiciones"
           className="underline decoration-slate-300 hover:text-slate-800"
         >
           {tr("registerPage_terms", "Términos")}
         </Link>{" "}
         {tr("registerPage_and", "y")}{" "}
         <Link
-          to="/privacidad"
+          to="/politica-de-privacidad"
           className="underline decoration-slate-300 hover:text-slate-800"
         >
           {tr("registerPage_privacy", "Política de Privacidad")}
