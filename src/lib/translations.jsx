@@ -971,10 +971,10 @@ registerPage_microsoft_soon: {
 },
 
 registerPage_error_google: {
-  ES: "No se pudo iniciar sesión con Google. Inténtalo de nuevo.",
-  EUS: "Ezin izan da Google-rekin saioa hasi. Saiatu berriro.",
-  EN: "Could not sign in with Google. Please try again.",
-  FR: "Impossible de se connecter avec Google. Réessayez.",
+  ES: "No se pudo iniciar sesión con Google. Inténtalo de nuevo mas tarde.",
+  EUS: "Ezin izan da Google-rekin saioa hasi. Saiatu berriro geroago.",
+  EN: "Could not sign in with Google. Please try again later.",
+  FR: "Impossible de se connecter avec Google. Essaye plus tard.",
 },
 
 registerPage_termsPrefix: {
