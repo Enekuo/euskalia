@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addLibraryDoc } from "@/proLibraryStore";
+import { auth } from "@/lib/firebase";
 
 const OPTIONS = ["eus", "es", "en", "fr"]; // ✅ EUS, ES, EN, FR (en este orden)
 
@@ -105,6 +106,15 @@ export default function ProTranslator() {
   const savedTimerRef = useRef(null);
 
   const [resultStatus, setResultStatus] = useState("idle"); // "idle" | "loading" | "success" | "error"
+
+  // ✅ PRO: token para /api/pro
+  const getProToken = async () => {
+    const user = auth?.currentUser;
+    if (!user) throw new Error("NOT_AUTHENTICATED");
+    const token = await user.getIdToken();
+    if (!token) throw new Error("NO_TOKEN");
+    return token;
+  };
 
   useEffect(
     () => () => {
@@ -233,9 +243,14 @@ export default function ProTranslator() {
           dst
         )}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
 
-        const res = await fetch("/api/chat", {
+        const token = await getProToken();
+
+        const res = await fetch("/api/pro", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           signal: controller.signal,
           body: JSON.stringify({
             model: "gpt-4o-mini",
@@ -253,8 +268,8 @@ export default function ProTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat error:", res.status, raw);
-          throw new Error(`API /api/chat ${res.status}`);
+          console.error("API /api/pro error:", res.status, raw);
+          throw new Error(`API /api/pro ${res.status}`);
         }
 
         const data = await res.json();
@@ -263,7 +278,13 @@ export default function ProTranslator() {
         if (e.name !== "AbortError") {
           console.error("translate error:", e);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
-          if (!hasPrev) setErr("No se pudo traducir ahora mismo.");
+
+          if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
+            if (!hasPrev) setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          } else {
+            if (!hasPrev) setErr("No se pudo traducir ahora mismo.");
+          }
+
           setResultStatus("error");
         }
       } finally {
@@ -297,9 +318,15 @@ export default function ProTranslator() {
         setResultStatus("loading");
 
         const urls = urlItems.map((u) => u.url);
-        const res = await fetch("/api/chat", {
+
+        const token = await getProToken();
+
+        const res = await fetch("/api/pro", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           signal: controller.signal,
           body: JSON.stringify({
             mode: "translate_urls",
@@ -313,8 +340,14 @@ export default function ProTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat (urls) error:", res.status, raw);
-          setErr("No se pudieron procesar las URLs ahora mismo.");
+          console.error("API /api/pro (urls) error:", res.status, raw);
+
+          if (res.status === 401 || res.status === 403) {
+            setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          } else {
+            setErr("No se pudieron procesar las URLs ahora mismo.");
+          }
+
           setResultStatus("error");
           return;
         }
@@ -324,7 +357,13 @@ export default function ProTranslator() {
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate urls error:", e);
-          setErr("No se pudieron procesar las URLs ahora mismo.");
+
+          if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
+            setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          } else {
+            setErr("No se pudieron procesar las URLs ahora mismo.");
+          }
+
           setResultStatus("error");
         }
       } finally {
@@ -383,9 +422,14 @@ export default function ProTranslator() {
           dst
         )}\n\nResponde SOLO con la traducción final.`;
 
-        const res = await fetch("/api/chat", {
+        const token = await getProToken();
+
+        const res = await fetch("/api/pro", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           signal: controller.signal,
           body: JSON.stringify({
             model: "gpt-4o-mini",
@@ -403,8 +447,14 @@ export default function ProTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat (documents) error:", res.status, raw);
-          setErr("No se han podido procesar los documentos ahora mismo.");
+          console.error("API /api/pro (documents) error:", res.status, raw);
+
+          if (res.status === 401 || res.status === 403) {
+            setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          } else {
+            setErr("No se han podido procesar los documentos ahora mismo.");
+          }
+
           setResultStatus("error");
           return;
         }
@@ -414,7 +464,13 @@ export default function ProTranslator() {
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate documents error:", e);
-          setErr("No se han podido procesar los documentos ahora mismo.");
+
+          if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
+            setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          } else {
+            setErr("No se han podido procesar los documentos ahora mismo.");
+          }
+
           setResultStatus("error");
         }
       } finally {
@@ -708,7 +764,7 @@ export default function ProTranslator() {
     if (!list?.length) return;
     const arr = Array.from(list);
     const withIds = arr.map((file) => ({
-      id: crypto.randomUUID(),
+      id: window.crypto.randomUUID(),
       file,
     }));
     setDocuments((prev) => [...prev, ...withIds]);
@@ -770,7 +826,7 @@ export default function ProTranslator() {
     const parsed = parseUrlsFromText(urlsTextarea);
     if (!parsed.length) return;
     const newItems = parsed.map((p) => ({
-      id: crypto.randomUUID(),
+      id: window.crypto.randomUUID(),
       url: p.href,
       host: p.host,
     }));
@@ -1209,7 +1265,11 @@ export default function ProTranslator() {
                       aria-label={t("translator.copy")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
-                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+                      {copied ? (
+                        <Check className="w-5 h-5" />
+                      ) : (
+                        <CopyIcon className="w-5 h-5" />
+                      )}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>
@@ -1247,4 +1307,3 @@ export default function ProTranslator() {
     </>
   );
 }
- 
