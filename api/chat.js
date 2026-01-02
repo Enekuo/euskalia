@@ -19,7 +19,7 @@ function canonicalize(s) {
     .toLowerCase().replace(/\s+/g, " ")
     .replace(/^[\s,.!?;:|]+|[\s,.!?;:|]+$/g, "")
     .trim();
-}
+} 
 
 function makeCacheKey({ task, model, system, messages, src, dst, lang, length }) {
   const userText = canonicalize((messages || []).map(m => m?.content || "").join(" "));
