@@ -145,6 +145,23 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const mediaStreamRef = useRef(null);
   const micChunksRef = useRef([]);
 
+  const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
+  const hasRealResult = !!(rightText && rightText.trim().length > 0);
+
+  const isRefusal = (s) => {
+    const x = String(s || "").trim().toLowerCase();
+    if (!x) return false;
+    return (
+      x.includes("ezin dut") ||
+      x.includes("eskaera hori bete") ||
+      x.includes("barkatu, baina ezin") ||
+      x.includes("lo siento") ||
+      x.includes("no puedo ayudar") ||
+      x.includes("no puedo cumplir") ||
+      (x.includes("sorry") && x.includes("can't"))
+    );
+  };
+
   useEffect(
     () => () => {
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
@@ -180,7 +197,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") autoResize(rightTA.current);
   }, [rightText, sourceMode]);
 
-  // ==== Traducción con OpenAI vía /api/chat (modo TEXTO, debounced) ====
+  // ==== Traducción con OpenAI vía /api/public (modo TEXTO, debounced) ====
   useEffect(() => {
     if (sourceMode !== "text") return;
 
@@ -206,7 +223,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           dst
         )}\n\nResponde SOLO con la traducción final. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
 
-        const res = await fetch("/api/chat", {
+        const res = await fetch("/api/public", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
@@ -226,12 +243,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat error:", res.status, raw);
-          throw new Error(`API /api/chat ${res.status}`);
+          console.error("API /api/public error:", res.status, raw);
+          throw new Error(`API /api/public ${res.status}`);
         }
 
         const data = await res.json();
-        setRightText(data?.content ?? data?.translation ?? "");
+        const out = data?.content ?? data?.translation ?? "";
+
+        if (isRefusal(out)) {
+          setRightText("");
+          setErr(uiLang === "EUS" ? "Ezin izan da edukia itzuli." : "No se pudo traducir el contenido.");
+          return;
+        }
+
+        setRightText(out);
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate error:", e);
@@ -267,7 +292,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         setErr("");
 
         const urls = urlItems.map((u) => u.url);
-        const res = await fetch("/api/chat", {
+        const res = await fetch("/api/public", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
@@ -283,8 +308,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat (urls) error:", res.status, raw);
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
+          console.error("API /api/public (urls) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(uiLang === "EUS" ? "Ezin izan dira URLak orain prozesatu." : "No se pudieron procesar las URLs ahora mismo.");
@@ -292,11 +316,22 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         }
 
         const data = await res.json();
-        setRightText(data?.content ?? data?.translation ?? "");
+        const out = data?.content ?? data?.translation ?? "";
+
+        if (isRefusal(out)) {
+          setRightText("");
+          setErr(
+            uiLang === "EUS"
+              ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin."
+              : "No se pudo traducir el contenido. Prueba con otra URL."
+          );
+          return;
+        }
+
+        setRightText(out);
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate urls error:", e);
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(uiLang === "EUS" ? "Ezin izan dira URLak orain prozesatu." : "No se pudieron procesar las URLs ahora mismo.");
@@ -313,7 +348,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [sourceMode, src, dst, urlItems, language]);
 
-  // === Helper para leer archivos como texto ===
+  // === Helper para leer archivos como texto (solo formatos razonables) ===
   const readFileAsText = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -321,6 +356,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       reader.onerror = reject;
       reader.readAsText(file);
     });
+
+  const isTextReadableExt = (name) => {
+    const lower = String(name || "").toLowerCase();
+    return (
+      lower.endsWith(".txt") ||
+      lower.endsWith(".md") ||
+      lower.endsWith(".csv") ||
+      lower.endsWith(".json") ||
+      lower.endsWith(".xml") ||
+      lower.endsWith(".html") ||
+      lower.endsWith(".htm") ||
+      lower.endsWith(".rtf")
+    );
+  };
 
   // ==== Traducción desde DOCUMENTOS (modo DOCUMENT, auto al añadir/eliminar) ====
   useEffect(() => {
@@ -339,11 +388,23 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         setLoading(true);
         setErr("");
 
-        const contents = await Promise.all(documents.map(({ file }) => readFileAsText(file)));
+        const readable = documents.filter(({ file }) => isTextReadableExt(file?.name));
+        const unreadable = documents.filter(({ file }) => !isTextReadableExt(file?.name));
+
+        if (unreadable.length > 0 && readable.length === 0) {
+          setRightText("");
+          setErr(
+            uiLang === "EUS"
+              ? "Ezin da dokumentua irakurri. Saiatu TXT/MD bezalako fitxategi batekin edo itsatsi testua."
+              : "No se ha podido leer el documento. Prueba con TXT/MD o pega el texto directamente."
+          );
+          return;
+        }
+
+        const contents = await Promise.all(readable.map(({ file }) => readFileAsText(file)));
         const combinedFull = contents.join("\n\n---\n\n");
 
         if (combinedFull.length > MAX_CHARS) {
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
           setRightText("");
           setErr(
             uiLang === "EUS"
@@ -354,7 +415,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         }
 
         if (!combinedFull.trim()) {
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
           setErr(uiLang === "EUS" ? "Ezin da dokumentuaren edukia irakurri." : "No se ha podido leer el contenido del documento.");
           setRightText("");
           return;
@@ -365,7 +425,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           dst
         )}\n\nResponde SOLO con la traducción final. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
 
-        const res = await fetch("/api/chat", {
+        const res = await fetch("/api/public", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
@@ -385,8 +445,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/chat (documents) error:", res.status, raw);
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
+          console.error("API /api/public (documents) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(uiLang === "EUS" ? "Ezin izan dira dokumentuak orain prozesatu." : "No se han podido procesar los documentos ahora mismo.");
@@ -394,11 +453,22 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         }
 
         const data = await res.json();
-        setRightText(data?.content ?? data?.translation ?? "");
+        const out = data?.content ?? data?.translation ?? "";
+
+        if (isRefusal(out)) {
+          setRightText("");
+          setErr(
+            uiLang === "EUS"
+              ? "Ezin izan da edukia itzuli. Saiatu beste fitxategi batekin edo itsatsi testua."
+              : "No se pudo traducir el contenido. Prueba con otro archivo o pega el texto."
+          );
+          return;
+        }
+
+        setRightText(out);
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate documents error:", e);
-          const uiLang = (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(uiLang === "EUS" ? "Ezin izan dira dokumentuak orain prozesatu." : "No se han podido procesar los documentos ahora mismo.");
@@ -489,6 +559,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   };
 
   const handleSpeakToggle = async () => {
+    if (!hasRealResult) return;
+
     if (speaking) {
       stopPlayback();
       return;
@@ -569,6 +641,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
   // ===== Acciones: copiar / PDF =====
   const handleCopy = async () => {
+    if (!hasRealResult) return;
     try {
       await navigator.clipboard.writeText(rightText || "");
       setCopied(true);
@@ -578,6 +651,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   };
 
   const handleDownloadPdf = () => {
+    if (!hasRealResult) return;
     const text = (rightText || "").replace(/\n/g, "<br/>");
     const w = window.open("", "_blank", "noopener,noreferrer");
     if (!w) return;
@@ -997,7 +1071,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     onClick={handleSpeakToggle}
                     aria-label={speaking ? t("translator.stop") : t("translator.listen")}
                     aria-pressed={speaking}
-                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${speaking ? "text-slate-900" : ""}`}
+                    disabled={!hasRealResult}
+                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${speaking ? "text-slate-900" : ""} ${
+                      hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                    }`}
                   >
                     {speaking ? (
                       <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
@@ -1013,7 +1090,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     type="button"
                     onClick={handleCopy}
                     aria-label={t("translator.copy")}
-                    className="group relative p-2 rounded-md hover:bg-slate-100"
+                    disabled={!hasRealResult}
+                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                   >
                     {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
@@ -1025,7 +1103,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     type="button"
                     onClick={handleDownloadPdf}
                     aria-label={t("translator.pdf")}
-                    className="group relative p-2 rounded-md hover:bg-slate-100"
+                    disabled={!hasRealResult}
+                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                   >
                     <FileDown className="w-5 h-5" />
                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">

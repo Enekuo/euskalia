@@ -20,8 +20,15 @@ import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
 export default function Resumen() {
-  const { t } = useTranslation();
-  const tr = (key, fallback) => t(key) || fallback;
+  const { t } = useTranslation?.() || { t: () => null };
+
+  // ✅ FIX: si t devuelve la propia clave (cuando falta traducción), usamos fallback
+  const tr = (k, f) => {
+    const v = typeof t === "function" ? t(k) : null;
+    if (!v) return f;
+    if (typeof v === "string" && v.trim() === k) return f;
+    return v;
+  };
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -223,7 +230,7 @@ export default function Resumen() {
   const handleLengthChange = (mode) => {
     if (mode === summaryLength) return;
     setSummaryLength(mode);
-    clearRight(); // limpia solo el resultado
+    clearRight();
   };
 
   // ===== Reglas UX =====
@@ -261,9 +268,7 @@ export default function Resumen() {
   }, [loading, result, urlInputOpen, textValue, urlItems, documents, summaryLength, outputLang]);
 
   // ===== Documentos =====
-
-  // Lee como texto los archivos con extensión .txt o .md, conservando el mismo id del documento
-  const readTextFromFiles = async (items /* [{id,file}] */) => {
+  const readTextFromFiles = async (items) => {
     const results = await Promise.all(
       items.map(
         ({ id, file }) =>
@@ -286,21 +291,17 @@ export default function Resumen() {
 
   const triggerPick = () => fileInputRef.current?.click();
 
-  // Añadir documentos y leer .txt/.md
   const addFiles = async (list) => {
     if (!list?.length) return;
 
     const arr = Array.from(list);
     const withIds = arr.map((file) => ({ id: crypto.randomUUID(), file }));
 
-    // 1) Añadir a la lista visible
     setDocuments((prev) => [...prev, ...withIds]);
 
-    // 2) Leer contenidos de TXT/MD y guardarlos
     const texts = await readTextFromFiles(withIds);
     if (texts.length) setDocumentsText((prev) => [...prev, ...texts]);
 
-    // 3) Igual que con URLs: al cambiar documentos, limpiamos el resultado
     setResult("");
     setErrorMsg("");
     setErrorKind(null);
@@ -338,7 +339,6 @@ export default function Resumen() {
   const removeDocument = (id) => {
     setDocuments((prev) => prev.filter((d) => d.id !== id));
     setDocumentsText((prev) => prev.filter((d) => d.id !== id));
-    // limpiar salida (misma UX que en URLs)
     setResult("");
     setErrorMsg("");
     setErrorKind(null);
@@ -356,7 +356,6 @@ export default function Resumen() {
   };
   const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
-  // Limpiar resultado cuando cambie la lista de URLs
   useEffect(() => {
     setResult("");
     setErrorMsg("");
@@ -371,7 +370,13 @@ export default function Resumen() {
     return trimmed.length >= 20 && words.length >= 5;
   }, [textValue]);
 
-  const hasValidInput = textIsValid || urlItems.length > 0 || documents.length > 0;
+  // ✅ para documentos: basta con que haya algo de texto extraído
+  const docsTextHasAny = useMemo(() => {
+    return (documentsText || []).some((d) => String(d?.text || "").trim().length > 0);
+  }, [documentsText]);
+
+  // ✅ input válido REAL (no “documentos.length”)
+  const hasValidInput = textIsValid || urlItems.length > 0 || docsTextHasAny;
 
   // ===== Acciones barra derecha =====
   const handleCopy = async (flash = false) => {
@@ -382,15 +387,13 @@ export default function Resumen() {
         setCopiedFlash(true);
         setTimeout(() => setCopiedFlash(false), 1200);
       }
-    } catch {
-      // silencioso
-    }
+    } catch {}
   };
 
   const handleClearLeft = () => {
     if (!(sourceMode === "text" && textValue)) return;
     setTextValue("");
-    clearRight(); // limpia resultado y estados del panel derecho
+    clearRight();
   };
 
   // ===== Tarjetas =====
@@ -452,7 +455,6 @@ export default function Resumen() {
 
   // ===== Generar =====
   const handleGenerate = async () => {
-    // Arreglo del parpadeo: activar loading primero y no limpiar result al iniciar
     setLoading(true);
     setErrorMsg("");
     setErrorKind(null);
@@ -460,7 +462,18 @@ export default function Resumen() {
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     const textOk = trimmed.length >= 20 && words.length >= 5;
-    const validNow = textOk || urlItems.length > 0 || documents.length > 0;
+
+    // ✅ Caso clave: has subido documento pero NO hay texto extraído (public solo lee txt/md)
+    const userHasDocs = documents.length > 0;
+    const canReadDocs = docsTextHasAny;
+
+    if (userHasDocs && !canReadDocs && !textOk && urlItems.length === 0) {
+      setErrorMsg(tr("summary.error_doc_unreadable", "No se ha podido leer el documento. Prueba con un TXT/MD o pega el texto directamente."));
+      setLoading(false);
+      return;
+    }
+
+    const validNow = textOk || urlItems.length > 0 || docsTextHasAny;
 
     const docsChars = (documentsText || []).reduce((acc, d) => acc + ((d?.text || "").length), 0);
 
@@ -477,7 +490,7 @@ export default function Resumen() {
     }
 
     if (!validNow) {
-      setErrorMsg("Añade texto suficiente, URLs o documentos antes de generar el resumen.");
+      setErrorMsg(tr("summary.error_need_input", "Añade texto suficiente, URLs o documentos antes de generar el resumen."));
       setLoading(false);
       return;
     }
@@ -496,7 +509,6 @@ export default function Resumen() {
       "Devuelve un único párrafo fluido, sin listas ni viñetas, sin guiones al inicio de línea, " +
       "sin subtítulos ni líneas sueltas. Redacta en frases completas, tono claro e informativo.";
 
-    // ✅ instrucción de idioma reforzada (añadido FR)
     const langInstruction =
       outputLang === "es"
         ? "Idioma de salida: español (ISO: es). Redacta toda la respuesta en español."
@@ -513,7 +525,6 @@ export default function Resumen() {
         ? "Extensión: 4–6 frases, ~120–180 palabras."
         : "Extensión: 8–10 frases, ~200–260 palabras.";
 
-    // ✅ incrustar contenido real de .txt/.md en el prompt
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
         documentsText
@@ -527,7 +538,7 @@ export default function Resumen() {
         : "Quiero un resumen profesional del siguiente contenido.",
       textValue ? `\nTEXTO:\n${textValue}` : "",
       urlsList ? `\nURLs (extrae solo lo visible; si no puedes, ignóralas):\n${urlsList}` : "",
-      docsInline, // ⬅️ aquí metemos el contenido real de .txt/.md
+      docsInline,
       chatInput ? `\nENFOQUE OPCIONAL: ${chatInput}` : "",
       `\nREQUISITO DE FORMATO: ${formattingRules}`,
       `\nREQUISITO DE LONGITUD (${summaryLength.toUpperCase()}): ${lengthRule}`,
@@ -560,15 +571,14 @@ export default function Resumen() {
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/public", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages,
           length: summaryLength,
           cacheKey,
-          // seguimos enviando el contenido por si el backend lo usa también
-          documentsText, // [{id,name,text}]
+          documentsText,
         }),
       });
 
@@ -579,7 +589,7 @@ export default function Resumen() {
           return;
         }
         if (res.status === 429) {
-          throw new Error("Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium.");
+          throw new Error(tr("summary.error_rate_limit", "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium."));
         }
         const txt = await res.text();
         throw new Error(`HTTP ${res.status}: ${txt}`);
@@ -590,7 +600,7 @@ export default function Resumen() {
       const rawText =
         data?.text ?? data?.content ?? data?.choices?.[0]?.message?.content ?? data?.message?.content ?? "";
 
-      if (!rawText) throw new Error("No se recibió texto de la API.");
+      if (!rawText) throw new Error(tr("summary.error_no_api_text", "No se recibió texto de la API."));
 
       const cleaned = rawText
         .replace(/^\s*[-–—•]\s+/gm, "")
@@ -614,7 +624,7 @@ export default function Resumen() {
       setLastSummarySig(canonicalize(textValue));
       setIsOutdated(false);
     } catch (err) {
-      setErrorMsg(err.message || "Error generando el resumen.");
+      setErrorMsg(err.message || tr("summary.error_generic", "Error generando el resumen."));
     } finally {
       setLoading(false);
     }
@@ -850,7 +860,6 @@ export default function Resumen() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  {/* Selector de idioma */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
@@ -918,7 +927,6 @@ export default function Resumen() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {/* Copiar resultado: cambia a tic azul al copiar */}
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}
@@ -932,7 +940,6 @@ export default function Resumen() {
                     {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
                   </button>
 
-                  {/* Eliminar texto de la izquierda */}
                   <button
                     type="button"
                     onClick={handleClearLeft}
@@ -948,7 +955,6 @@ export default function Resumen() {
                 </div>
               </div>
 
-              {/* Estado inicial */}
               {!loading && !result && !errorKind && (
                 <>
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
@@ -969,7 +975,6 @@ export default function Resumen() {
                 </>
               )}
 
-              {/* Resultado / errores / loader / aviso / límite */}
               <div className="w-full">
                 {(result || errorMsg || loading || errorKind) && (
                   <div className="px-6 pt-24 pb-32 max-w-3xl mx-auto">
@@ -1014,7 +1019,6 @@ export default function Resumen() {
                       </article>
                     )}
 
-                    {/* Skeleton de carga */}
                     {loading && !result && (
                       <div className="space-y-3 animate-pulse">
                         <div className="h-4 bg-slate-200 rounded" />
@@ -1026,7 +1030,6 @@ export default function Resumen() {
                 )}
               </div>
 
-              {/* Input inferior (prompt opcional) */}
               <div className="absolute left-0 right-0 p-4 bottom-[8px] md:bottom-2">
                 {showPremiumNote && (
                   <div className="mx-auto max-w-4xl mb-3">
