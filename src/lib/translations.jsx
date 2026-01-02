@@ -1432,7 +1432,7 @@ privacyPolicy: {
   },
 
   section2Title: {
-    ES: "2. Responsable del tratamiento de los datos",
+    ES: "2. Responsable del tratamiento de los datos", 
     EUS: "2. Datuen tratamenduaren arduraduna",
   },
   section2Body: {
@@ -3222,8 +3222,8 @@ proHelp: {
     EUS: "Aholkuak eta praktika onak",
   },
   settings_notifications_tips_hint: {
-    ES: "Emails breves para aprovechar mejor Olondo.AI.",
-    EUS: "Email laburrak Olondo.AI hobeto aprobetxatzeko.",
+    ES: "Emails breves para aprovechar mejor Euskalia.",
+    EUS: "Email laburrak Euskalia hobeto aprobetxatzeko.",
   },
 
   settings_notifications_billing: {
