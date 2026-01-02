@@ -3166,8 +3166,8 @@ proHelp: {
     EUS: "izena@adierazpena.com",
   },
   settings_profile_security_hint: {
-    ES: "La edición de contraseña se gestiona desde tu área segura.",
-    EUS: "Pasahitzaren aldaketa zure eremu segurutik kudeatzen da.",
+    ES: "Puedes cambiar tu nombre de perfil aqui.",
+    EUS: "Zure profileko izena aldatu dezakezu hemen.",
   },
   settings_manage_plan: {
     ES: "Gestionar plan",
