@@ -6,17 +6,19 @@ import { onAuthStateChanged, updateProfile } from "firebase/auth";
 export default function ProSettings() {
   const { language, setLanguage, t } = useTranslation();
 
-  // ✅ Evita que se vean claves literales si falta traducción
+  // ✅ evita que se muestre la clave literal si falta traducción
   const tr = (key, fallback = "") => {
-    const val = typeof t === "function" ? t(key) : "";
+    const val = typeof t === "function" ? t(key) : null;
     if (!val) return fallback;
     if (val === key) return fallback;
     return val;
   };
 
-  const [uid, setUid] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [savedMsg, setSavedMsg] = useState("");
+  const firstNameOnly = (name) => {
+    const clean = String(name || "").trim().replace(/\s+/g, " ");
+    if (!clean) return "";
+    return clean.split(" ")[0];
+  };
 
   const [profile, setProfile] = useState({
     displayName: "",
@@ -29,39 +31,33 @@ export default function ProSettings() {
     billing: true,
   });
 
-  // ✅ helpers
-  const firstNameOnly = (s) => {
-    const full = String(s || "").trim();
-    const first = full.split(/\s+/).filter(Boolean)[0] || "";
-    return first;
-  };
+  const [saving, setSaving] = useState(false);
+  const [savedMsg, setSavedMsg] = useState("");
 
-  const notifKey = (u) => (u ? `euskalia:pro:settings:notifs:${u}` : "");
-
+  // ✅ Cargar datos reales del usuario (Auth) + notificaciones guardadas (localStorage por UID)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      const u = user?.uid || "";
-      setUid(u);
-
       const full = (user?.displayName || "").trim();
-      const first = firstNameOnly(full);
+      const first = full ? firstNameOnly(full) : "";
+      const email = (user?.email || "").trim();
 
       setProfile({
-        displayName: first, // ✅ SOLO primer nombre
-        email: user?.email || "", // ✅ email real (solo lectura)
+        displayName: first,
+        email,
       });
 
-      // ✅ cargar notificaciones guardadas por usuario (localStorage)
+      // notificaciones por UID (persistencia real en navegador)
       try {
-        if (u) {
-          const raw = localStorage.getItem(notifKey(u));
+        const uid = user?.uid || null;
+        if (uid) {
+          const raw = localStorage.getItem(`euskalia:pro:notifications:${uid}`);
           if (raw) {
             const parsed = JSON.parse(raw);
-            setNotifications((prev) => ({
-              product: typeof parsed?.product === "boolean" ? parsed.product : prev.product,
-              tips: typeof parsed?.tips === "boolean" ? parsed.tips : prev.tips,
-              billing: typeof parsed?.billing === "boolean" ? parsed.billing : prev.billing,
-            }));
+            setNotifications({
+              product: typeof parsed?.product === "boolean" ? parsed.product : true,
+              tips: typeof parsed?.tips === "boolean" ? parsed.tips : true,
+              billing: typeof parsed?.billing === "boolean" ? parsed.billing : true,
+            });
           }
         }
       } catch {}
@@ -81,23 +77,26 @@ export default function ProSettings() {
 
     setSaving(true);
     try {
-      // ✅ Guardar NOMBRE (solo primer nombre) en Firebase Auth
+      // ✅ 1) Guardar SOLO primer nombre en Firebase Auth
       await updateProfile(user, { displayName: cleanFirst });
 
-      // ✅ Guardar notificaciones por UID (persistencia real en el navegador)
+      // ✅ 2) Guardar notificaciones por UID (persistencia real en navegador)
       try {
+        const uid = user?.uid;
         if (uid) {
-          localStorage.setItem(notifKey(uid), JSON.stringify(notifications));
+          localStorage.setItem(
+            `euskalia:pro:notifications:${uid}`,
+            JSON.stringify(notifications)
+          );
         }
       } catch {}
 
-      // ✅ Refrescar estado local para que el input se quede limpio (solo primer nombre)
-      setProfile((p) => ({ ...p, displayName: cleanFirst, email: user?.email || p.email }));
-
+      // ✅ Mensaje OK (usa traducción si existe)
       setSavedMsg(tr("settings_saved_ok", "Configuración guardada."));
       setTimeout(() => setSavedMsg(""), 2500);
     } catch (err) {
       console.error(err);
+      // si quieres, añade otra clave para error:
       setSavedMsg(tr("settings_saved_error", "No se pudo guardar. Intenta de nuevo."));
       setTimeout(() => setSavedMsg(""), 3000);
     } finally {
@@ -125,13 +124,16 @@ export default function ProSettings() {
               {tr("settings_profile_title", "Perfil")}
             </h2>
             <p className="text-slate-600 text-sm mt-1">
-              {tr("settings_profile_desc", "Información básica para identificar tu cuenta.")}
+              {tr(
+                "settings_profile_desc",
+                "Información básica para identificar tu cuenta."
+              )}
             </p>
           </div>
 
           {/* Nombre y email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Nombre visible */}
+            {/* Nombre visible (solo primer nombre) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {tr("settings_profile_display_name", "Nombre visible")}
@@ -144,10 +146,11 @@ export default function ProSettings() {
                 }
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none"
                 placeholder={tr("settings_profile_display_name_ph", "Tu nombre")}
+                disabled={saving}
               />
             </div>
 
-            {/* Email (solo lectura) */}
+            {/* Email (solo mostrar, NO editable) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {tr("settings_profile_email", "Email")}
@@ -165,7 +168,7 @@ export default function ProSettings() {
           <div className="text-xs text-slate-500">
             {tr(
               "settings_profile_security_hint",
-              "El email se gestiona desde tu cuenta de Google. Aquí solo puedes cambiar el nombre visible."
+              "El cambio de contraseña se gestiona de forma segura en tu cuenta."
             )}
           </div>
         </section>
@@ -177,11 +180,10 @@ export default function ProSettings() {
               {tr("settings_appearance_title", "Apariencia")}
             </h2>
             <p className="text-slate-600 text-sm mt-1">
-              {tr("settings_appearance_desc", "Elige idioma y tema de la interfaz.")}
+              {tr("settings_appearance_desc", "Elige cómo se ve Euskalia.")}
             </p>
           </div>
 
-          {/* Selector idioma y tema */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Selector de idioma REAL */}
             <div className="space-y-1">
@@ -199,6 +201,7 @@ export default function ProSettings() {
                     shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-200
                     focus:border-sky-500
                   "
+                  disabled={saving}
                 >
                   <option value="ES">Español</option>
                   <option value="EUS">Euskara</option>
@@ -223,7 +226,7 @@ export default function ProSettings() {
               </label>
 
               <select
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700"
                 value={"light"}
                 disabled
               >
@@ -242,11 +245,13 @@ export default function ProSettings() {
               {tr("settings_notifications_title", "Notificaciones")}
             </h2>
             <p className="text-slate-600 text-sm mt-1">
-              {tr("settings_notifications_desc", "Elige qué avisos quieres recibir.")}
+              {tr(
+                "settings_notifications_desc",
+                "Elige qué mensajes o avisos quieres recibir."
+              )}
             </p>
           </div>
 
-          {/* Checks */}
           <div className="space-y-3">
             <label className="flex items-start gap-3">
               <input
@@ -259,13 +264,17 @@ export default function ProSettings() {
                     product: e.target.checked,
                   })
                 }
+                disabled={saving}
               />
               <div>
                 <div className="text-sm font-medium">
-                  {tr("settings_notifications_product", "Producto")}
+                  {tr("settings_notifications_product", "Actualizaciones de producto")}
                 </div>
                 <p className="text-xs text-slate-500">
-                  {tr("settings_notifications_product_hint", "Novedades, mejoras y cambios importantes.")}
+                  {tr(
+                    "settings_notifications_product_hint",
+                    "Novedades, mejoras y avisos importantes."
+                  )}
                 </p>
               </div>
             </label>
@@ -281,13 +290,17 @@ export default function ProSettings() {
                     tips: e.target.checked,
                   })
                 }
+                disabled={saving}
               />
               <div>
                 <div className="text-sm font-medium">
-                  {tr("settings_notifications_tips", "Consejos")}
+                  {tr("settings_notifications_tips", "Consejos y buenas prácticas")}
                 </div>
                 <p className="text-xs text-slate-500">
-                  {tr("settings_notifications_tips_hint", "Tips para aprovechar mejor Euskalia.")}
+                  {tr(
+                    "settings_notifications_tips_hint",
+                    "Tips rápidos para aprovechar Euskalia."
+                  )}
                 </p>
               </div>
             </label>
@@ -303,32 +316,38 @@ export default function ProSettings() {
                     billing: e.target.checked,
                   })
                 }
+                disabled={saving}
               />
               <div>
                 <div className="text-sm font-medium">
                   {tr("settings_notifications_billing", "Facturación")}
                 </div>
                 <p className="text-xs text-slate-500">
-                  {tr("settings_notifications_billing_hint", "Avisos de pagos, cambios de plan y recibos.")}
+                  {tr(
+                    "settings_notifications_billing_hint",
+                    "Recibos, avisos de pago y cambios de plan."
+                  )}
                 </p>
               </div>
             </label>
           </div>
         </section>
 
-        {/* PLAN Y SUSCRIPCIÓN (✅ VUELVE A ESTAR) */}
+        {/* PLAN Y SUSCRIPCIÓN */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
           <div className="mb-4">
             <h2 className="font-semibold text-lg text-slate-900">
               {tr("settings_plan_title", "Plan y suscripción")}
             </h2>
             <p className="text-slate-600 text-sm mt-1">
-              {tr("settings_plan_desc", "Gestiona la información básica de tu plan.")}
+              {tr(
+                "settings_plan_desc",
+                "Consulta el estado de tu plan actual."
+              )}
             </p>
           </div>
 
           <div className="rounded-xl border border-slate-200 overflow-hidden">
-            {/* Row: Plan */}
             <div className="flex items-center justify-between px-4 py-3">
               <div className="text-sm text-slate-600">
                 {tr("settings_plan_row_plan", "Plan")}
@@ -361,7 +380,6 @@ export default function ProSettings() {
 
             <div className="h-px bg-slate-100" />
 
-            {/* Row: Renews + button */}
             <div className="flex items-center justify-between px-4 py-3">
               <div className="text-sm text-slate-600">
                 {tr("settings_plan_row_renews", "Renovación")}
@@ -374,7 +392,7 @@ export default function ProSettings() {
 
                 <button
                   type="button"
-                  onClick={() => alert(tr("settings_plan_demo_alert", "Esto es un demo por ahora."))}
+                  onClick={() => alert(tr("settings_plan_demo_alert", "Demo"))}
                   className="
                     rounded-md border border-slate-300 bg-white px-3 py-2
                     text-sm font-medium text-slate-700 hover:bg-slate-50
@@ -399,11 +417,13 @@ export default function ProSettings() {
             type="submit"
             disabled={saving}
             className="
-              rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2
-              text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed
+              rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 text-sm font-medium
+              disabled:opacity-60 disabled:cursor-not-allowed
             "
           >
-            {saving ? tr("settings_cta_saving", "Guardando...") : tr("settings_cta_save", "Guardar cambios")}
+            {saving
+              ? tr("settings_cta_saving", "Guardando…")
+              : tr("settings_cta_save", "Guardar cambios")}
           </button>
         </div>
       </form>
