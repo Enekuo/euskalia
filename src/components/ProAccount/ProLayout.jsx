@@ -1,11 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Home as HomeIcon,
   Wrench,
   Folder,
   Settings,
   Gem,
-  User,
   Globe,
   ChevronDown,
   MessageSquare,
@@ -23,6 +22,10 @@ import {
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate, useLocation } from "react-router-dom";
+
+// ✅ Firebase user (Google profile: displayName, photoURL, email)
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LayoutPro({ children }) {
   const { t, language, setLanguage } = useTranslation();
@@ -44,9 +47,9 @@ export default function LayoutPro({ children }) {
 
   const languages = [
     { code: "EUS", name: "Euskara" },
-    { code: "ES",  name: "Español" },
-    { code: "EN",  name: "English" },
-    { code: "FR",  name: "Français"},
+    { code: "ES", name: "Español" },
+    { code: "EN", name: "English" },
+    { code: "FR", name: "Français" },
   ];
 
   const showText = !collapsed;
@@ -82,6 +85,39 @@ export default function LayoutPro({ children }) {
     }
     return null;
   }, [pathname, tr]);
+
+  // ===== USER (avatar Google) =====
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u || null));
+    return () => unsub();
+  }, []);
+
+  const firstInitial = (u) => {
+    const name = (u?.displayName || "").trim();
+    if (name) return name[0].toUpperCase();
+
+    const email = (u?.email || "").trim();
+    if (email) return email[0].toUpperCase();
+
+    return "?";
+  };
+
+  const stableAvatarStyle = (seed) => {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    const hue = h % 360;
+    return {
+      backgroundColor: `hsl(${hue} 70% 45%)`,
+      color: "white",
+    };
+  };
+
+  const avatarSeed = user?.email || user?.uid || "guest";
+  const avatarStyle = useMemo(() => stableAvatarStyle(avatarSeed), [avatarSeed]);
+  const avatarInitial = useMemo(() => firstInitial(user), [user]);
+  const avatarPhoto = user?.photoURL || "";
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
@@ -460,9 +496,30 @@ export default function LayoutPro({ children }) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="h-9 w-9 rounded-full border border-slate-200 bg-white flex items-center justify-center">
-              <User size={18} className="text-slate-700" />
-            </div>
+            {/* ✅ AQUÍ: avatar real del usuario (foto Google o inicial estilo Google) */}
+            <button
+              type="button"
+              onClick={() => navigate("/cuenta-pro/ajustes")}
+              className="h-9 w-9 rounded-full border border-slate-200 bg-white overflow-hidden flex items-center justify-center hover:bg-slate-50"
+              aria-label="Cuenta"
+              title={user?.displayName || user?.email || "Cuenta"}
+            >
+              {avatarPhoto ? (
+                <img
+                  src={avatarPhoto}
+                  alt="avatar"
+                  className="h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div
+                  className="h-full w-full flex items-center justify-center font-semibold text-sm"
+                  style={avatarStyle}
+                >
+                  {avatarInitial}
+                </div>
+              )}
+            </button>
           </div>
         </header>
 
