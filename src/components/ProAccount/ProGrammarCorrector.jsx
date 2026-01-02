@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { addLibraryDoc } from "@/proLibraryStore";
 import { diff_match_patch } from "diff-match-patch";
+import { auth } from "@/lib/firebase";
 
 export default function ProGrammarCorrector() {
   const { t } = useTranslation();
@@ -629,9 +630,19 @@ export default function ProGrammarCorrector() {
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const res = await fetch("/api/chat", {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error(tr("grammar.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
+      }
+
+      const idToken = await user.getIdToken();
+
+      const res = await fetch("/api/pro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           messages,
           mode: CORRECTION_MODE,
@@ -645,6 +656,9 @@ export default function ProGrammarCorrector() {
           setErrorKind("limit");
           setLoading(false);
           return;
+        }
+        if (res.status === 401) {
+          throw new Error(tr("grammar.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
         if (res.status === 429) {
           throw new Error(
@@ -1139,7 +1153,7 @@ export default function ProGrammarCorrector() {
                 {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
 
                 <div className="flex items-center gap-4">
-                  {/* Copiar */} 
+                  {/* Copiar */}
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}

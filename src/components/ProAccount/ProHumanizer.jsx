@@ -22,6 +22,7 @@ import {
 import { addLibraryDoc } from "@/proLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
+import { auth } from "@/lib/firebase";
 
 export default function ProHumanizer() {
   const location = useLocation();
@@ -652,9 +653,19 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const res = await fetch("/api/chat", {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error(tr("proHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Pro."));
+      }
+
+      const idToken = await user.getIdToken();
+
+      const res = await fetch("/api/pro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           messages,
           mode: "humanize",
@@ -667,6 +678,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error(tr("proHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Pro."));
+        }
         if (res.status === 429) {
           throw new Error(tr("proHumanizer_errorRateLimit", "Has alcanzado el límite de peticiones. Inténtalo más tarde."));
         }

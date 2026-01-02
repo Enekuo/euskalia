@@ -21,6 +21,7 @@ import {
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
 import { addLibraryDoc } from "@/proLibraryStore";
+import { auth } from "@/lib/firebase";
 
 export default function ProSummary() {
   const { t } = useTranslation();
@@ -612,9 +613,19 @@ export default function ProSummary() {
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const res = await fetch("/api/chat", {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error(tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
+      }
+
+      const idToken = await user.getIdToken();
+
+      const res = await fetch("/api/pro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           messages,
           length: summaryLength,
@@ -628,6 +639,9 @@ export default function ProSummary() {
           setErrorKind("limit");
           setLoading(false);
           return;
+        }
+        if (res.status === 401) {
+          throw new Error(tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
         if (res.status === 429) {
           throw new Error(

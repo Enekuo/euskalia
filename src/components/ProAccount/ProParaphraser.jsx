@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { addLibraryDoc } from "@/proLibraryStore";
 import { useTranslation } from "@/lib/translations";
+import { auth } from "@/lib/firebase";
 
 export default function ProParaphraser() {
   const { t } = useTranslation();
@@ -565,9 +566,19 @@ MODO CREATIVO:
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const res = await fetch("/api/chat", {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error(tr("proParaphraser_error_auth_required", "Necesitas iniciar sesión para usar Pro."));
+      }
+
+      const idToken = await user.getIdToken();
+
+      const res = await fetch("/api/pro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           messages,
           mode: "paraphrase",
@@ -579,6 +590,9 @@ MODO CREATIVO:
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error(tr("proParaphraser_error_auth_required", "Necesitas iniciar sesión para usar Pro."));
+        }
         if (res.status === 429) {
           throw new Error(
             tr("proParaphraser_error_rate_limit", "Has alcanzado el límite de peticiones. Inténtalo más tarde.")
@@ -751,7 +765,9 @@ MODO CREATIVO:
                               </div>
                               <div className="min-w-0 flex-1">
                                 <span className="text-sm font-medium block truncate">{file.name}</span>
-                                <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                <span className="text-xs text-slate-500">
+                                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </span>
                               </div>
                             </div>
                             <button
