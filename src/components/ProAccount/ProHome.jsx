@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FileText, CheckCircle2, Globe, Brain, Search } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function ProHome() {
-  const userName = "(usuario)";
-
   const { t } = useTranslation();
   const tr = (key, fallback) => t(key) || fallback;
   const navigate = useNavigate();
+
+  const [userName, setUserName] = useState(tr("proHome.user_fallback", "usuario"));
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      const fullName = (u?.displayName || "").trim();
+      const firstName = fullName ? fullName.split(/\s+/)[0] : "";
+
+      const emailName = (u?.email || "").split("@")[0]?.trim();
+      const emailFirst = emailName ? emailName.split(/[._\s-]+/)[0] : "";
+
+      setUserName(firstName || emailFirst || tr("proHome.user_fallback", "usuario"));
+    });
+
+    return () => unsub?.();
+  }, [t]);
 
   return (
     <>
