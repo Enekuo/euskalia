@@ -161,6 +161,216 @@ export default async function handler(req, res) {
       max_tokens
     } = body;
 
+    // ====== ✅ AI DETECTOR (PRO) ======
+    if (body?.mode === "ai_detector") {
+      const { text } = body || {};
+
+      if (!text || typeof text !== "string") {
+        return res.status(400).json({ ok: false, error: "Missing text" });
+      }
+
+      const trimmed = text.trim();
+      if (trimmed.length < 40) {
+        return res.status(400).json({
+          ok: false,
+          error: "Text too short",
+          message: "Necesito un texto un poco más largo para analizar (mínimo ~40 caracteres).",
+        });
+      }
+
+      // ====== LÍMITES PLAN PRO (por UID) también para detector ======
+      const day = todayKey();
+
+      const detectorSystem =
+        "Eres un detector de probabilidad de texto generado por IA. Devuelve SOLO JSON válido sin texto adicional.";
+
+      const detectorUser = `Analiza este texto y estima probabilidad de que sea generado por IA.
+Devuelve un JSON con esta forma EXACTA:
+{"ai": number(0-100), "human": number(0-100), "note": string}
+
+Reglas:
+- ai + human debe sumar 100.
+- Si no estás seguro, usa valores intermedios.
+- note: una frase muy corta (máx 120 caracteres) en español.
+Texto:
+"""${trimmed.slice(0, 5000)}"""`;
+
+      const detectorMessagesForLimits = [
+        { role: "system", content: detectorSystem },
+        { role: "user", content: detectorUser },
+      ];
+
+      const totalChars =
+        detectorMessagesForLimits.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
+
+      if (totalChars > PRO_MAX_CHARS) {
+        return res.status(413).json({
+          ok: false,
+          error: "Input too long",
+          limit: { max_chars: PRO_MAX_CHARS },
+          message:
+            `El texto es demasiado largo para el plan Pro. Máximo ${PRO_MAX_CHARS.toLocaleString()} caracteres por petición. ` +
+            `Divide el texto y vuelve a intentarlo.`
+        });
+      }
+
+      // 2) Rate-limit RPM por UID
+      try {
+        const rpmKey = `rl:pro:rpm:${uid}`;
+        const count = await kv.incr(rpmKey);
+        if (count === 1) {
+          await kv.expire(rpmKey, 60); // ventana 60s
+        }
+        if (count > PRO_RPM) {
+          return res.status(429).json({
+            ok: false,
+            error: "Too Many Requests",
+            limit: { rpm: PRO_RPM },
+            message: `Demasiadas peticiones. Límite ${PRO_RPM}/min. Espera unos segundos.`
+          });
+        }
+      } catch {
+        // si KV falla, continuamos sin romper UX
+      }
+
+      // 3) Cuota diaria aproximada de tokens por UID
+      const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
+      try {
+        const dailyKey = `quota:pro:${day}:${uid}`;
+        const used = (await kv.get(dailyKey)) || 0;
+        if (used + estTokens > PRO_DAILY_TOKENS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily quota exceeded",
+            limit: { daily_tokens: PRO_DAILY_TOKENS, used_tokens: used },
+            message:
+              `Has alcanzado la cuota diaria del plan Pro. ` +
+              `Disponible: ${PRO_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
+              `Vuelve mañana.`
+          });
+        }
+        // no reservamos aún; sumaremos tras respuesta
+      } catch {}
+
+      // ====== KV CACHE (detector) ======
+      const MODEL = process.env.AI_DETECTOR_MODEL || "gpt-4.1-mini";
+
+      const detectorCacheKey = makeCacheKey({
+        task: "ai_detector",
+        model: MODEL,
+        system: detectorSystem,
+        messages: [{ role: "user", content: trimmed.slice(0, 5000) }],
+        src: null,
+        dst: null,
+        lang: "na",
+        length: null
+      });
+
+      try {
+        const cached = await kv.get(detectorCacheKey);
+        if (cached?.ai !== undefined && cached?.human !== undefined) {
+          await kv.expire(detectorCacheKey, CACHE_TTL_SECONDS);
+          return res.status(200).json({
+            ok: true,
+            ai: cached.ai,
+            human: cached.human,
+            note: cached.note || "Estimación orientativa basada en patrones del texto.",
+            cached: true
+          });
+        }
+      } catch {}
+
+      // ====== Llamada OpenAI (Responses API) ======
+      const rr = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          input: [
+            { role: "system", content: detectorSystem },
+            { role: "user", content: detectorUser },
+          ],
+          text: { format: { type: "json_object" } },
+        }),
+      });
+
+      const detailText = await rr.text().catch(() => "");
+      let data;
+      try {
+        data = detailText ? JSON.parse(detailText) : {};
+      } catch {
+        data = {};
+      }
+
+      if (!rr.ok) {
+        return res.status(rr.status).json({
+          ok: false,
+          error: "OpenAI error",
+          detail: typeof data === "object" ? data : detailText,
+        });
+      }
+
+      // extraer texto JSON del response (robusto)
+      let rawOut = data?.output_text || "";
+      if (!rawOut && Array.isArray(data?.output)) {
+        for (const item of data.output) {
+          const contentArr = item?.content;
+          if (Array.isArray(contentArr)) {
+            const t = contentArr.find((c) => c?.type === "output_text" && typeof c?.text === "string")?.text;
+            if (t) { rawOut = t; break; }
+          }
+        }
+      }
+      rawOut = String(rawOut || "").trim();
+
+      let parsed;
+      try {
+        parsed = JSON.parse(rawOut);
+      } catch {
+        const start = rawOut.indexOf("{");
+        const end = rawOut.lastIndexOf("}");
+        if (start >= 0 && end > start) {
+          parsed = JSON.parse(rawOut.slice(start, end + 1));
+        } else {
+          return res.status(500).json({ ok: false, error: "Bad model output", raw: rawOut });
+        }
+      }
+
+      let ai = Number(parsed?.ai);
+      if (!Number.isFinite(ai)) ai = 50;
+      ai = Math.max(0, Math.min(100, Math.round(ai)));
+      const human = 100 - ai;
+
+      const note =
+        typeof parsed?.note === "string" && parsed.note.trim()
+          ? parsed.note.trim().slice(0, 140)
+          : "Estimación orientativa basada en patrones del texto.";
+
+      // Guardar cache
+      try {
+        await kv.set(detectorCacheKey, { ai, human, note }, { ex: CACHE_TTL_SECONDS });
+      } catch {}
+
+      // Actualizar cuota diaria real (si hay usage en responses)
+      try {
+        const dailyKey = `quota:pro:${day}:${uid}`;
+        const used = (await kv.get(dailyKey)) || 0;
+
+        const respUsage = data?.usage || null;
+        const realTokens =
+          (respUsage?.input_tokens || 0) + (respUsage?.output_tokens || 0) ||
+          Math.max(estTokens, 1);
+
+        const newUsed = used + realTokens;
+        await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+      } catch {}
+
+      return res.status(200).json({ ok: true, ai, human, note, cached: false });
+    }
+
     // ====== Soporte especial: traducir desde URLs ======
     if (body?.mode === "translate_urls") {
       const urls = Array.isArray(body.urls)

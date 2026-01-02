@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Clipboard, UploadCloud, Trash2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
+import { auth } from "@/lib/firebase";
 
 export default function ProAiDetector() {
   const { t } = useTranslation();
@@ -56,15 +57,46 @@ export default function ProAiDetector() {
     setResult(null);
 
     try {
-      const r = await fetch("/api/ai-detector", {
+      // ✅ PRO: necesitamos idToken para /api/pro
+      const user = auth?.currentUser;
+      const token = user ? await user.getIdToken() : null;
+
+      if (!token) {
+        setErrorMsg(
+          tr(
+            "aiDetector_error_not_logged",
+            "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
+          )
+        );
+        setLoading(false);
+        return;
+      }
+
+      const r = await fetch("/api/pro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: payload }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ mode: "ai_detector", text: payload }),
       });
 
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
+        // 401: token inválido / expirado / no logeado
+        if (r.status === 401) {
+          setErrorMsg(
+            data?.message ||
+              tr(
+                "aiDetector_error_unauthorized",
+                "Necesitas iniciar sesión para usar esta herramienta."
+              )
+          );
+          setLoading(false);
+          return;
+        }
+
         setErrorMsg(
           data?.message ||
             data?.error ||
