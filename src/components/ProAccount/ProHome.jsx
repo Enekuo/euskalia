@@ -15,9 +15,26 @@ export default function ProHome() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       const full = (user?.displayName || "").trim();
-      const first = full ? full.split(" ")[0] : "";
-      setUserName(first);
+
+      // ✅ 1) Si hay displayName: coger solo el primer nombre
+      if (full) {
+        const first = full.split(/\s+/).filter(Boolean)[0] || "";
+        setUserName(first);
+        return;
+      }
+
+      // ✅ 2) Si NO hay displayName: fallback con email (antes del @)
+      const email = (user?.email || "").trim();
+      if (email && email.includes("@")) {
+        const beforeAt = email.split("@")[0] || "";
+        const firstFromEmail = beforeAt.split(/[.\-_ ]+/).filter(Boolean)[0] || "";
+        setUserName(firstFromEmail);
+        return;
+      }
+
+      setUserName("");
     });
+
     return () => unsub();
   }, []);
 
@@ -33,7 +50,7 @@ export default function ProHome() {
         </h1>
       </div>
 
-      {/* ... el resto de tu código EXACTO de tarjetas ... */}
+      {/* Tarjetas principales */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 ml-10 mr-10">
         {/* TRADUCTOR */}
         <div
