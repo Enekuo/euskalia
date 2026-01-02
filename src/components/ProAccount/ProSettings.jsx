@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { auth, db } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ProSettings() {
   const { language, setLanguage, t } = useTranslation();
@@ -26,66 +25,29 @@ export default function ProSettings() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      try {
-        setSavedMsg("");
-        setErrorMsg("");
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setSavedMsg("");
+      setErrorMsg("");
 
-        if (!user) {
-          setUid(null);
-          setAuthReady(true);
-          return;
-        }
-
-        setUid(user.uid);
-
-        // ✅ Cargar SIEMPRE desde Firebase Auth (lo mismo que Home)
-        setProfile({
-          displayName: user.displayName || "",
-          email: user.email || "",
-        });
-
-        // (Opcional) cargar preferencias guardadas
-        const ref = doc(db, "pro_users", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const data = snap.data() || {};
-
-          if (data.notifications) {
-            setNotifications((prev) => ({
-              ...prev,
-              product:
-                typeof data.notifications.product === "boolean"
-                  ? data.notifications.product
-                  : prev.product,
-              tips:
-                typeof data.notifications.tips === "boolean"
-                  ? data.notifications.tips
-                  : prev.tips,
-              billing:
-                typeof data.notifications.billing === "boolean"
-                  ? data.notifications.billing
-                  : prev.billing,
-            }));
-          }
-
-          if (data.appearance?.language && typeof data.appearance.language === "string") {
-            if (data.appearance.language !== language) {
-              setLanguage(data.appearance.language);
-            }
-          }
-        }
-
+      if (!user) {
+        setUid(null);
         setAuthReady(true);
-      } catch (e) {
-        console.error(e);
-        setErrorMsg(t("settings_error_load") || "No se pudieron cargar los ajustes.");
-        setAuthReady(true);
+        return;
       }
+
+      setUid(user.uid);
+
+      // ✅ Esto es lo que se ve en Home (displayName real)
+      setProfile({
+        displayName: user.displayName || "",
+        email: user.email || "",
+      });
+
+      setAuthReady(true);
     });
 
     return () => unsub();
-  }, [language, setLanguage, t]);
+  }, []);
 
   const saveAll = async (e) => {
     e.preventDefault();
@@ -101,37 +63,15 @@ export default function ProSettings() {
 
     setSaving(true);
     try {
-      // ✅ 1) Actualizar displayName en Firebase Auth (esto hace que Home cambie)
+      // ✅ Guardado REAL en Firebase (persistente)
       if (auth.currentUser && auth.currentUser.displayName !== name) {
         await updateProfile(auth.currentUser, { displayName: name });
       }
 
-      // ✅ 2) Guardar ajustes en Firestore (persistencia + notificaciones + idioma)
-      const ref = doc(db, "pro_users", uid);
-      await setDoc(
-        ref,
-        {
-          profile: {
-            displayName: name,
-          },
-          appearance: {
-            language,
-            theme: "light",
-          },
-          notifications: {
-            product: !!notifications.product,
-            tips: !!notifications.tips,
-            billing: !!notifications.billing,
-          },
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
-
       setSavedMsg(t("settings_saved_ok") || "Configuración guardada.");
       setTimeout(() => setSavedMsg(""), 2500);
-    } catch (e) {
-      console.error(e);
+    } catch (e2) {
+      console.error(e2);
       setErrorMsg(t("settings_error_save") || "No se pudo guardar la configuración.");
     } finally {
       setSaving(false);
@@ -167,7 +107,6 @@ export default function ProSettings() {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      {/* TÍTULO */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">{t("settings_title")}</h1>
         <p className="text-slate-600 mt-1">{t("settings_subtitle")}</p>
@@ -185,9 +124,8 @@ export default function ProSettings() {
             </p>
           </div>
 
-          {/* Nombre y email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* ✅ Nombre visible (editable) */}
+            {/* ✅ Nombre editable */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_display_name")}
@@ -202,7 +140,7 @@ export default function ProSettings() {
               />
             </div>
 
-            {/* ✅ Email (solo lectura) */}
+            {/* ✅ Email fijo NO editable */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_email")}
@@ -264,7 +202,6 @@ export default function ProSettings() {
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_theme")}
               </label>
-
               <select
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                 value={"light"}
@@ -276,7 +213,7 @@ export default function ProSettings() {
           </div>
         </section>
 
-        {/* NOTIFICACIONES */}
+        {/* NOTIFICACIONES (por ahora solo UI) */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-6">
           <div>
             <h2 className="font-semibold text-lg text-slate-900">
@@ -294,10 +231,7 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.product}
                 onChange={(e) =>
-                  setNotifications({
-                    ...notifications,
-                    product: e.target.checked,
-                  })
+                  setNotifications({ ...notifications, product: e.target.checked })
                 }
               />
               <div>
@@ -316,10 +250,7 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.tips}
                 onChange={(e) =>
-                  setNotifications({
-                    ...notifications,
-                    tips: e.target.checked,
-                  })
+                  setNotifications({ ...notifications, tips: e.target.checked })
                 }
               />
               <div>
@@ -338,10 +269,7 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.billing}
                 onChange={(e) =>
-                  setNotifications({
-                    ...notifications,
-                    billing: e.target.checked,
-                  })
+                  setNotifications({ ...notifications, billing: e.target.checked })
                 }
               />
               <div>
@@ -356,7 +284,6 @@ export default function ProSettings() {
           </div>
         </section>
 
-        {/* BOTÓN GUARDAR + MENSAJES */}
         <div className="flex items-center justify-end gap-3">
           {savedMsg && (
             <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
