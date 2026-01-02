@@ -1087,9 +1087,9 @@ export default function ProSummary() {
                               )}
 
                               {/* Controles abajo derecha (POSICIÓN INTACTA) */}
-                              <div className="absolute bottom-2 right-6 flex items-center gap-2">
+                              <div className="absolute bottom-4 right-6 flex items-center gap-4">
                                 {/* SOLO ICONOS (POSICIÓN INTACTA) */}
-                                <div className="flex items-center gap-4 mr-[40px]">
+                                <div className="flex items-center gap-4 mr-[40px] translate-y-2">
                                   {/* Copiar con tooltip ARRIBA */}
                                   <button
                                     type="button"
