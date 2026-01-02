@@ -10,7 +10,7 @@ export default function AuthPage() {
   const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
 
   const navigate = useNavigate();
-  const REDIRECT_TO = "/cuenta-pro/home";
+  const REDIRECT_TO = "/cuenta-pro";
 
   // ✅ Si el usuario ya está logeado, fuera de aquí
   useEffect(() => {
