@@ -1100,7 +1100,7 @@ export default function ProSummary() {
                                     {copiedFlash ? (
                                       <Check className="w-5 h-5" style={{ color: BLUE }} />
                                     ) : (
-                                      <Copy className="w-6 h-6" />
+                                      <Copy className="w-4 h-4" />
                                     )}
                                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                       {copiedFlash ? tooltipCopied : tooltipCopy}
@@ -1114,7 +1114,7 @@ export default function ProSummary() {
                                     aria-label={tooltipPdf}
                                     className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
                                   >
-                                    <FileDown className="w-6 h-6" />
+                                    <FileDown className="w-4 h-4" />
                                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                       {tooltipPdf}
                                     </span>
