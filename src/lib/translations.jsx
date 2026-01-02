@@ -3240,7 +3240,7 @@ proHelp: {
   },
   settings_saved_ok: { 
   ES: "Configuración guardada.",
-  EUS: "Ezarpenak gorde dira.",
+  EUS: "Ezarpenak gordeta.",
   EN: "Settings saved.",
   FR: "Paramètres enregistrés."
 },
