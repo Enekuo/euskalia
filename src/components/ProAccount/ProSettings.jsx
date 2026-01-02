@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "@/lib/translations";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ProSettings() {
   const { language, setLanguage, t } = useTranslation();
+
+  const [uid, setUid] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
 
   const [profile, setProfile] = useState({
     displayName: "",
@@ -15,25 +21,178 @@ export default function ProSettings() {
     billing: true,
   });
 
-  const saveAll = (e) => {
+  const [saving, setSaving] = useState(false);
+  const [savedMsg, setSavedMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // 1) Detectar usuario logeado + cargar datos guardados
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      try {
+        setErrorMsg("");
+        setSavedMsg("");
+
+        if (!user) {
+          setUid(null);
+          setAuthReady(true);
+          return;
+        }
+
+        setUid(user.uid);
+
+        // Prefill desde Firebase Auth (lo que viene de Google)
+        setProfile({
+          displayName: user.displayName || "",
+          email: user.email || "",
+        });
+
+        // 2) Cargar settings guardados (Firestore) por UID
+        const ref = doc(db, "pro_users", user.uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          const data = snap.data() || {};
+
+          // perfil
+          if (data.profile?.displayName != null) {
+            setProfile((prev) => ({
+              ...prev,
+              displayName: String(data.profile.displayName || ""),
+              // email siempre del auth (fuente de verdad)
+              email: user.email || prev.email || "",
+            }));
+          }
+
+          // notificaciones
+          if (data.notifications) {
+            setNotifications((prev) => ({
+              ...prev,
+              product:
+                typeof data.notifications.product === "boolean"
+                  ? data.notifications.product
+                  : prev.product,
+              tips:
+                typeof data.notifications.tips === "boolean"
+                  ? data.notifications.tips
+                  : prev.tips,
+              billing:
+                typeof data.notifications.billing === "boolean"
+                  ? data.notifications.billing
+                  : prev.billing,
+            }));
+          }
+
+          // idioma guardado (opcional)
+          if (data.appearance?.language && typeof data.appearance.language === "string") {
+            // solo si es distinto para no “parpadear”
+            if (data.appearance.language !== language) {
+              setLanguage(data.appearance.language);
+            }
+          }
+        }
+
+        setAuthReady(true);
+      } catch (e) {
+        console.error(e);
+        setErrorMsg(t("settings_error_load") || "No se pudieron cargar los ajustes.");
+        setAuthReady(true);
+      }
+    });
+
+    return () => unsub();
+  }, [language, setLanguage, t]);
+
+  // 3) Guardar de verdad en Firestore + actualizar displayName en Auth
+  const saveAll = async (e) => {
     e.preventDefault();
-    alert("Configuración guardada.");
+    setSavedMsg("");
+    setErrorMsg("");
+
+    if (!uid) {
+      setErrorMsg(t("settings_error_not_logged") || "Debes iniciar sesión para guardar.");
+      return;
+    }
+
+    const name = (profile.displayName || "").trim();
+
+    setSaving(true);
+    try {
+      // A) Guardar settings por UID
+      const ref = doc(db, "pro_users", uid);
+      await setDoc(
+        ref,
+        {
+          profile: {
+            displayName: name,
+            // email NO lo guardo editable (fuente real: Firebase Auth)
+          },
+          appearance: {
+            language,
+            theme: "light",
+          },
+          notifications: {
+            product: !!notifications.product,
+            tips: !!notifications.tips,
+            billing: !!notifications.billing,
+          },
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // B) Actualizar displayName en Firebase Auth (para que salga en header/home)
+      if (auth.currentUser && name && auth.currentUser.displayName !== name) {
+        await updateProfile(auth.currentUser, { displayName: name });
+      }
+
+      setSavedMsg(t("settings_saved_ok") || "Configuración guardada.");
+      setTimeout(() => setSavedMsg(""), 2500);
+    } catch (e) {
+      console.error(e);
+      setErrorMsg(t("settings_error_save") || "No se pudo guardar la configuración.");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  // Si aún no sabemos si hay user o no
+  if (!authReady) {
+    return (
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <div className="text-sm text-slate-600">
+            {t("settings_loading") || "Cargando ajustes..."}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no está logeado
+  if (!uid) {
+    return (
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <h1 className="text-xl font-semibold text-slate-900">
+            {t("settings_title") || "Ajustes"}
+          </h1>
+          <p className="text-slate-600 mt-2">
+            {t("settings_need_login") || "Inicia sesión para ver y guardar tus ajustes."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* TÍTULO */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">
-          {t("settings_title")}
-        </h1>
-        <p className="text-slate-600 mt-1">
-          {t("settings_subtitle")}
-        </p>
+        <h1 className="text-2xl font-bold text-slate-900">{t("settings_title")}</h1>
+        <p className="text-slate-600 mt-1">{t("settings_subtitle")}</p>
       </div>
 
       <form onSubmit={saveAll} className="space-y-8">
-
         {/* PERFIL */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-6">
           <div>
@@ -62,7 +221,7 @@ export default function ProSettings() {
               />
             </div>
 
-            {/* Email */}
+            {/* Email (solo lectura: el real viene de Google/Firebase) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_email")}
@@ -70,10 +229,8 @@ export default function ProSettings() {
               <input
                 type="email"
                 value={profile.email}
-                onChange={(e) =>
-                  setProfile({ ...profile, email: e.target.value })
-                }
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none"
+                disabled
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500"
                 placeholder="nombre@ejemplo.com"
               />
             </div>
@@ -97,8 +254,7 @@ export default function ProSettings() {
 
           {/* Selector idioma y tema */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            {/* Selector de idioma REAL de Euskalia */}
+            {/* Selector idioma REAL de Euskalia */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_language")}
@@ -229,7 +385,7 @@ export default function ProSettings() {
           </div>
         </section>
 
-        {/* PLAN Y SUSCRIPCIÓN (CON CLAVES) */}
+        {/* PLAN Y SUSCRIPCIÓN */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
           <div className="mb-4">
             <h2 className="font-semibold text-lg text-slate-900">
@@ -300,13 +456,34 @@ export default function ProSettings() {
           </div>
         </section>
 
+        {/* Feedback guardado/error */}
+        {(savedMsg || errorMsg) && (
+          <div className="flex justify-end">
+            {savedMsg && (
+              <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                {savedMsg}
+              </div>
+            )}
+            {errorMsg && (
+              <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                {errorMsg}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* BOTÓN GUARDAR */}
         <div className="flex justify-end">
           <button
             type="submit"
-            className="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 text-sm font-medium"
+            disabled={saving}
+            className="
+              rounded-lg bg-sky-600 hover:bg-sky-700 text-white
+              px-4 py-2 text-sm font-medium
+              disabled:opacity-60 disabled:cursor-not-allowed
+            "
           >
-            {t("settings_cta_save")}
+            {saving ? (t("settings_saving") || "Guardando...") : t("settings_cta_save")}
           </button>
         </div>
       </form>
