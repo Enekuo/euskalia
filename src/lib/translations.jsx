@@ -3238,6 +3238,12 @@ proHelp: {
     ES: "Guardar cambios",
     EUS: "Aldaketak gorde",
   },
+  settings_saved_ok: { 
+  ES: "Configuración guardada.",
+  EUS: "Ezarpenak gorde dira.",
+  EN: "Settings saved.",
+  FR: "Paramètres enregistrés."
+},
   settings_plan_title: {
   ES: "Plan y suscripción",
   EUS: "Plana eta harpidetza",
