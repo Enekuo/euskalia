@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, updateProfile } from "firebase/auth";
 
 export default function ProSettings() {
   const { language, setLanguage, t } = useTranslation();
-
-  const [uid, setUid] = useState(null);
-  const [authReady, setAuthReady] = useState(false);
 
   const [profile, setProfile] = useState({
     displayName: "",
@@ -20,99 +15,25 @@ export default function ProSettings() {
     billing: true,
   });
 
-  const [saving, setSaving] = useState(false);
-  const [savedMsg, setSavedMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      setSavedMsg("");
-      setErrorMsg("");
-
-      if (!user) {
-        setUid(null);
-        setAuthReady(true);
-        return;
-      }
-
-      setUid(user.uid);
-
-      // ✅ Esto es lo que se ve en Home (displayName real)
-      setProfile({
-        displayName: user.displayName || "",
-        email: user.email || "",
-      });
-
-      setAuthReady(true);
-    });
-
-    return () => unsub();
-  }, []);
-
-  const saveAll = async (e) => {
+  const saveAll = (e) => {
     e.preventDefault();
-    setSavedMsg("");
-    setErrorMsg("");
-
-    if (!uid) {
-      setErrorMsg(t("settings_error_not_logged") || "Debes iniciar sesión para guardar.");
-      return;
-    }
-
-    const name = (profile.displayName || "").trim();
-
-    setSaving(true);
-    try {
-      // ✅ Guardado REAL en Firebase (persistente)
-      if (auth.currentUser && auth.currentUser.displayName !== name) {
-        await updateProfile(auth.currentUser, { displayName: name });
-      }
-
-      setSavedMsg(t("settings_saved_ok") || "Configuración guardada.");
-      setTimeout(() => setSavedMsg(""), 2500);
-    } catch (e2) {
-      console.error(e2);
-      setErrorMsg(t("settings_error_save") || "No se pudo guardar la configuración.");
-    } finally {
-      setSaving(false);
-    }
+    alert("Configuración guardada.");
   };
-
-  if (!authReady) {
-    return (
-      <div className="w-full max-w-3xl mx-auto">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <div className="text-sm text-slate-600">
-            {t("settings_loading") || "Cargando ajustes..."}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!uid) {
-    return (
-      <div className="w-full max-w-3xl mx-auto">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <h1 className="text-xl font-semibold text-slate-900">
-            {t("settings_title") || "Ajustes"}
-          </h1>
-          <p className="text-slate-600 mt-2">
-            {t("settings_need_login") || "Inicia sesión para ver y guardar tus ajustes."}
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
+      {/* TÍTULO */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">{t("settings_title")}</h1>
-        <p className="text-slate-600 mt-1">{t("settings_subtitle")}</p>
+        <h1 className="text-2xl font-bold text-slate-900">
+          {t("settings_title")}
+        </h1>
+        <p className="text-slate-600 mt-1">
+          {t("settings_subtitle")}
+        </p>
       </div>
 
       <form onSubmit={saveAll} className="space-y-8">
+
         {/* PERFIL */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-6">
           <div>
@@ -124,8 +45,9 @@ export default function ProSettings() {
             </p>
           </div>
 
+          {/* Nombre y email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* ✅ Nombre editable */}
+            {/* Nombre visible */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_display_name")}
@@ -140,7 +62,7 @@ export default function ProSettings() {
               />
             </div>
 
-            {/* ✅ Email fijo NO editable */}
+            {/* Email */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_email")}
@@ -148,8 +70,11 @@ export default function ProSettings() {
               <input
                 type="email"
                 value={profile.email}
-                disabled
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500"
+                onChange={(e) =>
+                  setProfile({ ...profile, email: e.target.value })
+                }
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none"
+                placeholder="nombre@ejemplo.com"
               />
             </div>
           </div>
@@ -170,7 +95,10 @@ export default function ProSettings() {
             </p>
           </div>
 
+          {/* Selector idioma y tema */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* Selector de idioma REAL de Euskalia */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_language")}
@@ -192,16 +120,23 @@ export default function ProSettings() {
                   <option value="EN">English</option>
                   <option value="FR">Français</option>
                 </select>
-                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400 text-xs">
+                <span
+                  className="
+                    pointer-events-none absolute inset-y-0 right-3 flex items-center
+                    text-slate-400 text-xs
+                  "
+                >
                   ▼
                 </span>
               </div>
             </div>
 
+            {/* Tema */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_theme")}
               </label>
+
               <select
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                 value={"light"}
@@ -213,7 +148,7 @@ export default function ProSettings() {
           </div>
         </section>
 
-        {/* NOTIFICACIONES (por ahora solo UI) */}
+        {/* NOTIFICACIONES */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-6">
           <div>
             <h2 className="font-semibold text-lg text-slate-900">
@@ -224,6 +159,7 @@ export default function ProSettings() {
             </p>
           </div>
 
+          {/* Checks */}
           <div className="space-y-3">
             <label className="flex items-start gap-3">
               <input
@@ -231,7 +167,10 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.product}
                 onChange={(e) =>
-                  setNotifications({ ...notifications, product: e.target.checked })
+                  setNotifications({
+                    ...notifications,
+                    product: e.target.checked,
+                  })
                 }
               />
               <div>
@@ -250,7 +189,10 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.tips}
                 onChange={(e) =>
-                  setNotifications({ ...notifications, tips: e.target.checked })
+                  setNotifications({
+                    ...notifications,
+                    tips: e.target.checked,
+                  })
                 }
               />
               <div>
@@ -269,7 +211,10 @@ export default function ProSettings() {
                 className="mt-1 h-4 w-4 accent-sky-600"
                 checked={notifications.billing}
                 onChange={(e) =>
-                  setNotifications({ ...notifications, billing: e.target.checked })
+                  setNotifications({
+                    ...notifications,
+                    billing: e.target.checked,
+                  })
                 }
               />
               <div>
@@ -284,24 +229,84 @@ export default function ProSettings() {
           </div>
         </section>
 
-        <div className="flex items-center justify-end gap-3">
-          {savedMsg && (
-            <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-              {savedMsg}
-            </div>
-          )}
-          {errorMsg && (
-            <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-              {errorMsg}
-            </div>
-          )}
+        {/* PLAN Y SUSCRIPCIÓN (CON CLAVES) */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+          <div className="mb-4">
+            <h2 className="font-semibold text-lg text-slate-900">
+              {t("settings_plan_title")}
+            </h2>
+            <p className="text-slate-600 text-sm mt-1">
+              {t("settings_plan_desc")}
+            </p>
+          </div>
 
+          <div className="rounded-xl border border-slate-200 overflow-hidden">
+            {/* Row: Plan */}
+            <div className="flex items-center justify-between px-4 py-3">
+              <div className="text-sm text-slate-600">
+                {t("settings_plan_row_plan")}
+              </div>
+
+              <div className="flex-1 flex justify-center">
+                <span
+                  className="
+                    inline-flex items-center gap-2 rounded-full
+                    border border-emerald-200 bg-emerald-50
+                    px-3 py-1 text-xs font-semibold text-emerald-700
+                  "
+                >
+                  <span
+                    className="
+                      inline-flex h-4 w-4 items-center justify-center
+                      rounded-full bg-emerald-600 text-white text-[10px]
+                    "
+                  >
+                    ✓
+                  </span>
+                  {t("settings_plan_status_active")}
+                </span>
+              </div>
+
+              <div className="text-sm font-semibold text-slate-900">
+                {t("settings_plan_value_pro")}
+              </div>
+            </div>
+
+            <div className="h-px bg-slate-100" />
+
+            {/* Row: Renews + button */}
+            <div className="flex items-center justify-between px-4 py-3">
+              <div className="text-sm text-slate-600">
+                {t("settings_plan_row_renews")}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-slate-700">
+                  {t("settings_plan_renews_value")}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => alert(t("settings_plan_demo_alert"))}
+                  className="
+                    rounded-md border border-slate-300 bg-white px-3 py-2
+                    text-sm font-medium text-slate-700 hover:bg-slate-50
+                  "
+                >
+                  {t("settings_plan_cancel_btn")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* BOTÓN GUARDAR */}
+        <div className="flex justify-end">
           <button
             type="submit"
-            disabled={saving}
-            className="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+            className="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 text-sm font-medium"
           >
-            {saving ? (t("settings_saving") || "Guardando...") : t("settings_cta_save")}
+            {t("settings_cta_save")}
           </button>
         </div>
       </form>
