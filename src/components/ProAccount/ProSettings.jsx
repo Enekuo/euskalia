@@ -25,12 +25,11 @@ export default function ProSettings() {
   const [savedMsg, setSavedMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // 1) Detectar usuario logeado + cargar datos guardados
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       try {
-        setErrorMsg("");
         setSavedMsg("");
+        setErrorMsg("");
 
         if (!user) {
           setUid(null);
@@ -40,30 +39,18 @@ export default function ProSettings() {
 
         setUid(user.uid);
 
-        // Prefill desde Firebase Auth (lo que viene de Google)
+        // ✅ Cargar SIEMPRE desde Firebase Auth (lo mismo que Home)
         setProfile({
           displayName: user.displayName || "",
           email: user.email || "",
         });
 
-        // 2) Cargar settings guardados (Firestore) por UID
+        // (Opcional) cargar preferencias guardadas
         const ref = doc(db, "pro_users", user.uid);
         const snap = await getDoc(ref);
-
         if (snap.exists()) {
           const data = snap.data() || {};
 
-          // perfil
-          if (data.profile?.displayName != null) {
-            setProfile((prev) => ({
-              ...prev,
-              displayName: String(data.profile.displayName || ""),
-              // email siempre del auth (fuente de verdad)
-              email: user.email || prev.email || "",
-            }));
-          }
-
-          // notificaciones
           if (data.notifications) {
             setNotifications((prev) => ({
               ...prev,
@@ -82,9 +69,7 @@ export default function ProSettings() {
             }));
           }
 
-          // idioma guardado (opcional)
           if (data.appearance?.language && typeof data.appearance.language === "string") {
-            // solo si es distinto para no “parpadear”
             if (data.appearance.language !== language) {
               setLanguage(data.appearance.language);
             }
@@ -102,7 +87,6 @@ export default function ProSettings() {
     return () => unsub();
   }, [language, setLanguage, t]);
 
-  // 3) Guardar de verdad en Firestore + actualizar displayName en Auth
   const saveAll = async (e) => {
     e.preventDefault();
     setSavedMsg("");
@@ -117,14 +101,18 @@ export default function ProSettings() {
 
     setSaving(true);
     try {
-      // A) Guardar settings por UID
+      // ✅ 1) Actualizar displayName en Firebase Auth (esto hace que Home cambie)
+      if (auth.currentUser && auth.currentUser.displayName !== name) {
+        await updateProfile(auth.currentUser, { displayName: name });
+      }
+
+      // ✅ 2) Guardar ajustes en Firestore (persistencia + notificaciones + idioma)
       const ref = doc(db, "pro_users", uid);
       await setDoc(
         ref,
         {
           profile: {
             displayName: name,
-            // email NO lo guardo editable (fuente real: Firebase Auth)
           },
           appearance: {
             language,
@@ -140,11 +128,6 @@ export default function ProSettings() {
         { merge: true }
       );
 
-      // B) Actualizar displayName en Firebase Auth (para que salga en header/home)
-      if (auth.currentUser && name && auth.currentUser.displayName !== name) {
-        await updateProfile(auth.currentUser, { displayName: name });
-      }
-
       setSavedMsg(t("settings_saved_ok") || "Configuración guardada.");
       setTimeout(() => setSavedMsg(""), 2500);
     } catch (e) {
@@ -155,7 +138,6 @@ export default function ProSettings() {
     }
   };
 
-  // Si aún no sabemos si hay user o no
   if (!authReady) {
     return (
       <div className="w-full max-w-3xl mx-auto">
@@ -168,7 +150,6 @@ export default function ProSettings() {
     );
   }
 
-  // Si no está logeado
   if (!uid) {
     return (
       <div className="w-full max-w-3xl mx-auto">
@@ -206,7 +187,7 @@ export default function ProSettings() {
 
           {/* Nombre y email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Nombre visible */}
+            {/* ✅ Nombre visible (editable) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_display_name")}
@@ -221,7 +202,7 @@ export default function ProSettings() {
               />
             </div>
 
-            {/* Email (solo lectura: el real viene de Google/Firebase) */}
+            {/* ✅ Email (solo lectura) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700">
                 {t("settings_profile_email")}
@@ -231,7 +212,6 @@ export default function ProSettings() {
                 value={profile.email}
                 disabled
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500"
-                placeholder="nombre@ejemplo.com"
               />
             </div>
           </div>
@@ -252,9 +232,7 @@ export default function ProSettings() {
             </p>
           </div>
 
-          {/* Selector idioma y tema */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Selector idioma REAL de Euskalia */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_language")}
@@ -276,18 +254,12 @@ export default function ProSettings() {
                   <option value="EN">English</option>
                   <option value="FR">Français</option>
                 </select>
-                <span
-                  className="
-                    pointer-events-none absolute inset-y-0 right-3 flex items-center
-                    text-slate-400 text-xs
-                  "
-                >
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400 text-xs">
                   ▼
                 </span>
               </div>
             </div>
 
-            {/* Tema */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700">
                 {t("settings_appearance_theme")}
@@ -315,7 +287,6 @@ export default function ProSettings() {
             </p>
           </div>
 
-          {/* Checks */}
           <div className="space-y-3">
             <label className="flex items-start gap-3">
               <input
@@ -385,103 +356,23 @@ export default function ProSettings() {
           </div>
         </section>
 
-        {/* PLAN Y SUSCRIPCIÓN */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
-          <div className="mb-4">
-            <h2 className="font-semibold text-lg text-slate-900">
-              {t("settings_plan_title")}
-            </h2>
-            <p className="text-slate-600 text-sm mt-1">
-              {t("settings_plan_desc")}
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
-            {/* Row: Plan */}
-            <div className="flex items-center justify-between px-4 py-3">
-              <div className="text-sm text-slate-600">
-                {t("settings_plan_row_plan")}
-              </div>
-
-              <div className="flex-1 flex justify-center">
-                <span
-                  className="
-                    inline-flex items-center gap-2 rounded-full
-                    border border-emerald-200 bg-emerald-50
-                    px-3 py-1 text-xs font-semibold text-emerald-700
-                  "
-                >
-                  <span
-                    className="
-                      inline-flex h-4 w-4 items-center justify-center
-                      rounded-full bg-emerald-600 text-white text-[10px]
-                    "
-                  >
-                    ✓
-                  </span>
-                  {t("settings_plan_status_active")}
-                </span>
-              </div>
-
-              <div className="text-sm font-semibold text-slate-900">
-                {t("settings_plan_value_pro")}
-              </div>
+        {/* BOTÓN GUARDAR + MENSAJES */}
+        <div className="flex items-center justify-end gap-3">
+          {savedMsg && (
+            <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+              {savedMsg}
             </div>
-
-            <div className="h-px bg-slate-100" />
-
-            {/* Row: Renews + button */}
-            <div className="flex items-center justify-between px-4 py-3">
-              <div className="text-sm text-slate-600">
-                {t("settings_plan_row_renews")}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-slate-700">
-                  {t("settings_plan_renews_value")}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => alert(t("settings_plan_demo_alert"))}
-                  className="
-                    rounded-md border border-slate-300 bg-white px-3 py-2
-                    text-sm font-medium text-slate-700 hover:bg-slate-50
-                  "
-                >
-                  {t("settings_plan_cancel_btn")}
-                </button>
-              </div>
+          )}
+          {errorMsg && (
+            <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              {errorMsg}
             </div>
-          </div>
-        </section>
+          )}
 
-        {/* Feedback guardado/error */}
-        {(savedMsg || errorMsg) && (
-          <div className="flex justify-end">
-            {savedMsg && (
-              <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-                {savedMsg}
-              </div>
-            )}
-            {errorMsg && (
-              <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                {errorMsg}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* BOTÓN GUARDAR */}
-        <div className="flex justify-end">
           <button
             type="submit"
             disabled={saving}
-            className="
-              rounded-lg bg-sky-600 hover:bg-sky-700 text-white
-              px-4 py-2 text-sm font-medium
-              disabled:opacity-60 disabled:cursor-not-allowed
-            "
+            className="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {saving ? (t("settings_saving") || "Guardando...") : t("settings_cta_save")}
           </button>

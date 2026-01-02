@@ -2,45 +2,40 @@ import React, { useEffect, useState } from "react";
 import { FileText, CheckCircle2, Globe, Brain, Search } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function ProHome() {
   const { t } = useTranslation();
   const tr = (key, fallback) => t(key) || fallback;
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState(tr("proHome.user_fallback", "usuario"));
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      const fullName = (u?.displayName || "").trim();
-      const firstName = fullName ? fullName.split(/\s+/)[0] : "";
-
-      const emailName = (u?.email || "").split("@")[0]?.trim();
-      const emailFirst = emailName ? emailName.split(/[._\s-]+/)[0] : "";
-
-      setUserName(firstName || emailFirst || tr("proHome.user_fallback", "usuario"));
+    const unsub = onAuthStateChanged(auth, (user) => {
+      const full = (user?.displayName || "").trim();
+      const first = full ? full.split(" ")[0] : "";
+      setUserName(first);
     });
-
-    return () => unsub?.();
-  }, [t]);
+    return () => unsub();
+  }, []);
 
   return (
     <>
-      {/* Saludo + título */}
       <div className="mt-6 ml-10 mb-6">
         <p className="text-base text-slate-400">
-          {tr("proHome.greeting_prefix", "Hola")} {userName}
+          {tr("proHome.greeting_prefix", "Hola")}{" "}
+          {userName || tr("proHome.greeting_fallback", "")}
         </p>
         <h1 className="text-3xl font-semibold text-slate-900">
           {tr("proHome.title", "Bienvenido a Euskalia Pro")}
         </h1>
       </div>
 
-      {/* Tarjetas principales */}
+      {/* ... el resto de tu código EXACTO de tarjetas ... */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 ml-10 mr-10">
-        {/* ⭐ TRADUCTOR (icono globo amarillo) */}
+        {/* TRADUCTOR */}
         <div
           onClick={() => navigate("/cuenta-pro/traductor")}
           className="
@@ -65,7 +60,7 @@ export default function ProHome() {
           </p>
         </div>
 
-        {/* ⭐ RESUMIDOR (icono azul nuevo) */}
+        {/* RESUMIDOR */}
         <div
           onClick={() => navigate("/cuenta-pro/resumen")}
           className="
@@ -90,7 +85,7 @@ export default function ProHome() {
           </p>
         </div>
 
-        {/* ⭐ CORRECTOR GRAMATICAL (EN VERDE) */}
+        {/* CORRECTOR */}
         <div
           onClick={() => navigate("/cuenta-pro/corrector")}
           className="
@@ -115,7 +110,7 @@ export default function ProHome() {
           </p>
         </div>
 
-        {/* ⭐ PARAFRASEADOR (NUEVA) */}
+        {/* PARAFRASEADOR */}
         <div
           onClick={() => navigate("/cuenta-pro/parafraseador")}
           className="
@@ -151,7 +146,7 @@ export default function ProHome() {
           </p>
         </div>
 
-        {/* ⭐ DETECTOR IA (LUPA AZUL INCLINADA) */}
+        {/* DETECTOR IA */}
         <div
           onClick={() => navigate("/cuenta-pro/detector-ia")}
           className="
@@ -176,7 +171,7 @@ export default function ProHome() {
           </p>
         </div>
 
-        {/* ⭐ HUMANIZADOR (icono cerebro verde) */}
+        {/* HUMANIZADOR */}
         <div
           onClick={() => navigate("/cuenta-pro/humanizador")}
           className="
