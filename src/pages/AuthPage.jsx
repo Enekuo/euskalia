@@ -1,11 +1,36 @@
-// Iniciar sesion
-import React from "react";
-import { Link } from "react-router-dom";
+// Iniciar sesión
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
+import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
 
 export default function AuthPage() {
   const { t } = useTranslation?.() || { t: () => null };
   const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
+
+  const navigate = useNavigate();
+  const REDIRECT_TO = "/cuenta-pro/traductor";
+
+  // ✅ Si el usuario ya está logeado, fuera de aquí
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate(REDIRECT_TO, { replace: true });
+      }
+    });
+    return () => unsub();
+  }, [navigate]);
+
+  // ✅ Login con Google + redirect
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate(REDIRECT_TO, { replace: true });
+    } catch (e) {
+      console.error("Google login error:", e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col">
@@ -51,12 +76,12 @@ export default function AuthPage() {
 
       {/* Fondo con halo suave + tarjeta */}
       <main className="relative flex-1 flex items-center justify-center px-4 pb-16">
-        {/* Halo DETRÁS */}
+        {/* Halo */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div className="h-[520px] w-[520px] rounded-full bg-blue-500/10 blur-3xl" />
         </div>
 
-        {/* Tarjeta ENCIMA + blanco puro */}
+        {/* Tarjeta */}
         <div className="relative z-10 w-full max-w-[500px] bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)] px-6 pt-6 pb-12 flex flex-col items-center">
           <h1 className="text-3xl font-semibold tracking-tight mb-6 text-center">
             {tr("authPage.welcome", "ONGI ETORRI")}
@@ -65,6 +90,7 @@ export default function AuthPage() {
           {/* Google */}
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium shadow-sm hover:bg-slate-50 transition-colors"
           >
             <svg
@@ -94,16 +120,16 @@ export default function AuthPage() {
             </span>
           </button>
 
-          {/* Microsoft */}
+          {/* Microsoft (visual, no funcional aún) */}
           <button
             type="button"
-            className="mt-3 w-full flex items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium shadow-sm hover:bg-slate-50 transition-colors"
+            disabled
+            className="mt-3 w-full flex items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium shadow-sm opacity-60 cursor-not-allowed"
           >
             <svg
               className="h-5 w-5"
               viewBox="0 0 23 23"
               xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
             >
               <rect x="1" y="1" width="9" height="9" fill="#F25022" />
               <rect x="13" y="1" width="9" height="9" fill="#7FBA00" />
