@@ -18,8 +18,8 @@ function getFeedbackApp() {
     throw new Error("Missing FIREBASE_* env vars for Firebase Admin");
   }
 
-  // ✅ Normalización robusta (Vercel/Windows)
-  privateKey = String(privateKey).trim();
+  // ✅ Normalización robusta (Vercel/Windows/Linux)
+  privateKey = String(privateKey || "").trim();
 
   // Si viene con comillas al principio/fin, las quitamos
   if (
@@ -29,9 +29,11 @@ function getFeedbackApp() {
     privateKey = privateKey.slice(1, -1);
   }
 
-  // Soporta ambos formatos: \\n o saltos reales + \r\n
-  if (privateKey.includes("\\n")) privateKey = privateKey.replace(/\\n/g, "\n");
-  privateKey = privateKey.replace(/\r\n/g, "\n");
+  // ✅ Soporta:
+  // - \n literal (una sola línea en Vercel)
+  // - saltos reales (multi-línea en Vercel)
+  // - Windows \r\n
+  privateKey = privateKey.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
 
   return admin.initializeApp(
     {
