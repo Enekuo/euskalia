@@ -1,7 +1,7 @@
-import admin from "firebase-admin";
+const admin = require("firebase-admin");
 
 function initFirebaseAdmin() {
-  if (admin.apps?.length) return;
+  if (admin.apps && admin.apps.length) return;
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -11,7 +11,7 @@ function initFirebaseAdmin() {
     throw new Error("Missing FIREBASE_* env vars for Firebase Admin");
   }
 
-  // Vercel suele guardar la private key con \n escapados
+  // ✅ Vercel suele guardar la private key con \n escapados
   privateKey = privateKey.replace(/\\n/g, "\n");
 
   admin.initializeApp({
@@ -34,7 +34,7 @@ const getIp = (req) => {
   return req.socket?.remoteAddress || "unknown";
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       res.setHeader("Allow", "POST");
@@ -89,4 +89,4 @@ export default async function handler(req, res) {
     console.error("feedback api error:", err);
     return res.status(500).json({ ok: false, error: "SERVER_ERROR" });
   }
-}
+};
