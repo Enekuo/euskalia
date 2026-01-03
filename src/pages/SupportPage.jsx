@@ -13,6 +13,11 @@ const SupportPage = () => {
 
   const isPro = location.pathname.startsWith("/cuenta-pro");
 
+  const tr = (key, fallback = "") => {
+    const val = typeof t === "function" ? t(key) : null;
+    return !val || val === key ? fallback : val;
+  };
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -21,21 +26,62 @@ const SupportPage = () => {
     honey: "", // honeypot
   });
 
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | ok | error
+
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (form.honey) return; // bot
-    const to = "support@olondo.ai";
-    const subject = encodeURIComponent(
-      `[Olondo.AI] ${form.subject || t("support_form_subject_placeholder")}`
-    );
-    const body = encodeURIComponent(
-      `${t("support_form_name_label")}: ${form.name}\n` +
-        `${t("support_form_email_label")}: ${form.email}\n\n` +
-        `${t("support_form_message_label")}:\n${form.message}`
-    );
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+
+    setLoading(true);
+    setStatus("idle");
+
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "support",
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          lang: location.pathname.includes("/eus") ? "eus" : "es",
+          page: location.pathname,
+        }),
+      });
+
+      const dataText = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(dataText);
+      } catch (_) {
+        data = null;
+      }
+
+      if (!res.ok || !data?.ok) {
+        setStatus("error");
+        setLoading(false);
+        return;
+      }
+
+      setStatus("ok");
+      setLoading(false);
+
+      setForm({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+        honey: "",
+      });
+    } catch (err) {
+      console.error("Support submit error:", err);
+      setStatus("error");
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,13 +94,15 @@ const SupportPage = () => {
     >
       <div
         className="mx-auto max-w-7xl px-5 lg:px-8"
-        style={
-          isPro
-            ? undefined
-            : { height: `calc(100vh - ${NAVBAR_H}px)` }
-        }
+        style={isPro ? undefined : { height: `calc(100vh - ${NAVBAR_H}px)` }}
       >
-        <div className={isPro ? "grid gap-8 md:grid-cols-2 items-start py-8" : "grid h-full gap-8 md:grid-cols-2 items-start py-5"}>
+        <div
+          className={
+            isPro
+              ? "grid gap-8 md:grid-cols-2 items-start py-8"
+              : "grid h-full gap-8 md:grid-cols-2 items-start py-5"
+          }
+        >
           {/* ===== Columna izquierda ===== */}
           <div className="relative min-h-0">
             <section className="mb-6 rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6 dark:bg-slate-800 dark:border-slate-700">
@@ -184,15 +232,36 @@ const SupportPage = () => {
               </div>
 
               <div className="pt-1">
-                <Button type="submit" className="h-11 rounded-xl px-6 text-base">
-                  {t("support_form_submit")}
+                <Button
+                  type="submit"
+                  className="h-11 rounded-xl px-6 text-base"
+                  disabled={loading}
+                >
+                  {loading
+                    ? tr("support_form_sending", t("support_form_submit"))
+                    : t("support_form_submit")}
                 </Button>
+
+                {status === "ok" && (
+                  <p className="mt-2 text-sm text-emerald-600">
+                    {tr("support_form_sent", "✅ Enviado")}
+                  </p>
+                )}
+
+                {status === "error" && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {tr("support_form_error", "❌ Error al enviar")}
+                  </p>
+                )}
               </div>
 
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {t("support_form_privacy_hint")}{" "}
-                <Link to="/politica-de-privacidad" className="underline underline-offset-2">
-                   {t("support_form_privacy_link")}
+                <Link
+                  to="/politica-de-privacidad"
+                  className="underline underline-offset-2"
+                >
+                  {t("support_form_privacy_link")}
                 </Link>
                 .
               </p>
