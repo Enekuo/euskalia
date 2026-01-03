@@ -1,7 +1,7 @@
-const admin = require("firebase-admin");
+import admin from "firebase-admin";
 
 function initFirebaseAdmin() {
-  if (admin.apps && admin.apps.length) return;
+  if (admin.apps?.length) return;
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -11,7 +11,7 @@ function initFirebaseAdmin() {
     throw new Error("Missing FIREBASE_* env vars for Firebase Admin");
   }
 
-  // ✅ Vercel suele guardar la private key con \n escapados
+  // ✅ Vercel guarda la private key con \n escapados
   privateKey = privateKey.replace(/\\n/g, "\n");
 
   admin.initializeApp({
@@ -34,7 +34,7 @@ const getIp = (req) => {
   return req.socket?.remoteAddress || "unknown";
 };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       res.setHeader("Allow", "POST");
@@ -43,7 +43,7 @@ module.exports = async function handler(req, res) {
 
     const body = req.body || {};
 
-    // Honeypot anti-bot (si existe en tu form). Si viene relleno, ignoramos.
+    // honeypot anti-bot
     if (body.website) return res.status(200).json({ ok: true });
 
     const type = safeStr(body.type, 20); // "support" | "suggestion"
@@ -87,7 +87,6 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("feedback api error:", err);
-
     return res.status(500).json({
       ok: false,
       error: "SERVER_ERROR",
@@ -95,4 +94,4 @@ module.exports = async function handler(req, res) {
       code: err?.code || null,
     });
   }
-};
+}
