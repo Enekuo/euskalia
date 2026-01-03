@@ -271,6 +271,25 @@ export const translations = {
   support_form_privacy_hint:        { ES: "Al enviar, aceptas nuestra", EUS: "Bidaltzean, onartzen duzu gure" },
   support_form_privacy_link:        { ES: "Política de privacidad", EUS: "Pribatutasun-politika" },
 
+  support_form_sending: {
+  ES: "Enviando...",
+  EUS: "Bidaltzen...",
+  EN: "Sending...",
+  FR: "Envoi...",
+  },
+  support_form_sent: {
+  ES: "✅ Enviado",
+  EUS: "✅ Bidalia",
+  EN: "✅ Sent",
+  FR: "✅ Envoyé",
+  },
+  support_form_error: {
+  ES: "❌ Error al enviar",
+  EUS: "❌ Errorea bidaltzean",
+  EN: "❌ Error sending",
+  FR: "❌ Erreur d’envoi",
+  },
+
 
   suggestions: {
   zone_badge: {
