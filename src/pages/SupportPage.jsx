@@ -190,9 +190,9 @@ const SupportPage = () => {
 
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {t("support_form_privacy_hint")}{" "}
-                <a href="politica-de-privacidad" className="underline underline-offset-2">
-                  {t("support_form_privacy_link")}
-                </a>
+                <Link to="/politica-de-privacidad" className="underline underline-offset-2">
+                   {t("support_form_privacy_link")}
+                </Link>
                 .
               </p>
             </form>
