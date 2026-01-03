@@ -1,42 +1,84 @@
 import React, { useState } from "react";
 import { Send, CheckCircle2, Sparkles } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
+import { useLocation } from "react-router-dom";
 
 const MAX_CHARS = 1000;
 
 export default function Suggestions() {
   const { t } = useTranslation();
-  const tr = (key, fallback = "") => t(key) || fallback;
+  const location = useLocation();
+
+  const tr = (key, fallback = "") => {
+    const val = typeof t === "function" ? t(key) : null;
+    return !val || val === key ? fallback : val;
+  };
 
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | ok | error
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSubmitted(false);
+    setStatus("idle");
 
-    if (!message.trim()) {
+    const msg = message.trim();
+
+    if (!msg) {
       setError(tr("suggestions.error_required", ""));
       return;
     }
 
-    if (message.trim().length < 20) {
+    if (msg.length < 20) {
       setError(tr("suggestions.error_min_length", ""));
       return;
     }
 
-    // En el futuro: enviar a backend / API real
-    console.log({
-      message,
-      email,
-      source: "free",
-    });
+    setLoading(true);
 
-    setSubmitted(true);
-    setMessage("");
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "suggestion",
+          message: msg,
+          email: email.trim() || null,
+          lang: location.pathname.includes("/eus") ? "eus" : "es",
+          page: location.pathname,
+          source: "free",
+        }),
+      });
+
+      const text = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        data = null;
+      }
+
+      if (!res.ok || !data?.ok) {
+        setStatus("error");
+        setError(tr("suggestions.error_generic", ""));
+        setLoading(false);
+        return;
+      }
+
+      setStatus("ok");
+      setLoading(false);
+      setMessage("");
+      setEmail("");
+    } catch (err) {
+      console.error("Suggestions submit error:", err);
+      setStatus("error");
+      setError(tr("suggestions.error_generic", ""));
+      setLoading(false);
+    }
   };
 
   return (
@@ -110,13 +152,13 @@ export default function Suggestions() {
           </div>
 
           {/* MENSAJES DE ESTADO */}
-          {error && (
+          {!!error && (
             <p className="relative text-xs text-red-600 bg-red-50/90 border border-red-100 rounded-2xl px-3.5 py-2">
               {error}
             </p>
           )}
 
-          {submitted && !error && (
+          {status === "ok" && !error && (
             <div className="relative flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50/90 border border-emerald-100 rounded-2xl px-3.5 py-2">
               <CheckCircle2 className="w-4 h-4" />
               <span>{tr("suggestions.success_message", "")}</span>
@@ -128,10 +170,13 @@ export default function Suggestions() {
             <div className="pointer-events-none absolute inset-y-0 right-4 w-32 rounded-full bg-blue-400/30 blur-2xl" />
             <button
               type="submit"
-              className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 px-6 py-3 text-xs sm:text-sm font-semibold text-white shadow-[0_10px_30px_rgba(56,132,255,0.35)] hover:shadow-[0_12px_40px_rgba(56,132,255,0.45)] hover:brightness-105 active:scale-95 transition"
+              disabled={loading}
+              className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 px-6 py-3 text-xs sm:text-sm font-semibold text-white shadow-[0_10px_30px_rgba(56,132,255,0.35)] hover:shadow-[0_12px_40px_rgba(56,132,255,0.45)] hover:brightness-105 active:scale-95 transition disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
-              {tr("suggestions.button_label", "")}
+              {loading
+                ? tr("suggestions.sending", tr("suggestions.button_label", ""))
+                : tr("suggestions.button_label", "")}
             </button>
           </div>
         </form>

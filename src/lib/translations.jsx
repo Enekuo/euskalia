@@ -291,6 +291,9 @@ export const translations = {
   },
 
 
+  // =========================
+  //        SUGGENSTIONS
+  // =========================
   suggestions: {
   zone_badge: {
     ES: "Zona de ideas y sugerencias de Euskalia",
@@ -366,8 +369,10 @@ export const translations = {
 },
 
 
-
-  // === CHAT IA / ASSISTANT === //
+  // =========================
+  //        CHAT IA 
+  // =========================
+  
  assistant_title: {
   ES: "¿Cómo puedo ayudarte?",
   EUS: "Nola lagundu dezaket?",
