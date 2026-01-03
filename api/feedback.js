@@ -87,6 +87,12 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("feedback api error:", err);
-    return res.status(500).json({ ok: false, error: "SERVER_ERROR" });
+
+    return res.status(500).json({
+      ok: false,
+      error: "SERVER_ERROR",
+      message: String(err?.message || err),
+      code: err?.code || null,
+    });
   }
 };
