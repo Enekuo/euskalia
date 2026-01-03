@@ -12,7 +12,7 @@ function initFirebaseAdmin() {
   }
 
   // ✅ Vercel guarda la private key con \n escapados
-  privateKey = privateKey.replace(/\\n/g, "\n");
+  privateKey = privateKey.includes("\\n") ? privateKey.replace(/\\n/g, "\n") : privateKey;
 
   admin.initializeApp({
     credential: admin.credential.cert({
