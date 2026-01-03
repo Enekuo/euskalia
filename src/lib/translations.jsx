@@ -245,8 +245,10 @@ export const translations = {
 
 
 
-
-  /* === SOPORTE === */
+  // =========================
+  //        SOPORTE
+  // =========================
+  
   support_title:        { ES: "Soporte", EUS: "Laguntza" },
   support_subtitle:     { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko." },
   support_kicker:       { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?" },
@@ -260,7 +262,7 @@ export const translations = {
   support_form_email_placeholder:   { ES: "Tu email", EUS: "Zure posta elektronikoa" },
 
   support_form_subject_label:       { ES: "Asunto", EUS: "Gaia" },
-  support_form_subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerez behar duzu laguntza?" },
+  support_form_subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerri buruz behar duzu laguntza?" },
 
   support_form_message_label:       { ES: "Mensaje", EUS: "Mezua" },
   support_form_message_placeholder: { ES: "Cuéntanos en qué podemos ayudarte", EUS: "Esaguzu nola lagundu diezazukegun" },
