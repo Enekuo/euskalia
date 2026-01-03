@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const NAVBAR_H = 88; // altura del header FREE
 
