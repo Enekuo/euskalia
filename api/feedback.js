@@ -1,7 +1,14 @@
 import admin from "firebase-admin";
 
-function initFirebaseAdmin() {
-  if (admin.apps?.length) return;
+function getFeedbackApp() {
+  const appName = "feedback";
+
+  // Si ya existe, úsala
+  try {
+    return admin.app(appName);
+  } catch (_) {
+    // no existe -> la creamos
+  }
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -11,16 +18,32 @@ function initFirebaseAdmin() {
     throw new Error("Missing FIREBASE_* env vars for Firebase Admin");
   }
 
-  // ✅ Vercel guarda la private key con \n escapados
-  privateKey = privateKey.includes("\\n") ? privateKey.replace(/\\n/g, "\n") : privateKey;
+  // ✅ Normalización robusta (Vercel/Windows)
+  privateKey = String(privateKey).trim();
 
-  admin.initializeApp({
-    credential: admin.credential.cert({
+  // Si viene con comillas al principio/fin, las quitamos
+  if (
+    (privateKey.startsWith('"') && privateKey.endsWith('"')) ||
+    (privateKey.startsWith("'") && privateKey.endsWith("'"))
+  ) {
+    privateKey = privateKey.slice(1, -1);
+  }
+
+  // Soporta ambos formatos: \\n o saltos reales + \r\n
+  if (privateKey.includes("\\n")) privateKey = privateKey.replace(/\\n/g, "\n");
+  privateKey = privateKey.replace(/\r\n/g, "\n");
+
+  return admin.initializeApp(
+    {
+      credential: admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey,
+      }),
       projectId,
-      clientEmail,
-      privateKey,
-    }),
-  });
+    },
+    appName
+  );
 }
 
 const safeStr = (v, max = 6000) => {
@@ -42,9 +65,7 @@ export default async function handler(req, res) {
     }
 
     const body = req.body || {};
-
-    // honeypot anti-bot
-    if (body.website) return res.status(200).json({ ok: true });
+    if (body.website) return res.status(200).json({ ok: true }); // honeypot
 
     const type = safeStr(body.type, 20); // "support" | "suggestion"
     const name = safeStr(body.name, 120);
@@ -62,8 +83,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: "MESSAGE_REQUIRED" });
     }
 
-    initFirebaseAdmin();
-    const db = admin.firestore();
+    const app = getFeedbackApp();
+    const db = app.firestore();
 
     await db.collection("feedback").add({
       type,
@@ -74,10 +95,8 @@ export default async function handler(req, res) {
       lang: lang || null,
       page: page || null,
       userId: userId || null,
-
       status: "new",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-
       meta: {
         ip: getIp(req),
         ua: safeStr(req.headers["user-agent"] || "", 400),
