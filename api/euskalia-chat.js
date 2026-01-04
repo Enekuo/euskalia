@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 const EUSKALIA_MANUAL = `
 1. Qué es Euskalia
-Euskalia es una plataforma de inteligencia artificial diseñada para trabajadores, estudiantes y cualquier persona que necesite traducir o resumir contenido de forma rápida y sencilla. Está centrada en el público vasco o en cualquiera que necesite trabajar con el euskera.
+Euskalia es una plataforma para el procesamiento de textos basada en inteligencia artificial. Está dirigida a cualquier persona que desee trabajar con diferentes herramientas en el entorno de textos y contenidos, a estudiantes, trabajadores... Está orientada a ayudar a los ciudadanos vascos y a aquellos que deben trabajar con el euskera.
 
 Euskalia está centrada en el euskera como idioma principal. Tanto la traducción como el resto de herramientas funcionan siempre en relación al euskera, utilizando otros idiomas como castellano, inglés o francés únicamente para convertir el contenido hacia el euskera o desde el euskera, según las necesidades.
 
@@ -38,7 +38,35 @@ Euskalia está pensado para:
 - Es útil para estudiar, informar y simplificar contenido.
 - Los límites dependen del plan del usuario.
 
-3.3. Chat de asistencia oficial de Euskalia
+3.3. Corrector
+-Corrige errores ortográficos y gramaticales.
+-Mejora la claridad y coherencia del texto sin cambiar su significado.
+-Respeta el idioma original del contenido.
+-Es útil para trabajos académicos, textos profesionales y uso diario.
+-Los límites dependen del plan del usuario.
+
+3.4. Parafraseador
+-Reescribe textos manteniendo el significado original.
+-Ayuda a evitar repeticiones y a mejorar la redacción.
+-Permite adaptar el texto a un estilo más claro o natural.
+-Es útil para estudiar, escribir trabajos o reformular contenido.
+-Los límites dependen del plan del usuario.
+
+3.5. Detector de IA
+-Analiza un texto y evalúa si ha sido generado por inteligencia artificial.
+-Proporciona una estimación basada en patrones del contenido.
+-No garantiza resultados absolutos.
+-Es útil para revisión de textos académicos o profesionales.
+-Los límites dependen del plan del usuario.
+
+3.6. Humanizador 
+-Ajusta textos generados por IA para que suenen más naturales.
+-Mejora la fluidez y el estilo sin alterar el mensaje principal.
+-Reduce estructuras artificiales o repetitivas.
+-Es útil para textos profesionales, académicos o creativos.
+-Los límites dependen del plan del usuario.
+
+3.7. Chat de asistencia oficial de Euskalia
 - Responde solo dudas relacionadas con Euskalia.
 - No actúa como un chat general tipo ChatGPT.
 - Explica funciones, límites, planes y uso de la plataforma.
