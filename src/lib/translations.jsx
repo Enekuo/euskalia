@@ -209,8 +209,39 @@ export const translations = {
 
 
 
+  
+  // =========================
+  //        COOKIES BANNER 
+  // =========================
+  cookies_title: {
+  ES: "Este sitio web utiliza cookies",
+  EUS: "Webgune honek cookieak erabiltzen ditu",
+  EN: "This website uses cookies",
+},
 
+cookies_desc: {
+  ES: "Utilizamos cookies técnicas necesarias para el funcionamiento del sitio y, si lo aceptas, cookies de análisis (Google Analytics) para mejorar Euskalia.",
+  EUS: "Webgunearen funtzionamendurako beharrezko cookie teknikoak erabiltzen ditugu eta, onartzen baduzu, analisi-cookieak (Google Analytics) Euskalia hobetzeko.",
+  EN: "We use necessary technical cookies for the operation of the site and, if you accept, analytics cookies (Google Analytics) to improve Euskalia.",
+},
 
+cookies_more: {
+  ES: "Más información",
+  EUS: "Informazio gehiago",
+  EN: "More information",
+},
+
+cookies_accept: {
+  ES: "Aceptar",
+  EUS: "Onartu",
+  EN: "Accept",
+},
+
+cookies_reject: {
+  ES: "Rechazar",
+  EUS: "Baztertu",
+  EN: "Reject",
+},
 
 
 
