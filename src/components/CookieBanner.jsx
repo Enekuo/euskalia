@@ -50,7 +50,7 @@ export default function CookieBanner() {
 
               <div className="mt-2">
                 <Link
-                  to="/politica-de-cookies"
+                  to="/cookies"
                   className="text-sm font-medium text-sky-700 hover:text-sky-800 underline underline-offset-2"
                 >
                   {tr("cookies.more", "Más información")}
