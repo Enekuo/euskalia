@@ -59,6 +59,12 @@ const getIp = (req) => {
   return req.socket?.remoteAddress || "unknown";
 };
 
+const makePreview = (msg, max = 90) => {
+  const s = safeStr(msg, 6000).replace(/\s+/g, " ").trim();
+  if (!s) return null;
+  return s.length > max ? s.slice(0, max) + "…" : s;
+};
+
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
@@ -77,6 +83,7 @@ export default async function handler(req, res) {
     const lang = safeStr(body.lang, 10);
     const page = safeStr(body.page, 300);
     const userId = safeStr(body.userId, 200);
+    const source = safeStr(body.source, 40); // ✅ lo envía Suggestions
 
     if (type !== "support" && type !== "suggestion") {
       return res.status(400).json({ ok: false, error: "INVALID_TYPE" });
@@ -88,21 +95,35 @@ export default async function handler(req, res) {
     const app = getFeedbackApp();
     const db = app.firestore();
 
+    const preview = makePreview(message);
+
     await db.collection("feedback").add({
       type,
+
+      status: "new",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+
+      // contexto
+      lang: lang || null,
+      page: page || null,
+      source: source || null,
+
+      // datos usuario
       name: name || null,
       email: email || null,
       subject: subject || null,
-      message,
-      lang: lang || null,
-      page: page || null,
       userId: userId || null,
-      status: "new",
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+
       meta: {
         ip: getIp(req),
         ua: safeStr(req.headers["user-agent"] || "", 400),
       },
+
+      // ✅ para verlo rápido
+      preview: preview || null,
+
+      // ✅ lo importante al final (tu “rojo”)
+      message,
     });
 
     return res.status(200).json({ ok: true });
