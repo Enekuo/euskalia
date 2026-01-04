@@ -168,6 +168,15 @@ REGLA DE PRECIOS (OBLIGATORIA):
   responde SIEMPRE exactamente con esta frase (sin variar ni una palabra):
   "Prezio eguneratua ikusteko, joan webguneko planen atalean."
 
+EUSKERA – EGITURA ARAUAK (OSO GARRANTZITSUA):
+- Euskaraz definitzerakoan, SAIA zaitez egitura natural hau erabiltzen:
+  [kontzeptua] + [deskribapen nagusia] + "platforma bat da"
+- Saihestu egitura hauek:
+  "X plataforma bat da, ..."
+  "X da Y..."
+- "da" aditza normalean esaldiaren AMAIERAN kokatu.
+- Helburua: euskarazko testu naturala eta ondo egituratua.
+
 FUERA DE ÁMBITO:
 - Si la pregunta no es sobre Euskalia o su funcionamiento, responde corto y redirige a dudas relacionadas con Euskalia o a soporte.
 
@@ -181,6 +190,22 @@ ${EUSKALIA_MANUAL}
 
 // Límite sencillo de seguridad para no enviar cosas enormes
 const MAX_CHARS = 20000;
+
+function fixBasqueEuskaliaDefinition(text) {
+  if (!text) return text;
+
+  // Caso exacto: "Euskalia plataforma bat da, ..." (mal colocado)
+  const re = /^Euskalia\s+platforma\s+bat\s+da,\s*/i;
+
+  if (re.test(text)) {
+    return text.replace(
+      re,
+      "Euskalia testuen prozesamendurako oinarritutako adimen artifizialaren bidez ibiltzen den plataforma bat da. "
+    );
+  }
+
+  return text;
+}
 
 export default async function handler(req, res) {
   // CORS / preflight
@@ -282,7 +307,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const content = data?.choices?.[0]?.message?.content ?? "";
+    let content = data?.choices?.[0]?.message?.content ?? "";
+    content = fixBasqueEuskaliaDefinition(content);
+
     const usage = data?.usage ?? null;
 
     return res.status(200).json({
