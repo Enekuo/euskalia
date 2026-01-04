@@ -24,7 +24,7 @@ Euskalia está pensado para:
 
 3. Herramientas actuales de Euskalia
 
-3.1. Traductor Euskera ↔ Castellano
+3.1. Itzultzailea Euskera ↔ Castellano
 - Traduce textos en ambos sentidos Euskera ↔ Español.
 - Permite copiar el texto traducido fácilmente.
 - Entrada por texto directo, PDF y URL.
@@ -33,7 +33,7 @@ Euskalia está pensado para:
 
 3.2. Resumidor con IA
 - Crea resúmenes claros y estructurados.
-- Mantiene las ideas principales sin inventar contenido.
+- Mantiene las ideas principales sin inventar contenido. 
 - Admite texto directo, PDF y URL.
 - Es útil para estudiar, informar y simplificar contenido.
 - Los límites dependen del plan del usuario.
