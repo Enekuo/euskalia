@@ -16,6 +16,7 @@ import CookiesPolicyPage from "@/components/Legal/CookiesPolicyPage";
 import UseAIPage from "@/components/Legal/UseAIPage";
 import PricingPage from "@/pages/PricingPage";
 import Suggestions from "@/pages/Suggestions";
+import CookieBanner from "@/components/CookieBanner";
 
 // Pro-Account //
 import ProLayout from "@/components/ProAccount/ProLayout";
@@ -96,6 +97,8 @@ function App() {
          
           </Routes>
         </main>
+
+        <CookieBanner />
 
         <Toaster />
       </div>

@@ -1868,6 +1868,10 @@ cookies_section5_p1: {
   ES: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, bai araudi-aldaketen ondorioz, bai aldaketa teknikoengatik edo plataforman egindako hobekuntzengatik. Aldaketa esanguratsuak egiten badira, erabiltzaileei webgunearen bidez jakinaraziko zaie.",
   EUS: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, araudi-aldaketak, aldaketa teknikoak edo plataforman egindako hobekuntzak direla medio. Aldaketa garrantzitsuak eginez gero, erabiltzaileei webgunearen bidez emango zaie horren berri.",
 },
+cookies_section2_p3: {
+  ES: "Euskalia utiliza cookies de análisis de Google Analytics únicamente si el usuario lo acepta, con el fin de obtener estadísticas de uso y mejorar el servicio. Actualmente Euskalia no muestra publicidad (AdSense). Cuando se implemente en el futuro, esta política se actualizará para reflejar dicho cambio.",
+  EUS: "Euskalíak Google Analyticsen analisi-cookieak erabiltzen ditu erabiltzaileak onartzen badu soilik, erabileraren estatistikak lortzeko eta zerbitzua hobetzeko. Une honetan Euskalíak ez du publizitaterik erakusten (AdSense). Etorkizunean inplementatzen denean, politika hau eguneratuko da aldaketa hori islatzeko.",
+},
 cookies_last_update: {
   ES: "Esta Política de Privacidad está actualizada a fecha [__________].",
     EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",

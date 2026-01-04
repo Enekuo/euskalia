@@ -7,8 +7,8 @@ export default function CookiesPolicyPage() {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
-      {/* Título centrado */}
-      <h1 className="text-3xl font-semibold mb-2 text-center">
+      {/* Título */}
+      <h1 className="text-3xl font-semibold mb-6 text-center">
         {tr("cookies_title", "cookies_title")}
       </h1>
 
@@ -22,16 +22,22 @@ export default function CookiesPolicyPage() {
         </p>
       </section>
 
-      {/* 2. Tipos de cookies utilizadas por Euskalia */}
+      {/* 2. Qué cookies utiliza Euskalia */}
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr("cookies_section2_title", "cookies_section2_title")}
         </h2>
+
         <p className="text-slate-700 leading-relaxed mb-4">
           {tr("cookies_section2_p1", "cookies_section2_p1")}
         </p>
-        <p className="text-slate-700 leading-relaxed">
+
+        <p className="text-slate-700 leading-relaxed mb-4">
           {tr("cookies_section2_p2", "cookies_section2_p2")}
+        </p>
+
+        <p className="text-slate-700 leading-relaxed">
+          {tr("cookies_section2_p3", "cookies_section2_p3")}
         </p>
       </section>
 
@@ -45,7 +51,7 @@ export default function CookiesPolicyPage() {
         </p>
       </section>
 
-      {/* 4. Cómo gestionar las cookies */}
+      {/* 4. Consentimiento y gestión */}
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr("cookies_section4_title", "cookies_section4_title")}
@@ -55,7 +61,7 @@ export default function CookiesPolicyPage() {
         </p>
       </section>
 
-      {/* 5. Actualizaciones de la Política de Cookies */}
+      {/* 5. Actualizaciones */}
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr("cookies_section5_title", "cookies_section5_title")}
@@ -65,7 +71,7 @@ export default function CookiesPolicyPage() {
         </p>
       </section>
 
-      {/* Fecha al final, estilo como el ejemplo */}
+      {/* Fecha */}
       <p className="mt-10 text-sm italic text-slate-500">
         {tr("cookies_last_update", "cookies_last_update")}
       </p>
