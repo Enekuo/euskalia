@@ -170,7 +170,7 @@ REGLA DE PRECIOS (OBLIGATORIA):
 
 EUSKERA – EGITURA ARAUAK (OSO GARRANTZITSUA):
 - Euskaraz definitzerakoan, SAIA zaitez egitura natural hau erabiltzen:
-  [kontzeptua] + [deskribapen nagusia] + "platforma bat da"
+  [kontzeptua] + [deskribapen nagusia] + "platforma/plataforma bat da"
 - Saihestu egitura hauek:
   "X plataforma bat da, ..."
   "X da Y..."
@@ -194,8 +194,9 @@ const MAX_CHARS = 20000;
 function fixBasqueEuskaliaDefinition(text) {
   if (!text) return text;
 
-  // Caso exacto: "Euskalia plataforma bat da, ..." (mal colocado)
-  const re = /^Euskalia\s+platforma\s+bat\s+da,\s*/i;
+  // Caso exacto: "Euskalia plataforma/platforma bat da, ..." (mal colocado)
+  // Acepta: platforma | plataforma, con/sin coma, con espacios raros
+  const re = /^Euskalia\s+plataforma\s+bat\s+da\s*[,\.]?\s*/i;
 
   if (re.test(text)) {
     return text.replace(
