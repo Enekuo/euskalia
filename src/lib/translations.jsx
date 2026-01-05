@@ -4006,42 +4006,60 @@ proHelp: {
   title: {
     ES: "¿En qué podemos ayudarte?",
     EUS: "Nola lagun diezazukegu?",
+    EN: "How can we help you?",
+    FR: "Comment pouvons-nous vous aider ?",
   },
   search_placeholder: {
     ES: "Describe tu problema o escribe una pregunta",
     EUS: "Deskribatu zure arazoa edo idatzi galdera bat",
+    EN: "Describe your issue or ask a question",
+    FR: "Décrivez votre problème ou posez une question",
   },
   // SECCIÓN: EMPEZAR A USAR EUSKALIA
   section_getting_started_title: {
     ES: "Empezar a usar Euskalia",
     EUS: "Euskalia erabiltzen hasi",
+    EN: "Getting started with Euskalia",
+    FR: "Bien démarrer avec Euskalia",
   },
 
   section_getting_started_q1_title: {
     ES: "¿Qué es Euskalia y para qué sirve?",
     EUS: "Zer da Euskalia eta zertarako balio du?",
+    EN: "What is Euskalia and what is it for?",
+    FR: "Qu’est-ce que Euskalia et à quoi sert-il ?",
   },
   section_getting_started_q1_body: {
     ES: "Euskalia es una plataforma de inteligencia artificial diseñada para trabajadores, estudiantes y cualquier persona que necesite traducir o resumir contenido de forma rápida y sencilla. Está centrada en el público vasco o en cualquiera que necesite trabajar con el euskera.\n\nEuskalia está centrada en el euskera como idioma principal. Tanto la traducción como el resto de herramientas funcionan siempre en relación al euskera, utilizando otros idiomas como castellano, inglés o francés únicamente para convertir el contenido hacia el euskera o desde el euskera, según las necesidades.\n\nEuskalia se caracteriza por un diseño claro y una experiencia de uso pensada para trabajar con textos sin fricciones. La interfaz es sencilla, directa y accesible, lo que permite centrarse en el contenido desde el primer momento, sin distracciones ni configuraciones complejas.",
     EUS: "Euskalia adimen artifizialeko plataforma bat da, langileei, ikasleei eta edukiak modu azkar eta erraz batean itzuli edo laburtu behar dituen edonori zuzendua. Euskal herritarrei eta euskararekin lan egin behar duen edonori laguntzera bideratua dago.\n\nEuskararekin lotuta lan egiteko pentsatuta dago. Bai itzulpenak bai gainerako tresnek euskararekin lotuta funtzionatzen dute, eta gaztelania, ingelesa edo frantsesa bezalako beste hizkuntzak euskarara edo euskaratik edukia bihurtzeko erabiltzen dira, erabiltzaileen beharren arabera.\n\nEuskalia diseinu argi batek eta testuekin oztoporik gabe lan egiteko pentsatutako erabiltzaile-esperientziak bereizten du. Interfazea sinplea, zuzena eta eskuragarria da, eta horri esker edukiari arreta hasieratik bertatik jarri daiteke, distrakziorik edo konfigurazio ezin ulerturik gabe.",
+    EN: "Euskalia is an AI platform designed for workers, students, and anyone who needs to translate or summarize content quickly and easily. It is focused on the Basque community and anyone who needs to work with Basque.\n\nEuskalia uses Basque as its main language. Both translation and the rest of the tools always work in relation to Basque, using other languages such as Spanish, English, or French only to convert content to or from Basque, depending on the need.\n\nEuskalia stands out for a clear design and a frictionless text-focused experience. The interface is simple, direct, and accessible, so you can focus on the content from the very first moment without distractions or complex settings.",
+    FR: "Euskalia est une plateforme d’IA conçue pour les travailleurs, les étudiants et toute personne ayant besoin de traduire ou de résumer du contenu rapidement et simplement. Elle s’adresse au public basque et à toute personne devant travailler avec le basque.\n\nEuskalia est centrée sur le basque comme langue principale. La traduction comme les autres outils fonctionnent toujours en lien avec le basque, en utilisant d’autres langues comme l’espagnol, l’anglais ou le français uniquement pour convertir le contenu vers le basque ou depuis le basque, selon les besoins.\n\nEuskalia se distingue par un design clair et une expérience pensée pour travailler avec des textes sans friction. L’interface est simple, directe et accessible, ce qui permet de se concentrer sur le contenu dès le départ, sans distractions ni réglages complexes.",
   },
 
   section_getting_started_q2_title: {
     ES: "Primeros pasos: ¿cómo empiezo a usar la web?",
     EUS: "Lehen urratsak: nola hasi webgunea erabiltzen?",
+    EN: "First steps: how do I start using the website?",
+    FR: "Premiers pas : comment commencer à utiliser le site ?",
   },
   section_getting_started_q2_body: {
     ES: "En la página principal eliges la herramienta que quieras usar. Puedes introducir el contenido pegando texto, subiendo un documento o añadiendo una URL, seleccionar el idioma y generar el resultado al instante. Después, puedes copiar el resultado o guardarlo en tu biblioteca para usarlo más tarde.",
     EUS: "Hasierako orrian erabili nahi duzun tresna aukeratzen duzu. Testua itsatsiz, dokumentu bat igota edo URL bat gehituta edukia sartu dezakezu, hizkuntza hautatu eta emaitza berehala sortu. Ondoren, emaitza kopiatu edo liburutegian gorde dezakezu geroago erabiltzeko.",
+    EN: "On the home page, choose the tool you want to use. You can add content by pasting text, uploading a document, or adding a URL, select the language, and generate the result instantly. Then you can copy the result or save it to your library to use later.",
+    FR: "Sur la page d’accueil, choisissez l’outil que vous voulez utiliser. Vous pouvez ajouter du contenu en collant un texte, en téléversant un document ou en ajoutant une URL, sélectionner la langue et générer le résultat instantanément. Ensuite, vous pouvez copier le résultat ou l’enregistrer dans votre bibliothèque pour plus tard.",
   },
 
   section_getting_started_q3_title: {
     ES: "¿Qué idiomas soporta Euskalia?",
     EUS: "Zein hizkuntza onartzen ditu Euskaliak?",
+    EN: "Which languages does Euskalia support?",
+    FR: "Quelles langues Euskalia prend-il en charge ?",
   },
   section_getting_started_q3_body: {
     ES: "Euskalia funciona con cuatro idiomas: euskera, castellano, inglés y francés. Todas las herramientas están diseñadas para usar siempre el euskera como idioma principal.",
     EUS: "Euskalia lau hizkuntzatan funtzionatzen du: euskaraz, gaztelaniaz, ingelesez eta frantsesez. Tresna guztiak euskara hizkuntza nagusi gisa erabiltzeko diseinatuta daude.",
+    EN: "Euskalia works with four languages: Basque, Spanish, English, and French. All tools are designed to always use Basque as the main language.",
+    FR: "Euskalia fonctionne avec quatre langues : basque, espagnol, anglais et français. Tous les outils sont conçus pour utiliser le basque comme langue principale.",
   },
   // SECCIÓN: TRADUCTOR
   section_translator_title: {
@@ -4110,8 +4128,8 @@ proHelp: {
   section_44: {
     ES: "El Parafraseador reescribe un texto manteniendo su significado original, pero usando una redacción y estructura diferentes. Es útil para mejorar la originalidad o adaptar el tono.",
     EUS: "Parafraseatzaileak testu bat berridazten du esanahia mantenduz, baina egitura eta idazkera desberdina erabiliz, erabiltzailearen esanetara.",
-    EN: "The Paraphraser rewrites a text while keeping its original meaning, using different wording and structure.",
-    FR: "Le paraphraseur réécrit un texte en conservant son sens, avec une formulation et une structure différentes.",
+    EN: "The Paraphraser rewrites a text while keeping its original meaning, using different wording and structure. It’s useful to improve originality or adapt the tone.",
+    FR: "Le paraphraseur réécrit un texte en conservant son sens, avec une formulation et une structure différentes. C’est utile pour améliorer l’originalité ou adapter le ton.",
   },
 
   /* ===== SECCIÓN 5 ===== */
@@ -4124,8 +4142,8 @@ proHelp: {
   section_55: {
     ES: "El Detector de IA analiza un texto y estima la probabilidad de que haya sido generado por inteligencia artificial. Es una ayuda orientativa para contextos académicos o profesionales.",
     EUS: "IA detektagailuak testu bat aztertzen du eta adimen artifizialak sortua izan den probabilitatea kalkulatzen du. Testuinguru akademiko edo profesionaletarako laguntza orientagarri bat da",
-    EN: "The AI Detector analyzes a text and estimates the likelihood that it was generated by artificial intelligence.",
-    FR: "Le détecteur d’IA analyse un texte et estime la probabilité qu’il ait été généré par une intelligence artificielle.",
+    EN: "The AI Detector analyzes a text and estimates the likelihood that it was generated by artificial intelligence. It’s a helpful estimate for academic or professional contexts.",
+    FR: "Le détecteur d’IA analyse un texte et estime la probabilité qu’il ait été généré par une intelligence artificielle. C’est une aide indicative pour des contextes académiques ou professionnels.",
   },
 
   /* ===== SECCIÓN 6 ===== */
@@ -4138,94 +4156,134 @@ proHelp: {
   section_66: {
     ES: "El Humanizador convierte textos generados por IA en un lenguaje más natural y humano, ajustando el tono y la fluidez para que suenen escritos por una persona.",
     EUS: "Humanizatzaileak IA bidez sortutako testuak hizkera naturalago eta gizatiarrago bihurtzen ditu. Tonua eta jarioa doitzeko aukera, erabiltzailearen beharretara.",
-    EN: "The Humanizer transforms AI-generated text into more natural, human-like language by improving tone and flow.",
-    FR: "L’humaniseur transforme les textes générés par l’IA en un langage plus naturel et humain.",
+    EN: "The Humanizer turns AI-generated text into more natural, human-like language by improving tone and flow so it reads like it was written by a person.",
+    FR: "L’humaniseur transforme les textes générés par l’IA en un langage plus naturel et humain, en améliorant le ton et la fluidité pour qu’ils paraissent écrits par une personne.",
   },
   // SECCIÓN: FACTURACIÓN Y PLANES
   section_billing_title: {
     ES: "Cuenta y facturación",
     EUS: "Kontua eta fakturazioa",
+    EN: "Account & billing",
+    FR: "Compte et facturation",
   },
   section_billing_q1_title: {
     ES: "¿Qué incluye el Plan Pro?",
     EUS: "Zer dauka barne Pro Planak?",
+    EN: "What does the Pro Plan include?",
+    FR: "Que comprend le forfait Pro ?",
   },
   section_billing_q1_body: {
     ES: "Traducciones y resúmenes más rápidos, límites ampliados, subida de documentos más pesados y funciones exclusivas.",
     EUS: "Itzulpen eta laburpen azkarragoak, muga zabalduak, dokumentu astunagoak igotzeko aukera eta funtzio esklusiboak.",
+    EN: "Faster translations and summaries, higher limits, larger document uploads, and exclusive features.",
+    FR: "Traductions et résumés plus rapides, limites plus élevées, téléversement de documents plus lourds et fonctionnalités exclusives.",
   },
   section_billing_q2_title: {
     ES: "¿Dónde veo mis recibos?",
     EUS: "Non ikus ditzaket nire ordainagiriak?",
+    EN: "Where can I see my receipts?",
+    FR: "Où puis-je voir mes reçus ?",
   },
   section_billing_q2_body: {
     ES: "En tu área de Facturación puedes ver tus pagos, historial y gestionar tu suscripción.",
     EUS: "Fakturazio atalean zure ordainketak, historia eta harpidetzaren kudeaketa ikus ditzakezu.",
+    EN: "In your Billing area you can see your payments, history, and manage your subscription.",
+    FR: "Dans votre espace Facturation, vous pouvez voir vos paiements, l’historique et gérer votre abonnement.",
   },
   section_billing_q3_title: {
     ES: "¿Cómo cambio o cancelo mi plan?",
     EUS: "Nola aldatu edo ezeztatu dezaket nire plana?",
+    EN: "How do I change or cancel my plan?",
+    FR: "Comment changer ou annuler mon forfait ?",
   },
   section_billing_q3_body: {
     ES: "Puedes cambiar entre planes o cancelar desde el apartado Ajustes → Suscripción.",
     EUS: "Planak aldatu edo ezeztatu ditzakezu Ezarpenak → Harpidetza ataletik.",
+    EN: "You can switch plans or cancel from Settings → Subscription.",
+    FR: "Vous pouvez changer de forfait ou annuler depuis Paramètres → Abonnement.",
   }, 
   // SECCIÓN: SOLUCIONAR PROBLEMAS
   section_problems_title: {
     ES: "Solucionar problemas",
     EUS: "Arazoak konpontzea",
+    EN: "Troubleshooting",
+    FR: "Résolution de problèmes",
   },
   section_problems_q1_title: {
     ES: "No puedo subir un PDF",
     EUS: "Ezin dut PDF bat igo",
+    EN: "I can’t upload a PDF",
+    FR: "Je ne peux pas téléverser un PDF",
   },
   section_problems_q1_body: {
     ES: "Comprueba que el archivo no esté dañado y que no supere el límite del plan actual.",
     EUS: "Egiaztatu fitxategia ez dagoela hondatuta eta uneko planaren mugak ez dituela gainditzen.",
+    EN: "Check that the file isn’t corrupted and doesn’t exceed your current plan limit.",
+    FR: "Vérifiez que le fichier n’est pas endommagé et qu’il ne dépasse pas la limite de votre forfait.",
   },
   section_problems_q2_title: {
     ES: "La URL no carga o no se puede traducir",
     EUS: "URLa ez da kargatzen edo ezin da itzuli",
+    EN: "The URL won’t load or can’t be translated",
+    FR: "L’URL ne charge pas ou ne peut pas être traduite",
   },
   section_problems_q2_body: {
     ES: "Algunas páginas pueden bloquear el acceso automático. Intenta copiar y pegar el contenido manualmente.",
     EUS: "Zenbait webgunek sarbide automatikoa blokeatzen dute. Saiatu edukia eskuz kopiatu eta itsasten.",
+    EN: "Some sites block automated access. Try copying and pasting the content manually.",
+    FR: "Certaines pages bloquent l’accès automatique. Essayez de copier-coller le contenu manuellement.",
   },
   section_problems_q3_title: {
     ES: "Los resultados tardan demasiado",
     EUS: "Emaitzek gehiegi behar dute",
+    EN: "Results are taking too long",
+    FR: "Les résultats prennent trop de temps",
   },
   section_problems_q3_body: {
     ES: "Puede deberse a tráfico alto o a un documento muy grande. Prueba a reducir el contenido o reintentar unos segundos después.",
     EUS: "Trafiko handia edo dokumentu handiegia izan daiteke arrazoia. Saiatu edukia murrizten edo berriro saiatzen segundo batzuk geroago.",
+    EN: "It may be due to high traffic or a very large document. Try reducing the content or retrying a few seconds later.",
+    FR: "Cela peut être dû à un trafic élevé ou à un document très volumineux. Essayez de réduire le contenu ou de réessayer quelques secondes plus tard.",
   },
   bottom_support_text: {
     ES: "Si sigues teniendo alguna duda, nuestro equipo está aquí para ayudarte.",
     EUS: "Zalantzak izanez gero, gure taldea hemen dago laguntzeko.",
+    EN: "If you still have questions, our team is here to help.",
+    FR: "Si vous avez encore des questions, notre équipe est là pour vous aider.",
   },
 
   bottom_support_cta: {
     ES: "Contactar con soporte",
     EUS: "Jarri harremanetan laguntzarekin",
+    EN: "Contact support",
+    FR: "Contacter le support",
   },
 
   bottom_support_mascot_alt: {
     ES: "Mascota de Euskalia ofreciendo ayuda",
     EUS: "Euskaliaren maskota laguntza eskaintzen",
+    EN: "Euskalia mascot offering help",
+    FR: "Mascotte Euskalia proposant de l’aide",
   },
   support_bubble_text: {
     ES: "Si sigues teniendo alguna duda, nuestro equipo está aquí para ayudarte.",
     EUS: "Zalantzak izanez gero, gure taldea hemen dago laguntzeko.",
+    EN: "If you still have questions, our team is here to help.",
+    FR: "Si vous avez encore des questions, notre équipe est là pour vous aider.",
   },
 
   support_button_label: {
     ES: "Contactar con soporte",
     EUS: "Jarri harremanetan",
+    EN: "Contact support",
+    FR: "Contacter le support",
   },
 
   support_mascot_alt: {
     ES: "Mascota de Euskalia ofreciendo ayuda",
     EUS: "Euskaliaren maskota laguntza eskaintzen",
+    EN: "Euskalia mascot offering help",
+    FR: "Mascotte Euskalia proposant de l’aide",
   },
 
 },
@@ -4233,119 +4291,167 @@ proHelp: {
 
 
 
-  // =========================
-  //        PRO SETTINGS
-  // ========================= 
+// =========================
+//        PRO SETTINGS
+// ========================= 
 
- settings_title: {
-    ES: "Ajustes",
-    EUS: "Ezarpenak",
-  },
-  settings_subtitle: {
-    ES: "Personaliza tu experiencia en Euskalia.",
-    EUS: "Pertsonalizatu zure esperientzia Euskalian.",
-  },
-  //PERFIL
-  settings_profile_title: {
-    ES: "Perfil",
-    EUS: "Profila",
-  },
-  settings_profile_desc: {
-    ES: "Información básica para identificar tu cuenta.",
-    EUS: "Zure kontua identifikatzeko oinarrizko informazioa.",
-  },
-  settings_profile_display_name: {
-    ES: "Nombre visible",
-    EUS: "Izen ikusgaia",
-  },
-  settings_profile_email: {
-    ES: "Email",
-    EUS: "Emaila",
-  },
-  settings_profile_email_placeholder: {
-    ES: "nombre@ejemplo.com",
-    EUS: "izena@adierazpena.com",
-  },
-  settings_profile_security_hint: {
-    ES: "Puedes cambiar tu nombre de perfil aqui.",
-    EUS: "Zure profileko izena aldatu dezakezu hemen.",
-  },
-  settings_manage_plan: {
-    ES: "Gestionar plan",
-    EUS: "Plana kudeatu",
-  },
-  //        APARIENCIA
-  settings_appearance_title: {
-    ES: "Apariencia",
-    EUS: "Itxura",
-  },
-  settings_appearance_desc: {
-    ES: "Elige cómo se ve la interfaz.",
-    EUS: "Aukeratu interfazeak nola ikusten den.",
-  },
-  settings_appearance_theme: {
-    ES: "Tema",
-    EUS: "Gaia",
-  },
-  settings_appearance_theme_light: {
-    ES: "Claro",
-    EUS: "Argia",
-  },
-  settings_appearance_language: {
-    ES: "Idioma",
-    EUS: "Hizkuntza",
-  },
-  settings_appearance_language_hint: {
-    ES: "Cambia el idioma desde aquí.",
-    EUS: "Aldatu hizkuntza hemendik.",
-  },
-  //      NOTIFICACIONES
-  settings_notifications_title: {
-    ES: "Notificaciones",
-    EUS: "Jakinarazpenak",
-  },
-  settings_notifications_desc: {
-    ES: "Elige qué correos o avisos quieres recibir.",
-    EUS: "Aukeratu zein mezu edo abisu jaso nahi dituzun.",
-  },
+settings_title: {
+  ES: "Ajustes",
+  EUS: "Ezarpenak",
+  EN: "Settings",
+  FR: "Paramètres",
+},
+settings_subtitle: {
+  ES: "Personaliza tu experiencia en Euskalia.",
+  EUS: "Pertsonalizatu zure esperientzia Euskalian.",
+  EN: "Customize your experience in Euskalia.",
+  FR: "Personnalisez votre expérience sur Euskalia.",
+},
+//PERFIL
+settings_profile_title: {
+  ES: "Perfil",
+  EUS: "Profila",
+  EN: "Profile",
+  FR: "Profil",
+},
+settings_profile_desc: {
+  ES: "Información básica para identificar tu cuenta.",
+  EUS: "Zure kontua identifikatzeko oinarrizko informazioa.",
+  EN: "Basic information to identify your account.",
+  FR: "Informations de base pour identifier votre compte.",
+},
+settings_profile_display_name: {
+  ES: "Nombre visible",
+  EUS: "Izen ikusgaia",
+  EN: "Display name",
+  FR: "Nom affiché",
+},
+settings_profile_email: {
+  ES: "Email",
+  EUS: "Emaila",
+  EN: "Email",
+  FR: "E-mail",
+},
+settings_profile_email_placeholder: {
+  ES: "nombre@ejemplo.com",
+  EUS: "izena@adierazpena.com",
+  EN: "name@example.com",
+  FR: "nom@exemple.com",
+},
+settings_profile_security_hint: {
+  ES: "Puedes cambiar tu nombre de perfil aqui.",
+  EUS: "Zure profileko izena aldatu dezakezu hemen.",
+  EN: "You can change your profile name here.",
+  FR: "Vous pouvez modifier le nom de votre profil ici.",
+},
+settings_manage_plan: {
+  ES: "Gestionar plan",
+  EUS: "Plana kudeatu",
+  EN: "Manage plan",
+  FR: "Gérer le forfait",
+},
+//        APARIENCIA
+settings_appearance_title: {
+  ES: "Apariencia",
+  EUS: "Itxura",
+  EN: "Appearance",
+  FR: "Apparence",
+},
+settings_appearance_desc: {
+  ES: "Elige cómo se ve la interfaz.",
+  EUS: "Aukeratu interfazeak nola ikusten den.",
+  EN: "Choose how the interface looks.",
+  FR: "Choisissez l’apparence de l’interface.",
+},
+settings_appearance_theme: {
+  ES: "Tema",
+  EUS: "Gaia",
+  EN: "Theme",
+  FR: "Thème",
+},
+settings_appearance_theme_light: {
+  ES: "Claro",
+  EUS: "Argia",
+  EN: "Light",
+  FR: "Clair",
+},
+settings_appearance_language: {
+  ES: "Idioma",
+  EUS: "Hizkuntza",
+  EN: "Language",
+  FR: "Langue",
+},
+settings_appearance_language_hint: {
+  ES: "Cambia el idioma desde aquí.",
+  EUS: "Aldatu hizkuntza hemendik.",
+  EN: "Change the language here.",
+  FR: "Changez la langue ici.",
+},
+//      NOTIFICACIONES
+settings_notifications_title: {
+  ES: "Notificaciones",
+  EUS: "Jakinarazpenak",
+  EN: "Notifications",
+  FR: "Notifications",
+},
+settings_notifications_desc: {
+  ES: "Elige qué correos o avisos quieres recibir.",
+  EUS: "Aukeratu zein mezu edo abisu jaso nahi dituzun.",
+  EN: "Choose which emails or alerts you want to receive.",
+  FR: "Choisissez quels e-mails ou alertes vous souhaitez recevoir.",
+},
 
-  settings_notifications_product: {
-    ES: "Novedades de producto",
-    EUS: "Produktu-berrikuntzak",
-  },
-  settings_notifications_product_hint: {
-    ES: "Lanzamientos, mejoras y anuncios importantes.",
-    EUS: "Kaleratzeak, hobekuntzak eta iragarki garrantzitsuak.",
-  },
+settings_notifications_product: {
+  ES: "Novedades de producto",
+  EUS: "Produktu-berrikuntzak",
+  EN: "Product updates",
+  FR: "Nouveautés produit",
+},
+settings_notifications_product_hint: {
+  ES: "Lanzamientos, mejoras y anuncios importantes.",
+  EUS: "Kaleratzeak, hobekuntzak eta iragarki garrantzitsuak.",
+  EN: "Releases, improvements, and important announcements.",
+  FR: "Lancements, améliorations et annonces importantes.",
+},
 
-  settings_notifications_tips: {
-    ES: "Consejos y buenas prácticas",
-    EUS: "Aholkuak eta praktika onak",
-  },
-  settings_notifications_tips_hint: {
-    ES: "Emails breves para aprovechar mejor Euskalia.",
-    EUS: "Email laburrak Euskalia hobeto aprobetxatzeko.",
-  },
+settings_notifications_tips: {
+  ES: "Consejos y buenas prácticas",
+  EUS: "Aholkuak eta praktika onak",
+  EN: "Tips & best practices",
+  FR: "Conseils et bonnes pratiques",
+},
+settings_notifications_tips_hint: {
+  ES: "Emails breves para aprovechar mejor Euskalia.",
+  EUS: "Email laburrak Euskalia hobeto aprobetxatzeko.",
+  EN: "Short emails to help you get more from Euskalia.",
+  FR: "De courts e-mails pour mieux profiter d’Euskalia.",
+},
 
-  settings_notifications_billing: {
-    ES: "Facturación",
-    EUS: "Fakturazioa",
-  },
-  settings_notifications_billing_hint: {
-    ES: "Recibos, cambios de plan y recordatorios de pago.",
-    EUS: "Ordainagiriak, plan-aldaketak eta ordainketa-oharpenak.",
-  },
-  settings_cta_save: {
-    ES: "Guardar cambios",
-    EUS: "Aldaketak gorde",
-  },
-  settings_saved_ok: { 
+settings_notifications_billing: {
+  ES: "Facturación",
+  EUS: "Fakturazioa",
+  EN: "Billing",
+  FR: "Facturation",
+},
+settings_notifications_billing_hint: {
+  ES: "Recibos, cambios de plan y recordatorios de pago.",
+  EUS: "Ordainagiriak, plan-aldaketak eta ordainketa-oharpenak.",
+  EN: "Receipts, plan changes, and payment reminders.",
+  FR: "Reçus, changements de forfait et rappels de paiement.",
+},
+settings_cta_save: {
+  ES: "Guardar cambios",
+  EUS: "Aldaketak gorde",
+  EN: "Save changes",
+  FR: "Enregistrer les modifications",
+},
+settings_saved_ok: { 
   ES: "Configuración guardada.",
   EUS: "Ezarpenak gordeta.",
   EN: "Settings saved.",
   FR: "Paramètres enregistrés."
 },
-  settings_plan_title: {
+settings_plan_title: {
   ES: "Plan y suscripción",
   EUS: "Plana eta harpidetza",
   EN: "Plan & subscription",
