@@ -56,7 +56,7 @@ export default function ProLibrary() {
           label: tr("library_create_folder", "Crear carpeta"),
           href: "#",
         };
-      case "all":
+      case "home":
       default:
         return {
           label: tr("library_create_new", "Crear nuevo"),
