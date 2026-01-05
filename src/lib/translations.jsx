@@ -10,202 +10,168 @@ export const translations = {
   // =========================
   //        FREE HEADER
   // =========================
-  header: {
-    tools:     { ES: "Herramientas",  EUS: "Tresnak" },
-    resources: { ES: "Recursos",      EUS: "Baliabideak" },
-    pricing:   { ES: "Precios",       EUS: "Prezioak" },
-    signIn:    { ES: "Iniciar sesión",EUS: "Hasi saioa" },
-    startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua" },
+    header: {
+    tools:     { ES: "Herramientas",  EUS: "Tresnak",        EN: "Tools",        FR: "Outils" },
+    resources: { ES: "Recursos",      EUS: "Baliabideak",    EN: "Resources",    FR: "Ressources" },
+    pricing:   { ES: "Precios",       EUS: "Prezioak",       EN: "Pricing",      FR: "Tarifs" },
+    signIn:    { ES: "Iniciar sesión",EUS: "Hasi saioa",     EN: "Sign in",      FR: "Connexion" },
+    startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua",  EN: "Create account",FR: "Créer un compte" },
   },
+
   toolsMenu: {
-    translatorTitle:    { ES: "Traductor",         EUS: "Itzultzailea" },
-    translatorSubtitle: { ES: "Euskera ↔ Español", EUS: "Euskara ↔ Gaztelania" },
-    summaryTitle:       { ES: "Resumidor",         EUS: "Laburtzailea" },
-    summarySubtitle:    { ES: "Resúmenes con IA",  EUS: "Laburpenak IA-rekin" },
+    translatorTitle:    { ES: "Traductor",         EUS: "Itzultzailea",        EN: "Translator",        FR: "Traducteur" },
+    translatorSubtitle: { ES: "Euskera ↔ Español", EUS: "Euskara ↔ Gaztelania",EN: "Basque ↔ Spanish", FR: "Basque ↔ Espagnol" },
+    summaryTitle:       { ES: "Resumidor",         EUS: "Laburtzailea",        EN: "Summarizer",        FR: "Résumé IA" },
+    summarySubtitle:    { ES: "Resúmenes con IA",  EUS: "Laburpenak IA-rekin",  EN: "AI summaries",     FR: "Résumés par IA" },
   },
 
   resourcesMenu: {
-    support:     { ES: "Soporte",     EUS: "Laguntza" }, 
-    aiChat:      { ES: "Chat de IA",  EUS: "IA txata" },
-    suggestions: { ES: "Sugerencias", EUS: "Iradokizunak" },
-
+    support:     { ES: "Soporte",     EUS: "Laguntza",      EN: "Support",      FR: "Support" }, 
+    aiChat:      { ES: "Chat de IA",  EUS: "IA txata",     EN: "AI Chat",      FR: "Chat IA" },
+    suggestions: { ES: "Sugerencias", EUS: "Iradokizunak", EN: "Suggestions",  FR: "Suggestions" },
   },
+
   // =========================
   //       FREE TRADUCTOR
   // =========================
   translator: {
-    left_placeholder:  { ES: "Escribe o pega el texto aquí.", EUS: "Idatzi edo itsatsi testua hemen." },
-    right_placeholder: { ES: "Aquí aparecerá la traducción.", EUS: "Hemen agertuko da itzulpena." },
+    left_placeholder:  {
+      ES: "Escribe o pega el texto aquí.",
+      EUS: "Idatzi edo itsatsi testua hemen.",
+      EN: "Write or paste the text here.",
+      FR: "Écris ou colle le texte ici."
+    },
+    right_placeholder: {
+      ES: "Aquí aparecerá la traducción.",
+      EUS: "Hemen agertuko da itzulpena.",
+      EN: "The translation will appear here.",
+      FR: "La traduction apparaîtra ici."
+    },
 
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
-    listen:     { ES: "Escuchar",          EUS: "Entzun" },
-    copy:       { ES: "Copiar",            EUS: "Kopiatu" },
-    copied:     { ES: "Copiado",           EUS: "Kopiatuta" },
-    pdf:        { ES: "PDF",               EUS: "PDF" },
-    clear_left: { ES: "Borrar",            EUS: "Garbitu" },
-    dictate:    { ES: "Dictar",            EUS: "Diktatu" },
-    listening:  { ES: "Escuchando…",       EUS: "Entzuten…" },
-    loading:    { ES: "Traduciendo…",      EUS: "Itzultzen…" },
+    listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
+    copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
+    copied:     { ES: "Copiado",      EUS: "Kopiatuta",   EN: "Copied",        FR: "Copié" },
+    pdf:        { ES: "PDF",          EUS: "PDF",         EN: "PDF",           FR: "PDF" },
+    clear_left: { ES: "Borrar",       EUS: "Garbitu",     EN: "Clear",         FR: "Effacer" },
+    dictate:    { ES: "Dictar",       EUS: "Diktatu",     EN: "Dictate",       FR: "Dicter" },
+    listening:  { ES: "Escuchando…",  EUS: "Entzuten…",   EN: "Listening…",    FR: "Écoute…" },
+    loading:    { ES: "Traduciendo…", EUS: "Itzultzen…",  EN: "Translating…",  FR: "Traduction…" },
   },
-   save_button_label: {
+
+  save_button_label: {
     ES: "Guardar",
     EUS: "Gorde",
+    EN: "Save",
+    FR: "Enregistrer",
   },
-    library_saved_toast: {
+
+  library_saved_toast: {
     ES: "Guardado en biblioteca",
     EUS: "Liburutegian gordeta",
+    EN: "Saved to library",
+    FR: "Enregistré dans la bibliothèque",
   },
-
-
-
-
 
   // =========================
   //      FREE SUMMARY RESUMIDOR
   // =========================    
   summary: {
-    title:                 { ES: "Resumidor", EUS: "Laburtzailea" },
-    sources_title:         { ES: "Fuentes", EUS: "Iturriak" },
-    sources_tab_text:      { ES: "Texto", EUS: "Testua" },
-    sources_tab_document:  { ES: "Documento", EUS: "Dokumentua" },
-    sources_tab_url:       { ES: "URL", EUS: "URL" },
-    copy:                  { ES: "Copiar", EUS: "Kopiatu"},
-    copied:                { ES: "Copiado", EUS: "Kopiatuta"},
-    pdf:                   { ES: "PDF", EUS: "PDF" },
-    
-    
+    title:                { ES: "Resumidor", EUS: "Laburtzailea", EN: "Summarizer", FR: "Résumé IA" },
+    sources_title:        { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+    sources_tab_text:     { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+    sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
+    sources_tab_url:      { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
+    copy:                 { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier"},
+    copied:               { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié"},
+    pdf:                  { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+
     // Mensajes de ayuda (izquierda/derecha)
     create_help_left: {
       ES:  "Aquí aparecerán tus textos o documentos subidos. Puedes añadir archivos PDF, texto copiado, enlaces web...",
       EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak...",
+      EN:  "Your uploaded texts or documents will appear here. You can add PDFs, pasted text, web links...",
+      FR:  "Tes textes ou documents importés apparaîtront ici. Tu peux ajouter des PDF, du texte collé, des liens web..."
     },
     create_help_right: {
       ES:  "Aquí verás el resultado generado por la IA, junto.",
       EUS: "Hemen ikusiko duzu adimen artifizialak sortutako emaitza.",
+      EN:  "Here you will see the result generated by the AI.",
+      FR:  "Ici, tu verras le résultat généré par l’IA."
     },
 
     // --- Longitud del resumen (nuevas) ---
-    length_short:  { ES: "Breve",     EUS: "Laburra" },
-    length_medium: { ES: "Medio",     EUS: "Ertaina" },
-    length_long:   { ES: "Detallado", EUS: "Zehatza" },
+    length_short:  { ES: "Breve",     EUS: "Laburra",  EN: "Short",     FR: "Court" },
+    length_medium: { ES: "Medio",     EUS: "Ertaina",  EN: "Medium",    FR: "Moyen" },
+    length_long:   { ES: "Detallado", EUS: "Zehatza",  EN: "Detailed",  FR: "Détaillé" },
 
-    // --- Selector de idioma (sin Auto) ---
-    output_language:     { ES: "Idioma",     EUS: "Hizkuntza", EN: "Language" , FR: "Langue" },
-    output_language_eus: { ES: "Euskera",    EUS: "Euskara",   EN: "Basque",    FR: "Basque" },
-    output_language_es:  { ES: "Castellano", EUS: "Gaztelania",EN: "Spanish",   FR: "Espagnol" },
-    output_language_en:  { ES: "Inglés",     EUS: "Ingelesa",  EN: "English",   FR: "Anglais" },
-    output_language_fr:  { ES: "Francés",    EUS: "Frantsesa", EN: "French",    FR: "Français" },
     // Prompt
-    generate_from_sources: { ES: "Generar resumen", EUS: "Laburpena sortu" },
+    generate_from_sources: { ES: "Generar resumen", EUS: "Laburpena sortu", EN: "Generate summary", FR: "Générer le résumé" },
+
     bottom_input_ph: {
       ES:  "Escribe el prompt aqui",
       EUS: "Idatzi zure prompta hemen.",
+      EN:  "Write your prompt here",
+      FR:  "Écris ton prompt ici"
     },
-    generate_with_prompt:  { ES: "Generar", EUS: "Sortu" },
+
+    generate_with_prompt: { ES: "Generar", EUS: "Sortu", EN: "Generate", FR: "Générer" },
 
     // Estado de carga
-    loading_label: { ES: "Generando el resumen…", EUS: "Laburpena sortzen…" },
-
-    // Texto (pestaña)
-    enter_text_here_full: {
-      ES: "Escribe o pega tu texto aquí…",
-      EUS: "Idatzi edo itsatsi zure testua hemen…"
-    },
+    loading_label: { ES: "Generando el resumen…", EUS: "Laburpena sortzen…", EN: "Generating summary…", FR: "Génération du résumé…" },
 
     ready_message: {
       ES: "Resumen listo · Guardar en tu biblioteca",
       EUS: "Laburpena prest · Gorde zure liburutegian",
+      EN: "Summary ready · Save to your library",
+      FR: "Résumé prêt · Enregistrer dans ta bibliothèque"
     },
 
     save_button_label: {
       ES: "Guardar",
       EUS: "Gorde",
+      EN: "Save",
+      FR: "Enregistrer"
     },
-
-
-    // Documento (pestaña)
-    choose_file_title: {
-      ES: "Elige tu archivo o carpeta",
-      EUS: "Aukeratu zure fitxategia edo karpeta."
-    },
-    accepted_formats: {
-      ES: "Formatos admitidos: PDF, DOCX, TXT, MD, imágenes…",
-      EUS: "Onartutako formatuak: PDF, DOCX, TXT, MD, irudiak…"
-    },
-    folder_hint: {
-      ES: "Puedes arrastrar varios archivos a la vez.",
-      EUS: "Fitxategi bat baino gehiago batera arrasta ditzakezu."
-    },
-
-    // URL (pestaña)
-    paste_urls_label: {
-      ES: "Pegar URLs*",
-      EUS: "URLak itsatsi*"
-    },
-    add_url: {
-      ES: "Añadir URLs",
-      EUS: "URLak gehitu"
-    },
-    save_urls: {
-      ES: "Guardar",
-      EUS: "Gorde"
-    },
-    cancel: {
-      ES: "Cancelar",
-      EUS: "Ezeztatu"
-    },
-    urls_note_visible: {
-      ES: "Solo se importará el texto visible del sitio web.",
-      EUS: "Webguneko testu ikusgarria bakarrik inportatuko da."
-    },
-    urls_note_paywalled: {
-      ES: "No se admiten artículos de pago.",
-      EUS: "Ordainpeko artikuluak ez dira onartzen."
-    },
-    remove: {
-      ES: "Quitar",
-      EUS: "Kendu"
-    },
-    paste_urls_placeholder: {
-      ES: "Introduce aquí una o más URLs (separadas por línea)",
-      EUS: "Itsatsi hemen URL bat edo gehiago (lerro bakoitzean bat)"
-    },
-
-
 
     /* === NUEVAS CLAVES: aviso límite plan gratis === */
-    limit_title:   { ES: "Has alcanzado el límite del plan Gratis", EUS: "Doako planaren muga gainditu duzu" },
-    limit_cta:     { ES: "Probar plan Premium", EUS: "Premium plana probatu" },
-    limit_dismiss: { ES: "Seguir con plan Gratis", EUS: "Jarraitu doako planarekin" },
-    limit_note:    { ES: "Límite actual: 12.000 caracteres por petición.", EUS: "Uneko muga: 12.000 karaktere eskaerako." },
-
-
+    limit_title:   { ES: "Has alcanzado el límite del plan Gratis", EUS: "Doako planaren muga gainditu duzu", EN: "You have reached the Free plan limit", FR: "Vous avez atteint la limite du plan gratuit" },
+    limit_cta:     { ES: "Probar plan Premium", EUS: "Premium plana probatu", EN: "Try Premium plan", FR: "Essayer le plan Premium" },
+    limit_dismiss: { ES: "Seguir con plan Gratis", EUS: "Jarraitu doako planarekin", EN: "Continue with Free plan", FR: "Continuer avec le plan gratuit" },
+    limit_note:    { ES: "Límite actual: 12.000 caracteres por petición.", EUS: "Uneko muga: 12.000 karaktere eskaerako.", EN: "Current limit: 12,000 characters per request.", FR: "Limite actuelle : 12 000 caractères par requête." },
 
     /* === NUEVAS CLAVES: aviso de función premium (prompt) === */
     premium_prompt_title: {
       ES: "Función disponible en el plan Premium",
-      EUS: "Funtzioa hau Premium planean bakarrik"
+      EUS: "Funtzioa hau Premium planean bakarrik",
+      EN: "Feature available in the Premium plan",
+      FR: "Fonction disponible avec le plan Premium"
     },
     premium_prompt_body: {
       ES: "El botón «Generar» usa un prompt: una instrucción para ajustar el resumen a tu gusto (tono, puntos clave, foco…). En el plan Gratis puedes pegar texto y generar el resumen normal. Para usar prompts avanzados, prueba el plan Premium.",
-      EUS: "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana."
+      EUS: "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana.",
+      EN: "The “Generate” button uses a prompt: an instruction to tailor the summary to your needs (tone, key points, focus…). On the Free plan you can paste text and generate a standard summary. To use advanced prompts, try the Premium plan.",
+      FR: "Le bouton « Générer » utilise un prompt : une instruction pour adapter le résumé à tes besoins (ton, points clés, focus…). Avec le plan gratuit, tu peux coller du texte et générer un résumé standard. Pour utiliser des prompts avancés, essaie le plan Premium."
     },
     premium_prompt_cta: {
       ES: "Probar plan Premium",
-      EUS: "Premium plana probatu"
+      EUS: "Premium plana probatu",
+      EN: "Try Premium plan",
+      FR: "Essayer le plan Premium"
     },
     premium_prompt_close: {
       ES: "Entendido",
-      EUS: "Ulertuta"
+      EUS: "Ulertuta",
+      EN: "Got it",
+      FR: "Compris"
     },
 
-
-
     /* === NUEVAS CLAVES: aviso de contenido desactualizado === */
-    outdated_notice: { ES: "El texto ha cambiado. Actualiza el resumen.", EUS: "Testua aldatu da. Eguneratu laburpena." },
-    outdated_update: { ES: "Actualizar", EUS: "Eguneratu" },
-    outdated_close:  { ES: "Ocultar aviso", EUS: "Abisua ezkutatu" },
+    outdated_notice: { ES: "El texto ha cambiado. Actualiza el resumen.", EUS: "Testua aldatu da. Eguneratu laburpena.", EN: "The text has changed. Update the summary.", FR: "Le texte a changé. Mets à jour le résumé." },
+    outdated_update: { ES: "Actualizar", EUS: "Eguneratu", EN: "Update", FR: "Mettre à jour" },
+    outdated_close:  { ES: "Ocultar aviso", EUS: "Abisua ezkutatu", EN: "Hide notice", FR: "Masquer l’avertissement" },
   },
+
 
 
 
@@ -215,65 +181,65 @@ export const translations = {
   // =========================
   cookies: {
   title: {
-  ES: "Este sitio web utiliza cookies",
-  EUS: "Webgune honek cookieak erabiltzen ditu",
-  EN: "This website uses cookies",
+    ES: "Este sitio web utiliza cookies",
+    EUS: "Webgune honek cookieak erabiltzen ditu",
+    EN: "This website uses cookies",
+    FR: "Ce site web utilise des cookies",
+  },
+
+  desc: {
+    ES: "Utilizamos cookies técnicas necesarias para el funcionamiento del sitio y, si lo aceptas, cookies de análisis (Google Analytics) para mejorar Euskalia.",
+    EUS: "Webgunearen funtzionamendurako beharrezko cookie teknikoak erabiltzen ditugu eta, onartzen baduzu, analisi-cookieak (Google Analytics) Euskalia hobetzeko.",
+    EN: "We use necessary technical cookies for the operation of the site and, if you accept, analytics cookies (Google Analytics) to improve Euskalia.",
+    FR: "Nous utilisons des cookies techniques nécessaires au fonctionnement du site et, si vous l’acceptez, des cookies d’analyse (Google Analytics) pour améliorer Euskalia.",
+  },
+
+  more: {
+    ES: "Más información",
+    EUS: "Informazio gehiago",
+    EN: "More information",
+    FR: "Plus d’informations",
+  },
+
+  accept: {
+    ES: "Aceptar",
+    EUS: "Onartu",
+    EN: "Accept",
+    FR: "Accepter",
+  },
+
+  reject: {
+    ES: "Rechazar",
+    EUS: "Baztertu",
+    EN: "Reject",
+    FR: "Refuser",
+  },
 },
-
-desc: {
-  ES: "Utilizamos cookies técnicas necesarias para el funcionamiento del sitio y, si lo aceptas, cookies de análisis (Google Analytics) para mejorar Euskalia.",
-  EUS: "Webgunearen funtzionamendurako beharrezko cookie teknikoak erabiltzen ditugu eta, onartzen baduzu, analisi-cookieak (Google Analytics) Euskalia hobetzeko.",
-  EN: "We use necessary technical cookies for the operation of the site and, if you accept, analytics cookies (Google Analytics) to improve Euskalia.",
-},
-
-more: {
-  ES: "Más información",
-  EUS: "Informazio gehiago",
-  EN: "More information",
-},
-
-accept: {
-  ES: "Aceptar",
-  EUS: "Onartu",
-  EN: "Accept",
-},
-
-reject: {
-  ES: "Rechazar",
-  EUS: "Baztertu",
-  EN: "Reject",
-},
-},
-
-
-
-
 
 
 
   /* === Bloque anidado (por si lo usas en otras vistas) === */
   supportPage: {
-    title:       { ES: "Soporte", EUS: "Laguntza" },
-    subtitle:    { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko." },
-    kicker:      { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?" },
-    description: { ES: "Cuéntanos tu consulta y te responderemos lo antes posible.", EUS: "Esaiguzu zure kontsulta eta ahal bezain laster erantzungo dizugu." },
-    bubble:      { ES: "¿Tienes dudas? Escríbenos.", EUS: "Zalantzak al dituzu? Idatziguzu." },
-    cta:         { ES: "Contactar", EUS: "Harremanetan jarri" },
+    title:       { ES: "Soporte", EUS: "Laguntza", EN: "Support", FR: "Support" },
+    subtitle:    { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko.", EN: "Need help? We’re here to help you.", FR: "Besoin d’aide ? Nous sommes là pour vous aider." },
+    kicker:      { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?", EN: "How can we help you?", FR: "Comment pouvons-nous vous aider ?" },
+    description: { ES: "Cuéntanos tu consulta y te responderemos lo antes posible.", EUS: "Esaiguzu zure kontsulta eta ahal bezain laster erantzungo dizugu.", EN: "Tell us your question and we’ll reply as soon as possible.", FR: "Expliquez-nous votre demande et nous vous répondrons dès que possible." },
+    bubble:      { ES: "¿Tienes dudas? Escríbenos.", EUS: "Zalantzak al dituzu? Idatziguzu.", EN: "Have questions? Write to us.", FR: "Vous avez des questions ? Écrivez-nous." },
+    cta:         { ES: "Contactar", EUS: "Harremanetan jarri", EN: "Contact", FR: "Contacter" },
     form: {
-      name_label:          { ES: "Nombre", EUS: "Izena" },
-      name_placeholder:    { ES: "Tu nombre", EUS: "Zure izena" },
-      email_label:         { ES: "Email", EUS: "Posta elektronikoa" },
-      email_placeholder:   { ES: "Tu email", EUS: "Zure posta elektronikoa" },
-      subject_label:       { ES: "Asunto", EUS: "Gaia" },
-      subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerez behar duzu laguntza?" },
-      message_label:       { ES: "Mensaje", EUS: "Mezua" },
-      message_placeholder: { ES: "Cuéntanos en qué podemos ayudarte", EUS: "Esaguzu nola lagundu diezazukegun" },
-      submit:              { ES: "Enviar", EUS: "Bidali" },
-      privacy_hint:        { ES: "Al enviar, aceptas nuestra", EUS: "Bidaltzean, onartzen duzu gure" },
-      privacy_link:        { ES: "Política de privacidad", EUS: "Pribatutasun-politika" },
+      name_label:          { ES: "Nombre", EUS: "Izena", EN: "Name", FR: "Nom" },
+      name_placeholder:    { ES: "Tu nombre", EUS: "Zure izena", EN: "Your name", FR: "Votre nom" },
+      email_label:         { ES: "Email", EUS: "Posta elektronikoa", EN: "Email", FR: "Email" },
+      email_placeholder:   { ES: "Tu email", EUS: "Zure posta elektronikoa", EN: "Your email", FR: "Votre email" },
+      subject_label:       { ES: "Asunto", EUS: "Gaia", EN: "Subject", FR: "Sujet" },
+      subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerez behar duzu laguntza?", EN: "What do you need help with?", FR: "Sur quoi avez-vous besoin d’aide ?" },
+      message_label:       { ES: "Mensaje", EUS: "Mezua", EN: "Message", FR: "Message" },
+      message_placeholder: { ES: "Cuéntanos en qué podemos ayudarte", EUS: "Esaguzu nola lagundu diezazukegun", EN: "Tell us how we can help you", FR: "Dites-nous comment nous pouvons vous aider" },
+      submit:              { ES: "Enviar", EUS: "Bidali", EN: "Send", FR: "Envoyer" },
+      privacy_hint:        { ES: "Al enviar, aceptas nuestra", EUS: "Bidaltzean, onartzen duzu gure", EN: "By submitting, you accept our", FR: "En envoyant, vous acceptez notre" },
+      privacy_link:        { ES: "Política de privacidad", EUS: "Pribatutasun-politika", EN: "Privacy policy", FR: "Politique de confidentialité" },
     },
   },
-
 
 
 
@@ -281,157 +247,168 @@ reject: {
   //        SOPORTE
   // =========================
   
-  support_title:        { ES: "Soporte", EUS: "Laguntza" },
-  support_subtitle:     { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko." },
-  support_kicker:       { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?" },
-  support_cta:          { ES: "Contactar", EUS: "Harremanetan jarri" },
-  support_bubble_text:  { ES: "¿Tienes dudas? Escríbenos.", EUS: "Zalantzak al dituzu? Idatziguzu." },
+  support_title:        { ES: "Soporte", EUS: "Laguntza", EN: "Support", FR: "Support" },
+  support_subtitle:     { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko.", EN: "Need help? We’re here to help you.", FR: "Besoin d’aide ? Nous sommes là pour vous aider." },
+  support_kicker:       { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?", EN: "How can we help you?", FR: "Comment pouvons-nous vous aider ?" },
+  support_cta:          { ES: "Contactar", EUS: "Harremanetan jarri", EN: "Contact", FR: "Contacter" },
+  support_bubble_text:  { ES: "¿Tienes dudas? Escríbenos.", EUS: "Zalantzak al dituzu? Idatziguzu.", EN: "Have questions? Write to us.", FR: "Vous avez des questions ? Écrivez-nous." },
 
-  support_form_name_label:          { ES: "Nombre", EUS: "Izena" },
-  support_form_name_placeholder:    { ES: "Tu nombre", EUS: "Zure izena" },
+  support_form_name_label:          { ES: "Nombre", EUS: "Izena", EN: "Name", FR: "Nom" },
+  support_form_name_placeholder:    { ES: "Tu nombre", EUS: "Zure izena", EN: "Your name", FR: "Votre nom" },
 
-  support_form_email_label:         { ES: "Email", EUS: "Posta elektronikoa" },
-  support_form_email_placeholder:   { ES: "Tu email", EUS: "Zure posta elektronikoa" },
+  support_form_email_label:         { ES: "Email", EUS: "Posta elektronikoa", EN: "Email", FR: "Email" },
+  support_form_email_placeholder:   { ES: "Tu email", EUS: "Zure posta elektronikoa", EN: "Your email", FR: "Votre email" },
 
-  support_form_subject_label:       { ES: "Asunto", EUS: "Gaia" },
-  support_form_subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerri buruz behar duzu laguntza?" },
+  support_form_subject_label:       { ES: "Asunto", EUS: "Gaia", EN: "Subject", FR: "Sujet" },
+  support_form_subject_placeholder: { ES: "¿Sobre qué necesitas ayuda?", EUS: "Zerri buruz behar duzu laguntza?", EN: "What do you need help with?", FR: "Sur quoi avez-vous besoin d’aide ?" },
 
-  support_form_message_label:       { ES: "Mensaje", EUS: "Mezua" },
-  support_form_message_placeholder: { ES: "Cuéntanos en qué podemos ayudarte", EUS: "Esaguzu nola lagundu diezazukegun" },
+  support_form_message_label:       { ES: "Mensaje", EUS: "Mezua", EN: "Message", FR: "Message" },
+  support_form_message_placeholder: { ES: "Cuéntanos en qué podemos ayudarte", EUS: "Esaguzu nola lagundu diezazukegun", EN: "Tell us how we can help you", FR: "Dites-nous comment nous pouvons vous aider" },
 
-  support_form_submit:              { ES: "Enviar", EUS: "Bidali" },
-  support_form_privacy_hint:        { ES: "Al enviar, aceptas nuestra", EUS: "Bidaltzean, onartzen duzu gure" },
-  support_form_privacy_link:        { ES: "Política de privacidad", EUS: "Pribatutasun-politika" },
+  support_form_submit:              { ES: "Enviar", EUS: "Bidali", EN: "Send", FR: "Envoyer" },
+  support_form_privacy_hint:        { ES: "Al enviar, aceptas nuestra", EUS: "Bidaltzean, onartzen duzu gure", EN: "By submitting, you accept our", FR: "En envoyant, vous acceptez notre" },
+  support_form_privacy_link:        { ES: "Política de privacidad", EUS: "Pribatutasun-politika", EN: "Privacy policy", FR: "Politique de confidentialité" },
 
   support_form_sending: {
-  ES: "Enviando...",
-  EUS: "Bidaltzen...",
-  EN: "Sending...",
-  FR: "Envoi...",
+    ES: "Enviando...",
+    EUS: "Bidaltzen...",
+    EN: "Sending...",
+    FR: "Envoi...",
   },
   support_form_sent: {
-  ES: "✅ Enviado",
-  EUS: "✅ Bidalia",
-  EN: "✅ Sent",
-  FR: "✅ Envoyé",
+    ES: "✅ Enviado",
+    EUS: "✅ Bidalia",
+    EN: "✅ Sent",
+    FR: "✅ Envoyé",
   },
   support_form_error: {
-  ES: "❌ Error al enviar",
-  EUS: "❌ Errorea bidaltzean",
-  EN: "❌ Error sending",
-  FR: "❌ Erreur d’envoi",
+    ES: "❌ Error al enviar",
+    EUS: "❌ Errorea bidaltzean",
+    EN: "❌ Error sending",
+    FR: "❌ Erreur d’envoi",
   },
-
 
   // =========================
   //        SUGGENSTIONS
   // =========================
   suggestions: {
-  zone_badge: {
-    ES: "Zona de ideas y sugerencias de Euskalia",
-    EUS: "Euskaliaren ideien eta iradokizunen gunea",
-    EN: "Euskalia ideas & suggestions space",
-  },
+    zone_badge: {
+      ES: "Zona de ideas y sugerencias de Euskalia",
+      EUS: "Euskaliaren ideien eta iradokizunen gunea",
+      EN: "Euskalia ideas & suggestions space",
+      FR: "Espace d’idées et de suggestions d’Euskalia",
+    },
 
-  title: {
-    ES: "Ayuda a decidir las próximas mejoras de Euskalia",
-    EUS: "Lagundu Euskaliaren hurrengo hobekuntzak erabakitzen",
-    EN: "Help decide the next improvements for Euskalia",
-  },
+    title: {
+      ES: "Ayuda a decidir las próximas mejoras de Euskalia",
+      EUS: "Lagundu Euskaliaren hurrengo hobekuntzak erabakitzen",
+      EN: "Help decide the next improvements for Euskalia",
+      FR: "Aidez à décider des prochaines améliorations d’Euskalia",
+    },
 
-  form_description: {
-    ES: "¿Qué te gustaría añadir o mejorar en Euskalia? Nuevas herramientas, cambios de diseño, nuevos límites, mejores ideas para aprender… cualquier sugerencia es bienvenida.",
-    EUS: "Zer gustatuko litzaizuke Euskalian gehitu edo hobetzea: tresna berriak, diseinu aldaketak, muga berriak, ikasteko ideiak hobeak… edozein iradokizun ongi etorria da.",
-    EN: "What would you like to add or improve in Euskalia? New tools, design changes, new limits, better learning ideas… any suggestion is welcome.",
-  },
+    form_description: {
+      ES: "¿Qué te gustaría añadir o mejorar en Euskalia? Nuevas herramientas, cambios de diseño, nuevos límites, mejores ideas para aprender… cualquier sugerencia es bienvenida.",
+      EUS: "Zer gustatuko litzaizuke Euskalian gehitu edo hobetzea: tresna berriak, diseinu aldaketak, muga berriak, ikasteko ideiak hobeak… edozein iradokizun ongi etorria da.",
+      EN: "What would you like to add or improve in Euskalia? New tools, design changes, new limits, better learning ideas… any suggestion is welcome.",
+      FR: "Que souhaiteriez-vous ajouter ou améliorer dans Euskalia ? Nouvelles fonctionnalités, changements de design, nouvelles limites, meilleures idées d’apprentissage… toute suggestion est la bienvenue.",
+    },
 
-  textarea_label: {
-    ES: "Escribe aquí tu sugerencia",
-    EUS: "Idatzi hemen zure iradokizuna",
-    EN: "Write your suggestion here",
-  },
+    textarea_label: {
+      ES: "Escribe aquí tu sugerencia",
+      EUS: "Idatzi hemen zure iradokizuna",
+      EN: "Write your suggestion here",
+      FR: "Écrivez votre suggestion ici",
+    },
 
-  textarea_placeholder: {
-    ES: "Cuéntanos qué herramienta, cambio o mejora te gustaría ver en Euskalia y por qué sería útil para ti u otras personas.",
-    EUS: "Esan zein tresna, aldaketa edo hobekuntza gustatuko litzaizukeen Euskalian, eta zergatik izango litzatekeen erabilgarria zuretzat edo besteentzat.",
-    EN: "Tell us which tool, change, or improvement you’d like to see in Euskalia and why it would be useful for you or others.",
-  },
+    textarea_placeholder: {
+      ES: "Cuéntanos qué herramienta, cambio o mejora te gustaría ver en Euskalia y por qué sería útil para ti u otras personas.",
+      EUS: "Esan zein tresna, aldaketa edo hobekuntza gustatuko litzaizukeen Euskalian, eta zergatik izango litzatekeen erabilgarria zuretzat edo besteentzat.",
+      EN: "Tell us which tool, change, or improvement you’d like to see in Euskalia and why it would be useful for you or others.",
+      FR: "Dites-nous quelle fonctionnalité, changement ou amélioration vous aimeriez voir dans Euskalia et pourquoi cela serait utile pour vous ou pour d’autres.",
+    },
 
-  email_label: {
-    ES: "Correo electrónico (opcional)",
-    EUS: "Helbide elektronikoa (aukerakoa)",
-    EN: "Email address (optional)",
-  },
+    email_label: {
+      ES: "Correo electrónico (opcional)",
+      EUS: "Helbide elektronikoa (aukerakoa)",
+      EN: "Email address (optional)",
+      FR: "Adresse email (facultatif)",
+    },
 
-  email_placeholder: {
-    ES: "Solo lo usaremos si necesitamos contactar contigo.",
-    EUS: "Zurekin harremanetan jartzeko bakarrik erabiliko dugu.",
-    EN: "We’ll only use it if we need to contact you.",
-  },
+    email_placeholder: {
+      ES: "Solo lo usaremos si necesitamos contactar contigo.",
+      EUS: "Zurekin harremanetan jartzeko bakarrik erabiliko dugu.",
+      EN: "We’ll only use it if we need to contact you.",
+      FR: "Nous l’utiliserons uniquement si nous devons vous contacter.",
+    },
 
-  characters_suffix: {
-    ES: "caracteres",
-    EUS: "karaktere",
-    EN: "characters",
-  },
+    characters_suffix: {
+      ES: "caracteres",
+      EUS: "karaktere",
+      EN: "characters",
+      FR: "caractères",
+    },
 
-  button_label: {
-    ES: "Enviar sugerencia",
-    EUS: "Bidali iradokizuna",
-    EN: "Send suggestion",
-  },
+    button_label: {
+      ES: "Enviar sugerencia",
+      EUS: "Bidali iradokizuna",
+      EN: "Send suggestion",
+      FR: "Envoyer la suggestion",
+    },
 
-  error_required: {
-    ES: "Por favor, escribe una sugerencia.",
-    EUS: "Mesedez, idatzi iradokizun bat.",
-    EN: "Please write a suggestion.",
-  },
+    error_required: {
+      ES: "Por favor, escribe una sugerencia.",
+      EUS: "Mesedez, idatzi iradokizun bat.",
+      EN: "Please write a suggestion.",
+      FR: "Veuillez écrire une suggestion.",
+    },
 
-  error_min_length: {
-    ES: "Por favor, explica un poco más (mínimo 20 caracteres).",
-    EUS: "Mesedez, azaldu pixka bat gehiago (gutxienez 20 karaktere).",
-    EN: "Please explain a bit more (minimum 20 characters).",
-  },
+    error_min_length: {
+      ES: "Por favor, explica un poco más (mínimo 20 caracteres).",
+      EUS: "Mesedez, azaldu pixka bat gehiago (gutxienez 20 karaktere).",
+      EN: "Please explain a bit more (minimum 20 characters).",
+      FR: "Veuillez expliquer un peu plus (minimum 20 caractères).",
+    },
 
-  success_message: {
-    ES: "¡Gracias! Hemos recibido tu sugerencia.",
-    EUS: "Eskerrik asko! Zure iradokizuna jaso dugu.",
-    EN: "Thank you! We’ve received your suggestion.",
+    success_message: {
+      ES: "¡Gracias! Hemos recibido tu sugerencia.",
+      EUS: "Eskerrik asko! Zure iradokizuna jaso dugu.",
+      EN: "Thank you! We’ve received your suggestion.",
+      FR: "Merci ! Nous avons reçu votre suggestion.",
+    },
   },
-},
-
 
   // =========================
   //        CHAT IA 
   // =========================
   
- assistant_title: {
-  ES: "¿Cómo puedo ayudarte?",
-  EUS: "Nola lagundu dezaket?",
- },
- assistant_new_chat: {
-  ES: "Nuevo chat",
-  EUS: "Txat berria",
- },
- assistant_placeholder: {
-  ES: "Pregunta lo que quieras",
-  EUS: "Edozer galde dezakezu",
- },
- assistant_send: {
-  ES: "Enviar",
-  EUS: "Bidali",
- },
-
-
-
-
-
-
-
+  assistant_title: {
+    ES: "¿Cómo puedo ayudarte?",
+    EUS: "Nola lagundu dezaket?",
+    EN: "How can I help you?",
+    FR: "Comment puis-je vous aider ?",
+  },
+  assistant_new_chat: {
+    ES: "Nuevo chat",
+    EUS: "Txat berria",
+    EN: "New chat",
+    FR: "Nouveau chat",
+  },
+  assistant_placeholder: {
+    ES: "Pregunta lo que quieras",
+    EUS: "Edozer galde dezakezu",
+    EN: "Ask anything",
+    FR: "Posez votre question",
+  },
+  assistant_send: {
+    ES: "Enviar",
+    EUS: "Bidali",
+    EN: "Send",
+    FR: "Envoyer",
+  },
 
   /* === Aviso de funcionalidad no implementada === */
-  not_implemented_title:    { ES: "Esta función no está implementada aún", EUS: "Funtzio hau oraindik ez dago ezarrita" },
-  not_implemented_subtitle: { ES: "Puedes solicitarla en tu próximo prompt 🚀", EUS: "Hurrengo prompt-ean eska dezakezu 🚀" },
+  not_implemented_title:    { ES: "Esta función no está implementada aún", EUS: "Funtzio hau oraindik ez dago ezarrita", EN: "This feature is not implemented yet", FR: "Cette fonctionnalité n’est pas encore implémentée" },
+  not_implemented_subtitle: { ES: "Puedes solicitarla en tu próximo prompt 🚀", EUS: "Hurrengo prompt-ean eska dezakezu 🚀", EN: "You can request it in your next prompt 🚀", FR: "Vous pouvez la demander dans votre prochain prompt 🚀" },
 
 
 
@@ -449,60 +426,86 @@ reject: {
   title: {
     ES: "¿Qué podrás conseguir apoyándote en Euskalia?",
     EUS: "Zer lortu dezakezu Euskaliaren laguntzarekin?",
+    EN: "What can you achieve with Euskalia?",
+    FR: "Que pouvez-vous obtenir grâce à Euskalia ?",
   },
 
   benefit1_title: {
     ES: "Ahorra horas de trabajo",
     EUS: "Aurreztu lan-orduak",
+    EN: "Save hours of work",
+    FR: "Gagnez des heures de travail",
   },
   benefit1_desc: {
     ES: "Trabaja con textos largos en segundos. Procesa, mejora y adapta contenido sin leerlo todo ni perder tiempo innecesario.",
     EUS: "Testu luzeekin segundo gutxitan lan egin. Edukia prozesatu, hobetu eta moldatu dena irakurri gabe eta denbora alferrik galdu gabe.",
+    EN: "Work with long texts in seconds. Process, improve and adapt content without reading everything or wasting unnecessary time.",
+    FR: "Travaillez sur de longs textes en quelques secondes. Traitez, améliorez et adaptez le contenu sans tout lire ni perdre de temps inutilement.",
   },
 
   benefit2_title: {
     ES: "Experiencia y productividad",
     EUS: "Esperientzia eta produktibitatea",
+    EN: "Experience and productivity",
+    FR: "Expérience et productivité",
   },
   benefit2_desc: {
     ES: "Euskalia está pensada para ofrecer la mejor experiencia de uso mientras aumentas tu productividad.",
     EUS: "Euskalia erabiltzaile-esperientzia onena eskaintzeko diseinatuta dago, aldi berean zure produktibitatea handitzeko.",
+    EN: "Euskalia is designed to offer the best user experience while increasing your productivity.",
+    FR: "Euskalia est conçue pour offrir la meilleure expérience d’utilisation tout en augmentant votre productivité.",
   },
 
   benefit3_title: {
     ES: "Accesible para cualquiera",
     EUS: "Edonorentzat eskuragarria",
+    EN: "Accessible to everyone",
+    FR: "Accessible à tous",
   },
   benefit3_desc: {
     ES: "Desde estudiantes hasta profesionales. Euskalia se adapta a tu nivel y a tu forma de trabajar.",
     EUS: "Ikasleentzako..., profesionalentzako... Euskalia zure mailara eta lan egiteko modura egokitzen da.",
+    EN: "From students to professionals. Euskalia adapts to your level and your way of working.",
+    FR: "Des étudiants aux professionnels. Euskalia s’adapte à votre niveau et à votre manière de travailler.",
   },
 
   benefit4_title: {
     ES: "Fortalece el uso del euskera",
     EUS: "Euskararen erabilera indartzen du",
+    EN: "Strengthens the use of Basque",
+    FR: "Renforce l’usage du basque",
   },
   benefit4_desc: {
     ES: "Usar, leer y escuchar euskera cada día es la mejor forma de mantenerlo vivo. Euskalia te lo pone fácil.",
     EUS: "Euskara egunero erabiltzea, irakurtzea eta entzutea da bizirik mantentzeko modurik onena. Euskaliak erraz jartzen dizu.",
+    EN: "Using, reading and listening to Basque every day is the best way to keep it alive. Euskalia makes it easy.",
+    FR: "Utiliser, lire et écouter le basque chaque jour est la meilleure façon de le faire vivre. Euskalia vous facilite la tâche.",
   },
 
   benefit5_title: {
     ES: "Fácil de usar, eficaz desde el primer minuto",
     EUS: "Erabilera erraza, lehen minututik eraginkorra",
+    EN: "Easy to use, effective from the first minute",
+    FR: "Facile à utiliser, efficace dès la première minute",
   },
   benefit5_desc: {
     ES: "Un diseño claro y directo para que te centres en el contenido, no en aprender a usar la herramienta.",
     EUS: "Diseinu argi eta zuzena, edukiari arreta jartzeko eta ez tresna nola erabili ikasteko.",
+    EN: "A clear and direct design so you can focus on the content, not on learning how to use the tool.",
+    FR: "Un design clair et direct pour vous concentrer sur le contenu, pas sur l’apprentissage de l’outil.",
   },
 
   benefit6_title: {
     ES: "Sin fricción, sin complicaciones",
     EUS: "Trabarik gabe, konplikaziorik gabe",
+    EN: "No friction, no complications",
+    FR: "Sans friction, sans complications",
   },
   benefit6_desc: {
     ES: "Empieza gratis, sin registros obligatorios ni instalaciones. Entra, usa Euskalia y decide después.",
     EUS: "Hasi doan, derrigorrezko erregistrorik edo instalaziorik gabe. Sartu, erabili Euskalia eta erabaki ondoren.",
+    EN: "Start for free, with no mandatory registration or installations. Enter, use Euskalia and decide later.",
+    FR: "Commencez gratuitement, sans inscription obligatoire ni installation. Entrez, utilisez Euskalia et décidez ensuite.",
   },
 },
 
@@ -596,90 +599,130 @@ toolsSection_cardAiDetector_desc: {
   features: {
   title: {
     ES: "Características de Euskalia",
-    EUS: "Euskaliaren ezaugarriak"
+    EUS: "Euskaliaren ezaugarriak",
+    EN: "Euskalia features",
+    FR: "Caractéristiques d’Euskalia",
   },
   paragraph: {
     ES: "Euskalia es una plataforma diseñada para trabajar con textos en euskera o al euskera de forma inteligente, cómoda y eficiente. Analiza el contenido en profundidad para ayudarte a entenderlo, mejorarlo y adaptarlo según tus necesidades, ya sea para estudiar, trabajar o crear contenido propio. Desde textos cortos hasta documentos completos o enlaces web, Euskalia procesa la información, detecta el contexto real y genera resultados claros, naturales y útiles. Todo el sistema está pensado para reducir esfuerzo, ahorrar tiempo y ofrecer una experiencia fluida tanto en el uso puntual como en un entorno profesional. Euskalia centraliza todas las herramientas en un solo lugar, con un enfoque claro en la productividad y en el uso real del euskera en el día a día.",
-    EUS: "Euskalia testuak euskaraz edo euskarara modu adimentsu, eroso eta eraginkorrean lan egitera diseinatutako plataforma bat da. Edukia sakon aztertzen du. Ulertzen, hobetzen eta zure beharren arabera moldatzen laguntzen dizu. Ikasteko, lan egiteko edo edozein motatako edukiak sortzeko. Testu laburretatik hasi eta dokumentu osoetara edo web esteketara arte, Euskaliak informazioa prozesatzen du, testuinguru erreala antzematen du eta emaitza argi, natural eta erabilgarriak sortzen ditu. Sistema osoa ahalegina murrizteko, denbora aurrezteko eta erabilera puntualean zein ingurune profesionalean esperientzia arin eta erosoa eskaintzeko pentsatuta dago. Euskaliak tresna guztiak leku bakarrean biltzen ditu, produktibitatea eta euskararen eguneroko erabilera benetan indartzeko."
+    EUS: "Euskalia testuak euskaraz edo euskarara modu adimentsu, eroso eta eraginkorrean lan egitera diseinatutako plataforma bat da. Edukia sakon aztertzen du. Ulertzen, hobetzen eta zure beharren arabera moldatzen laguntzen dizu. Ikasteko, lan egiteko edo edozein motatako edukiak sortzeko. Testu laburretatik hasi eta dokumentu osoetara edo web esteketara arte, Euskaliak informazioa prozesatzen du, testuinguru erreala antzematen du eta emaitza argi, natural eta erabilgarriak sortzen ditu. Sistema osoa ahalegina murrizteko, denbora aurrezteko eta erabilera puntualean zein ingurune profesionalean esperientzia arin eta erosoa eskaintzeko pentsatuta dago. Euskaliak tresna guztiak leku bakarrean biltzen ditu, produktibitatea eta euskararen eguneroko erabilera benetan indartzeko.",
+    EN: "Euskalia is a platform designed to work with texts in Basque or into Basque in an intelligent, comfortable and efficient way. It analyzes content in depth to help you understand it, improve it and adapt it to your needs, whether for studying, working or creating your own content. From short texts to full documents or web links, Euskalia processes information, detects the real context and generates clear, natural and useful results. The whole system is built to reduce effort, save time and provide a smooth experience both for occasional use and in a professional environment. Euskalia brings all tools together in one place, with a clear focus on productivity and on real, everyday use of Basque.",
+    FR: "Euskalia est une plateforme conçue pour travailler avec des textes en basque ou vers le basque de manière intelligente, confortable et efficace. Elle analyse le contenu en profondeur pour vous aider à le comprendre, l’améliorer et l’adapter à vos besoins, que ce soit pour étudier, travailler ou créer votre propre contenu. Des textes courts aux documents complets ou aux liens web, Euskalia traite l’information, détecte le contexte réel et génère des résultats clairs, naturels et utiles. Tout le système est pensé pour réduire l’effort, gagner du temps et offrir une expérience fluide, aussi bien pour un usage ponctuel que dans un cadre professionnel. Euskalia centralise toutes les outils en un seul endroit, avec un objectif clair : la productivité et l’usage réel du basque au quotidien.",
   },
   item1_title: {
     ES: "Ahorra tiempo de trabajo",
     EUS: "Lan-denbora aurrezten du",
+    EN: "Save work time",
+    FR: "Gagnez du temps de travail",
   },
   item1_desc: {
     ES: "Trabaja más rápido con textos complejos. Euskalia reduce esfuerzo y elimina pasos innecesarios.",
     EUS: "Testu konplexuekin azkarrago lan egin. Euskaliak lana arintzen dizu eta alferrikako pausuak kentzen ditu.",
+    EN: "Work faster with complex texts. Euskalia reduces effort and removes unnecessary steps.",
+    FR: "Travaillez plus vite avec des textes complexes. Euskalia réduit l’effort et élimine les étapes inutiles.",
   },
 
   item2_title: {
     ES: "Fácil de usar, resultados rápidos",
     EUS: "Erabilera erraza, emaitza azkarrak",
+    EN: "Easy to use, fast results",
+    FR: "Facile à utiliser, résultats rapides",
   },
   item2_desc: {
     ES: "No necesitas aprender nada. Entra, usa la plataforma y obtén resultados desde el primer momento.",
     EUS: "Ez da ikasi behar. Sartu, erabili eta lehen momentutik emaitzak lortu.",
+    EN: "You don’t need to learn anything. Jump in, use the platform and get results from the first moment.",
+    FR: "Vous n’avez rien à apprendre. Entrez, utilisez la plateforme et obtenez des résultats dès le premier instant.",
   },
 
   item3_title: {
     ES: "Pensado para cualquiera",
     EUS: "Edonorentzat pentsatua",
+    EN: "Made for everyone",
+    FR: "Pensé pour tout le monde",
   },
   item3_desc: {
     ES: "Desde estudiantes hasta profesionales. Euskalia se adapta a tu ritmo y a tu forma de trabajar.",
     EUS: "Ikasleentzat zein profesionalentzat. Euskaliak zure erritmoari eta beharrari egokitzen zaio.",
+    EN: "From students to professionals. Euskalia adapts to your pace and your way of working.",
+    FR: "Des étudiants aux professionnels. Euskalia s’adapte à votre rythme et à votre manière de travailler.",
   },
 
   item4_title: {
     ES: "Euskera en el día a día",
     EUS: "Euskara egunerokoan erabiltzeko",
+    EN: "Basque in everyday life",
+    FR: "Le basque au quotidien",
   },
   item4_desc: {
     ES: "Cuando usar euskera es más fácil, se usa más. Euskalia impulsa su uso real cada día.",
     EUS: "Euskara erabiltzea errazagoa denean, gehiago erabiltzen da. Euskaliak eguneroko erabilera sustatzen du.",
+    EN: "When using Basque is easier, it’s used more. Euskalia boosts real daily usage.",
+    FR: "Quand utiliser le basque devient plus simple, on l’utilise davantage. Euskalia encourage son usage réel au quotidien.",
   },
 
   item5_title: {
     ES: "Productividad real",
     EUS: "Benetako produktibitatea",
+    EN: "Real productivity",
+    FR: "Productivité réelle",
   },
   item5_desc: {
     ES: "Textos más claros, naturales y útiles. Resultados pensados para aplicarlos en estudios o trabajo.",
     EUS: "Testuak argiagoak, naturalagoak eta erabilgarriagoak. Emaitzak lanean edo ikasketetan aplikatzeko modukoak dira.",
+    EN: "Clearer, more natural and useful texts. Results designed to be applied in studies or work.",
+    FR: "Des textes plus clairs, naturels et utiles. Des résultats pensés pour être appliqués aux études ou au travail.",
   },
 
   item6_title: {
     ES: "Empieza sin fricción",
     EUS: "Oztoporik gabe hasteko",
+    EN: "Start without friction",
+    FR: "Commencez sans friction",
   },
   item6_desc: {
     ES: "Sin instalaciones ni registros obligatorios. Entra, prueba Euskalia y decide después.",
     EUS: "Ez dago instalaziorik ezta derrigorrezko erregistrorik. Sartu, probatu eta gero erabaki.",
+    EN: "No installations or mandatory sign-ups. Enter, try Euskalia and decide later.",
+    FR: "Aucune installation ni inscription obligatoire. Entrez, essayez Euskalia et décidez ensuite.",
   },
 
 
   highlight1_title: {
   ES: "🧠 Procesamiento inteligente del contenido",
   EUS: "🧠 Edukien prozesamendu adimenduna",
+  EN: "🧠 Smart content processing",
+  FR: "🧠 Traitement intelligent du contenu",
 },
 highlight1_desc: {
   ES: "Euskalia comprende cada contenido en su contexto para identificar lo que realmente quiere transmitir. De este modo, trabaja la información de forma coherente y genera resultados adaptados al objetivo del usuario.",
   EUS: "Euskaliak eduki bakoitzaren testuingurua ulertzen du, benetan zer adierazi nahi duen identifikatuz. Horri esker, informazioa modu koherentean lantzen du eta erabiltzailearen helburura egokitutako emaitzak sortzen ditu.",
+  EN: "Euskalia understands each piece of content in its context to identify what it truly aims to convey. This way, it works with the information coherently and generates results adapted to the user’s goal.",
+  FR: "Euskalia comprend chaque contenu dans son contexte afin d’identifier ce qu’il cherche réellement à transmettre. Ainsi, elle traite l’information de manière cohérente et génère des résultats adaptés à l’objectif de l’utilisateur.",
 },
 highlight2_title: {
   ES: "🎯 Resultados claros y naturales",
   EUS: "🎯 Emaitza argi eta naturalak",
+  EN: "🎯 Clear and natural results",
+  FR: "🎯 Des résultats clairs et naturels",
 },
 highlight2_desc: {
   ES: "El contenido generado es claro, natural y fácil de entender. Está pensado para un uso real, tanto en el estudio como en el trabajo.",
   EUS: "Sortutako edukiak argiak, naturalak eta erraz ulertzeko modukoak dira. Irakurketa arina eskaintzen dute eta erabilera errealerako prestatuta daude, bai ikasteko edo bai lanerako.",
+  EN: "Generated content is clear, natural and easy to understand. It’s designed for real use, both for studying and for work.",
+  FR: "Le contenu généré est clair, naturel et facile à comprendre. Il est pensé pour un usage réel, aussi bien pour les études que pour le travail.",
 },
   highlight3_title: {
     ES: "🔒Privacidad garantizada",
     EUS: "🔒Segurtasuna bermatuta",
+    EN: "🔒Privacy guaranteed",
+    FR: "🔒Confidentialité garantie",
   },
   highlight3_desc: {
     ES: "El contenido no se almacena de forma permanente. Tus textos, documentos y enlaces se procesan de forma segura y temporal.",
     EUS: "Edukia ez da behin betiko gordetzen. Zure testuak, dokumentuak eta estekak modu seguruan eta aldi baterako prozesatzen dira.",
+    EN: "Content is not stored permanently. Your texts, documents and links are processed securely and temporarily.",
+    FR: "Le contenu n’est pas stocké de manière permanente. Vos textes, documents et liens sont traités de façon sécurisée et temporaire.",
   },
 },
 
@@ -691,46 +734,64 @@ homeHowItWorks: {
   title: {
     ES: "¿Cómo funciona Euskalia?",
     EUS: "Nola funtzionatzen du Euskaliak?",
+    EN: "How does Euskalia work?",
+    FR: "Comment fonctionne Euskalia ?",
   },
 
   intro: {
     ES: "Euskalia es una plataforma basada en inteligencia artificial para el procesamiento de textos. El usuario introduce contenido mediante texto, documentos o enlaces web, y el sistema analiza automáticamente la información para identificar su estructura, contexto y significado. A partir de este análisis, el contenido se adapta al objetivo solicitado manteniendo la coherencia y el sentido original, sin necesidad de intervención manual ni configuraciones técnicas.",
     EUS: "Euskalia adimen artifizialean oinarritutako testu-prozesamendurako plataforma bat da. Erabiltzaileak edukia sartzen du testu, dokumentu edo web-esteken bidez, eta sistemak informazioa automatikoki aztertzen du egitura, testuingurua eta esanahia identifikatzeko. Analisi horretatik abiatuta, edukia eskatutako helburura egokitzen da, jatorrizko koherentzia eta esanahia mantenduz, eskuzko esku-hartzerik edo konfigurazio teknikorik gabe.",
+    EN: "Euskalia is an AI-based platform for text processing. The user provides content via text, documents or web links, and the system automatically analyzes the information to identify its structure, context and meaning. From this analysis, the content is adapted to the requested goal while keeping coherence and the original meaning, without manual intervention or technical configurations.",
+    FR: "Euskalia est une plateforme de traitement de textes basée sur l’intelligence artificielle. L’utilisateur saisit du contenu via du texte, des documents ou des liens web, et le système analyse automatiquement l’information pour identifier sa structure, son contexte et son sens. À partir de cette analyse, le contenu est adapté à l’objectif demandé en conservant la cohérence et le sens original, sans intervention manuelle ni configuration technique.",
   },
 
   offers_title: {
     ES: "🔎 ¿Qué hace exactamente Euskalia?",
     EUS: "🔎 Zer egiten du zehazki Euskaliak?",
+    EN: "🔎 What does Euskalia do exactly?",
+    FR: "🔎 Que fait exactement Euskalia ?",
   },
 
   offers_item1: {
     ES: "Analiza automáticamente la estructura y el contexto del contenido introducido.",
     EUS: "Sartutako edukiaren egitura eta testuingurua automatikoki aztertzen ditu.",
+    EN: "It automatically analyzes the structure and context of the provided content.",
+    FR: "Elle analyse automatiquement la structure et le contexte du contenu saisi.",
   },
 
   offers_item2: {
     ES: "Procesa información procedente de textos, documentos o URLs de forma unificada.",
     EUS: "Testu, dokumentu edo URLetatik datorren informazioa modu bateratuan prozesatzen du.",
+    EN: "It processes information from texts, documents or URLs in a unified way.",
+    FR: "Elle traite de manière unifiée l’information provenant de textes, documents ou URLs.",
   },
 
   offers_item3: {
     ES: "Aplica transformaciones manteniendo el significado principal del contenido.",
     EUS: "Edukiaren esanahi nagusia mantenduz moldaketak aplikatzen ditu.",
+    EN: "It applies transformations while preserving the main meaning of the content.",
+    FR: "Elle applique des transformations tout en conservant le sens principal du contenu.",
   },
 
   offers_item4: {
     ES: "Reorganiza la información de manera clara, coherente y estructurada.",
     EUS: "Informazioa modu argi, koherente eta egituratuan berrantolatzen du.",
+    EN: "It reorganizes the information in a clear, coherent and structured way.",
+    FR: "Elle réorganise l’information de manière claire, cohérente et structurée.",
   },
 
   offers_item5: {
     ES: "Ejecuta los procesos en tiempo real o en pocos segundos, incluso con textos largos.",
     EUS: "Prozesuak denbora errealean edo segundo gutxitan sortzen ditu, baita testu luzeekin ere.",
+    EN: "It runs the processes in real time or in a few seconds, even with long texts.",
+    FR: "Elle exécute les processus en temps réel ou en quelques secondes, même avec des textes longs.",
   },
 
   offers_item6: {
     ES: "Funciona sin configuraciones avanzadas y responde directamente a las acciones del usuario.",
     EUS: "Konfigurazio aurreraturik gabe funtzionatzen du eta erabiltzailearen ekintzei zuzenean erantzuten die.",
+    EN: "It works without advanced settings and responds directly to user actions.",
+    FR: "Elle fonctionne sans réglages avancés et répond directement aux actions de l’utilisateur.",
   },
 },
 
@@ -742,19 +803,27 @@ homeHowItWorks: {
   euskalia_what_is_title: {
     ES: "¿Qué es Euskalia?",
     EUS: "Zer da Euskalia?",
+    EN: "What is Euskalia?",
+    FR: "Qu’est-ce qu’Euskalia ?",
   },
   euskalia_what_is_text: {
     ES: "Euskalia es una plataforma de inteligencia artificial diseñada para trabajadores, estudiantes y cualquier persona que necesite traducir o resumir contenido de forma rápida y sencilla, centrada en el público vasco y en ayudar a cualquiera que necesite trabajar con el euskera. Su objetivo es ayudarte a entender y producir contenido en menos tiempo, sin perder calidad, y permitiéndote usar el euskera en tu día a día sin barreras.",
     EUS: "Euskalia adimen artifizialeko plataforma bat da, langileei, ikasleei eta edukiak modu azkar eta erraz batean itzuli edo laburtu behar dituen edonori zuzendua, euskal herritarrei eta euskararekin lan egin behar duen edonori laguntzera bideratua. Helburua edukiak denbora gutxiagoan ulertzen eta sortzen laguntzea da, kalitatea galdu gabe eta euskara egunerokoan oztoporik gabe erabiltzeko aukera emanez.",
+    EN: "Euskalia is an AI platform designed for workers, students and anyone who needs to translate or summarize content quickly and easily. It focuses on the Basque audience and helps anyone who needs to work with Basque. Its goal is to help you understand and produce content in less time, without losing quality, and to let you use Basque in your daily life without barriers.",
+    FR: "Euskalia est une plateforme d’IA conçue pour les travailleurs, les étudiants et toute personne ayant besoin de traduire ou de résumer du contenu rapidement et simplement. Elle est centrée sur le public basque et aide toute personne qui doit travailler avec le basque. Son objectif est de vous aider à comprendre et produire du contenu en moins de temps, sans perdre en qualité, et de vous permettre d’utiliser le basque au quotidien sans barrières.",
   },
 
   euskalia_goal_title: {
     ES: "Objetivo de Euskalia",
     EUS: "Euskaliaren helburua",
+    EN: "Euskalia’s goal",
+    FR: "Objectif d’Euskalia",
   },
   euskalia_goal_text: {
     ES: "El objetivo de Euskalia es impulsar el euskera en el ámbito digital, garantizando que las personas que viven, trabajan o estudian en nuestro entorno puedan usarlo como un idioma moderno, completo y plenamente funcional. Buscamos evitar la desinformación, las barreras tecnológicas y los problemas derivados de la falta de herramientas en euskera, ofreciendo soluciones de IA que permitan trabajar, aprender y comunicarse sin limitaciones lingüísticas.",
     EUS: "Euskaliaren helburua euskara eremu digitalean indartzea da, gure inguruan bizi, lan edo ikasten duten pertsonek hizkuntza moderno, oso eta guztiz funtzional gisa erabili ahal izan dezaten. Desinformazioa, oztopo teknologikoak eta euskarazko tresna faltak sortzen dituzten arazoak saihestu nahi ditugu, hizkuntza-mugarik gabe lan, ikasi eta komunikatzeko aukera emango duten AA soluzioak eskainiz.",
+    EN: "Euskalia’s goal is to strengthen Basque in the digital world, ensuring that people who live, work or study in our environment can use it as a modern, complete and fully functional language. We aim to avoid misinformation, technological barriers and problems caused by the lack of tools in Basque by offering AI solutions that allow people to work, learn and communicate without language limitations.",
+    FR: "L’objectif d’Euskalia est de renforcer le basque dans l’univers numérique, en garantissant que les personnes qui vivent, travaillent ou étudient dans notre environnement puissent l’utiliser comme une langue moderne, complète et pleinement fonctionnelle. Nous voulons éviter la désinformation, les barrières technologiques et les problèmes liés au manque d’outils en basque, en proposant des solutions d’IA permettant de travailler, d’apprendre et de communiquer sans limitations linguistiques.",
   },
 
 
@@ -768,10 +837,14 @@ homeHowItWorks: {
   faq_title: {
     ES: "Preguntas frecuentes",
     EUS: "Ohiko galderak",
+    EN: "Frequently asked questions",
+    FR: "Questions fréquentes",
   },
   faq_subtitle: {
     ES: "Aquí respondemos las dudas más comunes de nuestros usuarios. Esta sección se actualiza constantemente para ayudarte mejor.",
     EUS: "Hemen gure erabiltzaileen ohiko zalantzak erantzuten ditugu. Atal hau etengabe eguneratzen da zuretzat hobe laguntzeko.",
+    EN: "Here we answer our users’ most common questions. This section is constantly updated to help you better.",
+    FR: "Ici, nous répondons aux questions les plus fréquentes de nos utilisateurs. Cette section est mise à jour en continu pour mieux vous aider.",
   
   },
 
@@ -779,80 +852,113 @@ homeHowItWorks: {
   faq_item1_question: {
     ES: "🧠 ¿Qué es Euskalia?",
     EUS: "🧠 Zer da Euskalia?",
+    EN: "🧠 What is Euskalia?",
+    FR: "🧠 Qu’est-ce qu’Euskalia ?",
   },
   faq_item1_answer: {
     ES: "Euskalia es una plataforma para el procesamiento de textos basada en inteligencia artificial. Está dirigida a cualquier persona que desee trabajar con diferentes herramientas en el entorno de textos y contenidos, a estudiantes, trabajadores... Está orientada a ayudar a los ciudadanos vascos y a aquellos que deben trabajar con el euskera.\n\nEuskalia está centrada en el euskera como idioma principal. Tanto la traducción como el resto de herramientas funcionan siempre en relación al euskera, utilizando otros idiomas como castellano, inglés o francés únicamente para convertir el contenido hacia el euskera o desde el euskera, según las necesidades.\n\nEuskalia se caracteriza por un diseño claro y una experiencia de uso pensada para trabajar con textos sin fricciones. La interfaz es sencilla, directa y accesible, lo que permite centrarse en el contenido desde el primer momento, sin distracciones ni configuraciones complejas.",
     EUS: "Euskalia testuak prozesatzeko plataforma bat da, adimen artifizialean oinarritua. Testuen eta edukien ingurunean tresna desberdinekin lan egin nahi duen edonorentzat da, ikasleentzat, langileentzat... Euskal herritarrei eta euskararekin lan egin behar dutenei laguntzera bideratuta dago.\n\nEuskararekin lotuta lan egiteko pentsatuta dago. Bai itzulpenak bai gainerako tresnek euskararekin lotuta funtzionatzen dute, eta gaztelania, ingelesa edo frantsesa bezalako beste hizkuntzak euskarara edo euskaratik edukia bihurtzeko erabiltzen dira, erabiltzaileen beharren arabera.\n\nEuskalia diseinu argi batek eta testuekin oztoporik gabe lan egiteko pentsatutako erabiltzaile-esperientziak bereizten du. Interfazea sinplea, zuzena eta eskuragarria da, eta horri esker edukiari arreta hasieratik bertatik jarri daiteke, distrakziorik edo konfigurazio ezin ulerturik gabe.",
+    EN: "Euskalia is an AI-based platform for text processing. It’s for anyone who wants to work with different tools in the world of texts and content: students, workers... It is aimed at helping Basque citizens and anyone who needs to work with Basque.\n\nEuskalia is centered around Basque as the main language. Both translation and the rest of the tools always work in relation to Basque, using other languages such as Spanish, English or French only to convert content to Basque or from Basque, depending on the need.\n\nEuskalia stands out for a clear design and a frictionless text-focused user experience. The interface is simple, direct and accessible, so you can focus on the content from the very first moment, without distractions or complex settings.",
+    FR: "Euskalia est une plateforme de traitement de textes basée sur l’IA. Elle s’adresse à toute personne souhaitant utiliser différents outils dans l’univers des textes et des contenus : étudiants, travailleurs... Elle vise à aider les citoyens basques et toute personne qui doit travailler avec le basque.\n\nEuskalia est centrée sur le basque comme langue principale. La traduction comme les autres outils fonctionnent toujours en lien avec le basque, en utilisant d’autres langues comme l’espagnol, l’anglais ou le français uniquement pour convertir le contenu vers le basque ou depuis le basque, selon les besoins.\n\nEuskalia se distingue par un design clair et une expérience pensée pour travailler avec des textes sans friction. L’interface est simple, directe et accessible, ce qui permet de se concentrer sur le contenu dès le premier instant, sans distractions ni réglages complexes.",
   },
 
   // 2 — Objetivo de Euskalia
   faq_item2_question: {
     ES: "🎯 Objetivo de Euskalia",
     EUS: "🎯 Euskaliaren helburua",
+    EN: "🎯 Euskalia’s goal",
+    FR: "🎯 Objectif d’Euskalia",
   },
   faq_item2_answer: {
     ES: "El objetivo de Euskalia es impulsar el euskera en el ámbito digital, garantizando que las personas que viven, trabajan o estudian en nuestro entorno puedan usarlo como un idioma moderno, completo y plenamente funcional.\n\nBuscamos evitar la desinformación, las barreras tecnológicas y los problemas derivados de la falta de herramientas en euskera, ofreciendo soluciones de IA que permitan trabajar, aprender y comunicarse sin limitaciones lingüísticas.",
     EUS: "Euskaliaren helburua euskara eremu digitalean indartzea da, gure inguruan bizi, lan edo ikasten duten pertsonek hizkuntza moderno, oso eta guztiz funtzional gisa erabili ahal izan dezaten.\n\nDesinformazioa, oztopo teknologikoak eta euskarazko tresna faltak sortzen dituzten arazoak saihestu nahi ditugu, hizkuntza-mugarik gabe lan, ikasi eta komunikatzeko aukera emango duten IA soluzioak eskainiz.",
+    EN: "Euskalia’s goal is to strengthen Basque in the digital world, ensuring that people who live, work or study in our environment can use it as a modern, complete and fully functional language.\n\nWe aim to prevent misinformation, technological barriers and problems caused by the lack of tools in Basque, by offering AI solutions that allow people to work, learn and communicate without language limitations.",
+    FR: "L’objectif d’Euskalia est de renforcer le basque dans l’univers numérique, en garantissant que les personnes qui vivent, travaillent ou étudient dans notre environnement puissent l’utiliser comme une langue moderne, complète et pleinement fonctionnelle.\n\nNous voulons éviter la désinformation, les barrières technologiques et les problèmes liés au manque d’outils en basque, en proposant des solutions d’IA permettant de travailler, d’apprendre et de communiquer sans limitations linguistiques.",
   },
 
   // 3
   faq_item3_question: {
     ES: "🌍 ¿Qué idiomas soporta Euskalia?",
     EUS: "🌍 Zein hizkuntza onartzen ditu Euskaliak?",
+    EN: "🌍 Which languages does Euskalia support?",
+    FR: "🌍 Quelles langues Euskalia prend-elle en charge ?",
   },
   faq_item3_answer: {
     ES: "El idioma principal de Euskalia es el euskera. Toda la plataforma está diseñada para utilizar el euskera en relación con el inglés, el español y el francés.",
     EUS: "Hizkuntza nagusia euskara da. Plataforma osoa euskararekin lotuta erabiltzeko diseinatuta dago, ingelesa, gaztelania eta frantsesa tarteko direla.",
+    EN: "Euskalia’s main language is Basque. The entire platform is designed to use Basque in relation to English, Spanish and French.",
+    FR: "La langue principale d’Euskalia est le basque. Toute la plateforme est conçue pour utiliser le basque en relation avec l’anglais, l’espagnol et le français.",
   },
 
   // 4
   faq_item4_question: {
     ES: "📝 ¿Cuál es la diferencia entre traducir y resumir?",
     EUS: "📝 Zein da itzultze eta laburtzearen arteko aldea?",
+    EN: "📝 What’s the difference between translating and summarizing?",
+    FR: "📝 Quelle est la différence entre traduire et résumer ?",
   },
   faq_item4_answer: {
     ES: "Traducir mantiene la longitud y estructura del texto original, pero lo convierte a otro idioma.\n\nResumir reduce el contenido a las ideas esenciales, manteniendo el idioma seleccionado.",
     EUS: "Itzultzeak jatorrizko testuaren luzera eta egitura mantentzen ditu, baina beste hizkuntza batera eramaten du.\n\nLaburtzeak edukia murrizten du eta ideia nagusiak uzten ditu, aukeratutako hizkuntza errespetatuz.",
+    EN: "Translating keeps the original length and structure, but converts it to another language.\n\nSummarizing reduces the content to the essential ideas, keeping the selected language.",
+    FR: "Traduire conserve la longueur et la structure du texte original, mais le convertit dans une autre langue.\n\nRésumer réduit le contenu aux idées essentielles, tout en conservant la langue choisie.",
   },
 
   // 5
   faq_item5_question: {
     ES: "📏 ¿Hay límites de caracteres o tamaño de archivo?",
     EUS: "📏 Ba al dago karaktere edo fitxategi-tamainaren mugarik?",
+    EN: "📏 Are there character or file size limits?",
+    FR: "📏 Y a-t-il des limites de caractères ou de taille de fichier ?",
   },
   faq_item5_answer: {
     ES: "Sí, existen límites de caracteres para garantizar un uso estable del servicio. Actualmente, el límite es de 12.000 caracteres por operación, tanto para texto introducido manualmente como para contenido obtenido a partir de archivos o enlaces..\n\nSi tu contenido es muy largo, recomendamos dividirlo en partes.",
     EUS: "Bai, karaktere-muga bat dago zerbitzuaren erabilera egonkorra bermatzeko. Une honetan, gehienezko muga 12.000 karaktere da eragiketa bakoitzeko, bai eskuz idatzitako testuentzat bai fitxategietatik edo esteketatik ateratako edukientzat.\n\nEdukia oso luzea bada, zatika bidaltzea gomendatzen dugu.",
+    EN: "Yes. There are character limits to ensure stable use of the service. Currently, the limit is 12,000 characters per operation, both for manually entered text and for content obtained from files or links..\n\nIf your content is very long, we recommend splitting it into parts.",
+    FR: "Oui. Il existe des limites de caractères pour garantir une utilisation stable du service. Actuellement, la limite est de 12 000 caractères par opération, aussi bien pour le texte saisi manuellement que pour le contenu obtenu à partir de fichiers ou de liens..\n\nSi votre contenu est très long, nous vous recommandons de le diviser en plusieurs parties.",
   },
 
   // 6
   faq_item6_question: {
     ES: "🔐 ¿Son seguras mis traducciones?",
     EUS: "🔐 Seguruak al dira nire itzulpenak?",
+    EN: "🔐 Are my translations safe?",
+    FR: "🔐 Mes traductions sont-elles sécurisées ?",
   },
   faq_item6_answer: {
     ES: "Tus textos solo se usan para generar el resultado solicitado y no se almacenan para fines externos.",
     EUS: "Zure testuak soilik eskatutako emaitzak sortzeko erabiltzen dira, eta ez dira kanpoko helburuetarako gordetzen.",
+    EN: "Your texts are only used to generate the requested result and are not stored for external purposes.",
+    FR: "Vos textes sont uniquement utilisés pour générer le résultat demandé et ne sont pas stockés à des fins externes.",
   },
 
   // 7
   faq_item7_question: {
   ES: "💼 ¿Qué opciones ofrece Euskalia?",
   EUS: "💼 Zein aukera eskaintzen ditu Euskaliak?",
+  EN: "💼 What options does Euskalia offer?",
+  FR: "💼 Quelles options propose Euskalia ?",
 },
 faq_item7_answer: {
   ES: "Euskalia ofrece dos opciones: una versión gratuita sin registro para usar el traductor y el resumidor, y una cuenta de pago para quienes necesitan más capacidad y una experiencia completa. En el futuro se añadirán nuevas funciones y planes avanzados.",
   EUS: "Euskaliak bi aukera eskaintzen ditu: erregistro gabe doako bertsioa, itzultzailea eta laburtzailea erabiltzeko; eta kontu ordaindua, gaitasun handiagoa eta esperientzia osoa behar dutenentzat. Etorkizunean funtzio eta plan aurreratuak gehituko dira.",
+  EN: "Euskalia offers two options: a free version with no registration to use the translator and summarizer, and a paid account for those who need more capacity and a complete experience. In the future, new features and advanced plans will be added.",
+  FR: "Euskalia propose deux options : une version gratuite sans inscription pour utiliser le traducteur et le résumeur, et un compte payant pour celles et ceux qui ont besoin de plus de capacité et d’une expérience complète. À l’avenir, de nouvelles fonctionnalités et des plans avancés seront ajoutés.",
 },
   // 10
   faq_item10_question: {
     ES: "💬 ¿Cómo puedo dar mi opinión?",
     EUS: "💬 Nola bidal dezaket nire iritzia?",
+    EN: "💬 How can I share my feedback?",
+    FR: "💬 Comment puis-je donner mon avis ?",
   },
   faq_item10_answer: {
     ES: "Puedes escribirnos para sugerencias o mejoras a:\neuskaliaweb@gmail.com",
     EUS: "Iradokizunak edo hobekuntzak bidali hona:\neuskaliaweb@gmail.com",
+    EN: "You can email us suggestions or improvements at:\neuskaliaweb@gmail.com",
+    FR: "Vous pouvez nous écrire pour des suggestions ou des améliorations à :\neuskaliaweb@gmail.com",
   },
+ 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // =========================
   //            CTA
