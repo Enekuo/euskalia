@@ -1450,219 +1450,307 @@ registerPage_login: {
 legal_notice_title: {
   ES: "Aviso Legal",
   EUS: "Lege-oharra",
+  EN: "Legal Notice",
+  FR: "Mentions légales",
 },
 
 legal_notice_last_update: {
   ES: "Última actualización: [__________]",
   EUS: "Azken eguneratzea: [__________]",
+  EN: "Last update: [__________]",
+  FR: "Dernière mise à jour : [__________]",
 },
 
 legal_notice_section1_title: {
   ES: "1. Información general",
   EUS: "1. Informazio orokorra",
+  EN: "1. General information",
+  FR: "1. Informations générales",
 },
 
 legal_notice_section1_p1: {
   ES: "De conformidad con el artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que la entidad responsable de la gestión y funcionamiento de este sitio web es:",
   EUS: "Uztailaren 11ko 34/2002 Legearen 10. artikuluarekin bat etorriz, Informazioaren Gizarteko Zerbitzuei eta Merkataritza Elektronikoari buruzko Legeak (LSSI-CE) xedatutakoa betez, honako hau jakinarazten da: webgune honen kudeaketaz eta funtzionamenduaz arduratzen den erakundea hau da:",
+  EN: "In accordance with Article 10 of Spanish Law 34/2002 of 11 July on Information Society Services and Electronic Commerce (LSSI-CE), it is hereby stated that the entity responsible for the management and operation of this website is:",
+  FR: "Conformément à l’article 10 de la loi espagnole 34/2002 du 11 juillet relative aux services de la société de l’information et au commerce électronique (LSSI-CE), il est indiqué que l’entité responsable de la gestion et du fonctionnement de ce site web est :",
 },
 
 legal_notice_section1_field_name: {
   ES: "Nombre: Euskalia",
   EUS: "Izena: Euskalia",
+  EN: "Name: Euskalia",
+  FR: "Nom : Euskalia",
 },
 
 legal_notice_section1_field_domain: {
   ES: "Dominio: https://euskalia.ai",
   EUS: "Domeinua: https://euskalia.ai",
+  EN: "Domain: https://euskalia.ai",
+  FR: "Domaine : https://euskalia.ai",
 },
 
 legal_notice_section1_field_email: {
   ES: "Email: [__________]",
   EUS: "Emaila: [__________]",
+  EN: "Email: [__________]",
+  FR: "Email : [__________]",
 },
 
 legal_notice_section1_field_activity: {
   ES: "Actividad: Servicios digitales de traducción y resumen basados en Inteligencia Artificial.",
   EUS: "Jarduera: Itzulpen eta laburpen digitalen zerbitzuak, adimen artifizialean oinarrituak.",
+  EN: "Activity: Digital translation and summarization services based on Artificial Intelligence.",
+  FR: "Activité : Services numériques de traduction et de résumé basés sur l’intelligence artificielle.",
 },
 
 legal_notice_section1_p2: {
   ES: "El acceso y uso del sitio web atribuye la condición de usuario, e implica la aceptación plena y sin reservas del presente Aviso Legal y de las condiciones aquí establecidas.",
   EUS: "Webgunera sartzeak eta hura erabiltzeak erabiltzaile izaera ematen du, eta lege-ohar hau eta hemen ezarritako baldintzak osorik eta erreserbarik gabe onartzea dakar.",
+  EN: "Access to and use of the website grants the status of user and implies full and unreserved acceptance of this Legal Notice and the terms set out herein.",
+  FR: "L’accès et l’utilisation du site confèrent la qualité d’utilisateur et impliquent l’acceptation pleine et entière du présent avis légal et des conditions établies ici.",
 },
 legal_notice_section2_title: {
   ES: "2. Objeto",
   EUS: "2. Xedea",
+  EN: "2. Purpose",
+  FR: "2. Objet",
 },
 
 legal_notice_section2_p1: {
   ES: "El presente aviso legal regula el uso del sitio web Euskalia, cuyo propósito principal es ofrecer herramientas de traducción y resumen de textos entre euskera, castellano y otros idiomas, apoyadas en inteligencia artificial.",
   EUS: "Lege-ohar honek Euskalia webgunearen erabilera arautzen du. Euskaliaren helburu nagusia da euskararen, gaztelaniaren eta beste hizkuntza batzuen arteko itzulpen eta testu-laburpen tresnak eskaintzea, adimen artifizialaren laguntzarekin.",
+  EN: "This legal notice governs the use of the Euskalia website, whose main purpose is to offer AI-assisted tools for translating and summarizing texts between Basque, Spanish and other languages.",
+  FR: "Le présent avis légal régit l’utilisation du site web Euskalia, dont l’objectif principal est de proposer des outils de traduction et de résumé de textes entre le basque, l’espagnol et d’autres langues, avec l’appui de l’intelligence artificielle.",
 },
 
 legal_notice_section2_p2: {
   ES: "A través de esta plataforma, los usuarios pueden introducir textos, documentos o enlaces para obtener traducciones o resúmenes generados por IA, siempre dentro de los límites de uso establecidos.",
   EUS: "Plataforma honen bidez, erabiltzaileek testuak, dokumentuak edo estekak sar ditzakete IA bidez sortutako itzulpenak edo laburpenak lortzeko, ezarritako erabilera-mugen barruan.",
+  EN: "Through this platform, users can enter texts, documents or links to obtain AI-generated translations or summaries, always within the established usage limits.",
+  FR: "Grâce à cette plateforme, les utilisateurs peuvent saisir des textes, des documents ou des liens afin d’obtenir des traductions ou des résumés générés par IA, toujours dans le respect des limites d’utilisation établies.",
 },
 
 legal_notice_section3_title: {
   ES: "3. Condiciones de uso",
   EUS: "3. Erabilera baldintzak",
+  EN: "3. Terms of use",
+  FR: "3. Conditions d’utilisation",
 },
 
 legal_notice_section3_p1: {
   ES: "El usuario se compromete a:",
   EUS: "Erabiltzaileak honako hauek betetzeko konpromisoa hartzen du:",
+  EN: "The user undertakes to:",
+  FR: "L’utilisateur s’engage à :",
 },
 
 legal_notice_section3_li1: {
   ES: "Hacer un uso adecuado y lícito del sitio web.",
   EUS: "Webgunea behar bezala eta legez erabiltzea.",
+  EN: "Make appropriate and lawful use of the website.",
+  FR: "Faire un usage approprié et licite du site.",
 },
 
 legal_notice_section3_li2: {
   ES: "No utilizar el contenido con fines ilícitos o contrarios a la buena fe.",
   EUS: "Edukia legez kontrako edo fede onaren aurkako helburuetarako ez erabiltzea.",
+  EN: "Not use the content for unlawful purposes or in a manner contrary to good faith.",
+  FR: "Ne pas utiliser le contenu à des fins illicites ou contraires à la bonne foi.",
 },
 
 legal_notice_section3_li3: {
   ES: "No provocar daños en los sistemas de Euskalia ni intentar acceder de forma no autorizada a las áreas restringidas.",
   EUS: "Euskaliaren sistemetan kalterik ez eragitea eta baimenik gabe sarbide mugatuko eremuetara sartzen saiatzea.",
+  EN: "Not cause damage to Euskalia’s systems or attempt unauthorized access to restricted areas.",
+  FR: "Ne pas causer de dommages aux systèmes d’Euskalia ni tenter d’accéder sans autorisation aux zones restreintes.",
 },
 
 legal_notice_section3_li4: {
   ES: "No introducir ni difundir virus informáticos u otros sistemas que puedan causar daños.",
   EUS: "Ez sartzea eta ez zabaltzea kalteak eragin ditzaketen birus informatikoak edo antzeko sistema kaltegarriak.",
+  EN: "Not introduce or spread computer viruses or other systems that may cause damage.",
+  FR: "Ne pas introduire ni diffuser des virus informatiques ou d’autres systèmes pouvant causer des dommages.",
 },
 
 legal_notice_section3_p2: {
   ES: "Euskalia se reserva el derecho de suspender o retirar el acceso a los usuarios que incumplan estas condiciones.",
   EUS: "Euskaliak eskubidea du baldintza hauek betetzen ez dituzten erabiltzaileei sarbidea eteteko edo kentzeko.",
+  EN: "Euskalia reserves the right to suspend or withdraw access for users who breach these conditions.",
+  FR: "Euskalia se réserve le droit de suspendre ou de retirer l’accès aux utilisateurs qui ne respectent pas ces conditions.",
 },
 
 legal_notice_section4_title: {
   ES: "4. Propiedad intelectual e industrial",
   EUS: "4. Jabetza intelektuala eta industriala",
+  EN: "4. Intellectual and industrial property",
+  FR: "4. Propriété intellectuelle et industrielle",
 },
 
 legal_notice_section4_p1: {
   ES: "Todos los elementos que forman el sitio web (diseño, logotipos, textos, imágenes, software, código fuente...) son propiedad de Euskalia o cuentan con las licencias necesarias para su uso.",
   EUS: "Webgunea osatzen duten elementu guztiak (diseinua, logotipoak, testuak, irudiak, softwarea, kodea...) Euskaliaren jabetzakoak dira edo beharrezko lizentziak dituzte.",
+  EN: "All elements that make up the website (design, logos, texts, images, software, source code...) are owned by Euskalia or are used under the necessary licenses.",
+  FR: "Tous les éléments composant le site (design, logos, textes, images, logiciels, code source...) sont la propriété d’Euskalia ou disposent des licences nécessaires à leur utilisation.",
 },
 
 legal_notice_section4_p2: {
   ES: "Queda prohibida la reproducción total o parcial de los contenidos sin autorización expresa y por escrito.",
   EUS: "Debekatuta dago edukiak osorik edo zatika erreproduzitzea, titularraren baimen espresu eta idatzirik gabe.",
+  EN: "Total or partial reproduction of the contents is prohibited without express written authorization.",
+  FR: "Toute reproduction totale ou partielle des contenus est interdite sans autorisation expresse et écrite.",
 },
 
 legal_notice_section4_p3: {
   ES: "El uso de la marca Euskalia y su logotipo queda limitado exclusivamente a fines informativos y no puede utilizarse sin consentimiento previo.",
   EUS: "Euskalia marka eta logotipoaren erabilera helburu informatiboetara mugatzen da soilik, eta ezin da erabili titularraren aldez aurreko baimenik gabe.",
+  EN: "Use of the Euskalia trademark and logo is limited exclusively to informational purposes and may not be used without prior consent.",
+  FR: "L’utilisation de la marque Euskalia et de son logo est strictement limitée à des fins informatives et ne peut être faite sans consentement préalable.",
 },
 legal_notice_section5_title: {
   ES: "5. Responsabilidad",
   EUS: "5. Erantzukizuna",
+  EN: "5. Liability",
+  FR: "5. Responsabilité",
 },
 
 legal_notice_section5_p1: {
   ES: "Euskalia no garantiza la disponibilidad continua del sitio ni la ausencia de errores en sus servicios.",
   EUS: "Euskaliak ez du bermatzen webgunearen erabilgarritasun jarraitua ezta bere zerbitzuetan akatsik ez egotea ere.",
+  EN: "Euskalia does not guarantee the continuous availability of the website nor the absence of errors in its services.",
+  FR: "Euskalia ne garantit ni la disponibilité continue du site ni l’absence d’erreurs dans ses services.",
 },
 
 legal_notice_section5_p2: {
   ES: "Los resultados generados por inteligencia artificial pueden contener imprecisiones, por lo que el usuario es responsable de su uso.",
   EUS: "Adimen artifizialak sortutako emaitzek zehaztasun faltak izan ditzakete; beraz, erabiltzailea da haien erabileraren erantzule bakarra.",
+  EN: "Results generated by artificial intelligence may contain inaccuracies, so the user is responsible for their use.",
+  FR: "Les résultats générés par l’intelligence artificielle peuvent contenir des imprécisions ; l’utilisateur est donc responsable de leur utilisation.",
 },
 
 legal_notice_section5_p3: {
   ES: "Euskalia no se hace responsable de los daños derivados del uso indebido de la plataforma.",
   EUS: "Euskalia ez da erantzule izango plataforma desegoki erabiltzetik sortutako kalteen aurrean.",
+  EN: "Euskalia is not responsible for damages arising from improper use of the platform.",
+  FR: "Euskalia ne saurait être tenue responsable des dommages résultant d’une utilisation inappropriée de la plateforme.",
 },
 
 legal_notice_section6_title: {
   ES: "6. Política de enlaces",
   EUS: "6. Esteken politika",
+  EN: "6. Links policy",
+  FR: "6. Politique de liens",
 },
 
 legal_notice_section6_p1: {
   ES: "El sitio web puede contener enlaces a páginas de terceros.",
   EUS: "Webguneak hirugarrenen webguneetarako estekak izan ditzake.",
+  EN: "The website may contain links to third-party pages.",
+  FR: "Le site web peut contenir des liens vers des pages de tiers.",
 },
 
 legal_notice_section6_p2: {
   ES: "Euskalia no controla ni se responsabiliza de los contenidos o políticas de dichos sitios.",
   EUS: "Euskaliak ez ditu kontrolatzen eta ez da erantzule izango hirugarrenen webguneetatik eratorritako edukien edo politikaren aurrean.",
+  EN: "Euskalia does not control and is not responsible for the contents or policies of such sites.",
+  FR: "Euskalia ne contrôle pas et n’est pas responsable des contenus ou des politiques de ces sites.",
 },
 
 legal_notice_section7_title: {
   ES: "7. Protección de datos personales",
   EUS: "7. Datu pertsonalen babesa",
+  EN: "7. Personal data protection",
+  FR: "7. Protection des données personnelles",
 },
 
 legal_notice_section7_p1: {
   ES: "Los datos personales serán tratados conforme a la Política de Privacidad disponible en el sitio web.",
   EUS: "Datu pertsonalak webgunean eskuragarri dagoen Pribatutasun Politikaren arabera tratatuko dira.",
+  EN: "Personal data will be processed in accordance with the Privacy Policy available on the website.",
+  FR: "Les données personnelles seront traitées conformément à la Politique de confidentialité disponible sur le site.",
 },
 
 legal_notice_section8_title: {
   ES: "8. Uso de cookies",
   EUS: "8. Cookieen erabilera",
+  EN: "8. Use of cookies",
+  FR: "8. Utilisation des cookies",
 },
 
 legal_notice_section8_p1: {
   ES: "Este sitio utiliza cookies propias y de terceros con fines técnicos y analíticos.",
   EUS: "Webgune honek berezko eta hirugarrenen cookieak erabiltzen ditu helburu tekniko eta analitikoekin.",
+  EN: "This website uses its own and third-party cookies for technical and analytical purposes.",
+  FR: "Ce site utilise des cookies propres et de tiers à des fins techniques et analytiques.",
 },
 
 legal_notice_section8_p2: {
   ES: "El usuario puede configurar o rechazar las cookies desde el banner o configuración.",
   EUS: "Erabiltzaileak cookieak konfiguratu edo baztertu ditzake banner bidez edo konfigurazio ataletik.",
+  EN: "The user can configure or reject cookies from the banner or settings.",
+  FR: "L’utilisateur peut configurer ou refuser les cookies via le bandeau ou les paramètres.",
 },
 
 legal_notice_section8_p3: {
   ES: "Para más información consulte la Política de Cookies.",
   EUS: "Informazio gehiago lortzeko, kontsultatu Cookieen Politika.",
+  EN: "For more information, see the Cookies Policy.",
+  FR: "Pour plus d’informations, consultez la Politique de cookies.",
 },
 
 legal_notice_section9_title: {
   ES: "9. Legislación aplicable y jurisdicción",
   EUS: "9. Aplikatu beharreko legeria eta jurisdikzioa",
+  EN: "9. Applicable law and jurisdiction",
+  FR: "9. Droit applicable et juridiction",
 },
 
 legal_notice_section9_p1: {
   ES: "Las presentes condiciones se rigen por la legislación española.",
   EUS: "Baldintza hauek Espainiako legearen arabera arautzen dira.",
+  EN: "These terms are governed by Spanish law.",
+  FR: "Les présentes conditions sont régies par le droit espagnol.",
 },
 
 legal_notice_section9_p2: {
   ES: "En caso de conflicto, las partes se someten a los Juzgados y Tribunales de [__________].",
   EUS: "Gatazka izanez gero, aldeek [__________]-ko epaitegi eta auzitegien jurisdikzioari men egingo diote.",
+  EN: "In the event of a dispute, the parties submit to the Courts and Tribunals of [__________].",
+  FR: "En cas de litige, les parties se soumettent aux tribunaux de [__________].",
 },
 
 legal_notice_section10_title: {
   ES: "10. Contacto",
   EUS: "10. Harremana",
+  EN: "10. Contact",
+  FR: "10. Contact",
 },
 
 legal_notice_section10_p1: {
   ES: "Para cualquier duda o consulta relacionada con este aviso legal puede contactar con nosotros:",
   EUS: "Lege-ohar honekin lotutako edozein zalantza edo galderatarako, jar zaitez gurekin harremanetan:",
+  EN: "For any questions or queries related to this legal notice, you can contact us:",
+  FR: "Pour toute question relative au présent avis légal, vous pouvez nous contacter :",
 },
 
 legal_notice_section10_contact_email: {
   ES: "📧 Correo electrónico: []",
   EUS: "📧 Posta elektronikoa: []",
+  EN: "📧 Email: []",
+  FR: "📧 Email : []",
 },
 
 legal_notice_section10_contact_address: {
   ES: "📍 Dirección postal: []",
   EUS: "📍 Posta helbidea: []",
+  EN: "📍 Postal address: []",
+  FR: "📍 Adresse postale : []",
 },
 
 legal_notice_footer_note: {
   ES: "Este Aviso Legal está actualizado a fecha [__________].",
   EUS: "Lege ohar hau eguneratuta dago honako data honetan: [__________].",
+  EN: "This Legal Notice is updated as of [__________].",
+  FR: "Ces mentions légales sont à jour au [__________].",
 },
   
 // POLITÍCA DE PRIVACIDAD // 
@@ -1670,109 +1758,157 @@ privacyPolicy: {
   title: {
     ES: "Política de privacidad",
     EUS: "Pribatutasun politika",
+    EN: "Privacy Policy",
+    FR: "Politique de confidentialité",
   },
   
   intro: {
     ES: "Esta Política de Privacidad explica cómo se tratan los datos personales en Euskalia y qué derechos tienen las personas usuarias cuando utilizan la plataforma.",
     EUS: "Pribatutasun politika honek azaltzen du Euskalian datu pertsonalak nola tratatzen diren eta erabiltzaileek zer eskubide dituzten plataforma erabiltzen dutenean.",
+    EN: "This Privacy Policy explains how personal data is processed on Euskalia and what rights users have when using the platform.",
+    FR: "Cette Politique de confidentialité explique comment les données personnelles sont traitées sur Euskalia et quels droits ont les utilisateurs lorsqu’ils utilisent la plateforme.",
   },
 
   section1Title: {
     ES: "1. Ámbito de aplicación",
     EUS: "1. Aplikazio-eremua",
+    EN: "1. Scope",
+    FR: "1. Champ d’application",
   },
   section1Body: {
     ES: "Euskalia se compromete a respetar la privacidad de quienes visitan y utilizan su web. Esta Política de Privacidad informa sobre el tratamiento de los datos personales recogidos a través del sitio y de los servicios ofrecidos en él. El uso del sitio web implica la aceptación de esta Política y del tratamiento de los datos conforme a la normativa vigente.",
     EUS: "Euskaliak bere webgunea bisitatzen eta erabiltzen duten pertsonen pribatutasuna errespetatzeko konpromisoa hartzen du. Pribatutasun politika honek webgunearen eta bertan eskaintzen diren zerbitzuen bidez jasotako datu pertsonalen tratamendua azaltzen du. Webgunea erabiltzeak politika hau eta indarreko araudia onartzea dakar.",
+    EN: "Euskalia is committed to respecting the privacy of people who visit and use its website. This Privacy Policy explains how personal data collected through the site and the services offered on it is processed. Using the website implies acceptance of this Policy and the processing of data in accordance with applicable regulations.",
+    FR: "Euskalia s’engage à respecter la vie privée des personnes qui visitent et utilisent son site. Cette Politique de confidentialité informe du traitement des données personnelles collectées via le site et les services qui y sont proposés. L’utilisation du site implique l’acceptation de cette Politique et du traitement des données conformément à la réglementation en vigueur.",
   },
 
   section2Title: {
     ES: "2. Responsable del tratamiento de los datos", 
     EUS: "2. Datuen tratamenduaren arduraduna",
+    EN: "2. Data controller",
+    FR: "2. Responsable du traitement",
   },
   section2Body: {
     ES: "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el titular del proyecto.",
     EUS: "Euskaliaren bidez emandako datu pertsonalak proiektuaren titularrak kudeatutako tratamendu batean sartzen dira.",
+    EN: "The personal data provided through Euskalia is incorporated into a processing activity managed by the project owner.",
+    FR: "Les données personnelles fournies via Euskalia sont intégrées à un traitement géré par le titulaire du projet.",
   },
   section2Details: {
     ES: "Titular del sitio: [__________]\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción y resumen de textos con apoyo de inteligencia artificial.\nCorreo electrónico de contacto: [__________]\nDominio web: https://euskalia.ai",
     EUS: "Webgunearen titularra: [__________]\nIzen komertziala: Euskalia\nJarduera: Testuen itzulpena eta laburpena egiteko zerbitzu digitalak, adimen artifizialaren laguntzarekin.\nHarremanetarako posta elektronikoa: [__________]\nWebgunearen domeinua: https://euskalia.ai",
+    EN: "Website owner: [__________]\nTrade name: Euskalia\nActivity: Digital services for translating and summarizing texts with the support of artificial intelligence.\nContact email: [__________]\nWebsite domain: https://euskalia.ai",
+    FR: "Titulaire du site : [__________]\nNom commercial : Euskalia\nActivité : Services numériques de traduction et de résumé de textes avec l’appui de l’intelligence artificielle.\nEmail de contact : [__________]\nDomaine : https://euskalia.ai",
   },
 
   section3Title: {
     ES: "3. Finalidades del tratamiento",
     EUS: "3. Tratamenduaren helburuak",
+    EN: "3. Purposes of processing",
+    FR: "3. Finalités du traitement",
   },
   section3Body: {
     ES: "Los datos podrán utilizarse para: facilitar información sobre el uso de la plataforma, responder consultas o solicitudes de soporte, enviar comunicaciones informativas o novedades (si se ha dado el consentimiento) y mejorar la experiencia de uso mediante análisis estadísticos agregados. La persona usuaria puede darse de baja de estas comunicaciones en cualquier momento a través de los enlaces de cancelación o escribiendo al correo de contacto indicado.",
     EUS: "Datuak honako helburu hauekin erabili ahal izango dira: plataformaren erabilerari buruzko informazioa ematea, kontsultei edo laguntza-eskaerei erantzutea, informazio- edo berritasun-komunikazioak bidaltzea (baimena eman bada) eta esperientzia hobetzea, estatistika-analisien bidez. Erabiltzaileak edozein unetan baja eman dezake komunikazio horietatik, mezuetan agertzen den baja-estekaren bidez edo adierazitako kontaktu-helbidera idatziz.",
+    EN: "Data may be used to: provide information about the use of the platform, respond to queries or support requests, send informational communications or updates (if consent has been given), and improve the user experience through aggregated statistical analysis. Users can unsubscribe from these communications at any time via the unsubscribe links or by writing to the contact email provided.",
+    FR: "Les données peuvent être utilisées pour : fournir des informations sur l’utilisation de la plateforme, répondre aux demandes ou au support, envoyer des communications d’information ou des nouveautés (si le consentement a été donné) et améliorer l’expérience via des analyses statistiques agrégées. Les utilisateurs peuvent se désinscrire à tout moment via les liens de désinscription ou en écrivant à l’email de contact indiqué.",
   },
 
   section4Title: {
     ES: "4. Sobre esta Política de Privacidad",
     EUS: "4. Pribatutasun politika honi buruz",
+    EN: "4. About this Privacy Policy",
+    FR: "4. À propos de cette Politique",
   },
   section4Body: {
     ES: "Euskalia mantiene un compromiso firme con la protección de los datos personales de sus usuarios. Esta Política busca ser clara y sencilla, para que cada persona pueda decidir de forma informada qué información facilita y con qué finalidad se utilizará.",
     EUS: "Euskaliak konpromiso sendoa du bere erabiltzaileen datu pertsonalen babesarekin. Politika honek argia eta ulerterraza izan nahi du, pertsona bakoitzak modu informatuan erabaki ahal izan dezan zer informazio ematen duen eta zertarako erabiliko den.",
+    EN: "Euskalia maintains a firm commitment to protecting users’ personal data. This Policy aims to be clear and simple so that each person can make an informed decision about what information they provide and for what purpose it will be used.",
+    FR: "Euskalia s’engage fermement à protéger les données personnelles de ses utilisateurs. Cette Politique se veut claire et simple afin que chacun puisse décider en connaissance de cause quelles informations il fournit et à quelles fins elles seront utilisées.",
   },
 
   section5Title: {
     ES: "5. Confidencialidad y seguridad",
     EUS: "5. Konfidentzialtasuna eta segurtasuna",
+    EN: "5. Confidentiality and security",
+    FR: "5. Confidentialité et sécurité",
   },
   section5Body: {
     ES: "Los datos personales se tratarán de forma confidencial y se aplicarán medidas técnicas y organizativas razonables para evitar accesos no autorizados, pérdidas o alteraciones. No obstante, ningún sistema es completamente infalible y no se puede garantizar una seguridad absoluta frente a incidentes externos.",
     EUS: "Datu pertsonalak modu konfidentzialean tratatuko dira, eta neurri tekniko eta antolaketa-neurri egokiak aplikatuko dira sartze ez-baimenduak, galerak edo aldaketak saihesteko. Hala ere, ez dago erabat hutsik egiten ez duen sistemarik, eta ezin da kanpoko gertaeren aurkako segurtasun absolutua bermatu.",
+    EN: "Personal data will be treated confidentially and reasonable technical and organizational measures will be applied to prevent unauthorized access, loss or alteration. However, no system is completely infallible and absolute security against external incidents cannot be guaranteed.",
+    FR: "Les données personnelles seront traitées de manière confidentielle et des mesures techniques et organisationnelles raisonnables seront appliquées afin d’éviter les accès non autorisés, les pertes ou les altérations. Toutefois, aucun système n’est totalement infaillible et une sécurité absolue contre les incidents externes ne peut être garantie.",
   },
 
   section6Title: {
     ES: "6. Derechos de las personas usuarias",
     EUS: "6. Erabiltzaileen eskubideak",
+    EN: "6. Users’ rights",
+    FR: "6. Droits des utilisateurs",
   },
   section6Body: {
     ES: "De acuerdo con la normativa aplicable, las personas usuarias pueden ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad de sus datos. Para ello, pueden dirigirse al correo de contacto indicado, señalando de forma clara el derecho que desean ejercer. En caso necesario, también podrán presentar una reclamación ante la autoridad de control competente.",
     EUS: "Aplikatu beharreko araudiaren arabera, erabiltzaileek honako eskubideak erabil ditzakete: datuetara sartzea, zuzentzea, ezabatzea, aurka egitea, tratamendua mugatzea eta datuen eramangarritasuna. Horretarako, adierazitako kontaktu-helbidera jo dezakete, erabili nahi duten eskubidea argi adieraziz. Beharrezkoa bada, kontrol-agintari eskudunaren aurrean erreklamazioa ere aurkez dezakete.",
+    EN: "In accordance with applicable regulations, users may exercise their rights of access, rectification, erasure, objection, restriction of processing and data portability. To do so, they can contact the indicated email address and clearly state the right they wish to exercise. If necessary, they may also lodge a complaint with the competent supervisory authority.",
+    FR: "Conformément à la réglementation applicable, les utilisateurs peuvent exercer leurs droits d’accès, de rectification, d’effacement, d’opposition, de limitation du traitement et de portabilité. Pour cela, ils peuvent écrire à l’email de contact indiqué en précisant clairement le droit qu’ils souhaitent exercer. En cas de besoin, ils peuvent également déposer une réclamation auprès de l’autorité de contrôle compétente.",
   },
 
   section7Title: {
     ES: "7. Envíos comerciales y comunicaciones",
     EUS: "7. Merkataritza-mezuak eta komunikazioak",
+    EN: "7. Commercial messages and communications",
+    FR: "7. Communications commerciales",
   },
   section7Body: {
     ES: "Euskalia no realiza prácticas de envío masivo de correos electrónicos no solicitados (spam). Cualquier comunicación informativa o promocional se enviará únicamente cuando exista una base legítima o se haya obtenido el consentimiento previo, e incluirá siempre un mecanismo claro para cancelar la suscripción.",
     EUS: "Euskaliak ez du nahi ez diren posta elektroniko masiborik bidaltzen (spam). Edozein komunikazio informatibo edo sustapen-mezu legitimazio egokiarekin edo aldez aurreko baimenarekin bakarrik bidaliko da, eta beti izango du harpidetza uzteko mekanismo argia.",
+    EN: "Euskalia does not engage in mass sending of unsolicited emails (spam). Any informational or promotional communication will only be sent when there is a legitimate basis or prior consent has been obtained, and will always include a clear mechanism to unsubscribe.",
+    FR: "Euskalia ne pratique pas l’envoi massif d’emails non sollicités (spam). Toute communication informative ou promotionnelle ne sera envoyée que s’il existe une base légitime ou un consentement préalable, et inclura toujours un moyen clair de se désinscrire.",
   },
 
   section8Title: {
     ES: "8. Publicidad",
     EUS: "8. Publizitatea",
+    EN: "8. Advertising",
+    FR: "8. Publicité",
   },
   section8Body: {
     ES: "En la versión gratuita de Euskalia podrían mostrarse anuncios. En ningún caso se cederán datos personales a terceros con fines publicitarios sin una base legal adecuada o sin el consentimiento expreso de la persona usuaria.",
     EUS: "Euskaliaren doako bertsioan iragarkiak erakutsi daitezke. Inolaz ere ez zaizkie datu pertsonalak hirugarrenei emango helburu publizitarioekin, baimen espliziturik edo lege-oinarri egokirik gabe.",
+    EN: "Ads may be shown in the free version of Euskalia. Under no circumstances will personal data be shared with third parties for advertising purposes without an appropriate legal basis or the user’s express consent.",
+    FR: "Des publicités peuvent être affichées dans la version gratuite d’Euskalia. En aucun cas les données personnelles ne seront cédées à des tiers à des fins publicitaires sans base légale appropriée ou sans le consentement exprès de l’utilisateur.",
   },
 
   section9Title: {
     ES: "9. Comentarios y opiniones de terceros",
     EUS: "9. Hirugarrenen iritziak eta iruzkinak",
+    EN: "9. Third-party comments and opinions",
+    FR: "9. Avis et commentaires de tiers",
   },
   section9Body: {
     ES: "Euskalia no se hace responsable de las opiniones, valoraciones o comentarios que terceras personas puedan publicar sobre el servicio en redes sociales, plataformas externas o sitios web ajenos al control del proyecto.",
     EUS: "Euskalia ez da erantzule izango hirugarren pertsonek sare sozialetan, kanpoko plataformetan edo proiektuaren kontrolpean ez dauden webguneetan zerbitzuari buruz argitaratu ditzaketen iritzi, balorazio edo iruzkinengatik.",
+    EN: "Euskalia is not responsible for opinions, ratings or comments that third parties may publish about the service on social networks, external platforms or websites not under the project’s control.",
+    FR: "Euskalia n’est pas responsable des opinions, évaluations ou commentaires que des tiers peuvent publier au sujet du service sur les réseaux sociaux, des plateformes externes ou des sites web hors du contrôle du projet.",
   },
 
   section10Title: {
     ES: "10. Modificaciones de la Política",
     EUS: "10. Politikaren aldaketak",
+    EN: "10. Changes to the Policy",
+    FR: "10. Modifications de la Politique",
   },
   section10Body: {
     ES: "Euskalia se reserva el derecho de modificar esta Política de Privacidad para adaptarla a cambios legislativos, criterios de las autoridades de control o mejoras técnicas del servicio. La versión vigente estará siempre disponible en el sitio web y, en caso de cambios relevantes, se informará a las personas usuarias y se recabará de nuevo el consentimiento cuando sea necesario.",
     EUS: "Euskaliak eskubidea du Pribatutasun politika hau aldatzeko, lege-aldaketetara, kontrol-agintarien irizpideetara edo zerbitzuaren hobekuntza teknikoetara egokitzeko. Indarrean dagoen bertsioa beti egongo da webgunean eskuragarri, eta aldaketa esanguratsuak eginez gero, erabiltzaileei jakinaraziko zaie eta, beharrezkoa bada, baimena berriro eskatuko da.",
+    EN: "Euskalia reserves the right to modify this Privacy Policy to adapt it to legislative changes, supervisory authority criteria or technical improvements to the service. The current version will always be available on the website and, in case of relevant changes, users will be informed and consent will be collected again when necessary.",
+    FR: "Euskalia se réserve le droit de modifier cette Politique de confidentialité afin de l’adapter aux changements législatifs, aux critères des autorités de contrôle ou aux améliorations techniques du service. La version en vigueur sera toujours disponible sur le site et, en cas de changements significatifs, les utilisateurs seront informés et le consentement sera à nouveau recueilli si nécessaire.",
   },
   footerNote: {
     ES: "Esta Política de Privacidad está actualizada a fecha [__________].",
     EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",
+    EN: "This Privacy Policy is updated as of [__________].",
+    FR: "Cette Politique de confidentialité est à jour au [__________].",
   },
 },
 
@@ -1782,150 +1918,210 @@ privacyPolicy: {
 terms_title: {
   ES: "Términos y Condiciones de Uso",
   EUS: "Erabilera-baldintzak",
+  EN: "Terms and Conditions of Use",
+  FR: "Conditions d’utilisation",
 },
 
 terms_section1_title: {
   ES: "1. Objeto y aceptación",
   EUS: "1. Xedea eta onarpena",
+  EN: "1. Purpose and acceptance",
+  FR: "1. Objet et acceptation",
 },
 
 terms_section1_p1: {
   ES: "Los presentes Términos y Condiciones regulan el acceso, navegación y uso de la plataforma Euskalia, así como la contratación de los servicios ofrecidos a través de la misma. El uso del sitio web implica la aceptación plena de estas condiciones por parte de la persona usuaria. En caso de no estar de acuerdo, deberá abstenerse de utilizar la plataforma.",
   EUS: "Erabilera-baldintza hauek Euskalia plataformara sartzea, nabigatzea eta hura erabiltzea arautzen dute, baita bertan eskaintzen diren zerbitzuen kontratazioa ere. Webgunea erabiltzeak baldintza hauek osorik onartzea dakar. Ados ez badago, erabiltzaileak plataformaren erabilerari uko egin beharko dio.",
+  EN: "These Terms and Conditions govern access to, browsing and use of the Euskalia platform, as well as the contracting of the services offered through it. Use of the website implies full acceptance of these conditions by the user. If you do not agree, you must refrain from using the platform.",
+  FR: "Les présentes Conditions régissent l’accès, la navigation et l’utilisation de la plateforme Euskalia, ainsi que la souscription des services qui y sont proposés. L’utilisation du site implique l’acceptation pleine et entière de ces conditions. En cas de désaccord, l’utilisateur doit s’abstenir d’utiliser la plateforme.",
 },
 
 terms_section2_title: {
   ES: "2. Identidad del responsable",
   EUS: "2. Arduradunaren identitatea",
+  EN: "2. Controller identity",
+  FR: "2. Identité du responsable",
 },
 
 terms_section2_p1: {
   ES: "El responsable de la plataforma es Euskalia, en adelante \"el Prestador\", accesible a través del dominio principal https://euskalia.ai.",
   EUS: "Plataformaren arduraduna Euskalia da, aurrerantzean \"Zerbitzu-emailea\", https://euskalia.ai domeinu nagusiaren bidez eskuragarria.",
+  EN: "The platform is operated by Euskalia, hereinafter the “Provider”, accessible through the main domain https://euskalia.ai.",
+  FR: "La plateforme est exploitée par Euskalia, ci-après le « Prestataire », accessible via le domaine principal https://euskalia.ai.",
 },
 
 terms_section3_title: {
   ES: "3. Servicios ofrecidos",
   EUS: "3. Eskaintzen diren zerbitzuak",
+  EN: "3. Services offered",
+  FR: "3. Services proposés",
 },
 
 terms_section3_p1: {
   ES: "Euskalia permite a las personas usuarias introducir textos, documentos o enlaces en euskera, castellano eta beste hizkuntza batzuetan para obtener traducciones y resúmenes generados mediante inteligencia artificial.",
   EUS: "Euskaliak aukera ematen die erabiltzaileei testuak, dokumentuak edo estekak sartzeko, euskaraz, gaztelaniaz eta beste hizkuntza batzuetan, eta horien itzulpenak eta laburpenak lortzeko adimen artifiziala erabiliz.",
+  EN: "Euskalia allows users to input texts, documents or links in Basque, Spanish eta beste hizkuntza batzuetan to obtain translations and summaries generated using artificial intelligence.",
+  FR: "Euskalia permet aux utilisateurs de saisir des textes, des documents ou des liens en basque, espagnol eta beste hizkuntza batzuetan afin d’obtenir des traductions et des résumés générés au moyen de l’intelligence artificielle.",
 },
 
 terms_section3_p2: {
   ES: "Podrá existir un acceso gratuito y uno o varios planes de pago con prestaciones ampliadas. Los planes de pago se contratan mediante suscripción con renovación automática, salvo cancelación previa por parte de la persona usuaria.",
   EUS: "Sarbide mota desberdinak izan daitezke: doako sarbidea eta ezaugarri zabalduak dituzten ordainpeko planak. Ordainpeko planak harpidetzaren bidez kontratatzen dira eta automatikoki berritzen dira, erabiltzaileak aldez aurretik ezeztatzen ez baditu.",
+  EN: "There may be free access and one or more paid plans with extended features. Paid plans are contracted through a subscription with automatic renewal, unless cancelled in advance by the user.",
+  FR: "Un accès gratuit peut exister, ainsi qu’un ou plusieurs plans payants avec des fonctionnalités étendues. Les plans payants sont souscrits via un abonnement avec renouvellement automatique, sauf résiliation préalable par l’utilisateur.",
 },
 
 terms_section4_title: {
   ES: "4. Registro de usuarios",
   EUS: "4. Erabiltzaileen erregistroa",
+  EN: "4. User registration",
+  FR: "4. Inscription des utilisateurs",
 },
 
 terms_section4_p1: {
   ES: "Para contratar cualquiera de los planes de pago, la persona usuaria deberá registrarse facilitando información veraz y actualizada. La cuenta es personal e intransferible.",
   EUS: "Ordainpeko planetako edozein kontratatzeko, erabiltzaileak erregistratu beharko du, egiazko eta eguneratutako informazioa emanez. Kontua pertsonala eta besterenezinakoa da.",
+  EN: "To subscribe to any paid plan, the user must register by providing truthful and up-to-date information. The account is personal and non-transferable.",
+  FR: "Pour souscrire à l’un des plans payants, l’utilisateur doit s’inscrire en fournissant des informations exactes et à jour. Le compte est personnel et non transférable.",
 },
 
 terms_section5_title: {
   ES: "5. Condiciones económicas y facturación",
   EUS: "5. Baldintza ekonomikoak eta fakturazioa",
+  EN: "5. Pricing and billing",
+  FR: "5. Conditions économiques et facturation",
 },
 
 terms_section5_p1: {
   ES: "El precio de cada plan de pago se mostrará en el momento de la contratación. Los pagos se realizan mediante los métodos habilitados en la web. Las suscripciones se renuevan automáticamente cada periodo de facturación, salvo que la persona usuaria cancele su plan antes de la fecha de renovación. En caso de impago, el Prestador podrá suspender o cancelar el acceso al servicio.",
   EUS: "Ordainpeko plan bakoitzaren prezioa kontratazio unean erakutsiko da. Ordainketak webgunean gaitutako metodoen bidez egingo dira. Harpidetzak automatikoki berritzen dira fakturazio epe bakoitzean, erabiltzaileak berritze-data baino lehen plana ezeztatzen ez badu. Ordainketarik ez badago, Zerbitzu-emaileak zerbitzua eteteko edo bertan behera uzteko eskubidea izango du.",
+  EN: "The price of each paid plan will be displayed at the time of subscription. Payments are made using the methods enabled on the website. Subscriptions renew automatically each billing period unless the user cancels before the renewal date. In case of non-payment, the Provider may suspend or cancel access to the service.",
+  FR: "Le prix de chaque plan payant est affiché au moment de la souscription. Les paiements sont effectués via les moyens disponibles sur le site. Les abonnements se renouvellent automatiquement à chaque période de facturation, sauf résiliation avant la date de renouvellement. En cas de non-paiement, le Prestataire peut suspendre ou annuler l’accès au service.",
 },
 
 terms_section6_title: {
   ES: "6. Uso permitido y prohibido",
   EUS: "6. Onartutako eta debekatutako erabilera",
+  EN: "6. Permitted and prohibited use",
+  FR: "6. Usage autorisé et interdit",
 },
 
 terms_section6_p1: {
   ES: "La persona usuaria se compromete a utilizar Euskalia conforme a la ley, la moral y el orden público. En particular, queda prohibido:",
   EUS: "Erabiltzaileak Euskalia legearen, moralaren eta ordena publikoaren arabera erabiltzeko konpromisoa hartzen du. Bereziki, debekatuta dago:",
+  EN: "The user undertakes to use Euskalia in accordance with the law, morality and public order. In particular, it is prohibited to:",
+  FR: "L’utilisateur s’engage à utiliser Euskalia conformément à la loi, à la morale et à l’ordre public. Il est notamment interdit de :",
 },
 
 terms_section6_li1: {
   ES: "Utilizar la plataforma para crear, difundir o almacenar contenidos ilícitos, difamatorios, ofensivos, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak.",
   EUS: "Plataforma edukirik ez-legala, iraingarria, bortitza, diskriminatzailea edo hirugarrenen eskubideen aurkakoa sortu, zabaldu edo gordetzeko erabiltzea.",
+  EN: "Use the platform to create, distribute or store unlawful, defamatory, offensive, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak content.",
+  FR: "Utiliser la plateforme pour créer, diffuser ou stocker des contenus illicites, diffamatoires, offensants, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak.",
 },
 
 terms_section6_li2: {
   ES: "Utilizar la plataforma con fines de spam, fraude o manipulación de datos.",
   EUS: "Plataforma spam egiteko, iruzurra burutzeko edo datuak modu desegokian manipulatzeko erabiltzea.",
+  EN: "Use the platform for spam, fraud or data manipulation purposes.",
+  FR: "Utiliser la plateforme à des fins de spam, de fraude ou de manipulation de données.",
 },
 
 terms_section6_li3: {
   ES: "Intentar kaltetzea, aldatzea edo gainkargatzea Euskaliaren sistemak edo segurtasun-neurriak.",
   EUS: "Euskaliaren sistemak edo segurtasun-neurriak kaltetzen, aldatzen edo gainkargatzen saiatzea.",
+  EN: "Attempt to damage, alter or overload Euskalia’s systems or security measures.",
+  FR: "Tenter d’endommager, de modifier ou de surcharger les systèmes d’Euskalia ou ses mesures de sécurité.",
 },
 
 terms_section6_p2: {
   ES: "El incumplimiento de estas obligaciones podrá dar lugar a la suspensión inmediata de la cuenta sin derecho a reembolso.",
   EUS: "Baldintza hauek ez betetzeak kontua berehala etetea ekar dezake, inolako itzulketarik egiteko eskubiderik gabe.",
+  EN: "Failure to comply with these obligations may lead to immediate suspension of the account with no right to a refund.",
+  FR: "Le non-respect de ces obligations peut entraîner la suspension immédiate du compte, sans droit à remboursement.",
 },
 
 terms_section7_title: {
   ES: "7. Propiedad intelectual",
   EUS: "7. Jabetza intelektuala",
+  EN: "7. Intellectual property",
+  FR: "7. Propriété intellectuelle",
 },
 
 terms_section7_p1: {
   ES: "Todos los elementos que conforman Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) son propiedad del Prestador o cuentan con las licencias correspondientes. El uso de la plataforma no otorga a la persona usuaria ningún derecho de propiedad intelectual sobre dichos elementos.",
   EUS: "Euskalia osatzen duten elementu guztiak (kodea, diseinua, testuak, sortutako audioak, logotipoa eta abar) Zerbitzu-emailearen jabetzakoak dira edo dagokien lizentzia dute. Plataformaren erabilerak ez dio erabiltzaileari jabetza intelektualeko eskubiderik ematen elementu horien gainean.",
+  EN: "All elements that make up Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) are owned by the Provider or used under the corresponding licenses. Use of the platform does not grant the user any intellectual property rights over these elements.",
+  FR: "Tous les éléments composant Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) sont la propriété du Prestataire ou disposent des licences correspondantes. L’utilisation de la plateforme ne confère aucun droit de propriété intellectuelle à l’utilisateur sur ces éléments.",
 },
 
 terms_section8_title: {
   ES: "8. Responsabilidad",
   EUS: "8. Erantzukizuna",
+  EN: "8. Liability",
+  FR: "8. Responsabilité",
 },
 
 terms_section8_p1: {
   ES: "Euskalia no garantiza la disponibilidad continua de la plataforma, aunque adoptará medidas razonables para asegurar un servicio estable.",
   EUS: "Euskaliak ez du bermatzen plataformaren etengabeko erabilgarritasuna, nahiz eta zerbitzu egonkorra eskaintzeko neurri arrazoizkoak hartuko diren.",
+  EN: "Euskalia does not guarantee continuous availability of the platform, although it will take reasonable measures to ensure a stable service.",
+  FR: "Euskalia ne garantit pas la disponibilité continue de la plateforme, bien qu’elle adopte des mesures raisonnables pour assurer un service stable.",
 },
 
 terms_section8_p2: {
   ES: "El Prestador no se responsabiliza del uso indebido de los textos, itzulpenak o laburpenak generados por la persona usuaria, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
   EUS: "Zerbitzu-emailea ez da erantzule izango erabiltzaileak sortutako testu, itzulpen edo laburpenen erabilera desegokiaren aurrean, eta erabiltzailea izango da plataforman sartzen dituen eduki, testu eta fitxategien erantzule bakarra.",
+  EN: "The Provider is not responsible for improper use of the texts, itzulpenak or laburpenak generated by the user, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
+  FR: "Le Prestataire n’est pas responsable de l’utilisation inappropriée des textes, itzulpenak ou laburpenak générés par l’utilisateur, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
 },
 
 terms_section9_title: {
   ES: "9. Cancelación y desistimiento",
   EUS: "9. Baliogabetzea eta atzera egitea",
+  EN: "9. Cancellation and withdrawal",
+  FR: "9. Résiliation et rétractation",
 },
 
 terms_section9_p1: {
   ES: "La persona usuaria podrá cancelar su suscripción en cualquier momento desde su cuenta. La cancelación evitará renovaciones futuras, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
   EUS: "Erabiltzaileak bere harpidetza edozein unetan baliogabetu ahal izango du bere kontutik. Baliogabetzeak etorkizuneko berritzeak ekidinen ditu, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeengatik, legeak kontrakoa agintzen ez badu.",
+  EN: "The user may cancel the subscription at any time from their account. Cancellation will prevent future renewals, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
+  FR: "L’utilisateur peut résilier son abonnement à tout moment depuis son compte. La résiliation empêchera les renouvellements futurs, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
 },
 
 terms_section10_title: {
   ES: "10. Modificaciones",
   EUS: "10. Aldaketak",
+  EN: "10. Changes",
+  FR: "10. Modifications",
 },
 
 terms_section10_p1: {
   ES: "Euskalia se reserva el derecho de modificar en cualquier momento los presentes Términos y Condiciones. Las modificaciones se publicarán en el sitio web y serán aplicables desde el momento de su publicación.",
   EUS: "Euskaliak eskubidea du erabilera-baldintza hauek edozein unetan aldatzeko. Aldaketak webgunean argitaratuko dira eta argitaratzen diren unetik aurrera izango dira aplikagarriak.",
+  EN: "Euskalia reserves the right to modify these Terms and Conditions at any time. Changes will be published on the website and will apply from the time of publication.",
+  FR: "Euskalia se réserve le droit de modifier à tout moment les présentes Conditions. Les modifications seront publiées sur le site et seront applicables dès leur publication.",
 },
 
 terms_section11_title: {
   ES: "11. Legislación aplicable y jurisdicción",
   EUS: "11. Aplikatu beharreko legeria eta jurisdikzioa",
+  EN: "11. Applicable law and jurisdiction",
+  FR: "11. Droit applicable et juridiction",
 },
 
 terms_section11_p1: {
   ES: "Los presentes Términos y Condiciones se rigen por la legislación española. En caso de conflicto, las partes se someterán a los Juzgados y Tribunales que correspondan conforme a la normativa aplicable.",
   EUS: "Erabilera-baldintza hauek Espainiako legeriarekin bat etorriz arautzen dira. Gatazkarik izanez gero, alderdiak aplikatu beharreko araudiaren arabera dagokien epaitegi eta auzitegien jurisdikzioari men egingo diote.",
+  EN: "These Terms and Conditions are governed by Spanish law. In the event of a dispute, the parties submit to the Courts and Tribunals that correspond in accordance with applicable regulations.",
+  FR: "Les présentes Conditions sont régies par le droit espagnol. En cas de litige, les parties se soumettront aux tribunaux compétents conformément à la réglementation applicable.",
 },
 terms_footer_note: {
   ES: "Estos Términos y Condiciones están actualizados a fecha [__________].",
   EUS: "Erabilera-baldintza hauek eguneratuta daude honako data honetan: [__________].",
+  EN: "These Terms and Conditions are updated as of [__________].",
+  FR: "Ces conditions d’utilisation sont à jour au [__________].",
 },
 
 
@@ -1935,103 +2131,153 @@ aiApiUsage: {
   title: {
     ES: "Uso de APIs de Inteligencia Artificial",
     EUS: "Adimen Artifizialaren APIen erabilera",
+    EN: "Use of Artificial Intelligence APIs",
+    FR: "Utilisation des API d’intelligence artificielle",
   },
 
   intro: {
     ES: "En esta página te explicamos cómo utiliza Euskalia las APIs de inteligencia artificial para traducir y resumir textos, qué datos se envían a estos proveedores y qué recomendaciones debes seguir para usar la herramienta de forma segura.",
     EUS: "Orrialde honetan azaltzen dugu Euskaliak nola erabiltzen dituen adimen artifizialaren APIak testuak itzuli eta laburtzeko, zer datu bidaltzen diren hornitzaileei eta zein gomendio jarraitu behar diren tresna modu seguruan erabiltzeko.",
+    EN: "On this page we explain how Euskalia uses artificial intelligence APIs to translate and summarize texts, what data is sent to these providers, and what recommendations you should follow to use the tool safely.",
+    FR: "Sur cette page, nous expliquons comment Euskalia utilise des API d’intelligence artificielle pour traduire et résumer des textes, quelles données sont envoyées à ces fournisseurs et quelles recommandations suivre pour utiliser l’outil en toute sécurité.",
   },
   section1Title: {
     ES: "1. Qué APIs de IA utiliza Euskalia",
     EUS: "1. Euskaliak erabiltzen dituen AA APIak",
+    EN: "1. Which AI APIs Euskalia uses",
+    FR: "1. Quelles API d’IA utilise Euskalia",
   },
   section1Body: {
     ES: "Para generar traducciones y resúmenes, Euskalia se conecta a servicios de inteligencia artificial ofrecidos por proveedores externos especializados. Estos procesan el texto enviado y devuelven una respuesta generada automáticamente.",
     EUS: "Itzulpenak eta laburpenak sortzeko, Euskalia kanpoko hornitzaile espezializatuen adimen artifizialeko zerbitzuekin konektatzen da. Haiek jasotako testua prozesatu eta erantzun automatikoa itzultzen dute.",
+    EN: "To generate translations and summaries, Euskalia connects to artificial intelligence services provided by specialized external providers. They process the submitted text and return an automatically generated response.",
+    FR: "Pour générer des traductions et des résumés, Euskalia se connecte à des services d’intelligence artificielle fournis par des prestataires externes spécialisés. Ils traitent le texte envoyé et renvoient une réponse générée automatiquement.",
   },
   section1Body2: {
     ES: "Los modelos de IA pueden actualizarse con el tiempo. Cuando esto ocurra, Euskalia mantendrá esta página actualizada para que conozcas qué tecnología está en uso.",
     EUS: "AAko ereduak denborarekin eguneratu daitezke. Hori gertatzen denean, Euskaliak orrialde hau eguneratuta mantenduko du erabiltzen den teknologiari buruzko informazioa eskaintzeko.",
+    EN: "AI models may be updated over time. When that happens, Euskalia will keep this page updated so you know what technology is in use.",
+    FR: "Les modèles d’IA peuvent évoluer avec le temps. Le cas échéant, Euskalia maintiendra cette page à jour afin que vous sachiez quelle technologie est utilisée.",
   },
   section2Title: {
     ES: "2. Qué datos se envían a las APIs",
     EUS: "2. Zer datu bidaltzen zaizkien APIei",
+    EN: "2. What data is sent to the APIs",
+    FR: "2. Quelles données sont envoyées aux API",
   },
   section2Body: {
     ES: "Cuando utilizas Euskalia, el texto que escribes o pegas (o fragmentos de documentos o URLs) se envía al proveedor de IA para generar la traducción o el resumen.",
     EUS: "Euskalia erabiltzen duzunean, idazten edo itsasten duzun testua (edo dokumentuetako zatiak edo URLak) AA hornitzailera bidaltzen da itzulpena edo laburpena sortzeko.",
+    EN: "When you use Euskalia, the text you type or paste (or fragments from documents or URLs) is sent to the AI provider to generate the translation or summary.",
+    FR: "Lorsque vous utilisez Euskalia, le texte que vous saisissez ou collez (ou des extraits de documents ou d’URL) est envoyé au fournisseur d’IA afin de générer la traduction ou le résumé.",
   },
   section2Li1: {
     ES: "Texto introducido para traducir o resumir.",
     EUS: "Itzultzeko edo laburtzeko sartutako testua.",
+    EN: "Text entered to translate or summarize.",
+    FR: "Texte saisi pour traduire ou résumer.",
   },
   section2Li2: {
     ES: "Idiomen arteko konbinazioa (adibidez, euskera → castellano).",
     EUS: "Hizkuntzen arteko konbinazioa (adibidez, euskara → gaztelania).",
+    EN: "Language combination (e.g., Basque → Spanish).",
+    FR: "Combinaison de langues (ex. basque → espagnol).",
   },
   section2Li3: {
     ES: "Instrucciones técnicas necesarias para que el modelo genere la respuesta.",
     EUS: "Ereduak erantzuna sortzeko behar dituen jarraibide teknikoak.",
+    EN: "Technical instructions necessary for the model to generate the response.",
+    FR: "Instructions techniques nécessaires pour que le modèle génère la réponse.",
   },
   section2Body2: {
     ES: "Evita incluir datos personales o sensibles siempre que sea posible.",
     EUS: "Ahal den guztietan, saihestu datu pertsonalak edo bereziki sentikorrak sartzea.",
+    EN: "Avoid including personal or sensitive data whenever possible.",
+    FR: "Évitez d’inclure des données personnelles ou sensibles autant que possible.",
   },
   section3Title: {
     ES: "3. Tratamiento, conservación y seguridad de los datos",
     EUS: "3. Datuen tratamendua, kontserbazioa eta segurtasuna",
+    EN: "3. Processing, retention and security of data",
+    FR: "3. Traitement, conservation et sécurité des données",
   },
   section3Body: {
     ES: "Los textos enviados se usan solo para generar la respuesta solicitada. Euskalia no vende tus textos ni los comparte con fines comerciales.",
     EUS: "Bidaltzen diren testuak soilik eskatutako erantzuna sortzeko erabiltzen dira. Euskaliak ez ditu zure testuak saltzen edo helburu komertzialekin partekatzen.",
+    EN: "Submitted texts are used only to generate the requested response. Euskalia does not sell your texts or share them for commercial purposes.",
+    FR: "Les textes envoyés sont utilisés uniquement pour générer la réponse demandée. Euskalia ne vend pas vos textes et ne les partage pas à des fins commerciales.",
   },
   section3Body2: {
     ES: "Los proveedores pueden conservar ciertos registros técnicos por seguridad y estabilidad del servicio.",
     EUS: "Hornitzaileek zenbait erregistro tekniko gorde ditzakete zerbitzuaren segurtasuna eta egonkortasuna bermatzeko.",
+    EN: "Providers may retain certain technical logs for security and service stability purposes.",
+    FR: "Les fournisseurs peuvent conserver certains journaux techniques pour des raisons de sécurité et de stabilité du service.",
   },
   section3Body3: {
     ES: "Euskalia utiliza conexiones cifradas y minimiza la información enviada.",
     EUS: "Euskaliak konexio enkriptatuak erabiltzen ditu eta bidaltzen den informazioa ahalik eta gehien murrizten du.",
+    EN: "Euskalia uses encrypted connections and minimizes the information sent.",
+    FR: "Euskalia utilise des connexions chiffrées et minimise les informations envoyées.",
   },
   section4Title: {
     ES: "4. Recomendaciones de uso responsable",
     EUS: "4. Erabilera arduratsurako gomendioak",
+    EN: "4. Recommendations for responsible use",
+    FR: "4. Recommandations d’utilisation responsable",
   },
   section4Body: {
     ES: "Para garantizar un uso seguro, sigue estas recomendaciones:",
     EUS: "Erabilera segurua bermatzeko, jarraitu gomendio hauek:",
+    EN: "To ensure safe use, follow these recommendations:",
+    FR: "Pour garantir une utilisation sûre, suivez ces recommandations :",
   },
   section4Li1: {
     ES: "Evita datos personales identificables.",
     EUS: "Saihestu datu pertsonal identifikagarriak.",
+    EN: "Avoid identifiable personal data.",
+    FR: "Évitez les données personnelles identifiables.",
   },
   section4Li2: {
     ES: "No incluyas información sensible (salud, finanzas, ideología...).",
     EUS: "Ez sartu informazio sentikorra (osasuna, finantzak, ideologia...).",
+    EN: "Do not include sensitive information (health, finances, ideology...).",
+    FR: "N’incluez pas d’informations sensibles (santé, finances, idéologie...).",
   },
   section4Li3: {
     ES: "Revisa siempre la respuesta antes de usarla en contextos importantes.",
     EUS: "Beti berrikusi erantzuna erabilera garrantzitsuetan erabili aurretik.",
+    EN: "Always review the response before using it in important contexts.",
+    FR: "Vérifiez toujours la réponse avant de l’utiliser dans des contextes importants.",
   },
   section4Li4: {
     ES: "Respeta la ley y los derechos de terceros.",
     EUS: "Errespetatu legea eta hirugarrenen eskubideak.",
+    EN: "Respect the law and third-party rights.",
+    FR: "Respectez la loi et les droits des tiers.",
   },
   section5Title: {
     ES: "5. Relación con otras políticas",
     EUS: "5. Beste politika batzuekin harremana",
+    EN: "5. Relationship with other policies",
+    FR: "5. Lien avec les autres politiques",
   },
   section5Body: {
     ES: "Esta información complementa la Política de Privacidad, el Aviso Legal y los Términos de Euskalia.",
     EUS: "Informazio honek Pribatutasun Politika, Lege Oharra eta Euskaliaren Baldintzak osatzen ditu.",
+    EN: "This information complements the Privacy Policy, the Legal Notice and Euskalia’s Terms.",
+    FR: "Ces informations complètent la Politique de confidentialité, les Mentions légales et les Conditions d’Euskalia.",
   },
   section5Body2: {
     ES: "Cada proveedor dispone de sus propias políticas, que recomendamos consultar.",
     EUS: "Hornitzaile bakoitzak bere politika propioak ditu; gomendagarria da horiek kontsultatzea.",
+    EN: "Each provider has its own policies, which we recommend consulting.",
+    FR: "Chaque fournisseur dispose de ses propres politiques, que nous recommandons de consulter.",
   },
   lastUpdate: {
     ES: "Esta información sobre el uso de APIs de IA está actualizada a fecha [________].",
     EUS: "AA APIen erabilerari buruzko informazio hau [________] eguneratu da.",
+    EN: "This information about the use of AI APIs is updated as of [________].",
+    FR: "Ces informations sur l’utilisation des API d’IA sont à jour au [________].",
   },
 },
 
@@ -2042,69 +2288,98 @@ aiApiUsage: {
 cookies_title: {
   ES: "Política de Cookies",
   EUS: "Cookieen Politika",
+  EN: "Cookies Policy",
+  FR: "Politique de cookies",
 },
 cookies_section1_title: {
   ES: "1. ¿Qué son las cookies?",
   EUS: "1. Zer dira cookieak?",
+  EN: "1. What are cookies?",
+  FR: "1. What are cookies?",
 },
 
 cookies_section1_p1: {
   ES: "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo (ordenador, tableta edo telefono mugikorra) cuando visitas un sitio web. Permiten que la página recuerde determinadas acciones y preferencias, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
   EUS: "Cookieak testu fitxategi txikiak dira, eta zure gailuan (ordenagailuan, tabletan edo telefono mugikorrean) gordetzen dira webgune bat bisitatzen duzunean. Webguneak zure ekintza eta lehentasun jakin batzuk gogoratzeko balio dute, hala nola hizkuntza edo oinarrizko ezarpenak, nabigazio esperientzia hobetzeko eta bisita bakoitzean berriro konfiguratu beharrik izan ez dezazun.",
+  EN: "Cookies are small text files stored on your device (computer, tablet edo telefono mugikorra) when you visit a website. They allow the page to remember certain actions and preferences, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
+  FR: "Les cookies sont de petits fichiers texte stockés sur votre appareil (ordinateur, tablette edo telefono mugikorra) lorsque vous visitez un site web. Elles permettent au site de mémoriser certaines actions et préférences, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
 },
 
 cookies_section2_title: {
   ES: "2. Tipos de cookies utilizadas por Euskalia",
   EUS: "2. Euskaliak erabiltzen dituen cookie motak",
+  EN: "2. Types of cookies used by Euskalia",
+  FR: "2. Types de cookies utilisées par Euskalia",
 },
 
 cookies_section2_p1: {
   ES: "Euskalia utiliza únicamente cookies técnicas esentziales, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. Cookie horiei esker, webgunean nabigatu eta eskaintzen diren funtzio oinarrizkoak erabil daitezke.",
   EUS: "Euskaliak cookie tekniko esentzialak baino ez ditu erabiltzen, plataformaren funtzionamendu egokia bermatzeko beharrezkoak direnak. Cookie horiei esker, webgunean nabigatu eta eskaintzen diren funtzio oinarrizkoak erabili daitezke.",
+  EN: "Euskalia uses only essential technical cookies, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. These cookies allow you to browse the website and use the basic functions offered.",
+  FR: "Euskalia utilise uniquement des cookies techniques essentielles, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. Ces cookies permettent de naviguer sur le site et d’utiliser les fonctions de base proposées.",
 },
 
 cookies_section2_p2: {
   ES: "Euskalia NO utiliza cookies de publizitatea, analisi aurreratua, pertsonalizazio maila altua, jokabidearen jarraipena edo helburu komertzialeko hirugarrenen cookieak.",
   EUS: "Euskaliak EZ ditu erabiltzen publizitate cookieak, analisi aurreratukoak, pertsonalizazio maila handikoak, portaeraren jarraipeneko cookieak edo helburu komertzialeko hirugarrenen cookieak.",
+  EN: "Euskalia does NOT use advertising cookies, analisi aurreratua, high-level personalization, behavior tracking, or third-party cookies for commercial purposes.",
+  FR: "Euskalia n’utilise PAS de cookies publicitaires, analisi aurreratua, de personnalisation avancée, de suivi du comportement, ni de cookies de tiers à des fins commerciales.",
 },
 
 cookies_section3_title: {
   ES: "3. Finalidad de las cookies",
   EUS: "3. Cookieen helburua",
+  EN: "3. Purpose of cookies",
+  FR: "3. Finalité des cookies",
 },
 
 cookies_section3_p1: {
   ES: "Euskaliak erabiltzen dituen cookie teknikoek helburu bakarra dute: plataforma behar bezala eta modu egonkorrean funtziona dezan bermatzea, oinarrizko konfigurazio batzuk gogoratuz eta webgunea behar bezala jardun dezan bisitan zehar.",
   EUS: "Euskaliak erabiltzen dituen cookie teknikoen helburu bakarra da plataforma behar bezala eta modu egonkorrean funtziona dezan bermatzea, oinarrizko konfigurazio batzuk gogoratuz eta nabigazioan zehar webgunea ongi ibil dadin.",
+  EN: "The technical cookies used by Euskalia have a single purpose: to ensure the platform works properly and stably, remembering basic settings and allowing the website to function correctly during your visit.",
+  FR: "Les cookies techniques utilisées par Euskalia ont un seul objectif : garantir le bon fonctionnement et la stabilité de la plateforme, en mémorisant certains réglages de base et en permettant au site de fonctionner correctement pendant la visite.",
 },
 
 cookies_section4_title: {
   ES: "4. Cómo gestionar las cookies",
   EUS: "4. Nola kudeatu cookieak",
+  EN: "4. How to manage cookies",
+  FR: "4. Comment gérer les cookies",
 },
 
 cookies_section4_p1: {
   ES: "Zure nabigatzailearen ezarpenen bidez baimendu, blokeatu edo ezaba ditzakezu zure gailuan instalatutako cookieak. Kontuan izan cookie teknikoak blokeatzen badituzu, baliteke webguneko zerbitzu edo funtzionalitate batzuk ez egotea erabilgarri edo behar bezala ez funtzionatzea.",
   EUS: "Zure nabigatzailearen konfigurazioan, zure gailuan instalatutako cookieak baimendu, blokeatu edo ezaba ditzakezu. Gogoratu cookie teknikoak blokeatzen badituzu, baliteke webguneko zerbitzu edo funtzio batzuk ez egotea eskuragarri edo behar bezala ez ibiltzea.",
+  EN: "Through your browser settings you can allow, block or delete cookies installed on your device. Please note that if you block technical cookies, some services or functionalities of the website may not be available or may not work properly.",
+  FR: "Via les paramètres de votre navigateur, vous pouvez autoriser, bloquer ou supprimer les cookies installés sur votre appareil. Veuillez noter que si vous bloquez les cookies techniques, certains services ou fonctionnalités du site peuvent ne pas être disponibles ou ne pas fonctionner correctement.",
 },
 
 cookies_section5_title: {
   ES: "5. Actualizaciones de la Política de Cookies",
   EUS: "5. Cookieen Politika eguneratzea",
+  EN: "5. Updates to the Cookies Policy",
+  FR: "5. Mises à jour de la Politique de cookies",
 },
 
 cookies_section5_p1: {
   ES: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, bai araudi-aldaketen ondorioz, bai aldaketa teknikoengatik edo plataforman egindako hobekuntzengatik. Aldaketa esanguratsuak egiten badira, erabiltzaileei webgunearen bidez jakinaraziko zaie.",
   EUS: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, araudi-aldaketak, aldaketa teknikoak edo plataforman egindako hobekuntzak direla medio. Aldaketa garrantzitsuak eginez gero, erabiltzaileei webgunearen bidez emango zaie horren berri.",
+  EN: "Euskalia may update this Cookies Policy when necessary due to regulatory changes, technical changes, or improvements made to the platform. If significant changes are made, users will be informed through the website.",
+  FR: "Euskalia peut mettre à jour cette Politique de cookies lorsque nécessaire, en raison de changements réglementaires, techniques ou d’améliorations apportées à la plateforme. En cas de changements importants, les utilisateurs en seront informés via le site web.",
 },
 cookies_section2_p3: {
   ES: "Euskalia utiliza cookies de análisis de Google Analytics únicamente si el usuario lo acepta, con el fin de obtener estadísticas de uso y mejorar el servicio. Actualmente Euskalia no muestra publicidad (AdSense). Cuando se implemente en el futuro, esta política se actualizará para reflejar dicho cambio.",
   EUS: "Euskalíak Google Analyticsen analisi-cookieak erabiltzen ditu erabiltzaileak onartzen badu soilik, erabileraren estatistikak lortzeko eta zerbitzua hobetzeko. Une honetan Euskalíak ez du publizitaterik erakusten (AdSense). Etorkizunean inplementatzen denean, politika hau eguneratuko da aldaketa hori islatzeko.",
+  EN: "Euskalia uses Google Analytics analysis cookies only if the user accepts them, in order to obtain usage statistics and improve the service. Currently Euskalia does not display advertising (AdSense). When it is implemented in the future, this policy will be updated to reflect that change.",
+  FR: "Euskalia utilise des cookies d’analyse Google Analytics uniquement si l’utilisateur les accepte, afin d’obtenir des statistiques d’utilisation et d’améliorer le service. Actuellement, Euskalia n’affiche pas de publicité (AdSense). Lorsqu’elle sera mise en place à l’avenir, cette politique sera mise à jour pour refléter ce changement.",
 },
 cookies_last_update: {
   ES: "Esta Política de Privacidad está actualizada a fecha [__________].",
-    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",
+  EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",
+  EN: "This Privacy Policy is updated as of [__________].",
+  FR: "This Privacy Policy is updated as of [__________].",
 },
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 
