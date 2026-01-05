@@ -967,45 +967,55 @@ faq_item7_answer: {
     title: {
       ES: "✨ Lleva tu experiencia Euskalia al siguiente nivel",
       EUS: "✨ Eraman Euskaliako esperientzia hurrengo mailara",
+      EN: "✨ Take your Euskalia experience to the next level",
+      FR: "✨ Passez votre expérience Euskalia au niveau supérieur",
     },
     subtitle: {
       ES: "Guarda tus textos, elimina los anuncios y disfruta sin límites.",
       EUS: "Gorde zure testuak, kendu iragarkiak eta gozatu mugarik gabe.",
+      EN: "Save your texts, remove ads and enjoy without limits.",
+      FR: "Enregistrez vos textes, supprimez les publicités et profitez sans limites.",
     },
     button: {
       ES: "🚀 Empieza sin límites",
       EUS: "🚀 Hasi mugarik gabe",
+      EN: "🚀 Start without limits",
+      FR: "🚀 Commencez sans limites",
     },
   },
 
  // =========================
   //        FOOTER
   // =========================
-  eusFooterColumnAboutTitle:   { ES: "Sobre Euskalia",            EUS: "Euskaliari buruz" },
-  eusFooterColumnLegalTitle:   { ES: "Legal",                     EUS: "Legeak" },
-  eusFooterColumnContactTitle: { ES: "Contacto y Comunidad",      EUS: "Kontaktua eta Komunitatea" },
-  eusFooterLanguageTitle:      { ES: "Idioma",                    EUS: "Hizkuntza" },
-  eusFooterPlansButton:        { ES: "Planes",                    EUS: "Planak" },
-  eusFooterRights:             { ES: "Todos los derechos reservados", EUS: "Eskubide guztiak erreserbatuta" },
-  eusFooterCookies:            { ES: "Cookies",                   EUS: "Cookieak" },
-  eusFooterContactEmailValue:  { ES: "euskaliaweb@gmail.com",      EUS: "euskaliaweb@gmail.com" },
-  eusFooterLanguageLabel:      { ES: "Idioma",                    EUS: "Hizkuntza" },
+  eusFooterColumnAboutTitle:   { ES: "Sobre Euskalia",            EUS: "Euskaliari buruz", EN: "About Euskalia", FR: "À propos d’Euskalia" },
+  eusFooterColumnLegalTitle:   { ES: "Legal",                     EUS: "Legeak", EN: "Legal", FR: "Mentions légales" },
+  eusFooterColumnContactTitle: { ES: "Contacto y Comunidad",      EUS: "Kontaktua eta Komunitatea", EN: "Contact & Community", FR: "Contact et communauté" },
+  eusFooterLanguageTitle:      { ES: "Idioma",                    EUS: "Hizkuntza", EN: "Language", FR: "Langue" },
+  eusFooterPlansButton:        { ES: "Planes",                    EUS: "Planak", EN: "Plans", FR: "Offres" },
+  eusFooterRights:             { ES: "Todos los derechos reservados", EUS: "Eskubide guztiak erreserbatuta", EN: "All rights reserved", FR: "Tous droits réservés" },
+  eusFooterCookies:            { ES: "Cookies",                   EUS: "Cookieak", EN: "Cookies", FR: "Cookies" },
+  eusFooterContactEmailValue:  { ES: "euskaliaweb@gmail.com",      EUS: "euskaliaweb@gmail.com", EN: "euskaliaweb@gmail.com", FR: "euskaliaweb@gmail.com" },
+  eusFooterLanguageLabel:      { ES: "Idioma",                    EUS: "Hizkuntza", EN: "Language", FR: "Langue" },
 
 
   /* ==== SOBRE EUSKALIA ==== */
-  eusFooterAboutTitle1: { ES: "¿Qué es Euskalia?", EUS: "Zer da Euskalia?" },
+  eusFooterAboutTitle1: { ES: "¿Qué es Euskalia?", EUS: "Zer da Euskalia?", EN: "What is Euskalia?", FR: "Qu’est-ce qu’Euskalia ?" },
   eusFooterAboutContent1: {
     ES: "Euskalia es una plataforma para el procesamiento de textos basada en inteligencia artificial. Está dirigida a cualquier persona que desee trabajar con diferentes herramientas en el entorno de textos y contenidos, a estudiantes, trabajadores... Está orientada a ayudar a los ciudadanos vascos y a aquellos que deben trabajar con el euskera.\n\nEuskalia está centrada en el euskera como idioma principal. Tanto la traducción como el resto de herramientas funcionan siempre en relación al euskera, utilizando otros idiomas como castellano, inglés o francés únicamente para convertir el contenido hacia el euskera o desde el euskera, según las necesidades.\n\nEuskalia se caracteriza por un diseño claro y una experiencia de uso pensada para trabajar con textos sin fricciones. La interfaz es sencilla, directa y accesible, lo que permite centrarse en el contenido desde el primer momento, sin distracciones ni configuraciones complejas.",
     EUS: "Euskalia testuak prozesatzeko plataforma bat da, adimen artifizialean oinarritua. Testuen eta edukien ingurunean tresna desberdinekin lan egin nahi duen edonorentzat da, ikasleentzat, langileentzat... Euskal herritarrei eta euskararekin lan egin behar dutenei laguntzera bideratuta dago.\n\nEuskararekin lotuta lan egiteko pentsatuta dago. Bai itzulpenak bai gainerako tresnek euskararekin lotuta funtzionatzen dute, eta gaztelania, ingelesa edo frantsesa bezalako beste hizkuntzak euskarara edo euskaratik edukia bihurtzeko erabiltzen dira, erabiltzaileen beharren arabera.\n\nEuskalia diseinu argi batek eta testuekin oztoporik gabe lan egiteko pentsatutako erabiltzaile-esperientziak bereizten du. Interfazea sinplea, zuzena eta eskuragarria da, eta horri esker edukiari arreta hasieratik bertatik jarri daiteke, distrakziorik edo konfigurazio ezin ulerturik gabe.",
+    EN: "Euskalia is an AI-based platform for text processing. It is aimed at anyone who wants to work with different tools in the world of texts and content: students, workers... It is designed to help Basque citizens and anyone who needs to work with Basque.\n\nEuskalia is centered around Basque as its main language. Both translation and the rest of the tools always work in relation to Basque, using other languages such as Spanish, English or French only to convert content to Basque or from Basque, depending on the user’s needs.\n\nEuskalia stands out for a clear design and a user experience built to work with texts without friction. The interface is simple, direct and accessible, allowing you to focus on the content from the very first moment, without distractions or complex settings.",
+    FR: "Euskalia est une plateforme de traitement de textes basée sur l’IA. Elle s’adresse à toute personne souhaitant utiliser différents outils dans l’univers des textes et des contenus : étudiants, travailleurs... Elle vise à aider les citoyens basques et toute personne qui doit travailler avec le basque.\n\nEuskalia est centrée sur le basque comme langue principale. La traduction comme les autres outils fonctionnent toujours en lien avec le basque, en utilisant d’autres langues comme l’espagnol, l’anglais ou le français uniquement pour convertir le contenu vers le basque ou depuis le basque, selon les besoins.\n\nEuskalia se distingue par un design clair et une expérience pensée pour travailler avec des textes sans friction. L’interface est simple, directe et accessible, ce qui permet de se concentrer sur le contenu dès le premier instant, sans distractions ni réglages complexes.",
 
   },
 
-  eusFooterAboutTitle2: { ES: "¿Cómo funciona?", EUS: "Nola funtzionatzen du?" },
+  eusFooterAboutTitle2: { ES: "¿Cómo funciona?", EUS: "Nola funtzionatzen du?", EN: "How does it work?", FR: "Comment ça marche ?" },
   eusFooterAboutContent2: {
     ES:  "Solo tienes que pegar un texto, subir un documento o indicar una URL. Euskalia extrae el contenido y te permite elegir qué hacer con él: traducir, resumir, corregir, parafrasear, humanizar o analizar si hay indicios de IA. Ajustas el nivel o estilo si lo necesitas y obtienes un resultado listo para copiar, descargar o guardar en biblioteca.",
-    EUS: "Testua itsatsi, dokumentua igo edo URL bat jarri besterik ez duzu egin behar. Edukiarekin zer egin nahi duzun aukeratzen uzten dizu: itzuli, laburtu, zuzendu, parafraseatu, humanizatu edo IA zantzuak aztertu. Behar izanez gero maila edo estiloa doitu, eta emaitza kopiatu, deskargatu edo liburutegian gordetzeko prest izango duzu."
+    EUS: "Testua itsatsi, dokumentua igo edo URL bat jarri besterik ez duzu egin behar. Edukiarekin zer egin nahi duzun aukeratzen uzten dizu: itzuli, laburtu, zuzendu, parafraseatu, humanizatu edo IA zantzuak aztertu. Behar izanez gero maila edo estiloa doitu, eta emaitza kopiatu, deskargatu edo liburutegian gordetzeko prest izango duzu.",
+    EN:  "You just need to paste text, upload a document or provide a URL. Euskalia extracts the content and lets you choose what to do with it: translate, summarize, correct, paraphrase, humanize or analyze whether there are AI signals. Adjust the level or style if needed and get a result ready to copy, download or save to your library.",
+    FR: "Il vous suffit de coller un texte, de téléverser un document ou d’indiquer une URL. Euskalia extrait le contenu et vous permet de choisir quoi en faire : traduire, résumer, corriger, paraphraser, humaniser ou analyser la présence d’indices d’IA. Vous ajustez le niveau ou le style si besoin et obtenez un résultat prêt à copier, télécharger ou enregistrer dans la bibliothèque.",
   },
-  eusFooterAboutTitle3: { ES: "Herramientas Plan Pro", EUS: " Pro planeko tresnak" },
+  eusFooterAboutTitle3: { ES: "Herramientas Plan Pro", EUS: " Pro planeko tresnak", EN: "Pro Plan tools", FR: "Outils du plan Pro" },
   eusFooterAboutContent3: { 
     ES: 
     "1- Traductor: traduce palabras, frases o textos completos al instante entre euskera y otros idiomas, manteniendo el contexto y la naturalidad.\n" +
@@ -1021,31 +1031,51 @@ faq_item7_answer: {
     "4- Parafraseatzailea: testuak beste modu batean berridazten ditu, esanahia aldatu gabe, testuinguru desberdinetara egokitzeko.\n" +
     "5- Humanizatzailea: testuen jariakortasuna eta naturaltasuna hobetzen ditu, gizatiarragoak izan daitezen.\n" +
     "6- IA detektagailua: testuak aztertzen ditu adimen artifizialak sortutako edukiaren zantzuak identifikatzeko.",
+    EN:
+    "1- Translator: instantly translates words, sentences or full texts between Basque and other languages, keeping context and naturalness.\n" +
+    "2- Summarizer: reduces long texts into clear, structured versions, extracting the most relevant information.\n" +
+    "3- Corrector: detects and fixes grammar, spelling and style issues in Basque texts.\n" +
+    "4- Paraphraser: rewrites texts with different wording without changing the meaning, adapting them to different contexts.\n" +
+    "5- Humanizer: improves fluency and naturalness so the text sounds more human and less artificial.\n" +
+    "6- AI Detector: analyzes texts to identify possible signs of AI-generated content.",
+    FR:
+    "1- Traducteur : traduit instantanément des mots, des phrases ou des textes entiers entre le basque et d’autres langues, en conservant le contexte et la naturalité.\n" +
+    "2- Résumeur : réduit de longs textes en versions claires et structurées, en extrayant l’information la plus pertinente.\n" +
+    "3- Correcteur : détecte et corrige les erreurs de grammaire, d’orthographe et de style dans les textes en basque.\n" +
+    "4- Paraphraseur : reformule les textes avec d’autres mots sans changer le sens, en les adaptant à différents contextes.\n" +
+    "5- Humaniseur : améliore la fluidité et la naturalité pour que le texte paraisse plus humain et moins artificiel.\n" +
+    "6- Détecteur d’IA : analyse les textes pour identifier d’éventuels indices de contenu généré par IA.",
   },
 
-  eusFooterAboutTitle4: { ES: "Resumidor", EUS: "Laburtzailea" },
+  eusFooterAboutTitle4: { ES: "Resumidor", EUS: "Laburtzailea", EN: "Summarizer", FR: "Résumeur" },
   eusFooterAboutContent4: {
     ES:  "Convierte cualquier texto, documento o enlace en un resumen claro y directo en cuestión de segundos. La IA analiza el contenido, identifica las ideas principales y genera una versión breve que conserva la esencia del original. Perfecto para estudiantes, profesionales o cualquier persona que necesite entender un texto sin leerlo completo.",
-    EUS: "Testua, dokumentua edo esteka oro segundo gutxitan laburpen argi eta zuzen batean bihurtzen du. Adimen artifizialak edukia aztertzen du, ideia nagusiak identifikatzen ditu eta jatorrizkoaren esentzia gordetzen duen bertsio laburra sortzen du. Ikasleentzat, profesionalentzat edo testu oso bat irakurri gabe ulertu nahi duen edonorentzat da baliagarria."
+    EUS: "Testua, dokumentua edo esteka oro segundo gutxitan laburpen argi eta zuzen batean bihurtzen du. Adimen artifizialak edukia aztertzen du, ideia nagusiak identifikatzen ditu eta jatorrizkoaren esentzia gordetzen duen bertsio laburra sortzen du. Ikasleentzat, profesionalentzat edo testu oso bat irakurri gabe ulertu nahi duen edonorentzat da baliagarria.",
+    EN:  "Turns any text, document or link into a clear, direct summary in seconds. The AI analyzes the content, identifies the main ideas and generates a shorter version that keeps the essence of the original. Perfect for students, professionals or anyone who needs to understand a text without reading it entirely.",
+    FR: "Transforme n’importe quel texte, document ou lien en un résumé clair et direct en quelques secondes. L’IA analyse le contenu, identifie les idées principales et génère une version plus courte qui conserve l’essence de l’original. Parfait pour les étudiants, les professionnels ou toute personne qui doit comprendre un texte sans le lire en entier.",
   },
 
-  eusFooterAboutTitle5: { ES: "Planes", EUS: "Planak" },
+  eusFooterAboutTitle5: { ES: "Planes", EUS: "Planak", EN: "Plans", FR: "Offres" },
   eusFooterAboutContent5: {
     ES:  "Euskalia ofrece un plan gratuito con acceso a las funciones básicas, traductor y resumidor. Los planes de pago amplían estas capacidades con herramientas avanzadas, mayores límites de uso y funciones pensadas para un trabajo más intensivo, manteniendo siempre la misma experiencia simple y directa.",
-    EUS: "Euskaliak doako plana eskaintzen du oinarrizko funtzioekin, itzultzailea eta laburtzailea. Ordainpeko planek aukera horiek zabaltzen dituzte, tresna aurreratuak, erabilera-muga handiagoak eta lan intentsiborako pentsatutako funtzioak gehituz, betiere erabilera-esperientzia sinple eta zuzena mantenduz."
+    EUS: "Euskaliak doako plana eskaintzen du oinarrizko funtzioekin, itzultzailea eta laburtzailea. Ordainpeko planek aukera horiek zabaltzen dituzte, tresna aurreratuak, erabilera-muga handiagoak eta lan intentsiborako pentsatutako funtzioak gehituz, betiere erabilera-esperientzia sinple eta zuzena mantenduz.",
+    EN:  "Euskalia offers a free plan with access to the basic features: translator and summarizer. Paid plans expand these capabilities with advanced tools, higher usage limits and features designed for more intensive work, always keeping the same simple and direct experience.",
+    FR: "Euskalia propose un plan gratuit donnant accès aux fonctions de base : traducteur et résumeur. Les plans payants élargissent ces capacités avec des outils avancés, des limites d’utilisation plus élevées et des fonctionnalités pensées pour un travail plus intensif, tout en conservant la même expérience simple et directe.",
   },
 
-  eusFooterAboutTitle6: { ES: "Idiomas", EUS: "Hizkuntzak" },
+  eusFooterAboutTitle6: { ES: "Idiomas", EUS: "Hizkuntzak", EN: "Languages", FR: "Langues" },
   eusFooterAboutContent6: {
     ES:  "Euskalia funciona actualmente con cuatro idiomas principales: Euskera (EU), Castellano (ES), Inglés (GB) y Francés (FR). Puedes traducir o resumir en cualquiera de las combinaciones entre ellos. Aunque el enfoque principal es el uso y la comprensión del euskera, Euskalia está pensada para que el idioma conviva con naturalidad junto al español, el inglés y el francés.",
-    EUS: "Euskalia gaur egun lau hizkuntza nagusirekin dabil: euskara (EUS), gaztelania (ES), ingelesa (GB) eta frantsesa (FR). Itzulpenak eta laburpenak haien arteko edozein konbinaziotan egin daitezke, nahiz eta helburu nagusia euskara erabiltzea eta ulertzea sustatzea izan. Euskalia euskara espainierarekin, ingelesarekin eta frantsesarekin modu naturalean bizikidetzan aritzeko pentsatuta dago."
+    EUS: "Euskalia gaur egun lau hizkuntza nagusirekin dabil: euskara (EUS), gaztelania (ES), ingelesa (GB) eta frantsesa (FR). Itzulpenak eta laburpenak haien arteko edozein konbinaziotan egin daitezke, nahiz eta helburu nagusia euskara erabiltzea eta ulertzea sustatzea izan. Euskalia euskara espainierarekin, ingelesarekin eta frantsesarekin modu naturalean bizikidetzan aritzeko pentsatuta dago.",
+    EN:  "Euskalia currently works with four main languages: Basque (EU), Spanish (ES), English (GB) and French (FR). You can translate or summarize in any combination between them. Although the main focus is using and understanding Basque, Euskalia is designed so the language can naturally coexist alongside Spanish, English and French.",
+    FR: "Euskalia fonctionne actuellement avec quatre langues principales : basque (EU), espagnol (ES), anglais (GB) et français (FR). Vous pouvez traduire ou résumer dans n’importe quelle combinaison entre elles. Même si l’objectif principal est l’usage et la compréhension du basque, Euskalia est pensée pour que la langue coexiste naturellement avec l’espagnol, l’anglais et le français.",
   },
 
-  eusFooterLegalTitle1: { ES: "Aviso legal",                EUS: "Lege-oharra" },
-  eusFooterLegalTitle2: { ES: "Política de privacidad",     EUS: "Pribatutasun politika" },
-  eusFooterLegalTitle3: { ES: "Términos y condiciones",     EUS: "Baldintzak eta erabilera" },
-  eusFooterLegalTitle4: { ES: "Uso de APIs de IA",          EUS: "Adimen Artifizialeko API en erabilera" },
-  eusFooterLegalTitle5: { ES: "Política de cookies",        EUS: "Cookie politika" },
+  eusFooterLegalTitle1: { ES: "Aviso legal",                EUS: "Lege-oharra", EN: "Legal notice", FR: "Mentions légales" },
+  eusFooterLegalTitle2: { ES: "Política de privacidad",     EUS: "Pribatutasun politika", EN: "Privacy Policy", FR: "Politique de confidentialité" },
+  eusFooterLegalTitle3: { ES: "Términos y condiciones",     EUS: "Baldintzak eta erabilera", EN: "Terms and conditions", FR: "Conditions d’utilisation" },
+  eusFooterLegalTitle4: { ES: "Uso de APIs de IA",          EUS: "Adimen Artifizialeko API en erabilera", EN: "Use of AI APIs", FR: "Utilisation des API d’IA" },
+  eusFooterLegalTitle5: { ES: "Política de cookies",        EUS: "Cookie politika", EN: "Cookie Policy", FR: "Politique de cookies" },
 
 
 
@@ -1058,46 +1088,64 @@ faq_item7_answer: {
   registerPage_title: {
   ES: "Crea tu cuenta",
   EUS: "Sortu zure kontua",
+  EN: "Create your account",
+  FR: "Créez votre compte",
 },
 
 registerPage_google: {
   ES: "Registrarte con Google",
   EUS: "Erregistratu Google-rekin",
+  EN: "Continue with Google",
+  FR: "Continuer avec Google",
 },
 
 registerPage_microsoft: {
   ES: "Registrarte con Microsoft",
   EUS: "Erregistratu Microsoft-ekin",
+  EN: "Continue with Microsoft",
+  FR: "Continuer avec Microsoft",
 },
 
 registerPage_termsPrefix: {
   ES: "Al continuar, aceptas nuestros",
   EUS: "Jarraitzeko, gure",
+  EN: "By continuing, you agree to our",
+  FR: "En continuant, vous acceptez nos",
 },
 
 registerPage_terms: {
   ES: "Términos",
   EUS: "Baldintzak",
+  EN: "Terms",
+  FR: "Conditions",
 },
 
 registerPage_and: {
   ES: "y",
   EUS: "eta",
+  EN: "and",
+  FR: "et",
 },
 
 registerPage_privacy: {
   ES: "Política de Privacidad",
   EUS: "Pribatutasun-politika",
+  EN: "Privacy Policy",
+  FR: "Politique de confidentialité",
 },
 
 registerPage_haveAccount: {
   ES: "¿Ya tienes cuenta?",
   EUS: "Baduzu konturik?",
+  EN: "Already have an account?",
+  FR: "Vous avez déjà un compte ?",
 },
 
 registerPage_login: {
   ES: "Iniciar sesión",
   EUS: "Hasi saioa",
+  EN: "Sign in",
+  FR: "Se connecter",
 },
 registerPage_title: {
   ES: "Crea tu cuenta",
@@ -1190,33 +1238,35 @@ registerPage_login: {
   // =========================
 
   authPage: {
-    pageTitle:              { ES: "Iniciar sesión",                       EUS: "Saioa hasi" },
-    pageDescription:        { ES: "Accede a tu cuenta para seguir usando Euskalia.", EUS: "Sartu zure kontura Euskalia erabiltzen jarraitzeko." },
+    pageTitle:              { ES: "Iniciar sesión",                       EUS: "Saioa hasi", EN: "Sign in", FR: "Se connecter" },
+    pageDescription:        { ES: "Accede a tu cuenta para seguir usando Euskalia.", EUS: "Sartu zure kontura Euskalia erabiltzen jarraitzeko.", EN: "Access your account to keep using Euskalia.", FR: "Accédez à votre compte pour continuer à utiliser Euskalia." },
 
-    welcome:                { ES: "BIENVENIDO",                  EUS: "ONGI ETORRI" },
-    continueWithGoogle:     { ES: "Continuar con Google",                 EUS: "Jarraitu Google-rekin" },
-    or:                     { ES: "o",                                    EUS: "edo" },
+    welcome:                { ES: "BIENVENIDO",                  EUS: "ONGI ETORRI", EN: "WELCOME", FR: "BIENVENUE" },
+    continueWithGoogle:     { ES: "Continuar con Google",                 EUS: "Jarraitu Google-rekin", EN: "Continue with Google", FR: "Continuer avec Google" },
+    or:                     { ES: "o",                                    EUS: "edo", EN: "or", FR: "ou" },
    
    continueWithMicrosoft: {
     ES: "Continuar con Microsoft",
     EUS: "Jarraitu Microsoft-ekin",
+    EN: "Continue with Microsoft",
+    FR: "Continuer avec Microsoft",
   }, 
-    emailOrUserPlaceholder: { ES: "Introduce tu correo o nombre de usuario", EUS: "Idatzi zure posta edo erabiltzaile-izena" },
-    signInButton:           { ES: "Continuar",                            EUS: "Jarraitu" },
+    emailOrUserPlaceholder: { ES: "Introduce tu correo o nombre de usuario", EUS: "Idatzi zure posta edo erabiltzaile-izena", EN: "Enter your email or username", FR: "Saisissez votre email ou nom d’utilisateur" },
+    signInButton:           { ES: "Continuar",                            EUS: "Jarraitu", EN: "Continue", FR: "Continuer" },
 
-    emailRequiredError:     { ES: "Por favor, introduce tu correo electrónico.", EUS: "Mesedez, idatzi zure posta elektronikoa." },
-    emailInvalidError:      { ES: "El formato del correo no es válido.",  EUS: "Posta elektronikoaren formatua ez da baliozkoa." },
-    passwordRequiredError:  { ES: "Por favor, introduce tu contraseña.",  EUS: "Mesedez, idatzi zure pasahitza." },
+    emailRequiredError:     { ES: "Por favor, introduce tu correo electrónico.", EUS: "Mesedez, idatzi zure posta elektronikoa.", EN: "Please enter your email address.", FR: "Veuillez saisir votre adresse email." },
+    emailInvalidError:      { ES: "El formato del correo no es válido.",  EUS: "Posta elektronikoaren formatua ez da baliozkoa.", EN: "The email format is not valid.", FR: "Le format de l’email n’est pas valide." },
+    passwordRequiredError:  { ES: "Por favor, introduce tu contraseña.",  EUS: "Mesedez, idatzi zure pasahitza.", EN: "Please enter your password.", FR: "Veuillez saisir votre mot de passe." },
 
     legalText: {
-      prefix:  { ES: "Al continuar, aceptas nuestros", EUS: "Jarraitzearen bidez, gure" },
-      terms:   { ES: "Términos",                        EUS: "Baldintzak" },
-      and:     { ES: "y",                               EUS: "eta" },
-      privacy: { ES: "Política de Privacidad",         EUS: "Pribatutasun-politika" },
+      prefix:  { ES: "Al continuar, aceptas nuestros", EUS: "Jarraitzearen bidez, gure", EN: "By continuing, you agree to our", FR: "En continuant, vous acceptez nos" },
+      terms:   { ES: "Términos",                        EUS: "Baldintzak", EN: "Terms", FR: "Conditions" },
+      and:     { ES: "y",                               EUS: "eta", EN: "and", FR: "et" },
+      privacy: { ES: "Política de Privacidad",         EUS: "Pribatutasun-politika", EN: "Privacy Policy", FR: "Politique de confidentialité" },
     },
 
-    noAccount: { ES: "¿No tienes cuenta?", EUS: "Ez duzu konturik?" },
-    signUp:    { ES: "Regístrate",         EUS: "Erregistratu" },
+    noAccount: { ES: "¿No tienes cuenta?", EUS: "Ez duzu konturik?", EN: "Don’t have an account?", FR: "Vous n’avez pas de compte ?" },
+    signUp:    { ES: "Regístrate",         EUS: "Erregistratu", EN: "Sign up", FR: "S’inscrire" },
   },
 
 
