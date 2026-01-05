@@ -2978,7 +2978,12 @@ proParaphraser_add_urls_button: {
   EN: "Add URLs",
   FR: "Ajouter des URLs",
 },
-
+proParaphraser_urls_textarea_placeholder: {
+  ES: "Introduce aquí una o mas URLs (separadas por línea)",
+  EUS: "Itsatsi hemen URL bat edo gehiago (lerro bakoitzean bat)",
+  EN: "Enter one or more URLs here (one per line)",
+  FR: "Saisissez une ou plusieurs URLs ici (une par ligne)",
+},
 proParaphraser_save_urls_button: {
   ES: "Guardar",
   EUS: "Gorde",
