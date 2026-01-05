@@ -3636,254 +3636,366 @@ proHumanizer_errorGeneric: {
   library_filter_all: {
   ES: "Todos",
   EUS: "Denak",
+  EN: "All",
+  FR: "All",
 },
 library_filter_texts: {
   ES: "Traducciones",
   EUS: "Itzulpenak",
+  EN: "Translations",
+  FR: "Traductions",
 },
 library_filter_summaries: {
   ES: "Resúmenes",
   EUS: "Laburpenak",
+  EN: "Summaries",
+  FR: "Résumés",
 },
 library_filter_folders: {
   ES: "Mis carpetas",
   EUS: "Nire karpetak",
+  EN: "My folders",
+  FR: "Mes dossiers",
 },
 library_create_new: {
   ES: "Crear nuevo",
   EUS: "Sortu berria",
+  EN: "Create new",
+  FR: "Créer",
 },
 library_create_text: {
   ES: "Crear traducción:",
   EUS: "Sortu itzulpena:",
+  EN: "Create translation:",
+  FR: "Créer une traduction :",
 },
 
 library_prefix_summary: {
   ES: "Resumen:",
-  EUS: "Laburpena:", 
+  EUS: "Laburpena:",
+  EN: "Summary:",
+  FR: "Résumé :",
 },
 library_prefix_translation: {
   ES: "Traducción:",
   EUS: "Itzulpena:",
+  EN: "Translation:",
+  FR: "Traduction :",
 },
 library_prefix_corrector: {
   ES: "Corrección:",
   EUS: "Zuzenketa:",
+  EN: "Correction:",
+  FR: "Correction :",
 },
 library_create_summary: {
   ES: "Crear resumen",
   EUS: "Sortu laburpena",
+  EN: "Create summary",
+  FR: "Créer un résumé",
 },
 library_no_folders: {
   ES: "Aún no tienes carpetas. Crea la primera.",
   EUS: "Ez duzu karpetarik oraindik. Sortu lehena.",
+  EN: "You don’t have any folders yet. Create the first one.",
+  FR: "Vous n’avez pas encore de dossiers. Créez le premier.",
 },
 
 library_create_folder: {
   ES: "Crear nueva carpeta",
   EUS: "Karpeta berria sortu",
+  EN: "Create new folder",
+  FR: "Créer un nouveau dossier",
 },
 
 folder_modal_title: {
   ES: "Crear nueva carpeta",
   EUS: "Karpeta berria sortu",
+  EN: "Create new folder",
+  FR: "Créer un nouveau dossier",
 },
 
 folder_modal_label: {
   ES: "Nombre de la carpeta",
   EUS: "Karpetaren izena",
+  EN: "Folder name",
+  FR: "Nom du dossier",
 },
 
 folder_modal_placeholder: {
   ES: "Ponle un nombre…",
   EUS: "Eman izen bat…",
+  EN: "Give it a name…",
+  FR: "Donnez-lui un nom…",
 },
 
 folder_modal_cancel: {
   ES: "Cancelar",
   EUS: "Utzi",
+  EN: "Cancel",
+  FR: "Annuler",
 },
 
 folder_modal_save: {
   ES: "Guardar",
   EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
 },
 library_doc_edit_title: {
   ES: "Editar documento",
   EUS: "Editatu dokumentua",
+  EN: "Edit document",
+  FR: "Modifier le document",
 },
 library_doc_delete: {
   ES: "Eliminar",
   EUS: "Ezabatu",
+  EN: "Delete",
+  FR: "Supprimer",
 },
 library_back: {
   ES: "Atras",
   EUS: "Atzera",
+  EN: "Back",
+  FR: "Retour",
 },
 folder_back: {
   ES: "Atras",
   EUS: "Atzera",
+  EN: "Back",
+  FR: "Retour",
 },
 folder_modal_select_docs: {
   ES: "Elige qué documentos quieres guardar en esta carpeta",
   EUS: "Aukeratu karpeta honetan gorde nahi dituzun dokumentuak",
+  EN: "Choose which documents you want to save in this folder",
+  FR: "Choisissez quels documents vous voulez enregistrer dans ce dossier",
 },
 folder_empty: {
   ES: "Carpeta vacía",
   EUS: "Karpeta hutsa",
+  EN: "Empty folder",
+  FR: "Dossier vide",
 },
 save_button: {
   ES: "Guardar",
   EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
 },
 saved_to_library: {
   ES: "Guardado en biblioteca",
   EUS: "Gordeta liburutegian",
+  EN: "Saved to library",
+  FR: "Enregistré dans la bibliothèque",
 },
 library_filter_corrections: {
   ES: "Correcciones",
   EUS: "Zuzenketak",
+  EN: "Corrections",
+  FR: "Corrections",
 },
 library_create_correction: {
   ES: "Crear corrección",
   EUS: "Sortu zuzenketa",
+  EN: "Create correction",
+  FR: "Créer une correction",
 },
 library_filter_paraphrases: {
   ES: "Parafraseos",
   EUS: "Parafraseoak",
+  EN: "Paraphrases",
+  FR: "Paraphrases",
 },
 library_create_paraphrase: {
   ES: "Crear parafraseo",
   EUS: "Sortu parafraseoa",
+  EN: "Create paraphrase",
+  FR: "Créer une paraphrase",
 },
 library_filter_ai_detector: {
   ES: "Detector IA",
   EUS: "IA aztertzailea",
+  EN: "AI detector",
+  FR: "Détecteur IA",
 },
 library_create_ai_detector: {
   ES: "Crear detección IA",
   EUS: "Sortu IA aztertzailea",
+  EN: "Create AI detection",
+  FR: "Créer une détection IA",
 },
 library_filter_humanizer: {
   ES: "Humanizador",
   EUS: "Humanizatzailea",
+  EN: "Humanizer",
+  FR: "Humaniseur",
 },
 library_create_humanizer: {
   ES: "Crear humanizado",
   EUS: "Sortu humanizatua",
+  EN: "Create humanized",
+  FR: "Créer un texte humanisé",
 },
 library_prefix_paraphraser: {
   ES: "Parafraseo:",
   EUS: "Parafraseoa:",
+  EN: "Paraphrase:",
+  FR: "Paraphrase :",
 },
 library_prefix_humanizer: {
   ES: "Humanizado:",
   EUS: "Humanizatua:",
+  EN: "Humanized:",
+  FR: "Humanisé :",
 },
 library_doc_title_label: {
   ES: "Título del documento",
   EUS: "Dokumentuaren izenburua",
+  EN: "Document title",
+  FR: "Titre du document",
 },
 
 library_doc_title_placeholder: {
   ES: "Escribe un título…",
   EUS: "Idatzi izenburu bat…",
+  EN: "Write a title…",
+  FR: "Écrivez un titre…",
 },
 
 
 // =========================
-  //        Pro Suggestions
-  // =========================                          
-  proSuggestions: {
+//        Pro Suggestions
+// =========================                          
+proSuggestions: {
   zone_badge: {
     ES: "Zona de ideas y sugerencias de Euskalia",
     EUS: "Euskaliaren ideien eta iradokizunen gunea",
+    EN: "Euskalia ideas & suggestions zone",
+    FR: "Zone d’idées et de suggestions d’Euskalia",
   },
 
   title: {
     ES: "Ayúdanos a decidir las próximas mejoras de Euskalia",
     EUS: "Lagundu Euskaliaren hurrengo hobekuntzak erabakitzen",
+    EN: "Help us decide Euskalia’s next improvements",
+    FR: "Aidez-nous à décider des prochaines améliorations d’Euskalia",
   },
 
   description_part1: {
     ES: "Esta página es para que nos cuentes ",
     EUS: "Orri hau horretarako da: esan diezagukezun ",
+    EN: "This page is for you to tell us ",
+    FR: "Cette page est faite pour nous dire ",
   },
 
   description_highlight: {
     ES: "qué te gustaría que añadamos o mejoremos en Euskalia",
     EUS: "Euskalien zer gehitzea edo hobetzea gustatuko litzaizukeen",
+    EN: "what you’d like us to add or improve in Euskalia",
+    FR: "ce que vous aimeriez que nous ajoutions ou améliorions dans Euskalia",
   },
 
   description_part2: {
     ES: ": nuevas herramientas, cambios en el diseño, límites, ideas para estudiar mejor, cosas que te molestan… cualquier comentario es bienvenido.",
     EUS: ": tresna berriak, diseinu-aldaketak, mugak, ikasteko hobekuntzak, molestatzen zaizkizun gauzak… edozein iradokizun ongi etorria da.",
+    EN: ": new tools, design changes, limits, ideas to study better, things that annoy you… any feedback is welcome.",
+    FR: ": nouveaux outils, changements de design, limites, idées pour mieux étudier, choses qui vous gênent… tout commentaire est le bienvenu.",
   },
 
   form_title: {
     ES: "Enviar una sugerencia",
     EUS: "Bidali iradokizun bat",
+    EN: "Send a suggestion",
+    FR: "Envoyer une suggestion",
   },
 
   form_subtitle: {
     ES: "Escríbenos con total libertad. Leemos todas las ideas para decidir las siguientes funciones de Euskalia.",
     EUS: "Idatzi nahi duzuna askatasunez. Jasotzen ditugun ideia guztiak irakurtzen ditugu Euskaliaren hurrengo funtzioak erabakitzeko.",
+    EN: "Write to us freely. We read every idea to decide Euskalia’s next features.",
+    FR: "Écrivez-nous librement. Nous lisons toutes les idées pour décider des prochaines fonctionnalités d’Euskalia.",
   },
 
   form_badge: {
     ES: "Tus sugerencias nos ayudan a mejorar cada semana.",
     EUS: "Zure iradokizunek astero laguntzen digute hobetzen.",
+    EN: "Your suggestions help us improve every week.",
+    FR: "Vos suggestions nous aident à nous améliorer chaque semaine.",
   },
 
   textarea_label: {
     ES: "Escribe aquí tu sugerencia",
     EUS: "Idatzi hemen zure iradokizuna",
+    EN: "Write your suggestion here",
+    FR: "Écrivez votre suggestion ici",
   },
 
   textarea_placeholder: {
     ES: "Cuéntanos qué herramienta, cambio o mejora te gustaría ver en Euskalia, y por qué crees que sería útil para ti o para otras personas.",
     EUS: "Esan zein tresna, aldaketa edo hobekuntza gustatuko litzaizukeen Euskalian, eta zergatik izango litzatekeen erabilgarria zuretzat edo besteentzat.",
+    EN: "Tell us what tool, change, or improvement you’d like to see in Euskalia, and why it would be useful for you or others.",
+    FR: "Dites-nous quel outil, changement ou amélioration vous aimeriez voir dans Euskalia, et pourquoi cela serait utile pour vous ou pour d’autres.",
   },
 
   email_label: {
     ES: "Correo electrónico (opcional)",
     EUS: "Helbide elektronikoa (aukerakoa)",
+    EN: "Email (optional)",
+    FR: "E-mail (optionnel)",
   },
 
   email_placeholder: {
     ES: "Solo si quieres que podamos contactarte para aclarar algo.",
     EUS: "Zerbait argitzeko zurekin harremanetan jar gaitezen nahi baduzu bakarrik.",
+    EN: "Only if you want us to contact you to clarify something.",
+    FR: "Uniquement si vous voulez que nous puissions vous contacter pour clarifier quelque chose.",
   },
 
   characters_suffix: {
     ES: "caracteres",
     EUS: "karaktere",
+    EN: "characters",
+    FR: "caractères",
   },
 
   error_required: {
     ES: "Por favor, escribe tu sugerencia antes de enviarla.",
     EUS: "Mesedez, bidali aurretik idatzi zure iradokizuna.",
+    EN: "Please write your suggestion before sending it.",
+    FR: "Veuillez écrire votre suggestion avant de l’envoyer.",
   },
 
   error_min_length: {
     ES: "Añade un poco más de detalle para que podamos entender bien tu sugerencia.",
     EUS: "Gehitu xehetasun pixka bat gehiago zure iradokizuna hobeto ulertu dezagun.",
+    EN: "Add a bit more detail so we can understand your suggestion clearly.",
+    FR: "Ajoutez un peu plus de détails afin que nous puissions bien comprendre votre suggestion.",
   },
 
   success_message: {
     ES: "Gracias por tu sugerencia. La tendremos en cuenta para las próximas mejoras.",
     EUS: "Eskerrik asko zure iradokizunagatik. Hurrengo hobekuntzetan kontuan hartuko dugu.",
+    EN: "Thanks for your suggestion. We’ll consider it for upcoming improvements.",
+    FR: "Merci pour votre suggestion. Nous en tiendrons compte pour les prochaines améliorations.",
   },
 
   button_label: {
     ES: "Enviar sugerencia",
     EUS: "Biali iradokizuna",
+    EN: "Send suggestion",
+    FR: "Envoyer la suggestion",
   },
+
   form_description: {
     ES: " qué te gustaría que añadamos o mejoremos en Euskalia: nuevas herramientas, cambios en el diseño, límites, ideas para estudiar mejor, cosas que te molestan… cualquier comentario es bienvenido.",
     EUS: "Zer gustatuko litzaizuke Euskalian gehitu edo hobetzea: tresna berriak, diseinu aldaketak, muga berriak, ikasteko ideiak hobeak... edozein iradokizun ongi etorria da.",
+    EN: " what you’d like us to add or improve in Euskalia: new tools, design changes, limits, ideas to study better, things that annoy you… any feedback is welcome.",
+    FR: " ce que vous aimeriez que nous ajoutions ou améliorions dans Euskalia : nouveaux outils, changements de design, limites, idées pour mieux étudier, choses qui vous gênent… tout commentaire est le bienvenu.",
   },
 },
+
 
 
 
