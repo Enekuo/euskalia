@@ -3554,7 +3554,7 @@ proHumanizer_clearLeftAria: {
 
 proHumanizer_urlTextareaPlaceholder: {
   ES: "Introduce aquí una o más URLs (separadas por línea)",
-  EUS: "Sartu hemen URL bat edo gehiago (lerroz banatuta)",
+  EUS: "Itsatsi hemen URL bat edo gehiago (lerroz banatuta)",
   EN: "Enter one or more URLs here (one per line)",
   FR: "Saisissez une ou plusieurs URLs ici (une par ligne)",
 },
