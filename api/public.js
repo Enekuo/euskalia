@@ -10,6 +10,9 @@ const FREE_MAX_CHARS    = Number(process.env.FREE_MAX_CHARS || 12000);    // má
 const FREE_DAILY_TOKENS = Number(process.env.FREE_DAILY_TOKENS || 20000); // cuota diaria aprox por IP (≃ 5 páginas)
 const FREE_RPM          = Number(process.env.FREE_RPM || 6);              // rate limit: peticiones/min por IP
 
+// ✅ NUEVO: límite de resúmenes por día (solo resumidor)
+const FREE_SUMMARY_DAILY_REQUESTS = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 6); // máx. resúmenes/día por IP
+
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
 
@@ -258,7 +261,39 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       // si KV falla, continuamos sin romper UX
     }
 
-    // 3) Cuota diaria aproximada de tokens por IP
+    // 3) ✅ NUEVO: Máximo 6 resúmenes al día (solo resumidor)
+    // Detectamos "resumidor" por task/mode (lo que tu front envíe)
+    // Cuenta como resumidor si task o mode contiene "summary" o "summar" o "resum"
+    const rawTask = String(body?.task || "").toLowerCase();
+    const rawMode = String(body?.mode || "").toLowerCase();
+    const isSummary =
+      rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
+      rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
+
+    if (isSummary) {
+      try {
+        const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
+        const usedReqs = (await kv.get(dailySummaryKey)) || 0;
+
+        if (Number(usedReqs) >= FREE_SUMMARY_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily summary requests exceeded",
+            limit: { daily_summary_requests: FREE_SUMMARY_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del resumidor (${FREE_SUMMARY_DAILY_REQUESTS} resúmenes/día). ` +
+              `Vuelve mañana o mejora de plan.`
+          });
+        }
+
+        const newUsed = Number(usedReqs) + 1;
+        await kv.set(dailySummaryKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+      } catch {
+        // si KV falla, no bloqueamos
+      }
+    }
+
+    // 4) Cuota diaria aproximada de tokens por IP
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
       const dailyKey = `quota:${day}:${ip}`;
