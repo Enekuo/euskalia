@@ -48,6 +48,36 @@ export const translations = {
       FR: "La traduction apparaîtra ici."
     },
 
+    summary: {
+  output_language_es: {
+    ES: "Español",
+    EUS: "Gaztelania",
+    EN: "Spanish",
+    FR: "Espagnol",
+  },
+
+  output_language_eus: {
+    ES: "Euskera",
+    EUS: "Euskara",
+    EN: "Basque",
+    FR: "Basque",
+  },
+
+  output_language_en: {
+    ES: "Inglés",
+    EUS: "Ingelesa",
+    EN: "English",
+    FR: "Anglais",
+  },
+
+  output_language_fr: {
+    ES: "Francés",
+    EUS: "Frantsesa",
+    EN: "French",
+    FR: "Français",
+  },
+},
+
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
     listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
     copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
