@@ -48,7 +48,32 @@ export const translations = {
       FR: "La traduction apparaîtra ici."
     },
 
-    summary: {
+    /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
+    listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
+    copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
+    copied:     { ES: "Copiado",      EUS: "Kopiatuta",   EN: "Copied",        FR: "Copié" },
+    pdf:        { ES: "PDF",          EUS: "PDF",         EN: "PDF",           FR: "PDF" },
+    clear_left: { ES: "Borrar",       EUS: "Garbitu",     EN: "Clear",         FR: "Effacer" },
+    dictate:    { ES: "Dictar",       EUS: "Diktatu",     EN: "Dictate",       FR: "Dicter" },
+    listening:  { ES: "Escuchando…",  EUS: "Entzuten…",   EN: "Listening…",    FR: "Écoute…" },
+    loading:    { ES: "Traduciendo…", EUS: "Itzultzen…",  EN: "Translating…",  FR: "Traduction…" },
+  },
+
+  save_button_label: {
+    ES: "Guardar",
+    EUS: "Gorde",
+    EN: "Save",
+    FR: "Enregistrer",
+  },
+
+  library_saved_toast: {
+    ES: "Guardado en biblioteca",
+    EUS: "Liburutegian gordeta",
+    EN: "Saved to library",
+    FR: "Enregistré dans la bibliothèque",
+  },
+  
+summary: {
   output_language_es: {
     ES: "Español",
     EUS: "Gaztelania",
@@ -78,33 +103,9 @@ export const translations = {
   },
 },
 
-    /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
-    listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
-    copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
-    copied:     { ES: "Copiado",      EUS: "Kopiatuta",   EN: "Copied",        FR: "Copié" },
-    pdf:        { ES: "PDF",          EUS: "PDF",         EN: "PDF",           FR: "PDF" },
-    clear_left: { ES: "Borrar",       EUS: "Garbitu",     EN: "Clear",         FR: "Effacer" },
-    dictate:    { ES: "Dictar",       EUS: "Diktatu",     EN: "Dictate",       FR: "Dicter" },
-    listening:  { ES: "Escuchando…",  EUS: "Entzuten…",   EN: "Listening…",    FR: "Écoute…" },
-    loading:    { ES: "Traduciendo…", EUS: "Itzultzen…",  EN: "Translating…",  FR: "Traduction…" },
-  },
-
-  save_button_label: {
-    ES: "Guardar",
-    EUS: "Gorde",
-    EN: "Save",
-    FR: "Enregistrer",
-  },
-
-  library_saved_toast: {
-    ES: "Guardado en biblioteca",
-    EUS: "Liburutegian gordeta",
-    EN: "Saved to library",
-    FR: "Enregistré dans la bibliothèque",
-  },
 
   // =========================
-  //      FREE SUMMARY RESUMIDOR
+  //   FREE SUMMARY RESUMIDOR
   // =========================    
   summary: {
     title:                { ES: "Resumidor", EUS: "Laburtzailea", EN: "Summarizer", FR: "Résumé IA" },
