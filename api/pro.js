@@ -7,8 +7,8 @@ import admin from "firebase-admin";
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
 // LÍMITES PLAN PRO (puedes sobreescribir en Vercel → Env Vars)
-const PRO_MAX_CHARS    = Number(process.env.PRO_MAX_CHARS || 50000);     // máx. caracteres por request (Pro)
-const PRO_DAILY_TOKENS = Number(process.env.PRO_DAILY_TOKENS || 200000); // cuota diaria aprox por UID
+const PRO_MAX_CHARS    = Number(process.env.PRO_MAX_CHARS || 12000);     // máx. caracteres por request (Pro)
+const PRO_DAILY_TOKENS = Number(process.env.PRO_DAILY_TOKENS || 150000); // cuota diaria aprox por UID
 const PRO_RPM          = Number(process.env.PRO_RPM || 30);              // rate limit: peticiones/min por UID
 
 // Conversión aproximada chars→tokens (prudente)
