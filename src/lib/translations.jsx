@@ -1280,42 +1280,60 @@ registerPage_login: {
   title: {
     ES: "Elige tu plan",
     EUS: "Aukeratu zure plana",
+    EN: "Choose your plan",
+    FR: "Choisissez votre offre",
   },
   subtitle: {
     ES: "Empieza con el Plan Pro y pasa a Premium+ cuando necesites más potencia y menos límites.",
     EUS: "Hasi Pro planarekin eta pasa Premium+ planera potentzia eta muga gutxiago behar dituzunean.",
+    EN: "Start with the Pro Plan and move to Premium+ when you need more power and fewer limits.",
+    FR: "Commencez avec l’offre Pro et passez à Premium+ quand vous aurez besoin de plus de puissance et de moins de limites.",
   },
 
   pro_name: {
     ES: "Plan Pro",
     EUS: "Plan Pro",
+    EN: "Pro Plan",
+    FR: "Offre Pro",
   },
   premium_name: {
     ES: "Plan Premium+",
     EUS: "Plan Premium+",
+    EN: "Premium+ Plan",
+    FR: "Offre Premium+",
   },
 
   perMonth: {
     ES: "/ mes",
     EUS: "/ hilean",
+    EN: "/ month",
+    FR: "/ mois",
   },
 
   pro_cta: {
     ES: "Elegir Pro",
     EUS: "Aukeratu Pro",
+    EN: "Choose Pro",
+    FR: "Choisir Pro",
   },
   premium_cta_soon: {
     ES: "Próximamente",
     EUS: "Laster eskuragarri",
+    EN: "Coming soon",
+    FR: "Bientôt disponible",
   },
 
   badge_popular: {
     ES: "Más popular",
     EUS: "Ezagunena",
+    EN: "Most popular",
+    FR: "Le plus populaire",
   },
   badge_soon: {
     ES: "Próximamente",
     EUS: "Laster",
+    EN: "Coming soon",
+    FR: "Bientôt",
   },
 
   features: {
@@ -1325,31 +1343,37 @@ registerPage_login: {
       ES: "Límites más amplios: 5.000 caracteres por petición para el traductor.",
       EUS: "Muga zabalagoak: 5.000 karaktere eskaera bakoitzeko itzultzailearentzat.",
       EN: "Higher limits: 5,000 characters per request for the translator.",
+      FR: "Limites plus élevés : 5 000 caractères par requête pour le traducteur.",
     },
     pro2: {
       ES: "Límites más amplios: 12.000 caracteres por petición para el resumidor.",
       EUS: "Muga zabalagoak: 12.000 karaktere eskaera bakoitzeko laburtzailearentzat.",
       EN: "Higher limits: 12,000 characters per request for the summarizer.",
+      FR: "Limites plus élevés : 12 000 caractères par requête pour le résumeur.",
     },
     pro3: {
       ES: "Límite diario: 150.000 caracteres al día.",
       EUS: "Eguneko muga: 150.000 karaktere eguneko.",
       EN: "Daily limit: 150,000 characters per day.",
+      FR: "Limite quotidienne : 150 000 caractères par jour.",
     },
     pro4: {
       ES: "Acceso a las 6 herramientas (hasta 12.000 caracteres por petición).",
       EUS: "6 tresnetarako sarbidea (gehienez 12.000 karaktere eskaera bakoitzeko).",
       EN: "Access to the 6 tools (up to 12,000 characters per request).",
+      FR: "Accès aux 6 outils (jusqu’à 12 000 caractères par requête).",
     },
     pro5: {
       ES: "Mejor calidad de API para un uso más fiable de la inteligencia artificial.",
       EUS: "API kalitate hobea, adimen artifiziala fidagarriago erabiltzeko.",
       EN: "Higher-quality API for more reliable AI usage.",
+      FR: "API de meilleure qualité pour une utilisation plus fiable de l’intelligence artificielle.",
     },
     pro6: {
       ES: "Cuenta propia con diferentes modos y biblioteca inteligente con más opciones.",
       EUS: "Kontu propioa, hainbat modurekin, eta liburutegi adimentsua aukera gehiagorekin.",
       EN: "Personal account with different modes and a smart library with more options.",
+      FR: "Compte personnel avec différents modes et une bibliothèque intelligente avec plus d’options.",
     },
 
     // ===== PLAN PREMIUM+ 
@@ -1357,26 +1381,38 @@ registerPage_login: {
     premium1: {
     ES: "Límites de caracteres casi ilimitados.",
     EUS: "Karaktere-kopurua ia mugarik gabe",
+    EN: "Almost unlimited character limits.",
+    FR: "Limites de caractères presque illimitées.",
   },
   premium2: {
     ES: "Herramientas premium añadidas.",
     EUS: "Premium tresnak gehituta.",
+    EN: "Additional premium tools.",
+    FR: "Outils premium ajoutés.",
   },
   premium3: {
     ES: "Prompts activos integrados en las herramientas.",
     EUS: "Prompt-ak aktibatuta tresnetan.",
+    EN: "Active prompts integrated into the tools.",
+    FR: "Prompts actifs intégrés aux outils.",
   },
   premium4: {
     ES: "Chat de IA + asistente personal.",
     EUS: "IA txata + laguntzaile pertsonala.",
+    EN: "AI chat + personal assistant.",
+    FR: "Chat IA + assistant personnel.",
   },
   premium5: {
     ES: "Prioridad en la cola y velocidad máxima, incluso en horas punta.",
     EUS: "Lehentasuna ilaran eta abiadura maximoa, puntako orduetan ere.",
+    EN: "Priority in the queue and maximum speed, even at peak hours.",
+    FR: "Priorité dans la file et vitesse maximale, même aux heures de pointe.",
     },
     premium6: {
     ES: "",
     EUS: "",
+    EN: "",
+    FR: "",
     },
   },
 },
@@ -1390,12 +1426,17 @@ registerPage_login: {
   // Toast genérico usado en el Footer (iconos sociales, etc.)
   eusToastFeatureNotImplementedTitle: {
     ES: "🚧 Funcionalidad no implementada",
-    EUS: "🚧 Funtzionaltasuna ez dago erabilgarri oraindik"
+    EUS: "🚧 Funtzionaltasuna ez dago erabilgarri oraindik",
+    EN: "🚧 Feature not implemented",
+    FR: "🚧 Fonctionnalité non implémentée",
   },
   eusToastFeatureNotImplementedDescription: {
     ES: "Esta función aún no está implementada. ¡Pídela en tu próximo mensaje! 🚀",
-    EUS: "Funtzio hau oraindik ez dago martxan. Eskatu hurrengo mezua bidaltzean! 🚀"
+    EUS: "Funtzio hau oraindik ez dago martxan. Eskatu hurrengo mezua bidaltzean! 🚀",
+    EN: "This feature isn’t implemented yet. Ask for it in your next message! 🚀",
+    FR: "Cette fonctionnalité n’est pas encore implémentée. Demandez-la dans votre prochain message ! 🚀",
   },
+
 
 
 
