@@ -107,6 +107,13 @@ export const translations = {
     length_medium: { ES: "Medio",     EUS: "Ertaina",  EN: "Medium",    FR: "Moyen" },
     length_long:   { ES: "Detallado", EUS: "Zehatza",  EN: "Detailed",  FR: "Détaillé" },
 
+    output_language:     { ES: "Idioma",     EUS: "Hizkuntza", EN: "Language" , FR: "Langue" },
+    output_language_eus: { ES: "Euskera",    EUS: "Euskara",   EN: "Basque",    FR: "Basque" },
+    output_language_es:  { ES: "Castellano", EUS: "Gaztelania",EN: "Spanish",   FR: "Espagnol" },
+    output_language_en:  { ES: "Inglés",     EUS: "Ingelesa",  EN: "English",   FR: "Anglais" },
+    output_language_fr:  { ES: "Francés",    EUS: "Frantsesa", EN: "French",    FR: "Français" },
+
+
     // Prompt
     generate_from_sources: { ES: "Generar resumen", EUS: "Laburpena sortu", EN: "Generate summary", FR: "Générer le résumé" },
 
