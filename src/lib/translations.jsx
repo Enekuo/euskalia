@@ -2398,159 +2398,216 @@ cookies_last_update: {
   // ========================= 
 
   //Titulos//
-  proHeader_translator: {
+ proHeader_translator: {
   ES: "Traductor",
   EUS: "Itzultzailea",
   EN: "Translator",
- },
+  FR: "Traducteur",
+},
 
- proHeader_summary: {
+proHeader_summary: {
   ES: "Resumidor",
   EUS: "Laburtzailea",
   EN: "Summary",
- },
+  FR: "Résumeur",
+},
 
- proHeader_corrector: {
+proHeader_corrector: {
   ES: "Corrector",
   EUS: "Zuzentzailea",
   EN: "Corrector",
- },
+  FR: "Correcteur",
+},
 
- proHeader_paraphraser: {
+proHeader_paraphraser: {
   ES: "Parafraseador",
   EUS: "Parafraseatzailea",
   EN: "Paraphraser",
- },
+  FR: "Paraphraseur",
+},
 
- proHeader_aiDetector: {
+proHeader_aiDetector: {
   ES: "Detector de IA",
   EUS: "IA detektagailua",
   EN: "AI Detector",
- },
+  FR: "Détecteur IA",
+},
 
- proHeader_humanizer: {
+proHeader_humanizer: {
   ES: "Humanizador",
   EUS: "Humanizatzailea",
   EN: "Humanizer",
- },
-  proSidebar_tools: {
+  FR: "Humaniseur",
+},
+
+proSidebar_tools: {
   ES: "Herramientas",
   EUS: "Tresnak",
+  EN: "Tools",
+  FR: "Outils",
 },
 
- proSidebar_translator: {
+proSidebar_translator: {
   ES: "Traductor",
   EUS: "Itzultzailea",
+  EN: "Translator",
+  FR: "Traducteur",
 },
 
- proSidebar_summary: {
+proSidebar_summary: {
   ES: "Resumidor",
-  EUS: "Laburtzailea", 
- },
- proSidebar_corrector: {
+  EUS: "Laburtzailea",
+  EN: "Summarizer",
+  FR: "Résumeur",
+},
+proSidebar_corrector: {
   ES: "Corrector",
   EUS: "Zuzentzailea",
- },
+  EN: "Corrector",
+  FR: "Correcteur",
+},
 
- proSidebar_library: {
+proSidebar_library: {
   ES: "Biblioteca",
   EUS: "Liburutegia",
- },
+  EN: "Library",
+  FR: "Bibliothèque",
+},
 
- proSidebar_chat: {
+proSidebar_chat: {
   ES: "Chat con IA",
   EUS: "IArekin txata",
- },
+  EN: "AI Chat",
+  FR: "Chat IA",
+},
 
- proSidebar_suggestions: {
+proSidebar_suggestions: {
   ES: "Sugerencias",
   EUS: "Iradokizunak",
- },
+  EN: "Suggestions",
+  FR: "Suggestions",
+},
 
- proSidebar_help: {
+proSidebar_help: {
   ES: "Ayuda",
   EUS: "Laguntza",
- },
+  EN: "Help",
+  FR: "Aide",
+},
 
- proSidebar_settings: {
+proSidebar_settings: {
   ES: "Ajustes",
   EUS: "Ezarpenak",
- },
+  EN: "Settings",
+  FR: "Paramètres",
+},
 
- proSidebar_collapse: {
+proSidebar_collapse: {
   ES: "Contraer",
   EUS: "Tolestu",
- },
+  EN: "Collapse",
+  FR: "Réduire",
+},
 
 
-  // =========================
-  //        Pro Home
-  // ========================= 
-  proHome: {
+// =========================
+//        Pro Home
+// ========================= 
+proHome: {
   greeting_prefix: {
     ES: "Hola",
     EUS: "Kaixo",
+    EN: "Hi",
+    FR: "Bonjour",
   },
 
   title: {
     ES: "Bienvenido a Euskalia Pro",
     EUS: "Ongi etorri Euskalia Prora",
+    EN: "Welcome to Euskalia Pro",
+    FR: "Bienvenue sur Euskalia Pro",
   },
 
   cardTranslator_title: {
     ES: "Traductor",
     EUS: "Itzultzailea",
+    EN: "Translator",
+    FR: "Traducteur",
   },
 
   cardTranslator_desc: {
     ES: "Traduce entre euskera, español, inglés y francés con calidad profesional.",
     EUS: "Itzuli euskara, gaztelania, ingelesa eta frantsesa maila profesionalarekin.",
+    EN: "Translate between Basque, Spanish, English and French with professional quality.",
+    FR: "Traduisez entre le basque, l’espagnol, l’anglais et le français avec une qualité professionnelle.",
   },
 
   cardSummary_title: {
     ES: "Resumidor",
     EUS: "Laburtzailea",
+    EN: "Summarizer",
+    FR: "Résumeur",
   },
 
   cardSummary_desc: {
     ES: "Sintetiza textos largos en segundos manteniendo claridad y fidelidad.",
     EUS: "Testu luzeak segundo gutxitan laburtzen ditu argitasuna eta zehaztasuna zainduz.",
+    EN: "Summarize long texts in seconds while keeping clarity and fidelity.",
+    FR: "Résumez de longs textes en quelques secondes tout en gardant clarté et fidélité.",
   },
 
   cardCorrector_title: {
     ES: "Corrector",
     EUS: "Zuzentzailea",
+    EN: "Corrector",
+    FR: "Correcteur",
   },
 
   cardCorrector_desc: {
     ES: "Revisa tu texto y corrige los errores gramaticales.",
     EUS: "Testua berrikusi eta akats gramatikoak zuzentzen ditu.",
+    EN: "Review your text and correct grammar mistakes.",
+    FR: "Relisez votre texte et corrigez les erreurs grammaticales.",
   },
+
   cardParaphraser_title: {
     ES: "Parafraseador",
     EUS: "Parafrasatzailea",
+    EN: "Paraphraser",
+    FR: "Paraphraseur",
   },
   cardParaphraser_desc: {
-    ES: "",
-    EUS: "",
+    ES: "Reescribe tu texto con distintos estilos manteniendo el significado.",
+    EUS: "Berridatzi zure testua estilo desberdinetan, esanahia mantenduz.",
+    EN: "Rewrite your text in different styles while preserving the meaning.",
+    FR: "Réécrivez votre texte avec différents styles tout en conservant le sens.",
   },
   cardAiDetector_title: {
     ES: "Detector de IA",
     EUS: "IA-detektorea",
+    EN: "AI detector",
+    FR: "Détecteur IA",
   },
   cardAiDetector_desc: {
-    ES: "", 
-    EUS: "",
+    ES: "Analiza el texto y estima la probabilidad de que haya sido generado por IA.",
+    EUS: "Aztertu testua eta kalkulatu IA-k sortua izateko probabilitatea.",
+    EN: "Analyze the text and estimate the probability it was generated by AI.",
+    FR: "Analysez le texte et estimez la probabilité qu’il ait été généré par une IA.",
   },
   cardHumanizer_title: {
     ES: "Humanizador",
     EUS: "Humanizatzailea",
+    EN: "Humanizer",
+    FR: "Humaniseur",
   },
   cardHumanizer_desc: {
-    ES: "",
-    EUS: "",
+    ES: "Haz que tu texto suene más natural, claro y fluido.",
+    EUS: "Egin zure testua naturalagoa, argiagoa eta fluidoagoa izan dadin.",
+    EN: "Make your text sound more natural, clear and fluent.",
+    FR: "Rendez votre texte plus naturel, clair et fluide.",
   },
-  },
+},
+
   
 
   // =========================
