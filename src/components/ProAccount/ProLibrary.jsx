@@ -81,51 +81,7 @@ export default function ProLibrary() {
       return;
     }
 
-    if (type === "text") {
-      createDocAndOpen(
-        "translation",
-        tr("library_new_translation_title", "Nueva traducción")
-      );
-      return;
-    }
-
-    if (type === "summary") {
-      createDocAndOpen(
-        "summary",
-        tr("library_new_summary_title", "Nuevo resumen")
-      );
-      return;
-    }
-
-    if (type === "corrections") {
-      createDocAndOpen(
-        "corrector",
-        tr("library_new_corrector_title", "Nueva corrección")
-      );
-      return;
-    }
-
-    if (type === "paraphraser") {
-      createDocAndOpen(
-        "paraphraser",
-        tr("library_new_paraphraser_title", "Nuevo parafraseo")
-      );
-      return;
-    }
-
-    if (type === "humanizer") {
-      createDocAndOpen(
-        "humanizer",
-        tr("library_new_humanizer_title", "Nuevo humanizado")
-      );
-      return;
-    }
-
-    // all → por defecto traducción
-    createDocAndOpen(
-      "translation",
-      tr("library_new_translation_title", "Nueva traducción")
-    );
+    navigate(createAction.href);
   };
 
   // ===== Menú contextual por documento =====
