@@ -72,36 +72,7 @@ export const translations = {
     EN: "Saved to library",
     FR: "Enregistré dans la bibliothèque",
   },
-  
-summary: {
-  output_language_es: {
-    ES: "Español",
-    EUS: "Gaztelania",
-    EN: "Spanish",
-    FR: "Espagnol",
-  },
 
-  output_language_eus: {
-    ES: "Euskera",
-    EUS: "Euskara",
-    EN: "Basque",
-    FR: "Basque",
-  },
-
-  output_language_en: {
-    ES: "Inglés",
-    EUS: "Ingelesa",
-    EN: "English",
-    FR: "Anglais",
-  },
-
-  output_language_fr: {
-    ES: "Francés",
-    EUS: "Frantsesa",
-    EN: "French",
-    FR: "Français",
-  },
-},
 
 
   // =========================
