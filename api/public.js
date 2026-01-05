@@ -5,13 +5,19 @@ import crypto from "crypto";
 // ====== Configuración de límites (via ENV con defaults sensatos) ======
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
-// LÍMITES PLAN GRATIS (puedes sobreescribir en Vercel → Env Vars)
-const FREE_MAX_CHARS    = Number(process.env.FREE_MAX_CHARS || 12000);    // máx. caracteres por request
-const FREE_DAILY_TOKENS = Number(process.env.FREE_DAILY_TOKENS || 20000); // cuota diaria aprox por IP (≃ 5 páginas)
-const FREE_RPM          = Number(process.env.FREE_RPM || 6);              // rate limit: peticiones/min por IP
+// ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR) ======
+// Traductor
+const FREE_TRANSLATOR_MAX_CHARS    = Number(process.env.FREE_TRANSLATOR_MAX_CHARS || 5000);
+const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 20000);
+const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
-// ✅ NUEVO: límite de resúmenes por día (solo resumidor)
-const FREE_SUMMARY_DAILY_REQUESTS = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 6); // máx. resúmenes/día por IP
+// Resumidor
+const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 12000);
+const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
+const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
+
+// ✅ límite de resúmenes por día (solo resumidor)
+const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 6);
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -222,55 +228,78 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       ...messages,
     ];
 
-    // ====== LÍMITES PLAN GRATIS ======
+    // ====== Identificar herramienta (Traductor vs Resumidor) ======
+    const rawTask = String(body?.task || "").toLowerCase();
+    const rawMode = String(body?.mode || "").toLowerCase();
+
+    const isSummary =
+      rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
+      rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
+
+    const isTranslator =
+      hasTranslate || body?.mode === "translate_urls" ||
+      rawTask.includes("translate") || rawMode.includes("translate") ||
+      rawTask.includes("traduc") || rawMode.includes("traduc");
+
+    const tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
+
+    // Límites según herramienta
+    const MAX_CHARS =
+      tool === "summary" ? FREE_SUMMARY_MAX_CHARS :
+      tool === "translator" ? FREE_TRANSLATOR_MAX_CHARS :
+      FREE_TRANSLATOR_MAX_CHARS;
+
+    const DAILY_TOKENS =
+      tool === "summary" ? FREE_SUMMARY_DAILY_TOKENS :
+      tool === "translator" ? FREE_TRANSLATOR_DAILY_TOKENS :
+      FREE_TRANSLATOR_DAILY_TOKENS;
+
+    const RPM =
+      tool === "summary" ? FREE_SUMMARY_RPM :
+      tool === "translator" ? FREE_TRANSLATOR_RPM :
+      FREE_TRANSLATOR_RPM;
+
+    // ====== LÍMITES ======
     const ip  = getClientIp(req);
     const day = todayKey();
 
-    // 1) Máx. caracteres por request
+    // 1) Máx. caracteres por request (según herramienta)
     const totalChars =
       (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-    if (totalChars > FREE_MAX_CHARS) {
+    if (totalChars > MAX_CHARS) {
       return res.status(413).json({
         ok: false,
         error: "Input too long",
-        limit: { max_chars: FREE_MAX_CHARS },
+        limit: { max_chars: MAX_CHARS, tool },
         message:
-          `El texto es demasiado largo para el plan gratis. Máximo ${FREE_MAX_CHARS.toLocaleString()} caracteres por petición. ` +
+          `El texto es demasiado largo. Máximo ${MAX_CHARS.toLocaleString()} caracteres por petición. ` +
           `Divide el texto y vuelve a intentarlo.`
       });
     }
 
-    // 2) Rate-limit RPM por IP
+    // 2) Rate-limit RPM por IP (según herramienta)
     try {
-      const rpmKey = `rl:rpm:${ip}`;
+      const rpmKey = `rl:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
       if (count === 1) {
         await kv.expire(rpmKey, 60); // ventana 60s
       }
-      if (count > FREE_RPM) {
+      if (count > RPM) {
         return res.status(429).json({
           ok: false,
           error: "Too Many Requests",
-          limit: { rpm: FREE_RPM },
-          message: `Demasiadas peticiones. Límite ${FREE_RPM}/min. Espera unos segundos.`
+          limit: { rpm: RPM, tool },
+          message: `Demasiadas peticiones. Límite ${RPM}/min. Espera unos segundos.`
         });
       }
     } catch {
       // si KV falla, continuamos sin romper UX
     }
 
-    // 3) ✅ NUEVO: Máximo 6 resúmenes al día (solo resumidor)
-    // Detectamos "resumidor" por task/mode (lo que tu front envíe)
-    // Cuenta como resumidor si task o mode contiene "summary" o "summar" o "resum"
-    const rawTask = String(body?.task || "").toLowerCase();
-    const rawMode = String(body?.mode || "").toLowerCase();
-    const isSummary =
-      rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
-      rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
-
-    if (isSummary) {
+    // 3) Límite de resúmenes por día (solo resumidor)
+    if (tool === "summary") {
       try {
         const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
         const usedReqs = (await kv.get(dailySummaryKey)) || 0;
@@ -293,19 +322,19 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     }
 
-    // 4) Cuota diaria aproximada de tokens por IP
+    // 4) Cuota diaria de tokens por IP (según herramienta)
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
-      const dailyKey = `quota:${day}:${ip}`;
+      const dailyKey = `quota:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
-      if (used + estTokens > FREE_DAILY_TOKENS) {
+      if (used + estTokens > DAILY_TOKENS) {
         return res.status(429).json({
           ok: false,
           error: "Daily quota exceeded",
-          limit: { daily_tokens: FREE_DAILY_TOKENS, used_tokens: used },
+          limit: { daily_tokens: DAILY_TOKENS, used_tokens: used, tool },
           message:
             `Has alcanzado la cuota diaria del plan gratis. ` +
-            `Disponible: ${FREE_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
+            `Disponible: ${DAILY_TOKENS.toLocaleString()} tokens/día. ` +
             `Vuelve mañana o mejora de plan.`
         });
       }
@@ -382,7 +411,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
     // ====== Actualizar cuota diaria real (tokens) ======
     try {
-      const dailyKey = `quota:${day}:${ip}`;
+      const dailyKey = `quota:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
 
       const realTokens =
