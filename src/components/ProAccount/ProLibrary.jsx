@@ -56,11 +56,11 @@ export default function ProLibrary() {
           label: tr("library_create_folder", "Crear carpeta"),
           href: "#",
         };
-      case "home":
+      case "all":
       default:
         return {
           label: tr("library_create_new", "Crear nuevo"),
-          href: "/cuenta-pro/traductor",
+          href: "/cuenta-pro",
         };
     }
   }, [type, tr]);
