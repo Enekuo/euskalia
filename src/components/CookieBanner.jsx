@@ -60,17 +60,17 @@ export default function CookieBanner() {
 
             <div className="flex shrink-0 flex-col sm:flex-row gap-2 sm:gap-3">
               <button
-                onClick={reject}
-                className="h-10 px-4 rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50"
-              >
-                {tr("cookies.reject", "Rechazar")}
-              </button>
-
-              <button
                 onClick={accept}
                 className="h-10 px-5 rounded-full bg-sky-600 text-sm font-semibold text-white hover:bg-sky-700"
               >
                 {tr("cookies.accept", "Aceptar")}
+              </button>
+
+              <button
+                onClick={reject}
+                className="h-10 px-4 rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                {tr("cookies.reject", "Rechazar")}
               </button>
             </div>
           </div>
