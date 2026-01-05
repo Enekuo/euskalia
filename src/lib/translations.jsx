@@ -2729,346 +2729,492 @@ proHome: {
   sources_title: {
     ES: "Fuentes",
     EUS: "Iturriak",
+    EN: "Sources",
+    FR: "Sources",
   },
   sources_tab_text: {
     ES: "Texto",
     EUS: "Testua",
+    EN: "Text",
+    FR: "Texte",
   },
   sources_tab_document: {
     ES: "Documento",
     EUS: "Dokumentua",
+    EN: "Document",
+    FR: "Document",
   },
   sources_tab_url: {
     ES: "URL",
     EUS: "URL",
+    EN: "URL",
+    FR: "URL",
   },
   enter_text_here_full: {
     ES: "Escribe o pega el texto que quieras corregir aquí…",
     EUS: "Idatzi edo itsatsi zuzendu nahi duzun testua hemen…",
+    EN: "Write or paste the text you want to correct here…",
+    FR: "Écrivez ou collez ici le texte que vous voulez corriger…",
   },
   choose_file_title: {
     ES: "Elige tu archivo o carpeta.",
     EUS: "Aukeratu zure fitxategia edo karpeta.",
+    EN: "Choose your file or folder.",
+    FR: "Choisissez votre fichier ou dossier.",
   },
   accepted_formats: {
     ES: "Formatos admitidos: PDF, DOCX, TXT, MD, imágenes…",
     EUS: "Onartutako formatuak: PDF, DOCX, TXT, MD, irudiak…",
+    EN: "Supported formats: PDF, DOCX, TXT, MD, images…",
+    FR: "Formats acceptés : PDF, DOCX, TXT, MD, images…",
   },
   folder_hint: {
     ES: "Aquí aparecerán los textos o documentos que subas para corregir.",
     EUS: "Hemen agertuko dira zuzendu nahi dituzun testuak edo dokumentuak.",
+    EN: "Your uploaded texts or documents will appear here to be corrected.",
+    FR: "Vos textes ou documents importés apparaîtront ici pour être corrigés.",
   },
   paste_urls_label: {
     ES: "Pegar URLs*",
     EUS: "URLak itsatsi*",
+    EN: "Paste URLs*",
+    FR: "Coller des URLs*",
   },
   add_url: {
     ES: "Añadir URLs",
     EUS: "URLak gehitu",
+    EN: "Add URLs",
+    FR: "Ajouter des URLs",
   },
   paste_urls_placeholder: {
     ES: "Introduce aquí una o mas URLs (separadas por línea)",
     EUS: "Itsatsi hemen URL bat edo gehiago (lerro bakoitzean bat)",
+    EN: "Enter one or more URLs here (one per line)",
+    FR: "Saisissez une ou plusieurs URLs ici (une par ligne)",
   },
   save_urls: {
     ES: "Guardar",
     EUS: "Gorde",
+    EN: "Save",
+    FR: "Enregistrer",
   },
   cancel: {
     ES: "Cancelar",
     EUS: "Ezeztatu",
+    EN: "Cancel",
+    FR: "Annuler",
   },
   urls_note_visible: {
     ES: "Solo se importará el texto visible de la página web.",
     EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
+    EN: "Only the visible text from the web page will be imported.",
+    FR: "Seul le texte visible de la page web sera importé.",
   },
   urls_note_paywalled: {
     ES: "No se admiten artículos de pago.",
     EUS: "Ordaineko artikuluak ez dira onartzen.",
+    EN: "Paywalled articles are not supported.",
+    FR: "Les articles payants ne sont pas pris en charge.",
   },
   create_help_left: {
     ES: "Aquí verás los textos o documentos que subas para corregir. Puedes añadir archivos PDF, texto copiado o enlaces web…",
     EUS: "Hemen agertuko dira zuzendu nahi dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…",
+    EN: "Here you’ll see the texts or documents you upload to correct. You can add PDF files, pasted text, or web links…",
+    FR: "Ici, vous verrez les textes ou documents que vous importez pour corriger. Vous pouvez ajouter des PDF, du texte collé ou des liens web…",
   },
   language_es: {
     ES: "Español",
     EUS: "Gaztelania",
+    EN: "Spanish",
+    FR: "Espagnol",
   },
   language_eus: {
     ES: "Euskera",
     EUS: "Euskara",
+    EN: "Basque",
+    FR: "Basque",
   },
   language_en: {
     ES: "Inglés",
     EUS: "Ingelesa",
+    EN: "English",
+    FR: "Anglais",
   },
 
   correct_button: {
     ES: "Corregir texto",
     EUS: "Testua zuzendu",
+    EN: "Correct text",
+    FR: "Corriger le texte",
   },
   create_help_right: {
     ES: "Corrección estándar: ortografía, gramática y fluidez básica.",
     EUS: "Zuzenketa estandarra: ortografia, gramatika eta oinarrizko arintasuna.",
+    EN: "Standard correction: spelling, grammar, and basic fluency.",
+    FR: "Correction standard : orthographe, grammaire et fluidité de base.",
   },
   lang_mismatch: {
-  ES: "Parece que el texto está en otro idioma distinto al seleccionado. Cambia el idioma del selector o usa el traductor de Euskalia.",
-  EUS: "Badirudi testua hautatutako hizkuntzatik desberdina dela. Aldatu goiko hizkuntza-hautatzailea edo erabili Euskaliaren itzultzailea.",
+    ES: "Parece que el texto está en otro idioma distinto al seleccionado. Cambia el idioma del selector o usa el traductor de Euskalia.",
+    EUS: "Badirudi testua hautatutako hizkuntzatik desberdina dela. Aldatu goiko hizkuntza-hautatzailea edo erabili Euskaliaren itzultzailea.",
+    EN: "It looks like the text is in a different language than the one selected. Change the selector language or use Euskalia’s translator.",
+    FR: "Il semble que le texte soit dans une langue différente de celle sélectionnée. Changez la langue du sélecteur ou utilisez le traducteur d’Euskalia.",
   },
   view_changes: {
     ES: "Ver cambios",
     EUS: "Ikusi aldaketak",
     EN: "View changes",
+    FR: "Voir les modifications",
   },
   hide_changes: {
     ES: "Ocultar cambios",
     EUS: "Aldaketak ezkutatu",
     EN: "Hide changes",
+    FR: "Masquer les modifications",
   },
   no_errors_message: {
     ES: "¡Muy bien! No hemos detectado errores.",
     EUS: "Oso ondo! Ez dugu akatsik aurkitu.",
     EN: "Nice job! We didn’t spot any mistakes.",
+    FR: "Bravo ! Nous n’avons détecté aucune erreur.",
   },
 },
-  // =========================
-  //        Pro Paraphraser
-  // =========================    
-  proSidebar_paraphraser: {
+
+// =========================
+//        Pro Paraphraser
+// =========================    
+proSidebar_paraphraser: {
   ES: "Parafraseador",
   EUS: "Parafraseatzailea",
+  EN: "Paraphraser",
+  FR: "Paraphraseur",
 },
- proParaphraser_sources_title: {
+
+proParaphraser_sources_title: {
   ES: "Fuentes",
   EUS: "Iturriak",
+  EN: "Sources",
+  FR: "Sources",
 },
 
 proParaphraser_tab_text: {
   ES: "Texto",
   EUS: "Testua",
+  EN: "Text",
+  FR: "Texte",
 }, 
 
 proParaphraser_tab_document: {
   ES: "Documento",
   EUS: "Dokumentua",
+  EN: "Document",
+  FR: "Document",
 },
 
 proParaphraser_tab_url: {
   ES: "URL",
   EUS: "URLa",
+  EN: "URL",
+  FR: "URL",
 },
 proParaphraser_left_title: {
   ES: "Aquí verás los textos o documentos que subas para corregir.",
   EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Here you’ll see the texts or documents you upload.",
+  FR: "Ici, vous verrez les textes ou documents que vous importez.",
 },
 proParaphraser_left_body: {
   ES: "Puedes añadir archivos PDF, texto copiado o enlaces web…",
   EUS: "Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak...",
+  EN: "You can add PDF files, pasted text, or web links…",
+  FR: "Vous pouvez ajouter des PDF, du texte collé ou des liens web…",
 },
 proParaphraser_enter_text_placeholder: {
   ES: "Escribe o pega tu texto aquí…",
   EUS: "Idatzi edo itsatsi hemen zure testua…",
+  EN: "Write or paste your text here…",
+  FR: "Écrivez ou collez votre texte ici…",
 },
 
 proParaphraser_pick_file_title: {
   ES: "Elige tu archivo o carpeta",
   EUS: "Aukeratu zure fitxategia edo karpeta",
+  EN: "Choose your file or folder",
+  FR: "Choisissez votre fichier ou dossier",
 },
 
 proParaphraser_accepted_formats: {
   ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…",
   EUS: "PDF fitxategiak, testu itsatsiak edo web estekak gehitu ditzakezu…",
+  EN: "You can add PDF files, pasted text, web links…",
+  FR: "Vous pouvez ajouter des PDF, du texte collé, des liens web…",
 },
 
 proParaphraser_folder_hint: {
   ES: "Aquí aparecerán tus textos o documentos subidos.",
   EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Your uploaded texts or documents will appear here.",
+  FR: "Vos textes ou documents importés apparaîtront ici.",
 },
 
 proParaphraser_paste_urls_label: {
   ES: "Pegar URLs*",
   EUS: "URLa itsatsi*",
+  EN: "Paste URLs*",
+  FR: "Coller des URLs*",
 },
 
 proParaphraser_add_urls_button: {
   ES: "Añadir URLs",
   EUS: "URLak gehitu",
+  EN: "Add URLs",
+  FR: "Ajouter des URLs",
 },
 
 proParaphraser_save_urls_button: {
   ES: "Guardar",
   EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
 },
 
 proParaphraser_cancel_button: {
   ES: "Cancelar",
   EUS: "Utzi",
+  EN: "Cancel",
+  FR: "Annuler",
 },
 
 proParaphraser_urls_note_visible: {
   ES: "Solo se importará el texto visible del sitio web.",
   EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
+  EN: "Only the visible text from the website will be imported.",
+  FR: "Seul le texte visible du site web sera importé.",
 },
 
 proParaphraser_urls_note_paywalled: {
   ES: "No se admiten artículos de pago.",
   EUS: "Ordainpeko artikuluak ez dira onartzen.",
+  EN: "Paywalled articles are not supported.",
+  FR: "Les articles payants ne sont pas pris en charge.",
 },
 
 proParaphraser_remove_button: {
   ES: "Quitar",
   EUS: "Kendu",
+  EN: "Remove",
+  FR: "Retirer",
 },
 
 proParaphraser_language_es: {
   ES: "Castellano",
   EUS: "Gaztelania",
+  EN: "Spanish",
+  FR: "Espagnol",
 },
 
 proParaphraser_language_eus: {
   ES: "Euskera",
   EUS: "Euskara",
+  EN: "Basque",
+  FR: "Basque",
 },
 
 proParaphraser_language_en: {
   ES: "Inglés",
   EUS: "Ingelesa",
+  EN: "English",
+  FR: "Anglais",
 },
 
 proParaphraser_output_language_aria: {
   ES: "Idioma de salida",
   EUS: "Irteerako hizkuntza",
+  EN: "Output language",
+  FR: "Langue de sortie",
 },
 
 proParaphraser_generate_button: {
   ES: "Crear parafraseo",
   EUS: "Parafraseoa sortu",
+  EN: "Create paraphrase",
+  FR: "Créer un paraphrase",
 },
 
 proParaphraser_help_right: {
   ES: "Elige entre los botones superiores el estilo de texto que prefieras y crea el parafraseo con tu contenido.",
   EUS: "Aukeratu goiko botoien artean nahi duzun testu-estiloa, eta sortu parafraseoa zure edukiarekin.",
+  EN: "Choose your preferred text style using the top buttons and create the paraphrase with your content.",
+  FR: "Choisissez le style de texte via les boutons du haut et créez le paraphrase avec votre contenu.",
 },
 
 proParaphraser_mode_neutral: {
   ES: "Neutral",
   EUS: "Neutrala",
+  EN: "Neutral",
+  FR: "Neutre",
 },
 
 proParaphraser_mode_informal: {
   ES: "Informal",
   EUS: "Informala",
+  EN: "Informal",
+  FR: "Informel",
 },
 
 proParaphraser_mode_professional: {
   ES: "Profesional",
   EUS: "Profesionala",
+  EN: "Professional",
+  FR: "Professionnel",
 },
 
 proParaphraser_mode_academic: {
   ES: "Académico",
   EUS: "Akademikoa",
+  EN: "Academic",
+  FR: "Académique",
 },
 
 proParaphraser_mode_fluent: {
   ES: "Fluido",
   EUS: "Jariozkoa",
+  EN: "Fluent",
+  FR: "Fluide",
 },
 
 proParaphraser_mode_simplified: {
   ES: "Simplificado",
   EUS: "Sinplifikatua",
+  EN: "Simplified",
+  FR: "Simplifié",
 },
 
 proParaphraser_mode_creative: {
   ES: "Creativo",
   EUS: "Sortzailea",
+  EN: "Creative",
+  FR: "Créatif",
 },
 
 proParaphraser_copy_result_aria: {
   ES: "Copiar resultado",
   EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
 },
 
 proParaphraser_delete_input_aria: {
   ES: "Eliminar texto de entrada y resultado",
   EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
 },
 
 proParaphraser_copy_result_title: {
   ES: "Copiar resultado",
   EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
 },
 
 proParaphraser_delete_input_title: {
   ES: "Eliminar texto de entrada y resultado",
   EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
 },
 
 proParaphraser_clear_text_title: {
   ES: "Borrar texto",
   EUS: "Testua ezabatu",
+  EN: "Clear text",
+  FR: "Effacer le texte",
 },
 
 proParaphraser_clear_text_aria: {
   ES: "Borrar texto",
   EUS: "Testua ezabatu",
+  EN: "Clear text",
+  FR: "Effacer le texte",
 },
 
 proParaphraser_download: {
   ES: "Descargar",
   EUS: "Deskargatu",
+  EN: "Download",
+  FR: "Télécharger",
 },
 
 proParaphraser_copy: {
   ES: "Copiar",
   EUS: "Kopiatu",
+  EN: "Copy",
+  FR: "Copier",
 },
 
 proParaphraser_copied: {
   ES: "Copiado",
   EUS: "Kopiatuta",
+  EN: "Copied",
+  FR: "Copié",
 },
 
 proParaphraser_save_to_library_button: {
   ES: "Guardar",
   EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
 },
 
 proParaphraser_saved_to_library: {
   ES: "Guardado en biblioteca",
   EUS: "Liburutegian gordeta",
+  EN: "Saved to library",
+  FR: "Enregistré dans la bibliothèque",
 },
 
 proParaphraser_default_title: {
   ES: "Parafraseo",
   EUS: "Parafraseoa",
+  EN: "Paraphrase",
+  FR: "Paraphrase",
 },
 
 proParaphraser_error_max_chars: {
   ES: "Has superado el límite de caracteres permitido.",
   EUS: "Onartutako karaktere kopurua gainditu duzu.",
+  EN: "You have exceeded the allowed character limit.",
+  FR: "Vous avez dépassé la limite de caractères autorisée.",
 },
 
 proParaphraser_error_need_input: {
   ES: "Añade texto suficiente, URLs o documentos antes de crear el parafraseo.",
   EUS: "Parafraseoa sortu aurretik, gehitu testu nahikoa, URLak edo dokumentuak.",
+  EN: "Add enough text, URLs, or documents before creating the paraphrase.",
+  FR: "Ajoutez suffisamment de texte, d’URLs ou de documents avant de créer le paraphrase.",
 },
 
 proParaphraser_error_rate_limit: {
   ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde.",
   EUS: "Eskaera muga gainditu duzu. Saiatu berriro geroago.",
+  EN: "You’ve reached the request limit. Please try again later.",
+  FR: "Vous avez atteint la limite de requêtes. Réessayez plus tard.",
 },
 
 proParaphraser_error_no_text: {
   ES: "No se recibió texto de la API.",
   EUS: "Ez da testurik jaso API-tik.",
+  EN: "No text was received from the API.",
+  FR: "Aucun texte n’a été reçu de l’API.",
 },
 
 proParaphraser_error_generic: {
   ES: "Error creando el parafraseo.",
   EUS: "Errorea parafraseoa sortzean.",
+  EN: "Error creating the paraphrase.",
+  FR: "Erreur lors de la création du paraphrase.",
 },
+
 
  // =========================
   //        Pro Ai Detector
@@ -3076,158 +3222,410 @@ proParaphraser_error_generic: {
  proSidebar_aiDetector: {
   ES: "Detector de IA",
   EUS: "IA detektagailua",
+  EN: "AI Detector",
+  FR: "Détecteur IA",
 },
 aiDetector_subtitle: {
   ES: "Mantén la autenticidad de tus textos comprobando si podrían contener contenido generado por IA.",
   EUS: "Zure testuen benetakotasuna mantendu, IA bidez sortutako edukia izan dezaketela egiaztatuz.",
+  EN: "Keep your texts authentic by checking whether they may contain AI-generated content.",
+  FR: "Préservez l’authenticité de vos textes en vérifiant s’ils peuvent contenir du contenu généré par IA.",
 },
 
 aiDetector_placeholder: {
   ES: "Escribe o pega aquí el texto que quieres analizar...",
   EUS: "Idatzi edo itsatsi hemen aztertu nahi duzun testua...",
+  EN: "Write or paste here the text you want to analyze...",
+  FR: "Écrivez ou collez ici le texte que vous voulez analyser...",
 },
 
 aiDetector_paste_button: {
   ES: "Pegar texto",
   EUS: "Testua itsatsi",
+  EN: "Paste text",
+  FR: "Coller le texte",
 },
 
 aiDetector_upload_button: {
   ES: "Subir archivo",
   EUS: "Fitxategia igo",
+  EN: "Upload file",
+  FR: "Importer un fichier",
 },
 
 aiDetector_clear_title: {
   ES: "Borrar",
   EUS: "Ezabatu",
+  EN: "Clear",
+  FR: "Effacer",
 },
 
 aiDetector_max_chars: {
   ES: "5000",
   EUS: "5000",
+  EN: "5000",
+  FR: "5000",
 },
 
 aiDetector_button_analyze: {
   ES: "Revisar si hay contenido de IA",
   EUS: "IA edukia dagoen aztertu",
+  EN: "Check for AI content",
+  FR: "Vérifier le contenu IA",
 },
 
 aiDetector_button_reanalyze: {
   ES: "Volver a analizar",
   EUS: "Berriro aztertu",
+  EN: "Analyze again",
+  FR: "Analyser à nouveau",
 },
 
 aiDetector_button_analyzing: {
   ES: "Analizando...",
   EUS: "Aztertzen...",
+  EN: "Analyzing...",
+  FR: "Analyse...",
 },
 
 aiDetector_right_loading_title: {
   ES: "Analizando el texto…",
   EUS: "Testua aztertzen…",
+  EN: "Analyzing the text…",
+  FR: "Analyse du texte…",
 },
 
 aiDetector_right_loading_subtitle: {
   ES: "Esto puede tardar unos segundos",
   EUS: "Segundo batzuk har ditzake",
+  EN: "This may take a few seconds",
+  FR: "Cela peut prendre quelques secondes",
 },
 
 aiDetector_right_percent_subtitle: {
   ES: "del texto podría estar generado por IA",
   EUS: "testuaren zati bat IA bidez sortua izan liteke",
+  EN: "of the text could be AI-generated",
+  FR: "du texte pourrait être généré par IA",
 },
 
 aiDetector_label_ai: {
   ES: "Generado por IA",
   EUS: "IAk sortua",
+  EN: "AI-generated",
+  FR: "Généré par IA",
 },
 
 aiDetector_label_human: {
   ES: "Escrito por humano",
   EUS: "Gizakiak idatzia",
+  EN: "Human-written",
+  FR: "Écrit par un humain",
 },
 
 aiDetector_disclaimer: {
   ES: "Estimación orientativa. Puede no ser 100% precisa.",
   EUS: "Gutxi gorabeherako estimazioa. Baliteke %100 zehatza ez izatea.",
+  EN: "Indicative estimate. It may not be 100% accurate.",
+  FR: "Estimation indicative. Elle peut ne pas être 100 % précise.",
 },
 
 aiDetector_humanize_button: {
   ES: "Humanizar texto IA",
   EUS: "IA testua humanizatu",
+  EN: "Humanize AI text",
+  FR: "Humaniser le texte IA",
 },
 
 aiDetector_error_generic: {
   ES: "No se pudo analizar el texto.",
   EUS: "Ezin izan da testua aztertu.",
+  EN: "The text could not be analyzed.",
+  FR: "Impossible d’analyser le texte.",
 },
 
 aiDetector_error_network: {
   ES: "Error de red. Intenta de nuevo.",
   EUS: "Sareko errorea. Saiatu berriro.",
+  EN: "Network error. Try again.",
+  FR: "Erreur réseau. Réessayez.",
 },
 
-  // =========================
-  //        Pro Humanizer
-  // =========================    
- 
-  proSidebar_humanizer: {
+
+// =========================
+//        Pro Humanizer
+// =========================    
+
+proSidebar_humanizer: {
   ES: "Humanizador",
   EUS: "Humanizatzailea",
+  EN: "Humanizer",
+  FR: "Humaniseur",
 },
-proHumanizer_sources: { ES: "Fuentes", EUS: "Iturriak" },
-proHumanizer_tabText: { ES: "Texto", EUS: "Testua" },
-proHumanizer_tabDocument: { ES: "Documento", EUS: "Dokumentua" },
-proHumanizer_tabUrl: { ES: "URL", EUS: "URL" },
-proHumanizer_enterText: { ES: "Escribe o pega tu texto aquí…", EUS: "Idatzi edo itsatsi zure testua hemen…" },
 
-proHumanizer_chooseFileTitle: { ES: "Elige tu archivo o carpeta", EUS: "Aukeratu zure fitxategia edo karpeta" },
-proHumanizer_acceptedFormats: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu" },
-proHumanizer_folderHint: { ES: "Aquí aparecerán tus textos o documentos subidos.", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak." },
+proHumanizer_sources: {
+  ES: "Fuentes",
+  EUS: "Iturriak",
+  EN: "Sources",
+  FR: "Sources",
+},
+proHumanizer_tabText: {
+  ES: "Texto",
+  EUS: "Testua",
+  EN: "Text",
+  FR: "Texte",
+},
+proHumanizer_tabDocument: {
+  ES: "Documento",
+  EUS: "Dokumentua",
+  EN: "Document",
+  FR: "Document",
+},
+proHumanizer_tabUrl: {
+  ES: "URL",
+  EUS: "URL",
+  EN: "URL",
+  FR: "URL",
+},
+proHumanizer_enterText: {
+  ES: "Escribe o pega tu texto aquí…",
+  EUS: "Idatzi edo itsatsi zure testua hemen…",
+  EN: "Write or paste your text here…",
+  FR: "Écrivez ou collez votre texte ici…",
+},
 
-proHumanizer_pasteUrls: { ES: "Pegar URLs*", EUS: "Itsatsi URLak*" },
-proHumanizer_addUrls: { ES: "Añadir URLs", EUS: "Gehitu URLak" },
-proHumanizer_save: { ES: "Guardar", EUS: "Gorde" },
-proHumanizer_cancel: { ES: "Cancelar", EUS: "Utzi" },
-proHumanizer_urlsNoteVisible: { ES: "Solo se importará el texto visible del sitio web.", EUS: "Webguneko testu ikusgarria bakarrik inportatuko da." },
-proHumanizer_urlsNotePaywalled: { ES: "No se admiten artículos de pago.", EUS: "Ordainpeko artikuluak ez dira onartzen." },
-proHumanizer_remove: { ES: "Quitar", EUS: "Kendu" },
+proHumanizer_chooseFileTitle: {
+  ES: "Elige tu archivo o carpeta",
+  EUS: "Aukeratu zure fitxategia edo karpeta",
+  EN: "Choose your file or folder",
+  FR: "Choisissez votre fichier ou dossier",
+},
+proHumanizer_acceptedFormats: {
+  ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…",
+  EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu",
+  EN: "You can add PDF files, pasted text, web links…",
+  FR: "Vous pouvez ajouter des PDF, du texte collé, des liens web…",
+},
+proHumanizer_folderHint: {
+  ES: "Aquí aparecerán tus textos o documentos subidos.",
+  EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Your uploaded texts or documents will appear here.",
+  FR: "Vos textes ou documents importés apparaîtront ici.",
+},
 
-proHumanizer_langES: { ES: "Castellano", EUS: "Gaztelania" },
-proHumanizer_langEUS: { ES: "Euskera", EUS: "Euskara" },
-proHumanizer_langEN: { ES: "Inglés", EUS: "Ingelesa" },
+proHumanizer_pasteUrls: {
+  ES: "Pegar URLs*",
+  EUS: "Itsatsi URLak*",
+  EN: "Paste URLs*",
+  FR: "Coller des URLs*",
+},
+proHumanizer_addUrls: {
+  ES: "Añadir URLs",
+  EUS: "Gehitu URLak",
+  EN: "Add URLs",
+  FR: "Ajouter des URLs",
+},
+proHumanizer_save: {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+proHumanizer_cancel: {
+  ES: "Cancelar",
+  EUS: "Utzi",
+  EN: "Cancel",
+  FR: "Annuler",
+},
+proHumanizer_urlsNoteVisible: {
+  ES: "Solo se importará el texto visible del sitio web.",
+  EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
+  EN: "Only the visible text from the website will be imported.",
+  FR: "Seul le texte visible du site web sera importé.",
+},
+proHumanizer_urlsNotePaywalled: {
+  ES: "No se admiten artículos de pago.",
+  EUS: "Ordainpeko artikuluak ez dira onartzen.",
+  EN: "Paywalled articles are not supported.",
+  FR: "Les articles payants ne sont pas pris en charge.",
+},
+proHumanizer_remove: {
+  ES: "Quitar",
+  EUS: "Kendu",
+  EN: "Remove",
+  FR: "Retirer",
+},
 
-proHumanizer_generate: { ES: "Humanizar texto", EUS: "Testua humanizatu" },
-proHumanizer_helpRight: { ES: 'Selecciona una fuente (texto, documentos o URLs) y pulsa "Humanizar texto".', EUS: 'Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu "Testua humanizatu".' },
+proHumanizer_langES: {
+  ES: "Castellano",
+  EUS: "Gaztelania",
+  EN: "Spanish",
+  FR: "Espagnol",
+},
+proHumanizer_langEUS: {
+  ES: "Euskera",
+  EUS: "Euskara",
+  EN: "Basque",
+  FR: "Basque",
+},
+proHumanizer_langEN: {
+  ES: "Inglés",
+  EUS: "Ingelesa",
+  EN: "English",
+  FR: "Anglais",
+},
 
-proHumanizer_saveButton: { ES: "Guardar", EUS: "Gorde" },
-proHumanizer_savedToLibrary: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta" },
+proHumanizer_generate: {
+  ES: "Humanizar texto",
+  EUS: "Testua humanizatu",
+  EN: "Humanize text",
+  FR: "Humaniser le texte",
+},
+proHumanizer_helpRight: {
+  ES: 'Selecciona una fuente (texto, documentos o URLs) y pulsa "Humanizar texto".',
+  EUS: 'Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu "Testua humanizatu".',
+  EN: 'Select a source (text, documents or URLs) and click "Humanize text".',
+  FR: 'Sélectionnez une source (texte, documents ou URLs) puis cliquez sur "Humaniser le texte".',
+},
 
-proHumanizer_copyResultAria: { ES: "Copiar resultado", EUS: "Emaitza kopiatu" },
-proHumanizer_deleteInputAria: { ES: "Eliminar texto de entrada y resultado", EUS: "Sarrerako testua eta emaitza ezabatu" },
-proHumanizer_copyResultTitle: { ES: "Copiar resultado", EUS: "Emaitza kopiatu" },
-proHumanizer_deleteInputTitle: { ES: "Eliminar texto de entrada y resultado", EUS: "Sarrerako testua eta emaitza ezabatu" },
-proHumanizer_clearLeftTitle: { ES: "Borrar texto", EUS: "Testua ezabatu" },
-proHumanizer_clearLeftAria: { ES: "Borrar texto", EUS: "Testua ezabatu" },
+proHumanizer_saveButton: {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+proHumanizer_savedToLibrary: {
+  ES: "Guardado en biblioteca",
+  EUS: "Liburutegian gordeta",
+  EN: "Saved to library",
+  FR: "Enregistré dans la bibliothèque",
+},
 
-proHumanizer_urlTextareaPlaceholder: { ES: "Introduce aquí una o más URLs (separadas por línea)", EUS: "Sartu hemen URL bat edo gehiago (lerroz banatuta)" },
+proHumanizer_copyResultAria: {
+  ES: "Copiar resultado",
+  EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
+},
+proHumanizer_deleteInputAria: {
+  ES: "Eliminar texto de entrada y resultado",
+  EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
+},
+proHumanizer_copyResultTitle: {
+  ES: "Copiar resultado",
+  EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
+},
+proHumanizer_deleteInputTitle: {
+  ES: "Eliminar texto de entrada y resultado",
+  EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
+},
+proHumanizer_clearLeftTitle: {
+  ES: "Borrar texto",
+  EUS: "Testua ezabatu",
+  EN: "Clear text",
+  FR: "Effacer le texte",
+},
+proHumanizer_clearLeftAria: {
+  ES: "Borrar texto",
+  EUS: "Testua ezabatu",
+  EN: "Clear text",
+  FR: "Effacer le texte",
+},
 
-proHumanizer_download: { ES: "Descargar", EUS: "Deskargatu" },
-proHumanizer_copy: { ES: "Copiar", EUS: "Kopiatu" },
-proHumanizer_copied: { ES: "Copiado", EUS: "Kopiatuta" },
+proHumanizer_urlTextareaPlaceholder: {
+  ES: "Introduce aquí una o más URLs (separadas por línea)",
+  EUS: "Sartu hemen URL bat edo gehiago (lerroz banatuta)",
+  EN: "Enter one or more URLs here (one per line)",
+  FR: "Saisissez une ou plusieurs URLs ici (une par ligne)",
+},
 
-proHumanizer_leftTitle: { ES: "Aquí aparecerán tus textos o documentos subidos.", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak." },
-proHumanizer_leftBody: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu" },
+proHumanizer_download: {
+  ES: "Descargar",
+  EUS: "Deskargatu",
+  EN: "Download",
+  FR: "Télécharger",
+},
+proHumanizer_copy: {
+  ES: "Copiar",
+  EUS: "Kopiatu",
+  EN: "Copy",
+  FR: "Copier",
+},
+proHumanizer_copied: {
+  ES: "Copiado",
+  EUS: "Kopiatuta",
+  EN: "Copied",
+  FR: "Copié",
+},
 
-proHumanizer_modeBasic: { ES: "Básico", EUS: "Oinarrizkoa" },
-proHumanizer_modeStandard: { ES: "Estándar", EUS: "Estandarra" },
-proHumanizer_modeAdvanced: { ES: "Avanzado", EUS: "Aurreratua" },
+proHumanizer_leftTitle: {
+  ES: "Aquí aparecerán tus textos o documentos subidos.",
+  EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Your uploaded texts or documents will appear here.",
+  FR: "Vos textes ou documents importés apparaîtront ici.",
+},
+proHumanizer_leftBody: {
+  ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…",
+  EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu",
+  EN: "You can add PDF files, pasted text, web links…",
+  FR: "Vous pouvez ajouter des PDF, du texte collé, des liens web…",
+},
 
-proHumanizer_errorMaxChars: { ES: "Has superado el límite de caracteres permitido.", EUS: "Baimendutako karaktere-muga gainditu duzu." },
-proHumanizer_errorNeedInput: { ES: "Añade texto suficiente, URLs o documentos antes de humanizar.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak humanizatu aurretik." },
-proHumanizer_errorRateLimit: { ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde.", EUS: "Eskaera-muga lortu duzu. Saiatu berriro geroago." },
-proHumanizer_errorNoApiText: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik." },
-proHumanizer_errorGeneric: { ES: "Error humanizando el texto.", EUS: "Errorea testua humanizatzean." },
+proHumanizer_modeBasic: {
+  ES: "Básico",
+  EUS: "Oinarrizkoa",
+  EN: "Basic",
+  FR: "Basique",
+},
+proHumanizer_modeStandard: {
+  ES: "Estándar",
+  EUS: "Estandarra",
+  EN: "Standard",
+  FR: "Standard",
+},
+proHumanizer_modeAdvanced: {
+  ES: "Avanzado",
+  EUS: "Aurreratua",
+  EN: "Advanced",
+  FR: "Avancé",
+},
+
+proHumanizer_errorMaxChars: {
+  ES: "Has superado el límite de caracteres permitido.",
+  EUS: "Baimendutako karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the allowed character limit.",
+  FR: "Vous avez dépassé la limite de caractères autorisée.",
+},
+proHumanizer_errorNeedInput: {
+  ES: "Añade texto suficiente, URLs o documentos antes de humanizar.",
+  EUS: "Gehitu testu nahikoa, URLak edo dokumentuak humanizatu aurretik.",
+  EN: "Add enough text, URLs, or documents before humanizing.",
+  FR: "Ajoutez suffisamment de texte, d’URLs ou de documents avant d’humaniser.",
+},
+proHumanizer_errorRateLimit: {
+  ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde.",
+  EUS: "Eskaera-muga lortu duzu. Saiatu berriro geroago.",
+  EN: "You’ve reached the request limit. Try again later.",
+  FR: "Vous avez atteint la limite de requêtes. Réessayez plus tard.",
+},
+proHumanizer_errorNoApiText: {
+  ES: "No se recibió texto de la API.",
+  EUS: "Ez da testurik jaso API-tik.",
+  EN: "No text was received from the API.",
+  FR: "Aucun texte n’a été reçu de l’API.",
+},
+proHumanizer_errorGeneric: {
+  ES: "Error humanizando el texto.",
+  EUS: "Errorea testua humanizatzean.",
+  EN: "Error humanizing the text.",
+  FR: "Erreur lors de l’humanisation du texte.",
+},
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
