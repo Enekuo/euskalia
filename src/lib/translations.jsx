@@ -48,6 +48,19 @@ export const translations = {
       FR: "La traduction apparaîtra ici."
     },
 
+  detect_language: {
+    ES: "Detectar idioma",
+    EUS: "Hizkuntza detektatu",
+    EN: "Detect language",
+    FR: "Détecter la langue",
+  },
+  detected: {
+    ES: "detectado",
+    EUS: "detektatua",
+    EN: "detected",
+    FR: "détecté",
+  },
+
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
     listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
     copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
