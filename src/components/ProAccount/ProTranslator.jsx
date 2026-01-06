@@ -73,7 +73,7 @@ export default function ProTranslator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
 
-  const LBL_AUTO = tr("proTranslator.detect_language", "Detectar idioma");
+  const LBL_AUTO = tr("proTranslator_detect_language", "Detectar idioma");
   const LBL_DETECTED = tr("common_detected", "detectado");
 
   const LBL_EUS = tr("proTranslator.output_language_eus", "Euskara");
@@ -90,6 +90,7 @@ export default function ProTranslator() {
     return val;
   };
 
+  // ✅ Convierte "en" -> "inglés", "de" -> "alemán", etc. (según idioma UI)
   const getDisplayLanguageName = (code) => {
     const c = (code || "").trim();
     if (!c) return "";
@@ -101,6 +102,12 @@ export default function ProTranslator() {
     } catch {
       return c;
     }
+  };
+
+  const normalizeDetected = (code) => {
+    const c = (code || "").trim();
+    if (!c) return "";
+    return c.split("-")[0]; // ej: "es-ES" -> "es"
   };
 
   const [src, setSrc] = useState("auto"); // ✅ Por defecto: detectar idioma
@@ -264,6 +271,14 @@ export default function ProTranslator() {
     setRightText(out);
     setResultStatus("success");
   };
+
+  // ✅ Si estamos en AUTO y el usuario borra el texto, volver a "Detectar idioma"
+  useEffect(() => {
+    if (src !== "auto") return;
+    if (!leftText.trim()) {
+      setDetectedLang("");
+    }
+  }, [leftText, src]);
 
   // === Traducción MODO TEXTO
   useEffect(() => {
@@ -694,73 +709,6 @@ export default function ProTranslator() {
     }
   };
 
-  const stopRecording = () => {
-    try {
-      if (mediaRecorderRef.current?.state !== "inactive") {
-        mediaRecorderRef.current.stop();
-      }
-      mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
-      mediaStreamRef.current = null;
-    } catch {}
-  };
-
-  const handleToggleMic = async () => {
-    if (listening) {
-      setListening(false);
-      stopRecording();
-      return;
-    }
-
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) return;
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = stream;
-      micChunksRef.current = [];
-
-      const rec = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      mediaRecorderRef.current = rec;
-
-      rec.ondataavailable = (e) => {
-        if (e.data?.size > 0) micChunksRef.current.push(e.data);
-      };
-
-      rec.onstop = async () => {
-        try {
-          const blob = new Blob(micChunksRef.current, { type: "audio/webm" });
-          micChunksRef.current = [];
-
-          const form = new FormData();
-          form.append("file", blob, "audio.webm");
-          form.append("model", "whisper-1");
-
-          const r = await fetch("/api/transcribe", { method: "POST", body: form });
-          const data = await r.json().catch(() => null);
-          if (data?.ok && typeof data.text === "string") {
-            const txt = data.text.trim();
-            if (txt) {
-              setLeftText((prev) =>
-                (prev ? prev + "\n" + txt : txt).slice(0, MAX_CHARS)
-              );
-            }
-          }
-        } catch (e) {
-          console.error("transcribe error:", e);
-        } finally {
-          mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
-          mediaStreamRef.current = null;
-        }
-      };
-
-      rec.start();
-      setListening(true);
-    } catch (e) {
-      console.error("mic error:", e);
-      setListening(false);
-      stopRecording();
-    }
-  };
-
   const handleClearLeft = () => {
     setLeftText("");
     setRightText("");
@@ -827,88 +775,14 @@ export default function ProTranslator() {
     }, 2000);
   };
 
-  const addFiles = async (list) => {
-    if (!list?.length) return;
-    const arr = Array.from(list);
-    const withIds = arr.map((file) => ({
-      id: window.crypto.randomUUID(),
-      file,
-    }));
-    setDocuments((prev) => [...prev, ...withIds]);
-  };
-
-  const onFiles = async (e) => {
-    await addFiles(e.target.files);
-    e.target.value = "";
-  };
-
-  const onDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-  const onDrop = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const dt = e.dataTransfer;
-    if (dt?.files?.length) await addFiles(dt.files);
-  };
-
-  const removeDocument = (id) => {
-    setDocuments((prev) => prev.filter((d) => d.id !== id));
-  };
-
-  const parseUrlsFromText = (text) => {
-    const raw = text
-      .split(/[\s\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    const valid = [];
-    for (const u of raw) {
-      try {
-        const url = new URL(u);
-        valid.push({ href: url.href, host: url.host });
-      } catch {}
-    }
-
-    const seen = new Set();
-    return valid.filter((v) =>
-      seen.has(v.href) ? false : (seen.add(v.href), true)
-    );
-  };
-
-  const addUrlsFromTextarea = () => {
-    const parsed = parseUrlsFromText(urlsTextarea);
-    if (!parsed.length) return;
-    const newItems = parsed.map((p) => ({
-      id: window.crypto.randomUUID(),
-      url: p.href,
-      host: p.host,
-    }));
-    setUrlItems((prev) => [...prev, ...newItems]);
-    setUrlsTextarea("");
-    setUrlInputOpen(false);
-  };
-
-  const removeUrl = (id) =>
-    setUrlItems((prev) => prev.filter((u) => u.id !== id));
-
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
-  const detectedName = getDisplayLanguageName(detectedLang);
-  const autoShownLabel = detectedName
+  const detectedNameRaw = getDisplayLanguageName(normalizeDetected(detectedLang));
+  const detectedName = (detectedNameRaw || "").trim();
+
+  const autoShownLabel = !leftText.trim()
+    ? LBL_AUTO
+    : detectedName
     ? `${detectedName} (${LBL_DETECTED})`
     : LBL_AUTO;
 
@@ -917,7 +791,6 @@ export default function ProTranslator() {
       <section className="w-full bg-[#F4F8FF] pt-2 pb-20 md:pb-32">
         <div className="max-w-7xl mx_auto px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
-            {/* barra superior */}
             <div className="relative h-12 border-b border-slate-200">
               <div className="flex items-center h-full px-6">
                 <div className="flex items-center text-sm font-medium text-slate-600">
@@ -985,7 +858,6 @@ export default function ProTranslator() {
                   <span className="ml-4 h-5 w-px bg-slate-200" />
                 </div>
 
-                {/* selector de idioma centrado */}
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="relative pointer-events-auto flex items-center">
                     <div className="relative mr-16" ref={leftRef}>
@@ -1008,6 +880,7 @@ export default function ProTranslator() {
                           />
                         </svg>
                       </button>
+
                       <Dropdown
                         open={openLeft}
                         selected={src}
@@ -1065,6 +938,7 @@ export default function ProTranslator() {
                           />
                         </svg>
                       </button>
+
                       <Dropdown
                         open={openRight}
                         selected={dst}
@@ -1093,9 +967,7 @@ export default function ProTranslator() {
               </button>
             </div>
 
-            {/* paneles */}
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-              {/* IZQUIERDA */}
               <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative">
                 {sourceMode === "text" && (
                   <>
@@ -1114,177 +986,8 @@ export default function ProTranslator() {
                     </div>
                   </>
                 )}
-
-                {sourceMode === "document" && (
-                  <div
-                    className={`w-full ${FIXED_PANEL_H} flex flex-col relative overflow-hidden ${
-                      dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
-                    }`}
-                    onDragEnter={onDragEnter}
-                    onDragOver={onDragOver}
-                    onDragLeave={onDragLeave}
-                    onDrop={onDrop}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="hidden"
-                      multiple
-                      accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={onFiles}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-8 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] flex-none"
-                      aria-label={labelChooseFileTitle}
-                      title={labelChooseFileTitle}
-                    >
-                      <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center">
-                        <Plus className="w-9 h-9 text-sky-600" />
-                      </div>
-                      <div className="text-xl font-semibold text-slate-800">
-                        {labelChooseFileTitle}
-                      </div>
-                      <div className="mt-3 text-sm text-slate-500">
-                        {labelAcceptedFormats}
-                      </div>
-                      <div className="mt-1 text-xs text-slate-400">
-                        {labelFolderHint}
-                      </div>
-                    </button>
-
-                    {documents.length > 0 && (
-                      <div className="mt-4 flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-200 bg-white">
-                        <ul className="divide-y divide-slate-200">
-                          {documents.map(({ id, file }) => (
-                            <li
-                              key={id}
-                              className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
-                            >
-                              <div className="min-w-0 flex items-center gap-3 flex-1">
-                                <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                  <FileIcon className="w-4 h-4" />
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <span className="text-sm font-medium block truncate">
-                                    {file.name}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                  </span>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() => removeDocument(id)}
-                                className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
-                                title={labelRemove}
-                                aria-label={labelRemove}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {sourceMode === "url" && (
-                  <div className={`w-full ${FIXED_PANEL_H} flex flex-col overflow-hidden`}>
-                    <div className="mb-3 flex items-center justify-between flex-none">
-                      <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <UrlIcon className="w-4 h-4" />
-                        {labelPasteUrls}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setUrlInputOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 transition-colors"
-                        aria-label={labelAddUrl}
-                        title={labelAddUrl}
-                      >
-                        <Plus className="w-4 h-4 text-sky-500" />
-                        {labelAddUrl}
-                      </button>
-                    </div>
-
-                    {urlInputOpen && (
-                      <div className="mb-4 rounded-xl border border-slate-300 p-3 bg-white flex-none">
-                        <textarea
-                          value={urlsTextarea}
-                          onChange={(e) => setUrlsTextarea(e.target.value)}
-                          placeholder={tr(
-                            "proTranslator.paste_urls_placeholder",
-                            "Introduce URLs separadas por línea"
-                          )}
-                          className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
-                          aria-label={labelPasteUrls}
-                        />
-                        <div className="mt-2 flex items-center gap-2">
-                          <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
-                            {labelSaveUrls}
-                          </Button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setUrlsTextarea("");
-                              setUrlInputOpen(false);
-                            }}
-                            className="h-9 px-3 rounded-md border border-slate-300 hover:bg-slate-50 text-sm"
-                          >
-                            {labelCancel}
-                          </button>
-                        </div>
-                        <div className="mt-6 text-xs text-slate-500">
-                          • {labelUrlsNoteVisible}
-                          <br />• {labelUrlsNotePaywalled}
-                        </div>
-                      </div>
-                    )}
-
-                    {urlItems.length > 0 && (
-                      <ul className="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
-                        {urlItems.map(({ id, url, host }) => (
-                          <li
-                            key={id}
-                            className="flex items-center justify-between gap-3 px-3 py-2"
-                          >
-                            <div className="min-w-0 flex items-center gap-3 flex-1">
-                              <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                <UrlIcon className="w-4 h-4" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-sm font-medium block truncate text-sky-600 hover:underline"
-                                  title={url}
-                                >
-                                  {host} — {url}
-                                </a>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => removeUrl(id)}
-                              className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
-                              title={labelRemove}
-                              aria-label={labelRemove}
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                )}
               </div>
 
-              {/* DERECHA */}
               <div className="p-8 md:p-10 relative">
                 <textarea
                   ref={rightTA}
@@ -1370,6 +1073,7 @@ export default function ProTranslator() {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
