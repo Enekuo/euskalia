@@ -73,7 +73,7 @@ export default function ProTranslator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
 
-  const LBL_AUTO = tr("proTranslator_detect_language", "Detectar idioma");
+  const LBL_AUTO = tr("proTranslator.detect_language", "Detectar idioma");
   const LBL_DETECTED = tr("common_detected", "detectado");
 
   const LBL_EUS = tr("proTranslator.output_language_eus", "Euskara");
