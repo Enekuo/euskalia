@@ -96,7 +96,6 @@ export default function ProSettings() {
       setTimeout(() => setSavedMsg(""), 2500);
     } catch (err) {
       console.error(err);
-      // si quieres, añade otra clave para error:
       setSavedMsg(tr("settings_saved_error", "No se pudo guardar. Intenta de nuevo."));
       setTimeout(() => setSavedMsg(""), 3000);
     } finally {
@@ -184,56 +183,37 @@ export default function ProSettings() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Selector de idioma REAL */}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">
-                {tr("settings_appearance_language", "Idioma")}
-              </label>
+          {/* ✅ SOLO selector de idioma (eliminado tema) */}
+          <div className="space-y-1 max-w-sm">
+            <label className="text-sm font-medium text-slate-700">
+              {tr("settings_appearance_language", "Idioma")}
+            </label>
 
-              <div className="relative">
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="
-                    w-full appearance-none rounded-xl border border-slate-200
-                    bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-900
-                    shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-200
-                    focus:border-sky-500
-                  "
-                  disabled={saving}
-                >
-                  <option value="ES">Español</option>
-                  <option value="EUS">Euskara</option>
-                  <option value="EN">English</option>
-                  <option value="FR">Français</option>
-                </select>
-                <span
-                  className="
-                    pointer-events-none absolute inset-y-0 right-3 flex items-center
-                    text-slate-400 text-xs
-                  "
-                >
-                  ▼
-                </span>
-              </div>
-            </div>
-
-            {/* Tema */}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">
-                {tr("settings_appearance_theme", "Tema")}
-              </label>
-
+            <div className="relative">
               <select
-                className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700"
-                value={"light"}
-                disabled
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="
+                  w-full appearance-none rounded-xl border border-slate-200
+                  bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-900
+                  shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-200
+                  focus:border-sky-500
+                "
+                disabled={saving}
               >
-                <option value="light">
-                  {tr("settings_theme_light_only", "Claro (único disponible)")}
-                </option>
+                <option value="ES">Español</option>
+                <option value="EUS">Euskara</option>
+                <option value="EN">English</option>
+                <option value="FR">Français</option>
               </select>
+              <span
+                className="
+                  pointer-events-none absolute inset-y-0 right-3 flex items-center
+                  text-slate-400 text-xs
+                "
+              >
+                ▼
+              </span>
             </div>
           </div>
         </section>
