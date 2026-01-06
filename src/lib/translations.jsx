@@ -2653,7 +2653,12 @@ proHome: {
     save_button_label:   { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
     library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
   },
-  
+  proTranslator_detect_language: {
+  ES: "Detectar idioma",
+  EUS: "Hizkuntza detektatu",
+  EN: "Detect language",
+  FR: "Détecter la langue",
+},
 
   // =========================
   //        Pro SUMMARY

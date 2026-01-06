@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
-const OPTIONS = ["eus", "es", "en", "fr"]; // ✅ EUS, ES, EN, FR (en este orden)
+const OPTIONS_LEFT = ["auto", "eus", "es", "en", "fr"]; // ✅ Origen: incluye detectar idioma
+const OPTIONS_RIGHT = ["eus", "es", "en", "fr"]; // ✅ Destino: NO incluye auto
 
 const MAX_CHARS = 5000;
 
@@ -30,6 +31,18 @@ const PROMPT_LANG_NAME = {
 };
 
 const directionText = (src, dst) => {
+  const dstName = PROMPT_LANG_NAME[dst] || dst;
+
+  if (src === "auto") {
+    return `
+Eres Euskalia, un traductor profesional.
+Detecta automáticamente el idioma del texto de entrada.
+Traduce SIEMPRE al idioma de destino: ${dstName}.
+Responde SIEMPRE en ${dstName} cuando des la TRADUCCIÓN.
+No añadas explicaciones, solo la traducción final.
+`.trim();
+  }
+
   if (src === "eus" && dst === "es") {
     return `
 Eres Euskalia, un traductor profesional.
@@ -48,7 +61,6 @@ Ez aldatu hizkuntza itzulpenean.
   }
 
   const srcName = PROMPT_LANG_NAME[src] || src;
-  const dstName = PROMPT_LANG_NAME[dst] || dst;
 
   return `
 Eres Euskalia, un traductor profesional.
@@ -63,12 +75,14 @@ export default function ProTranslator() {
   const tr = (k, f) => t(k) || f;
 
   // ✅ NUEVAS claves proTranslator.output_language_* para etiquetas de idioma
+  const LBL_AUTO = tr("proTranslator.detect_language", "Detectar idioma");
   const LBL_EUS = tr("proTranslator.output_language_eus", "Euskara");
   const LBL_ES = tr("proTranslator.output_language_es", "Gaztelania");
   const LBL_EN = tr("proTranslator.output_language_en", "Ingelesa");
   const LBL_FR = tr("proTranslator.output_language_fr", "Français");
 
   const langLabel = (val) => {
+    if (val === "auto") return LBL_AUTO;
     if (val === "eus") return LBL_EUS;
     if (val === "es") return LBL_ES;
     if (val === "en") return LBL_EN;
@@ -76,8 +90,9 @@ export default function ProTranslator() {
     return val;
   };
 
-  const [src, setSrc] = useState("eus");
+  const [src, setSrc] = useState("auto"); // ✅ Por defecto: detectar idioma
   const [dst, setDst] = useState("es");
+
   const [openLeft, setOpenLeft] = useState(false);
   const [openRight, setOpenRight] = useState(false);
 
@@ -138,6 +153,7 @@ export default function ProTranslator() {
   );
 
   const swap = () => {
+    if (src === "auto") return; // ✅ con auto no hacemos swap (evita dst=auto)
     setSrc(dst);
     setDst(src);
   };
@@ -510,7 +526,7 @@ export default function ProTranslator() {
     </button>
   );
 
-  const Dropdown = ({ open, selected, onSelect, align = "left" }) => {
+  const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
     if (!open) return null;
     return (
       <div
@@ -524,7 +540,7 @@ export default function ProTranslator() {
             <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
           </svg>
           <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
-            {OPTIONS.map((val) => (
+            {options.map((val) => (
               <Item
                 key={val}
                 label={langLabel(val)}
@@ -952,6 +968,7 @@ export default function ProTranslator() {
                       <Dropdown
                         open={openLeft}
                         selected={src}
+                        options={OPTIONS_LEFT}
                         onSelect={(val) => {
                           setSrc(val);
                           setOpenLeft(false);
@@ -1007,6 +1024,7 @@ export default function ProTranslator() {
                       <Dropdown
                         open={openRight}
                         selected={dst}
+                        options={OPTIONS_RIGHT}
                         onSelect={(val) => {
                           setDst(val);
                           setOpenRight(false);
@@ -1058,10 +1076,35 @@ export default function ProTranslator() {
                     className={`w-full ${FIXED_PANEL_H} flex flex-col relative overflow-hidden ${
                       dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
                     }`}
-                    onDragEnter={onDragEnter}
-                    onDragOver={onDragOver}
-                    onDragLeave={onDragLeave}
-                    onDrop={onDrop}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDragActive(true);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDragActive(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDragActive(false);
+                    }}
+                    onDrop={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDragActive(false);
+                      const dt = e.dataTransfer;
+                      if (dt?.files?.length) {
+                        const arr = Array.from(dt.files);
+                        const withIds = arr.map((file) => ({
+                          id: window.crypto.randomUUID(),
+                          file,
+                        }));
+                        setDocuments((prev) => [...prev, ...withIds]);
+                      }
+                    }}
                   >
                     <input
                       ref={fileInputRef}
@@ -1069,10 +1112,20 @@ export default function ProTranslator() {
                       className="hidden"
                       multiple
                       accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={onFiles}
+                      onChange={async (e) => {
+                        const list = e.target.files;
+                        if (list?.length) {
+                          const arr = Array.from(list);
+                          const withIds = arr.map((file) => ({
+                            id: window.crypto.randomUUID(),
+                            file,
+                          }));
+                          setDocuments((prev) => [...prev, ...withIds]);
+                        }
+                        e.target.value = "";
+                      }}
                     />
 
-                    {/* Zona superior (NO empuja el tamaño) */}
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
@@ -1094,7 +1147,6 @@ export default function ProTranslator() {
                       </div>
                     </button>
 
-                    {/* ✅ LISTA: si no cabe, SOLO aquí aparece scroll (y NO alarga tabla) */}
                     {documents.length > 0 && (
                       <div className="mt-4 flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-200 bg-white">
                         <ul className="divide-y divide-slate-200">
@@ -1117,7 +1169,9 @@ export default function ProTranslator() {
                                 </div>
                               </div>
                               <button
-                                onClick={() => removeDocument(id)}
+                                onClick={() =>
+                                  setDocuments((prev) => prev.filter((d) => d.id !== id))
+                                }
                                 className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                                 title={labelRemove}
                                 aria-label={labelRemove}
@@ -1164,7 +1218,37 @@ export default function ProTranslator() {
                           aria-label={labelPasteUrls}
                         />
                         <div className="mt-2 flex items-center gap-2">
-                          <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
+                          <Button type="button" onClick={() => {
+                            const raw = urlsTextarea
+                              .split(/[\s\n]+/)
+                              .map((s) => s.trim())
+                              .filter(Boolean);
+
+                            const valid = [];
+                            for (const u of raw) {
+                              try {
+                                const url = new URL(u);
+                                valid.push({ href: url.href, host: url.host });
+                              } catch {}
+                            }
+
+                            const seen = new Set();
+                            const unique = valid.filter((v) =>
+                              seen.has(v.href) ? false : (seen.add(v.href), true)
+                            );
+
+                            if (!unique.length) return;
+
+                            const newItems = unique.map((p) => ({
+                              id: window.crypto.randomUUID(),
+                              url: p.href,
+                              host: p.host,
+                            }));
+
+                            setUrlItems((prev) => [...prev, ...newItems]);
+                            setUrlsTextarea("");
+                            setUrlInputOpen(false);
+                          }} className="h-9">
                             {labelSaveUrls}
                           </Button>
                           <button
@@ -1209,7 +1293,9 @@ export default function ProTranslator() {
                               </div>
                             </div>
                             <button
-                              onClick={() => removeUrl(id)}
+                              onClick={() =>
+                                setUrlItems((prev) => prev.filter((u) => u.id !== id))
+                              }
                               className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                               title={labelRemove}
                               aria-label={labelRemove}
