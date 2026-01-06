@@ -2628,6 +2628,13 @@ proHome: {
     output_language_es:  { ES: "Castellano", EUS: "Gaztelania", EN: "Spanish",  FR: "Espagnol" },
     output_language_en:  { ES: "Inglés",     EUS: "Ingelesa",   EN: "English",  FR: "Anglais" },
     output_language_fr:  { ES: "Francés",    EUS: "Frantsesa",  EN: "French",   FR: "Français" },
+   
+    detect_language: {
+    ES: "Detectar idioma",
+    EUS: "Hizkuntza detektatu",
+    EN: "Detect language",
+    FR: "Détecter la langue",
+  },
 
     // Tabs
     sources_tab_text:     { ES: "Texto",      EUS: "Testua",      EN: "Text",      FR: "Texte" },
@@ -2653,13 +2660,7 @@ proHome: {
     save_button_label:   { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
     library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
   },
-  proTranslator_detect_language: {
-  ES: "Detectar idioma",
-  EUS: "Hizkuntza detektatu",
-  EN: "Detect language",
-  FR: "Détecter la langue",
-},
-
+ 
   // =========================
   //        Pro SUMMARY
   // ========================= 
