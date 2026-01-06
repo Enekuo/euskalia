@@ -24,6 +24,7 @@ export default function PricingPage() {
         "pricing.features.pro4",
         "pricing.features.pro5",
         "pricing.features.pro6",
+        "pricing.features.pro7",
       ],
       buttonKey: "pricing.pro_cta",
       icon: <Gem className="h-8 w-8 text-blue-500 mb-4" />,

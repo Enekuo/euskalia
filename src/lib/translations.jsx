@@ -1386,12 +1386,18 @@ registerPage_login: {
       FR: "Accès aux 6 outils (jusqu’à 12 000 caractères par requête).",
     },
     pro5: {
+    ES: "Experiencia sin anuncios, para trabajar sin distracciones.",
+    EUS: "Iragarkirik gabeko esperientzia, distraziorik gabe lan egiteko.",
+    EN: "Ad-free experience to work without distractions.",
+    FR: "Expérience sans publicité pour travailler sans distractions.",
+  },
+    pro6: {
       ES: "Mejor calidad de API para un uso más fiable de la inteligencia artificial.",
       EUS: "API kalitate hobea, adimen artifiziala fidagarriago erabiltzeko.",
       EN: "Higher-quality API for more reliable AI usage.",
       FR: "API de meilleure qualité pour une utilisation plus fiable de l’intelligence artificielle.",
     },
-    pro6: {
+    pro7: {
       ES: "Cuenta propia con diferentes modos y biblioteca inteligente con más opciones.",
       EUS: "Kontu propioa, hainbat modurekin, eta liburutegi adimentsua aukera gehiagorekin.",
       EN: "Personal account with different modes and a smart library with more options.",
@@ -1407,34 +1413,34 @@ registerPage_login: {
     FR: "Limites de caractères presque illimitées.",
   },
   premium2: {
-    ES: "Herramientas premium añadidas.",
-    EUS: "Premium tresnak gehituta.",
-    EN: "Additional premium tools.",
-    FR: "Outils premium ajoutés.",
+  ES: "Todas las herramientas disponibles.",
+  EUS: "Tresna guztiak erabilgarri.",
+  EN: "All tools available.",
+  FR: "Tous les outils disponibles.",
   },
   premium3: {
+  ES: "Herramientas premium: creador de texto y convertidor de audio.",
+  EUS: "Premium tresnak: testu-sortzailea eta entzumen-bihurgailua.",
+  EN: "Premium tools: text creator and audio converter.",
+  FR: "Outils premium : créateur de texte et convertisseur audio.",
+ },
+  premium4: {
     ES: "Prompts activos integrados en las herramientas.",
     EUS: "Prompt-ak aktibatuta tresnetan.",
     EN: "Active prompts integrated into the tools.",
     FR: "Prompts actifs intégrés aux outils.",
   },
-  premium4: {
+  premium5: {
     ES: "Chat de IA + asistente personal.",
     EUS: "IA txata + laguntzaile pertsonala.",
     EN: "AI chat + personal assistant.",
     FR: "Chat IA + assistant personnel.",
   },
-  premium5: {
+  premium6: {
     ES: "Prioridad en la cola y velocidad máxima, incluso en horas punta.",
     EUS: "Lehentasuna ilaran eta abiadura maximoa, puntako orduetan ere.",
     EN: "Priority in the queue and maximum speed, even at peak hours.",
     FR: "Priorité dans la file et vitesse maximale, même aux heures de pointe.",
-    },
-    premium6: {
-    ES: "",
-    EUS: "",
-    EN: "",
-    FR: "",
     },
   },
 },
