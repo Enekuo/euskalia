@@ -17,8 +17,9 @@ import { Button } from "@/components/ui/button";
 import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
-const OPTIONS_SRC = ["auto", "eus", "es", "en", "fr"]; // ✅ Origen (incluye detectar)
-const OPTIONS_DST = ["eus", "es", "en", "fr"]; // ✅ Destino
+const OPTIONS = ["eus", "es", "en", "fr"]; // ✅ EUS, ES, EN, FR (en este orden)
+const OPTIONS_SRC = ["auto", ...OPTIONS]; // ✅ Origen: Detectar + idiomas
+const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
@@ -26,9 +27,13 @@ const directionText = (src, dst) => {
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
-Detecta automáticamente el idioma del texto de entrada.
-Traduce siempre al idioma de destino indicado.
+Detecta el idioma del texto de entrada.
+La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
+DETECTED_LANGUAGE: <codigo_idioma>
+Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
+Después de esa primera línea, escribe la TRADUCCIÓN final.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+No añadas explicaciones.
 `.trim();
   }
 
@@ -59,8 +64,9 @@ export default function ProTranslator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
 
-  const LBL_AUTO = tr("proTranslator.detect_language", "Detectar idioma");
-  const LBL_DETECTED = tr("common_detected", "detectado");
+  // ✅ NUEVAS claves para detectar idioma
+  const LBL_AUTO = tr("proTranslator.detect_language", "Hizkuntza detektatu");
+  const LBL_DETECTED = tr("proTranslator.detected", "detektatua");
 
   // ✅ NUEVAS claves proTranslator.output_language_* para etiquetas de idioma
   const LBL_EUS = tr("proTranslator.output_language_eus", "Euskara");
@@ -77,6 +83,12 @@ export default function ProTranslator() {
     return val;
   };
 
+  const normalizeDetected = (code) => {
+    const c = (code || "").trim();
+    if (!c) return "";
+    return c.split("-")[0]; // "en-US" -> "en"
+  };
+
   const getDisplayLanguageName = (code) => {
     const c = (code || "").trim();
     if (!c) return "";
@@ -89,12 +101,6 @@ export default function ProTranslator() {
     } catch {
       return c;
     }
-  };
-
-  const normalizeDetected = (code) => {
-    const c = (code || "").trim();
-    if (!c) return "";
-    return c.split("-")[0];
   };
 
   const [src, setSrc] = useState("auto");
@@ -220,14 +226,22 @@ export default function ProTranslator() {
     return false;
   };
 
-  const applyTranslationOutput = (data) => {
-    const out = (data?.content ?? data?.translation ?? "").toString();
+  const extractDetectedLine = (txt) => {
+    const s = (txt || "").toString();
+    const m = s.match(/^\s*DETECTED_LANGUAGE\s*:\s*([^\r\n]+)\s*[\r\n]+/i);
+    if (!m) return { code: "", cleaned: s };
+    const code = (m[1] || "").trim();
+    const cleaned = s.slice(m[0].length);
+    return { code, cleaned };
+  };
 
-    // ✅ Esto es lo que necesitas para mostrar (idioma) detectado
-    // ⚠️ Tu /api/pro debe devolver detected_language cuando src === "auto"
+  const applyTranslationOutput = (data) => {
+    let out = (data?.content ?? data?.translation ?? "").toString();
+
     if (src === "auto") {
-      const dl = (data?.detected_language || "").toString().trim();
-      if (dl) setDetectedLang(dl);
+      const { code, cleaned } = extractDetectedLine(out);
+      if (code) setDetectedLang(code);
+      out = cleaned;
     } else {
       if (detectedLang) setDetectedLang("");
     }
@@ -260,22 +274,16 @@ export default function ProTranslator() {
     setResultStatus("success");
   };
 
-  // ✅ Si está en AUTO y no hay texto, vuelve a “Detectar idioma”
   useEffect(() => {
     if (src !== "auto") return;
-    if (!leftText.trim()) {
-      setDetectedLang("");
-    }
+    if (!leftText.trim()) setDetectedLang("");
   }, [leftText, src]);
 
-  const detectedNameRaw = getDisplayLanguageName(normalizeDetected(detectedLang));
-  const detectedName = (detectedNameRaw || "").trim();
-
-  // ✅ FORMATO EXACTO QUE QUIERES: (idioma) detectado
+  const detectedName = getDisplayLanguageName(normalizeDetected(detectedLang));
   const autoShownLabel = !leftText.trim()
     ? LBL_AUTO
     : detectedName
-    ? `(${detectedName}) ${LBL_DETECTED}`
+    ? `${detectedName} (${LBL_DETECTED})`
     : LBL_AUTO;
 
   // === Traducción MODO TEXTO
@@ -1004,13 +1012,13 @@ export default function ProTranslator() {
                       <Dropdown
                         open={openLeft}
                         selected={src}
-                        options={OPTIONS_SRC}
                         onSelect={(val) => {
                           setSrc(val);
                           setOpenLeft(false);
                           if (val !== "auto") setDetectedLang("");
                         }}
                         align="left"
+                        options={OPTIONS_SRC}
                       />
                     </div>
 
@@ -1061,12 +1069,12 @@ export default function ProTranslator() {
                       <Dropdown
                         open={openRight}
                         selected={dst}
-                        options={OPTIONS_DST}
                         onSelect={(val) => {
                           setDst(val);
                           setOpenRight(false);
                         }}
                         align="right"
+                        options={OPTIONS_DST}
                       />
                     </div>
                   </div>
