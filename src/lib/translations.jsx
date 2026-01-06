@@ -4398,7 +4398,7 @@ settings_appearance_title: {
 },
 settings_appearance_desc: {
   ES: "Elige cómo se ve la interfaz.",
-  EUS: "Aukeratu interfazeak nola ikusten den.",
+  EUS: "Aukeratu interfazea nola ikusten den.",
   EN: "Choose how the interface looks.",
   FR: "Choisissez l’apparence de l’interface.",
 },
