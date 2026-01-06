@@ -17,12 +17,11 @@ import { Button } from "@/components/ui/button";
 import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
-const OPTIONS_LEFT = ["auto", "eus", "es", "en", "fr"]; // ✅ Origen: incluye detectar idioma
-const OPTIONS_RIGHT = ["eus", "es", "en", "fr"]; // ✅ Destino: NO incluye auto
+const OPTIONS_LEFT = ["auto", "eus", "es", "en", "fr"]; // ✅ Origen (incluye detectar)
+const OPTIONS_RIGHT = ["eus", "es", "en", "fr"]; // ✅ Destino (NO incluye auto)
 
 const MAX_CHARS = 5000;
 
-// ✅ NOMBRES EXPLÍCITOS para que el modelo “entienda” src/dst siempre
 const PROMPT_LANG_NAME = {
   eus: "Euskera",
   es: "Español",
@@ -74,8 +73,9 @@ export default function ProTranslator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
 
-  // ✅ NUEVAS claves proTranslator.output_language_* para etiquetas de idioma
-  const LBL_AUTO = tr("proTranslator.detect_language", "Detectar idioma");
+  const LBL_AUTO = tr("proTranslator_detect_language", "Detectar idioma");
+  const LBL_DETECTED = tr("common_detected", "detectado");
+
   const LBL_EUS = tr("proTranslator.output_language_eus", "Euskara");
   const LBL_ES = tr("proTranslator.output_language_es", "Gaztelania");
   const LBL_EN = tr("proTranslator.output_language_en", "Ingelesa");
@@ -90,8 +90,23 @@ export default function ProTranslator() {
     return val;
   };
 
+  const getDisplayLanguageName = (code) => {
+    const c = (code || "").trim();
+    if (!c) return "";
+    try {
+      const ui = (language || "es").toLowerCase();
+      const locale = ui === "eus" ? "eu" : ui; // tu app usa "eus", Intl usa "eu"
+      const dn = new Intl.DisplayNames([locale], { type: "language" });
+      return dn.of(c) || c;
+    } catch {
+      return c;
+    }
+  };
+
   const [src, setSrc] = useState("auto"); // ✅ Por defecto: detectar idioma
   const [dst, setDst] = useState("es");
+
+  const [detectedLang, setDetectedLang] = useState(""); // ✅ aquí guardamos lo detectado (ej: "en")
 
   const [openLeft, setOpenLeft] = useState(false);
   const [openRight, setOpenRight] = useState(false);
@@ -135,7 +150,6 @@ export default function ProTranslator() {
 
   const [resultStatus, setResultStatus] = useState("idle"); // "idle" | "loading" | "success" | "error"
 
-  // ✅ PRO: token para /api/pro
   const getProToken = async () => {
     const user = auth?.currentUser;
     if (!user) throw new Error("NOT_AUTHENTICATED");
@@ -153,7 +167,7 @@ export default function ProTranslator() {
   );
 
   const swap = () => {
-    if (src === "auto") return; // ✅ con auto no hacemos swap (evita dst=auto)
+    if (src === "auto") return; // ✅ no permitir swap con auto (evita dst=auto)
     setSrc(dst);
     setDst(src);
   };
@@ -169,11 +183,9 @@ export default function ProTranslator() {
     return () => window.removeEventListener("mousedown", onDown);
   }, []);
 
-  // ✅ Scroll sin barra visible (pero NO cambia altura)
   const HIDE_SCROLLBAR =
     "overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden";
 
-  // ✅ ALTURA FIJA del área de contenido (esto evita que “se alarguen las tablas”)
   const FIXED_PANEL_H = "h-[400px] md:h-[420px]";
 
   const isNonResultMessage = (txt) => {
@@ -198,7 +210,6 @@ export default function ProTranslator() {
       "barkatu",
       "ez naiz gai",
 
-      // ✅ NUEVO: mensajes típicos de “no traducción”
       "no se puede traducir",
       "no puedo traducir",
       "no es una palabra",
@@ -214,6 +225,17 @@ export default function ProTranslator() {
 
   const applyTranslationOutput = (data) => {
     const out = (data?.content ?? data?.translation ?? "").toString();
+
+    // ✅ Guardamos detected_language SOLO si src=auto.
+    // ⚠️ Para que se vea el idioma detectado, tu /api/pro debe devolver { detected_language: "en" } cuando src="auto"
+    if (src === "auto") {
+      const dl = (data?.detected_language || data?.detectedLang || "")
+        .toString()
+        .trim();
+      if (dl) setDetectedLang(dl);
+    } else {
+      if (detectedLang) setDetectedLang("");
+    }
 
     const flaggedRefusal =
       data?.refusal === true ||
@@ -309,7 +331,8 @@ export default function ProTranslator() {
           const hasPrev = !!(rightText && rightText.trim().length > 0);
 
           if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
-            if (!hasPrev) setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+            if (!hasPrev)
+              setErr("Debes iniciar sesión para usar esta herramienta Pro.");
           } else {
             if (!hasPrev) setErr("No se pudo traducir ahora mismo.");
           }
@@ -554,7 +577,6 @@ export default function ProTranslator() {
     );
   };
 
-  // ✅ NUEVAS claves proTranslator.sources_tab_* (en vez de summary.*)
   const labelTabText = tr("proTranslator.sources_tab_text", "Testua");
   const labelTabDocument = tr("proTranslator.sources_tab_document", "Dokumentua");
   const labelTabUrl = tr("proTranslator.sources_tab_url", "URLa");
@@ -563,19 +585,34 @@ export default function ProTranslator() {
     "proTranslator.choose_file_title",
     "Elige tu archivo o carpeta"
   );
-  const labelAcceptedFormats = tr("proTranslator.accepted_formats", "Formatos admitidos");
-  const labelFolderHint = tr("proTranslator.folder_hint", "Puedes arrastrar varios archivos.");
+  const labelAcceptedFormats = tr(
+    "proTranslator.accepted_formats",
+    "Formatos admitidos"
+  );
+  const labelFolderHint = tr(
+    "proTranslator.folder_hint",
+    "Puedes arrastrar varios archivos."
+  );
 
   const labelPasteUrls = tr("proTranslator.paste_urls_label", "Pegar URLs*");
   const labelAddUrl = tr("proTranslator.add_url", "Añadir URLs");
   const labelSaveUrls = tr("proTranslator.save_urls", "Guardar");
   const labelCancel = tr("proTranslator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("proTranslator.urls_note_visible", "Solo se importará el texto visible.");
-  const labelUrlsNotePaywalled = tr("proTranslator.urls_note_paywalled", "No se admiten artículos de pago.");
+  const labelUrlsNoteVisible = tr(
+    "proTranslator.urls_note_visible",
+    "Solo se importará el texto visible."
+  );
+  const labelUrlsNotePaywalled = tr(
+    "proTranslator.urls_note_paywalled",
+    "No se admiten artículos de pago."
+  );
   const labelRemove = tr("proTranslator.remove", "Quitar");
 
   const labelSaveTranslation = tr("proTranslator.save_button_label", "Guardar");
-  const librarySavedMessage = tr("proTranslator.library_saved_toast", "Guardado en biblioteca");
+  const librarySavedMessage = tr(
+    "proTranslator.library_saved_toast",
+    "Guardado en biblioteca"
+  );
 
   const stopPlayback = () => {
     if (speaking && ttsAbortRef.current) {
@@ -732,6 +769,7 @@ export default function ProTranslator() {
     setUrlsTextarea("");
     setErr("");
     setResultStatus("idle");
+    setDetectedLang("");
   };
 
   const handleCopy = async () => {
@@ -869,6 +907,11 @@ export default function ProTranslator() {
 
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
+  const detectedName = getDisplayLanguageName(detectedLang);
+  const autoShownLabel = detectedName
+    ? `${detectedName} (${LBL_DETECTED})`
+    : LBL_AUTO;
+
   return (
     <>
       <section className="w-full bg-[#F4F8FF] pt-2 pb-20 md:pb-32">
@@ -954,7 +997,7 @@ export default function ProTranslator() {
                         }}
                         className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{langLabel(src)}</span>
+                        <span>{src === "auto" ? autoShownLabel : langLabel(src)}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -972,6 +1015,7 @@ export default function ProTranslator() {
                         onSelect={(val) => {
                           setSrc(val);
                           setOpenLeft(false);
+                          if (val !== "auto") setDetectedLang("");
                         }}
                         align="left"
                       />
@@ -1076,35 +1120,10 @@ export default function ProTranslator() {
                     className={`w-full ${FIXED_PANEL_H} flex flex-col relative overflow-hidden ${
                       dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
                     }`}
-                    onDragEnter={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(true);
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(false);
-                    }}
-                    onDrop={async (e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(false);
-                      const dt = e.dataTransfer;
-                      if (dt?.files?.length) {
-                        const arr = Array.from(dt.files);
-                        const withIds = arr.map((file) => ({
-                          id: window.crypto.randomUUID(),
-                          file,
-                        }));
-                        setDocuments((prev) => [...prev, ...withIds]);
-                      }
-                    }}
+                    onDragEnter={onDragEnter}
+                    onDragOver={onDragOver}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
                   >
                     <input
                       ref={fileInputRef}
@@ -1112,18 +1131,7 @@ export default function ProTranslator() {
                       className="hidden"
                       multiple
                       accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={async (e) => {
-                        const list = e.target.files;
-                        if (list?.length) {
-                          const arr = Array.from(list);
-                          const withIds = arr.map((file) => ({
-                            id: window.crypto.randomUUID(),
-                            file,
-                          }));
-                          setDocuments((prev) => [...prev, ...withIds]);
-                        }
-                        e.target.value = "";
-                      }}
+                      onChange={onFiles}
                     />
 
                     <button
@@ -1169,9 +1177,7 @@ export default function ProTranslator() {
                                 </div>
                               </div>
                               <button
-                                onClick={() =>
-                                  setDocuments((prev) => prev.filter((d) => d.id !== id))
-                                }
+                                onClick={() => removeDocument(id)}
                                 className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                                 title={labelRemove}
                                 aria-label={labelRemove}
@@ -1218,37 +1224,7 @@ export default function ProTranslator() {
                           aria-label={labelPasteUrls}
                         />
                         <div className="mt-2 flex items-center gap-2">
-                          <Button type="button" onClick={() => {
-                            const raw = urlsTextarea
-                              .split(/[\s\n]+/)
-                              .map((s) => s.trim())
-                              .filter(Boolean);
-
-                            const valid = [];
-                            for (const u of raw) {
-                              try {
-                                const url = new URL(u);
-                                valid.push({ href: url.href, host: url.host });
-                              } catch {}
-                            }
-
-                            const seen = new Set();
-                            const unique = valid.filter((v) =>
-                              seen.has(v.href) ? false : (seen.add(v.href), true)
-                            );
-
-                            if (!unique.length) return;
-
-                            const newItems = unique.map((p) => ({
-                              id: window.crypto.randomUUID(),
-                              url: p.href,
-                              host: p.host,
-                            }));
-
-                            setUrlItems((prev) => [...prev, ...newItems]);
-                            setUrlsTextarea("");
-                            setUrlInputOpen(false);
-                          }} className="h-9">
+                          <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
                             {labelSaveUrls}
                           </Button>
                           <button
@@ -1293,9 +1269,7 @@ export default function ProTranslator() {
                               </div>
                             </div>
                             <button
-                              onClick={() =>
-                                setUrlItems((prev) => prev.filter((u) => u.id !== id))
-                              }
+                              onClick={() => removeUrl(id)}
                               className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                               title={labelRemove}
                               aria-label={labelRemove}
@@ -1364,11 +1338,7 @@ export default function ProTranslator() {
                       aria-label={t("translator.copy")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
-                      {copied ? (
-                        <Check className="w-5 h-5" />
-                      ) : (
-                        <CopyIcon className="w-5 h-5" />
-                      )}
+                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>
