@@ -46,10 +46,10 @@ function App() {
   return (
     <>
       <Helmet>
-        <title>Meditation.AI - Tu Compañero de Meditación con IA</title>
+        <title>Euskalia</title>
         <meta
           name="description"
-          content="Descubre la meditación personalizada con inteligencia artificial. Meditation.AI te ayuda a encontrar la paz interior con sesiones adaptadas a tus necesidades."
+          content="Plataforma de IA centrada en el euskera para traducir, resumir, corregir y optimizar textos de forma rápida y precisa."
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
