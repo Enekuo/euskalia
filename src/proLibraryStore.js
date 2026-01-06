@@ -70,7 +70,6 @@ function cleanAiTitle(raw) {
   t = t.replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
   t = t.replace(/\s+/g, " ").trim();
   t = t.replace(/\s*[.。]+$/g, "").trim();
-  // evita títulos demasiado largos
   if (t.length > 60) t = t.slice(0, 60).trim();
   return t;
 }
@@ -83,40 +82,6 @@ function fallbackTitleByKind(kind) {
   if (kind === "ai-detector") return "IA analisia";
   if (kind === "humanizer") return "Gizatiartua";
   return "Dokumentua";
-}
-
-function looksBadTitle(t) {
-  const s = String(t || "").trim().toLowerCase();
-  if (!s) return true;
-  if (s.length < 4) return true;
-
-  // típicos recortes sin sentido
-  const badStarts = [
-    "hola",
-    "kaixo",
-    "hello",
-    "este",
-    "esta",
-    "aquí",
-    "aqui",
-    "texto",
-    "traducción",
-    "traduccion",
-    "resumen",
-    "the",
-    "i",
-    "we",
-    "yo",
-    "nosotros",
-  ];
-  for (const b of badStarts) {
-    if (s === b || s.startsWith(b + " ")) return true;
-  }
-
-  // si termina en coma/colon suele ser recorte feo
-  if (/[,:;]$/.test(s)) return true;
-
-  return false;
 }
 
 async function generateTitleWithAI({ content, kind }) {
@@ -144,6 +109,7 @@ async function generateTitleWithAI({ content, kind }) {
 
   const system =
     "Eres un generador de títulos profesional. Devuelve SOLO el título, sin comillas, sin dos puntos, sin explicaciones.";
+
   const userPrompt = `Genera un título corto y claro (máximo 6 palabras) que describa el contenido.
 No empieces con "Texto", "Traducción" ni "Resumen".
 Debe sonar natural y tener sentido como título.
@@ -198,10 +164,8 @@ export function addLibraryDoc({ kind, title, content }) {
       ? "humanizer"
       : "summary";
 
-  const initialTitleRaw = String(title || "").trim();
-  const initialTitle = !initialTitleRaw || looksBadTitle(initialTitleRaw)
-    ? fallbackTitleByKind(safeKind)
-    : initialTitleRaw;
+  // ✅ Guardado inmediato con título temporal (siempre)
+  const initialTitle = fallbackTitleByKind(safeKind);
 
   const doc = {
     id,
@@ -215,18 +179,16 @@ export function addLibraryDoc({ kind, title, content }) {
   docs = [doc, ...docs];
   emit();
 
-  // ✅ Mejora automática del título con IA (sin bloquear el guardado)
-  // Solo si el título era malo o venía vacío.
-  if (!initialTitleRaw || looksBadTitle(initialTitleRaw)) {
-    (async () => {
-      const aiTitle = await generateTitleWithAI({ content: doc.content, kind: safeKind });
-      if (!aiTitle) return;
-      if (looksBadTitle(aiTitle)) return;
+  // ✅ SIEMPRE mejorar título con IA (sin bloquear el guardado)
+  ;(async () => {
+    const aiTitle = await generateTitleWithAI({ content: doc.content, kind: safeKind });
+    if (!aiTitle) return;
 
-      // renombrar el doc recién guardado
-      renameDoc(id, aiTitle);
-    })();
-  }
+    const finalTitle = clipTitle(aiTitle, 35);
+    if (!finalTitle) return;
+
+    renameDoc(id, finalTitle);
+  })();
 
   return id;
 }
