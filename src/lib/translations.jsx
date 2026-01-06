@@ -2635,7 +2635,7 @@ proHome: {
     EN: "Detect language",
     FR: "Détecter la langue",
   },
-  common_detected: {
+ detected: {
   ES: "detectado",
   EUS: "detektatua",
   EN: "detected",
