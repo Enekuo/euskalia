@@ -57,11 +57,12 @@ function formatDateLabel(dateIso) {
   }
 }
 
+// ✅ sin puntos suspensivos (corta “en seco”)
 function clipTitle(raw, maxLen = 35) {
   const base = String(raw || "").trim();
   if (!base) return "";
   if (base.length <= maxLen) return base;
-  return base.slice(0, maxLen).trimEnd() + "…";
+  return base.slice(0, maxLen).trimEnd();
 }
 
 function cleanAiTitle(raw) {
@@ -70,6 +71,7 @@ function cleanAiTitle(raw) {
   t = t.replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
   t = t.replace(/\s+/g, " ").trim();
   t = t.replace(/\s*[.。]+$/g, "").trim();
+  // evita títulos demasiado largos desde origen
   if (t.length > 60) t = t.slice(0, 60).trim();
   return t;
 }
@@ -110,10 +112,11 @@ async function generateTitleWithAI({ content, kind }) {
   const system =
     "You are a professional title generator. Return ONLY the title. No quotes, no colon, no explanations.";
 
-  const userPrompt = `Create a short, clear title (max 6 words) that describes the content.
+  // ✅ fuerza título MUY corto para evitar recortes
+  const userPrompt = `Create a short, clear title (max 4 words) that describes the content.
 Write the title in the SAME LANGUAGE as the content.
 Do not start with words like "Text", "Translation" or "Summary".
-It must sound natural as a real title.
+No trailing dots. No ellipsis.
 
 Context:
 ${toolHint}
@@ -131,7 +134,7 @@ Content:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         temperature: 0.2,
-        max_tokens: 60,
+        max_tokens: 40,
         system,
         messages: [{ role: "user", content: userPrompt }],
       }),
@@ -172,7 +175,7 @@ export function addLibraryDoc({ kind, title, content }) {
 
   const doc = {
     id,
-    kind: safeKind, // "translation" | "summary" | "corrector" | "paraphraser" | "ai-detector" | "humanizer"
+    kind: safeKind,
     title: clipTitle(initialTitle, 35),
     content: String(content || ""),
     createdAt,
