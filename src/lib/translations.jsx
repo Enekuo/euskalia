@@ -1438,7 +1438,7 @@ registerPage_login: {
   },
   premium6: {
     ES: "Prioridad en la cola y velocidad máxima, incluso en horas punta.",
-    EUS: "Lehentasuna ilaran eta abiadura maximoa, puntako orduetan ere.",
+    EUS: "Lehentasuna ilaran eta abiadura azkarrena, puntako orduetan ere.",
     EN: "Priority in the queue and maximum speed, even at peak hours.",
     FR: "Priorité dans la file et vitesse maximale, même aux heures de pointe.",
     },
