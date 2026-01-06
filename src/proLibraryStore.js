@@ -94,28 +94,31 @@ async function generateTitleWithAI({ content, kind }) {
 
   const toolHint =
     kind === "translation"
-      ? "Es una traducción."
+      ? "This is a translation."
       : kind === "summary"
-      ? "Es un resumen."
+      ? "This is a summary."
       : kind === "corrector"
-      ? "Es un texto corregido."
+      ? "This is a corrected text."
       : kind === "paraphraser"
-      ? "Es un texto parafraseado."
+      ? "This is a paraphrased text."
       : kind === "ai-detector"
-      ? "Es un análisis de detector de IA."
+      ? "This is an AI detector analysis."
       : kind === "humanizer"
-      ? "Es un texto humanizado."
-      : "Es un documento.";
+      ? "This is a humanized rewrite."
+      : "This is a document.";
 
   const system =
-    "Eres un generador de títulos profesional. Devuelve SOLO el título, sin comillas, sin dos puntos, sin explicaciones.";
+    "You are a professional title generator. Return ONLY the title. No quotes, no colon, no explanations.";
 
-  const userPrompt = `Genera un título corto y claro (máximo 6 palabras) que describa el contenido.
-No empieces con "Texto", "Traducción" ni "Resumen".
-Debe sonar natural y tener sentido como título.
+  const userPrompt = `Create a short, clear title (max 6 words) that describes the content.
+Write the title in the SAME LANGUAGE as the content.
+Do not start with words like "Text", "Translation" or "Summary".
+It must sound natural as a real title.
+
+Context:
 ${toolHint}
 
-Contenido:
+Content:
 """${text.slice(0, 4000)}"""`;
 
   try {
@@ -181,7 +184,10 @@ export function addLibraryDoc({ kind, title, content }) {
 
   // ✅ SIEMPRE mejorar título con IA (sin bloquear el guardado)
   ;(async () => {
-    const aiTitle = await generateTitleWithAI({ content: doc.content, kind: safeKind });
+    const aiTitle = await generateTitleWithAI({
+      content: doc.content,
+      kind: safeKind,
+    });
     if (!aiTitle) return;
 
     const finalTitle = clipTitle(aiTitle, 35);
