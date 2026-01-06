@@ -2635,6 +2635,12 @@ proHome: {
     EN: "Detect language",
     FR: "Détecter la langue",
   },
+  common_detected: {
+  ES: "detectado",
+  EUS: "detektatua",
+  EN: "detected",
+  FR: "détecté",
+},
 
     // Tabs
     sources_tab_text:     { ES: "Texto",      EUS: "Testua",      EN: "Text",      FR: "Texte" },
