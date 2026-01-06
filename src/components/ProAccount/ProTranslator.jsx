@@ -21,6 +21,14 @@ const OPTIONS = ["eus", "es", "en", "fr"]; // ✅ EUS, ES, EN, FR (en este orden
 
 const MAX_CHARS = 5000;
 
+// ✅ NOMBRES EXPLÍCITOS para que el modelo “entienda” src/dst siempre
+const PROMPT_LANG_NAME = {
+  eus: "Euskera",
+  es: "Español",
+  en: "Inglés",
+  fr: "Francés",
+};
+
 const directionText = (src, dst) => {
   if (src === "eus" && dst === "es") {
     return `
@@ -38,10 +46,15 @@ Erantzun BETI euskaraz itzulpena ematean.
 Ez aldatu hizkuntza itzulpenean.
 `.trim();
   }
+
+  const srcName = PROMPT_LANG_NAME[src] || src;
+  const dstName = PROMPT_LANG_NAME[dst] || dst;
+
   return `
 Eres Euskalia, un traductor profesional.
-Traduce siempre del idioma de origen al idioma de destino indicado.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+Traduce SIEMPRE de ${srcName} a ${dstName}.
+Responde SIEMPRE en ${dstName} cuando des la TRADUCCIÓN.
+No añadas explicaciones, solo la traducción final.
 `.trim();
 };
 
