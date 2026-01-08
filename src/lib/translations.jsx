@@ -1767,12 +1767,6 @@ legal_notice_section10_contact_email: {
   FR: "📧 Email : []",
 },
 
-legal_notice_section10_contact_address: {
-  ES: "📍 Dirección postal: []",
-  EUS: "📍 Posta helbidea: []",
-  EN: "📍 Postal address: []",
-  FR: "📍 Adresse postale : []",
-},
 
 legal_notice_footer_note: {
   ES: "Este Aviso Legal está actualizado a fecha [__________].",

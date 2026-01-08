@@ -189,12 +189,7 @@ export default function LegalNoticePage() {
               "legal_notice_section10_contact_email"
             )}
           </p>
-          <p>
-            {tr(
-              "legal_notice_section10_contact_address",
-              "legal_notice_section10_contact_address"
-            )}
-          </p>
+         
         </div>
       </section>
 
