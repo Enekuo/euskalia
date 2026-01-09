@@ -2363,7 +2363,7 @@ aiApiUsage: {
 
 ////////////////// POLÍTICA DE cookies /////////////////////////
 
-cookies: {
+
   cookies_title: {
     ES: "Política de Cookies",
     EUS: "Cookieen Politika",
@@ -2459,7 +2459,6 @@ cookies: {
     EN: "This Cookies Policy is updated as of 2025-11-21.",
     FR: "Cette Politique de cookies est à jour au 2025-11-21.",
   },
-},
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
