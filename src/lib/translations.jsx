@@ -1750,8 +1750,9 @@ legal_notice_footer_note: {
   FR: "Ces mentions légales ont été mises à jour le : 09/01/2026.",
 },
 
-  
-// POLITÍCA DE PRIVACIDAD // 
+
+////////////////// POLÍTICA DE PRIVACIDAD /////////////////////////
+
 privacyPolicy: {
   title: {
     ES: "Política de privacidad",
@@ -1759,7 +1760,7 @@ privacyPolicy: {
     EN: "Privacy Policy",
     FR: "Politique de confidentialité",
   },
-  
+
   intro: {
     ES: "Esta Política de Privacidad explica cómo se tratan los datos personales en Euskalia y qué derechos tienen las personas usuarias cuando utilizan la plataforma.",
     EUS: "Pribatutasun politika honek azaltzen du Euskalian datu pertsonalak nola tratatzen diren eta erabiltzaileek zer eskubide dituzten plataforma erabiltzen dutenean.",
@@ -1781,22 +1782,22 @@ privacyPolicy: {
   },
 
   section2Title: {
-    ES: "2. Responsable del tratamiento de los datos", 
+    ES: "2. Responsable del tratamiento de los datos",
     EUS: "2. Datuen tratamenduaren arduraduna",
     EN: "2. Data controller",
     FR: "2. Responsable du traitement",
   },
   section2Body: {
-    ES: "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el titular del proyecto.",
-    EUS: "Euskaliaren bidez emandako datu pertsonalak proiektuaren titularrak kudeatutako tratamendu batean sartzen dira.",
-    EN: "The personal data provided through Euskalia is incorporated into a processing activity managed by the project owner.",
-    FR: "Les données personnelles fournies via Euskalia sont intégrées à un traitement géré par le titulaire du projet.",
+    ES: "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el responsable del sitio.",
+    EUS: "Euskaliaren bidez emandako datu pertsonalak webgunearen arduradunak kudeatutako tratamendu batean sartzen dira.",
+    EN: "The personal data provided through Euskalia is incorporated into a processing activity managed by the website’s responsible party.",
+    FR: "Les données personnelles fournies via Euskalia sont intégrées à un traitement géré par le responsable du site.",
   },
   section2Details: {
-    ES: "Titular del sitio: [__________]\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción y resumen de textos con apoyo de inteligencia artificial.\nCorreo electrónico de contacto: [__________]\nDominio web: https://euskalia.ai",
-    EUS: "Webgunearen titularra: [__________]\nIzen komertziala: Euskalia\nJarduera: Testuen itzulpena eta laburpena egiteko zerbitzu digitalak, adimen artifizialaren laguntzarekin.\nHarremanetarako posta elektronikoa: [__________]\nWebgunearen domeinua: https://euskalia.ai",
-    EN: "Website owner: [__________]\nTrade name: Euskalia\nActivity: Digital services for translating and summarizing texts with the support of artificial intelligence.\nContact email: [__________]\nWebsite domain: https://euskalia.ai",
-    FR: "Titulaire du site : [__________]\nNom commercial : Euskalia\nActivité : Services numériques de traduction et de résumé de textes avec l’appui de l’intelligence artificielle.\nEmail de contact : [__________]\nDomaine : https://euskalia.ai",
+    ES: "Titular del sitio: Euskalia\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción y resumen de textos con apoyo de inteligencia artificial.\nCorreo electrónico de contacto: euskaliaweb@gmail.com\nDominio web: https://euskaliaweb.com",
+    EUS: "Webgunearen titularra: Euskalia\nIzen komertziala: Euskalia\nJarduera: Testuen itzulpena eta laburpena egiteko zerbitzu digitalak, adimen artifizialaren laguntzarekin.\nHarremanetarako posta elektronikoa: euskaliaweb@gmail.com\nWebgunearen domeinua: https://euskaliaweb.com",
+    EN: "Website owner: Euskalia\nTrade name: Euskalia\nActivity: Digital services for translating and summarizing texts with the support of artificial intelligence.\nContact email: euskaliaweb@gmail.com\nWebsite domain: https://euskaliaweb.com",
+    FR: "Titulaire du site : Euskalia\nNom commercial : Euskalia\nActivité : Services numériques de traduction et de résumé de textes avec l’appui de l’intelligence artificielle.\nEmail de contact : euskaliaweb@gmail.com\nDomaine : https://euskaliaweb.com",
   },
 
   section3Title: {
@@ -1902,13 +1903,15 @@ privacyPolicy: {
     EN: "Euskalia reserves the right to modify this Privacy Policy to adapt it to legislative changes, supervisory authority criteria or technical improvements to the service. The current version will always be available on the website and, in case of relevant changes, users will be informed and consent will be collected again when necessary.",
     FR: "Euskalia se réserve le droit de modifier cette Politique de confidentialité afin de l’adapter aux changements législatifs, aux critères des autorités de contrôle ou aux améliorations techniques du service. La version en vigueur sera toujours disponible sur le site et, en cas de changements significatifs, les utilisateurs seront informés et le consentement sera à nouveau recueilli si nécessaire.",
   },
+
   footerNote: {
-    ES: "Esta Política de Privacidad está actualizada a fecha [__________].",
-    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",
-    EN: "This Privacy Policy is updated as of [__________].",
-    FR: "Cette Politique de confidentialité est à jour au [__________].",
+    ES: "Esta Política de Privacidad está actualizada a fecha 2025-11-21.",
+    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: 2025-11-21.",
+    EN: "This Privacy Policy is updated as of 2025-11-21.",
+    FR: "Cette Politique de confidentialité est à jour au 2025-11-21.",
   },
 },
+
 
 
 // ====== TÉRMINOS Y CONDICIONES – EUSKALIA ====== //
