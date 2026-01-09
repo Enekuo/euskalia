@@ -1760,7 +1760,6 @@ privacyPolicy: {
     EN: "Privacy Policy",
     FR: "Politique de confidentialité",
   },
-
   intro: {
     ES: "Esta Política de Privacidad explica cómo se tratan los datos personales en Euskalia y qué derechos tienen las personas usuarias cuando utilizan la plataforma.",
     EUS: "Pribatutasun politika honek azaltzen du Euskalian datu pertsonalak nola tratatzen diren eta erabiltzaileek zer eskubide dituzten plataforma erabiltzen dutenean.",
@@ -1775,10 +1774,10 @@ privacyPolicy: {
     FR: "1. Champ d’application",
   },
   section1Body: {
-    ES: "Euskalia se compromete a respetar la privacidad de quienes visitan y utilizan su web. Esta Política de Privacidad informa sobre el tratamiento de los datos personales recogidos a través del sitio y de los servicios ofrecidos en él. El uso del sitio web implica la aceptación de esta Política y del tratamiento de los datos conforme a la normativa vigente.",
+    ES: "Euskalia se compromete a respetar la privacidad de quienes visitan y utilizan su web. Esta Política de Privacidad informa sobre el tratamiento de los datos personales recogidos a través del sitio y de los servicios ofrecidos. El uso del sitio implica la aceptación de esta Política y del tratamiento de los datos conforme a la normativa vigente.",
     EUS: "Euskaliak bere webgunea bisitatzen eta erabiltzen duten pertsonen pribatutasuna errespetatzeko konpromisoa hartzen du. Pribatutasun politika honek webgunearen eta bertan eskaintzen diren zerbitzuen bidez jasotako datu pertsonalen tratamendua azaltzen du. Webgunea erabiltzeak politika hau eta indarreko araudia onartzea dakar.",
-    EN: "Euskalia is committed to respecting the privacy of people who visit and use its website. This Privacy Policy explains how personal data collected through the site and the services offered on it is processed. Using the website implies acceptance of this Policy and the processing of data in accordance with applicable regulations.",
-    FR: "Euskalia s’engage à respecter la vie privée des personnes qui visitent et utilisent son site. Cette Politique de confidentialité informe du traitement des données personnelles collectées via le site et les services qui y sont proposés. L’utilisation du site implique l’acceptation de cette Politique et du traitement des données conformément à la réglementation en vigueur.",
+    EN: "Euskalia is committed to respecting the privacy of people who visit and use its website. This Privacy Policy explains how personal data collected through the site and the services offered is processed. Using the website implies acceptance of this Policy and the processing of data in accordance with applicable regulations.",
+    FR: "Euskalia s’engage à respecter la vie privée des personnes qui visitent et utilisent son site. Cette Politique de confidentialité informe du traitement des données personnelles collectées via le site et les services proposés. L’utilisation du site implique l’acceptation de cette Politique et du traitement des données conformément à la réglementation en vigueur.",
   },
 
   section2Title: {
@@ -1788,16 +1787,16 @@ privacyPolicy: {
     FR: "2. Responsable du traitement",
   },
   section2Body: {
-    ES: "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el responsable del sitio.",
-    EUS: "Euskaliaren bidez emandako datu pertsonalak webgunearen arduradunak kudeatutako tratamendu batean sartzen dira.",
-    EN: "The personal data provided through Euskalia is incorporated into a processing activity managed by the website’s responsible party.",
-    FR: "Les données personnelles fournies via Euskalia sont intégrées à un traitement géré par le responsable du site.",
+    ES: "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el titular del proyecto.",
+    EUS: "Euskaliaren bidez emandako datu pertsonalak proiektuaren titularrak kudeatutako tratamendu batean sartzen dira.",
+    EN: "The personal data provided through Euskalia is incorporated into a processing activity managed by the project owner.",
+    FR: "Les données personnelles fournies via Euskalia sont intégrées à un traitement géré par le titulaire du projet.",
   },
   section2Details: {
-    ES: "Titular del sitio: Euskalia\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción y resumen de textos con apoyo de inteligencia artificial.\nCorreo electrónico de contacto: euskaliaweb@gmail.com\nDominio web: https://euskaliaweb.com",
-    EUS: "Webgunearen titularra: Euskalia\nIzen komertziala: Euskalia\nJarduera: Testuen itzulpena eta laburpena egiteko zerbitzu digitalak, adimen artifizialaren laguntzarekin.\nHarremanetarako posta elektronikoa: euskaliaweb@gmail.com\nWebgunearen domeinua: https://euskaliaweb.com",
-    EN: "Website owner: Euskalia\nTrade name: Euskalia\nActivity: Digital services for translating and summarizing texts with the support of artificial intelligence.\nContact email: euskaliaweb@gmail.com\nWebsite domain: https://euskaliaweb.com",
-    FR: "Titulaire du site : Euskalia\nNom commercial : Euskalia\nActivité : Services numériques de traduction et de résumé de textes avec l’appui de l’intelligence artificielle.\nEmail de contact : euskaliaweb@gmail.com\nDomaine : https://euskaliaweb.com",
+    ES: "Titular del sitio: Euskalia (proyecto digital independiente)\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción, resumen y asistencia lingüística basados en inteligencia artificial.\nCorreo electrónico de contacto: euskaliaweb@gmail.com\nDominio web: https://euskaliaweb.com",
+    EUS: "Webgunearen titularra: Euskalia (proiektu digital independentea)\nIzen komertziala: Euskalia\nJarduera: Itzulpen, laburpen eta laguntza linguistikorako zerbitzu digitalak, adimen artifizialean oinarrituak.\nHarremanetarako posta elektronikoa: euskaliaweb@gmail.com\nWebgunearen domeinua: https://euskaliaweb.com",
+    EN: "Website owner: Euskalia (independent digital project)\nTrade name: Euskalia\nActivity: Digital services for translation, summarization and language assistance based on artificial intelligence.\nContact email: euskaliaweb@gmail.com\nWebsite domain: https://euskaliaweb.com",
+    FR: "Titulaire du site : Euskalia (projet numérique indépendant)\nNom commercial : Euskalia\nActivité : Services numériques de traduction, de résumé et d’assistance linguistique basés sur l’intelligence artificielle.\nEmail de contact : euskaliaweb@gmail.com\nDomaine : https://euskaliaweb.com",
   },
 
   section3Title: {
@@ -1807,17 +1806,88 @@ privacyPolicy: {
     FR: "3. Finalités du traitement",
   },
   section3Body: {
-    ES: "Los datos podrán utilizarse para: facilitar información sobre el uso de la plataforma, responder consultas o solicitudes de soporte, enviar comunicaciones informativas o novedades (si se ha dado el consentimiento) y mejorar la experiencia de uso mediante análisis estadísticos agregados. La persona usuaria puede darse de baja de estas comunicaciones en cualquier momento a través de los enlaces de cancelación o escribiendo al correo de contacto indicado.",
-    EUS: "Datuak honako helburu hauekin erabili ahal izango dira: plataformaren erabilerari buruzko informazioa ematea, kontsultei edo laguntza-eskaerei erantzutea, informazio- edo berritasun-komunikazioak bidaltzea (baimena eman bada) eta esperientzia hobetzea, estatistika-analisien bidez. Erabiltzaileak edozein unetan baja eman dezake komunikazio horietatik, mezuetan agertzen den baja-estekaren bidez edo adierazitako kontaktu-helbidera idatziz.",
-    EN: "Data may be used to: provide information about the use of the platform, respond to queries or support requests, send informational communications or updates (if consent has been given), and improve the user experience through aggregated statistical analysis. Users can unsubscribe from these communications at any time via the unsubscribe links or by writing to the contact email provided.",
-    FR: "Les données peuvent être utilisées pour : fournir des informations sur l’utilisation de la plateforme, répondre aux demandes ou au support, envoyer des communications d’information ou des nouveautés (si le consentement a été donné) et améliorer l’expérience via des analyses statistiques agrégées. Les utilisateurs peuvent se désinscrire à tout moment via les liens de désinscription ou en écrivant à l’email de contact indiqué.",
+    ES: "Los datos podrán utilizarse para: facilitar el uso de la plataforma, responder consultas o solicitudes de soporte, enviar comunicaciones informativas o novedades (si se ha dado el consentimiento) y mejorar la experiencia de uso mediante análisis estadísticos agregados. La persona usuaria puede darse de baja de estas comunicaciones en cualquier momento a través de los enlaces de cancelación o escribiendo al correo de contacto indicado.",
+    EUS: "Datuak honako helburu hauekin erabili ahal izango dira: plataformaren erabilera erraztea, kontsultei edo laguntza-eskaerei erantzutea, informazio- edo berritasun-komunikazioak bidaltzea (baimena eman bada) eta esperientzia hobetzea estatistika-analisien bidez. Erabiltzaileak edozein unetan baja eman dezake komunikazio horietatik, mezuetan agertzen den baja-estekaren bidez edo adierazitako kontaktu-helbidera idatziz.",
+    EN: "Data may be used to: facilitate the use of the platform, respond to queries or support requests, send informational communications or updates (if consent has been given), and improve the user experience through aggregated statistical analysis. Users can unsubscribe at any time via the unsubscribe links or by writing to the contact email provided.",
+    FR: "Les données peuvent être utilisées pour : faciliter l’utilisation de la plateforme, répondre aux demandes ou au support, envoyer des communications d’information ou des nouveautés (si le consentement a été donné) et améliorer l’expérience via des analyses statistiques agrégées. Les utilisateurs peuvent se désinscrire à tout moment via les liens de désinscription ou en écrivant à l’email de contact indiqué.",
   },
 
+  // ✅ NUEVO: base legal
+  legalBasisTitle: {
+    ES: "4. Base legal del tratamiento",
+    EUS: "4. Tratamenduaren oinarri juridikoa",
+    EN: "4. Legal basis for processing",
+    FR: "4. Base légale du traitement",
+  },
+  legalBasisBody: {
+    ES: "El tratamiento de los datos personales se realiza conforme a las siguientes bases legales:\n\n- Consentimiento: cuando el usuario lo otorga, por ejemplo para comunicaciones o cookies no esenciales.\n- Ejecución del servicio: para prestar las funcionalidades solicitadas dentro de la plataforma.\n- Interés legítimo: para seguridad, prevención de abuso y mejora del servicio.\n- Cumplimiento de obligaciones legales: cuando sea aplicable.",
+    EUS: "Datu pertsonalen tratamendua honako oinarri juridiko hauen arabera egiten da:\n\n- Baimena: erabiltzaileak ematen duenean, adibidez komunikazioetarako edo funtsezkoak ez diren cookieetarako.\n- Zerbitzuaren gauzatzea: plataforman eskatutako funtzionalitateak eskaintzeko.\n- Interes legitimoa: segurtasunerako, abusua prebenitzeko eta zerbitzua hobetzeko.\n- Legezko betebeharrak betetzea: aplikagarria denean.",
+    EN: "Personal data is processed under the following legal bases:\n\n- Consent: when the user provides it, for example for communications or non-essential cookies.\n- Performance of a service: to provide the requested features within the platform.\n- Legitimate interest: for security, abuse prevention and service improvement.\n- Compliance with legal obligations: when applicable.",
+    FR: "Les données personnelles sont traitées sur les bases légales suivantes :\n\n- Consentement : lorsque l’utilisateur le donne, par exemple pour les communications ou les cookies non essentiels.\n- Exécution du service : pour fournir les fonctionnalités demandées au sein de la plateforme.\n- Intérêt légitime : pour la sécurité, la prévention des abus et l’amélioration du service.\n- Respect d’obligations légales : lorsque cela s’applique.",
+  },
+
+  // ✅ NUEVO: datos tratados
+  dataTitle: {
+    ES: "5. Datos tratados",
+    EUS: "5. Tratatutako datuak",
+    EN: "5. Data processed",
+    FR: "5. Données traitées",
+  },
+  dataBody: {
+    ES: "Euskalia puede tratar las siguientes categorías de datos:\n\n- Datos de contacto: correo electrónico (si el usuario contacta o se registra).\n- Datos técnicos: dirección IP, navegador, dispositivo, identificadores de sesión y eventos de uso.\n- Contenidos aportados por el usuario: texto/documentos/enlaces que se introduzcan para su procesamiento.\n\nSe recomienda no introducir información sensible. Euskalia no solicita intencionalmente categorías especiales de datos.",
+    EUS: "Euskaliak honako datu-kategoria hauek trata ditzake:\n\n- Harremanetarako datuak: posta elektronikoa (erabiltzaileak kontaktatzen badu edo erregistratzen bada).\n- Datu teknikoak: IP helbidea, nabigatzailea, gailua, saio-identifikatzaileak eta erabilera-gertaerak.\n- Erabiltzaileak emandako edukiak: prozesatzeko sartzen den testua/dokumentuak/estekak.\n\nGomendagarria da informazio sentikorra ez sartzea. Euskaliak ez ditu nahita datu berezien kategoriak eskatzen.",
+    EN: "Euskalia may process the following categories of data:\n\n- Contact data: email address (if the user contacts or registers).\n- Technical data: IP address, browser, device, session identifiers and usage events.\n- User-provided content: text/documents/links submitted for processing.\n\nIt is recommended not to enter sensitive information. Euskalia does not intentionally request special categories of data.",
+    FR: "Euskalia peut traiter les catégories de données suivantes :\n\n- Données de contact : email (si l’utilisateur contacte ou s’inscrit).\n- Données techniques : adresse IP, navigateur, appareil, identifiants de session et événements d’usage.\n- Contenus fournis par l’utilisateur : texte/documents/liens soumis au traitement.\n\nIl est recommandé de ne pas saisir d’informations sensibles. Euskalia ne demande pas intentionnellement de catégories particulières de données.",
+  },
+
+  // ✅ NUEVO: conservación
+  retentionTitle: {
+    ES: "6. Conservación de los datos",
+    EUS: "6. Datuen kontserbazioa",
+    EN: "6. Data retention",
+    FR: "6. Conservation des données",
+  },
+  retentionBody: {
+    ES: "Los datos se conservarán durante el tiempo necesario para cumplir la finalidad para la que fueron recogidos y para atender posibles responsabilidades legales.\n\nComo regla general:\n- Consultas/soporte: el tiempo imprescindible para resolver la solicitud.\n- Comunicaciones: hasta que el usuario solicite la baja.\n- Datos técnicos y de medición: según plazos razonables o los definidos por las herramientas utilizadas.\n\nPosteriormente, los datos se eliminarán o anonimizarán cuando sea posible.",
+    EUS: "Datuak bildu ziren helburua betetzeko behar den denboran gordeko dira, eta legezko erantzukizunak artatzeko beharrezkoa denean.\n\nOro har:\n- Kontsultak/laguntza: eskaera ebazteko behar den denbora.\n- Komunikazioak: erabiltzaileak baja eskatzen duen arte.\n- Datu teknikoak eta neurketa-datuak: epe arrazoizkoetan edo erabilitako tresnek ezarritako epeen arabera.\n\nOndoren, datuak ezabatu edo anonimizatu egingo dira ahal denean.",
+    EN: "Data will be kept for the time necessary to fulfill the purpose for which it was collected and to address possible legal liabilities.\n\nAs a general rule:\n- Queries/support: the time needed to resolve the request.\n- Communications: until the user unsubscribes.\n- Technical/measurement data: for reasonable periods or those defined by the tools used.\n\nAfterwards, data will be deleted or anonymized whenever possible.",
+    FR: "Les données seront conservées le temps nécessaire pour atteindre la finalité pour laquelle elles ont été collectées et pour répondre à d’éventuelles responsabilités légales.\n\nEn règle générale :\n- Demandes/support : le temps nécessaire pour résoudre la demande.\n- Communications : jusqu’à la désinscription de l’utilisateur.\n- Données techniques et de mesure : selon des durées raisonnables ou celles définies par les outils utilisés.\n\nEnsuite, les données seront supprimées ou anonymisées lorsque possible.",
+  },
+
+  // ✅ NUEVO: destinatarios/terceros
+  recipientsTitle: {
+    ES: "7. Destinatarios y terceros",
+    EUS: "7. Hartzaileak eta hirugarrenak",
+    EN: "7. Recipients and third parties",
+    FR: "7. Destinataires et tiers",
+  },
+  recipientsBody: {
+    ES: "Euskalia puede apoyarse en proveedores tecnológicos (por ejemplo, alojamiento, analítica o servicios publicitarios) que pueden tratar datos en nombre del responsable como encargados del tratamiento.\n\nEn la versión gratuita pueden mostrarse anuncios y, cuando sea necesario, su uso se gestionará mediante el sistema de consentimiento correspondiente.\n\nEuskalia no vende datos personales.",
+    EUS: "Euskaliak hornitzaile teknologikoak erabil ditzake (adibidez, hosting-a, analitika edo publizitate-zerbitzuak), arduradunaren izenean datuak trata ditzaketen tratamendu-arduradun gisa.\n\nDoako bertsioan iragarkiak ager daitezke eta, behar denean, haien erabilera dagokion baimen-sistemaren bidez kudeatuko da.\n\nEuskaliak ez ditu datu pertsonalak saltzen.",
+    EN: "Euskalia may rely on technology providers (for example hosting, analytics or advertising services) that may process data on behalf of the controller as data processors.\n\nAds may be shown in the free version and, when required, their use will be managed through the appropriate consent system.\n\nEuskalia does not sell personal data.",
+    FR: "Euskalia peut s’appuyer sur des prestataires technologiques (par exemple hébergement, analytique ou services publicitaires) pouvant traiter des données pour le compte du responsable en tant que sous-traitants.\n\nDes publicités peuvent apparaître dans la version gratuite et, lorsque nécessaire, leur utilisation sera gérée via le système de consentement approprié.\n\nEuskalia ne vend pas de données personnelles.",
+  },
+
+  // ✅ NUEVO: transferencias internacionales
+  intlTransfersTitle: {
+    ES: "8. Transferencias internacionales",
+    EUS: "8. Nazioarteko transferentziak",
+    EN: "8. International transfers",
+    FR: "8. Transferts internationaux",
+  },
+  intlTransfersBody: {
+    ES: "Algunos proveedores pueden estar ubicados fuera del Espacio Económico Europeo. En esos casos, se aplicarán garantías adecuadas conforme a la normativa, como cláusulas contractuales tipo u otros mecanismos legalmente reconocidos.",
+    EUS: "Hornitzaile batzuk Europako Esparru Ekonomikotik kanpo egon daitezke. Kasu horietan, araudiaren araberako berme egokiak aplikatuko dira, hala nola klausula kontraktual estandarrak edo legez onartutako beste mekanismo batzuk.",
+    EN: "Some providers may be located outside the European Economic Area. In such cases, appropriate safeguards will be applied in accordance with the regulations, such as Standard Contractual Clauses or other legally recognized mechanisms.",
+    FR: "Certains prestataires peuvent être situés en dehors de l’Espace économique européen. Dans ce cas, des garanties appropriées seront appliquées conformément à la réglementation, telles que les Clauses Contractuelles Types ou d’autres mécanismes légalement reconnus.",
+  },
+
+  // (se mantiene, pero ahora en el código se muestra como sección 14)
   section4Title: {
-    ES: "4. Sobre esta Política de Privacidad",
-    EUS: "4. Pribatutasun politika honi buruz",
-    EN: "4. About this Privacy Policy",
-    FR: "4. À propos de cette Politique",
+    ES: "14. Sobre esta Política de Privacidad",
+    EUS: "14. Pribatutasun politika honi buruz",
+    EN: "14. About this Privacy Policy",
+    FR: "14. À propos de cette Politique",
   },
   section4Body: {
     ES: "Euskalia mantiene un compromiso firme con la protección de los datos personales de sus usuarios. Esta Política busca ser clara y sencilla, para que cada persona pueda decidir de forma informada qué información facilita y con qué finalidad se utilizará.",
@@ -1826,11 +1896,12 @@ privacyPolicy: {
     FR: "Euskalia s’engage fermement à protéger les données personnelles de ses utilisateurs. Cette Politique se veut claire et simple afin que chacun puisse décider en connaissance de cause quelles informations il fournit et à quelles fins elles seront utilisées.",
   },
 
+  // (se mantiene, pero ahora en el código se muestra como sección 9)
   section5Title: {
-    ES: "5. Confidencialidad y seguridad",
-    EUS: "5. Konfidentzialtasuna eta segurtasuna",
-    EN: "5. Confidentiality and security",
-    FR: "5. Confidentialité et sécurité",
+    ES: "9. Confidencialidad y seguridad",
+    EUS: "9. Konfidentzialtasuna eta segurtasuna",
+    EN: "9. Confidentiality and security",
+    FR: "9. Confidentialité et sécurité",
   },
   section5Body: {
     ES: "Los datos personales se tratarán de forma confidencial y se aplicarán medidas técnicas y organizativas razonables para evitar accesos no autorizados, pérdidas o alteraciones. No obstante, ningún sistema es completamente infalible y no se puede garantizar una seguridad absoluta frente a incidentes externos.",
@@ -1839,11 +1910,12 @@ privacyPolicy: {
     FR: "Les données personnelles seront traitées de manière confidentielle et des mesures techniques et organisationnelles raisonnables seront appliquées afin d’éviter les accès non autorisés, les pertes ou les altérations. Toutefois, aucun système n’est totalement infaillible et une sécurité absolue contre les incidents externes ne peut être garantie.",
   },
 
+  // (se mantiene, pero ahora en el código se muestra como sección 10)
   section6Title: {
-    ES: "6. Derechos de las personas usuarias",
-    EUS: "6. Erabiltzaileen eskubideak",
-    EN: "6. Users’ rights",
-    FR: "6. Droits des utilisateurs",
+    ES: "10. Derechos de las personas usuarias",
+    EUS: "10. Erabiltzaileen eskubideak",
+    EN: "10. Users’ rights",
+    FR: "10. Droits des utilisateurs",
   },
   section6Body: {
     ES: "De acuerdo con la normativa aplicable, las personas usuarias pueden ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad de sus datos. Para ello, pueden dirigirse al correo de contacto indicado, señalando de forma clara el derecho que desean ejercer. En caso necesario, también podrán presentar una reclamación ante la autoridad de control competente.",
@@ -1852,11 +1924,12 @@ privacyPolicy: {
     FR: "Conformément à la réglementation applicable, les utilisateurs peuvent exercer leurs droits d’accès, de rectification, d’effacement, d’opposition, de limitation du traitement et de portabilité. Pour cela, ils peuvent écrire à l’email de contact indiqué en précisant clairement le droit qu’ils souhaitent exercer. En cas de besoin, ils peuvent également déposer une réclamation auprès de l’autorité de contrôle compétente.",
   },
 
+  // (se mantiene, pero ahora en el código se muestra como sección 11)
   section7Title: {
-    ES: "7. Envíos comerciales y comunicaciones",
-    EUS: "7. Merkataritza-mezuak eta komunikazioak",
-    EN: "7. Commercial messages and communications",
-    FR: "7. Communications commerciales",
+    ES: "11. Envíos comerciales y comunicaciones",
+    EUS: "11. Merkataritza-mezuak eta komunikazioak",
+    EN: "11. Commercial messages and communications",
+    FR: "11. Communications commerciales",
   },
   section7Body: {
     ES: "Euskalia no realiza prácticas de envío masivo de correos electrónicos no solicitados (spam). Cualquier comunicación informativa o promocional se enviará únicamente cuando exista una base legítima o se haya obtenido el consentimiento previo, e incluirá siempre un mecanismo claro para cancelar la suscripción.",
@@ -1865,24 +1938,26 @@ privacyPolicy: {
     FR: "Euskalia ne pratique pas l’envoi massif d’emails non sollicités (spam). Toute communication informative ou promotionnelle ne sera envoyée que s’il existe une base légitime ou un consentement préalable, et inclura toujours un moyen clair de se désinscrire.",
   },
 
+  // (se mantiene, pero en el código ahora es sección 12 y con texto ajustado)
   section8Title: {
-    ES: "8. Publicidad",
-    EUS: "8. Publizitatea",
-    EN: "8. Advertising",
-    FR: "8. Publicité",
+    ES: "12. Publicidad",
+    EUS: "12. Publizitatea",
+    EN: "12. Advertising",
+    FR: "12. Publicité",
   },
   section8Body: {
-    ES: "En la versión gratuita de Euskalia podrían mostrarse anuncios. En ningún caso se cederán datos personales a terceros con fines publicitarios sin una base legal adecuada o sin el consentimiento expreso de la persona usuaria.",
-    EUS: "Euskaliaren doako bertsioan iragarkiak erakutsi daitezke. Inolaz ere ez zaizkie datu pertsonalak hirugarrenei emango helburu publizitarioekin, baimen espliziturik edo lege-oinarri egokirik gabe.",
-    EN: "Ads may be shown in the free version of Euskalia. Under no circumstances will personal data be shared with third parties for advertising purposes without an appropriate legal basis or the user’s express consent.",
-    FR: "Des publicités peuvent être affichées dans la version gratuite d’Euskalia. En aucun cas les données personnelles ne seront cédées à des tiers à des fins publicitaires sans base légale appropriée ou sans le consentement exprès de l’utilisateur.",
+    ES: "En la versión gratuita de Euskalia podrían mostrarse anuncios. El uso de cookies o tecnologías similares con fines publicitarios se gestionará conforme al sistema de consentimiento y a la Política de Cookies, cuando corresponda.",
+    EUS: "Euskaliaren doako bertsioan iragarkiak erakutsi daitezke. Publizitate-helburuetarako cookieak edo antzeko teknologiak erabiltzea baimen-sistemaren eta Cookieen Politikaren arabera kudeatuko da, dagokionean.",
+    EN: "Ads may be shown in the free version of Euskalia. The use of cookies or similar technologies for advertising purposes will be managed according to the consent system and the Cookies Policy, when applicable.",
+    FR: "Des publicités peuvent être affichées dans la version gratuite d’Euskalia. L’utilisation de cookies ou de technologies similaires à des fins publicitaires sera gérée conformément au système de consentement et à la Politique de cookies, lorsque applicable.",
   },
 
+  // (se mantiene, ahora es sección 13)
   section9Title: {
-    ES: "9. Comentarios y opiniones de terceros",
-    EUS: "9. Hirugarrenen iritziak eta iruzkinak",
-    EN: "9. Third-party comments and opinions",
-    FR: "9. Avis et commentaires de tiers",
+    ES: "13. Comentarios y opiniones de terceros",
+    EUS: "13. Hirugarrenen iritziak eta iruzkinak",
+    EN: "13. Third-party comments and opinions",
+    FR: "13. Avis et commentaires de tiers",
   },
   section9Body: {
     ES: "Euskalia no se hace responsable de las opiniones, valoraciones o comentarios que terceras personas puedan publicar sobre el servicio en redes sociales, plataformas externas o sitios web ajenos al control del proyecto.",
@@ -1891,11 +1966,12 @@ privacyPolicy: {
     FR: "Euskalia n’est pas responsable des opinions, évaluations ou commentaires que des tiers peuvent publier au sujet du service sur les réseaux sociaux, des plateformes externes ou des sites web hors du contrôle du projet.",
   },
 
+  // (se mantiene, ahora es sección 15)
   section10Title: {
-    ES: "10. Modificaciones de la Política",
-    EUS: "10. Politikaren aldaketak",
-    EN: "10. Changes to the Policy",
-    FR: "10. Modifications de la Politique",
+    ES: "15. Modificaciones de la Política",
+    EUS: "15. Politikaren aldaketak",
+    EN: "15. Changes to the Policy",
+    FR: "15. Modifications de la Politique",
   },
   section10Body: {
     ES: "Euskalia se reserva el derecho de modificar esta Política de Privacidad para adaptarla a cambios legislativos, criterios de las autoridades de control o mejoras técnicas del servicio. La versión vigente estará siempre disponible en el sitio web y, en caso de cambios relevantes, se informará a las personas usuarias y se recabará de nuevo el consentimiento cuando sea necesario.",
@@ -1911,6 +1987,7 @@ privacyPolicy: {
     FR: "Cette Politique de confidentialité est à jour au 2025-11-21.",
   },
 },
+
 
 
 

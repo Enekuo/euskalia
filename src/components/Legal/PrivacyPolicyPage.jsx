@@ -43,16 +43,18 @@ export default function PrivacyPolicyPage() {
             "2. Responsable del tratamiento de los datos"
           )}
         </h2>
+
         <p className="text-gray-700 leading-relaxed mb-2">
           {tr(
             "privacyPolicy.section2Body",
             "Los datos personales facilitados a través de Euskalia se integran en un tratamiento gestionado por el titular del proyecto."
           )}
         </p>
+
         <p className="text-gray-700 leading-relaxed whitespace-pre-line">
           {tr(
             "privacyPolicy.section2Details",
-            "Titular del sitio: [__________]\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción y resumen de textos con apoyo de inteligencia artificial.\nCorreo electrónico de contacto: [__________]\nDominio web: https://euskalia.ai"
+            "Titular del sitio: Euskalia (proyecto digital independiente)\nNombre comercial: Euskalia\nActividad: Servicios digitales de traducción, resumen y asistencia lingüística basados en inteligencia artificial.\nCorreo electrónico de contacto: euskaliaweb@gmail.com\nDominio web: https://euskaliaweb.com"
           )}
         </p>
       </section>
@@ -65,34 +67,83 @@ export default function PrivacyPolicyPage() {
         <p className="text-gray-700 leading-relaxed">
           {tr(
             "privacyPolicy.section3Body",
-            "Los datos podrán utilizarse para: facilitar información sobre el uso de la plataforma, responder consultas o solicitudes de soporte, enviar comunicaciones informativas o novedades (si se ha dado el consentimiento) y mejorar la experiencia de uso a través de análisis estadísticos agregados. La persona usuaria puede darse de baja de las comunicaciones en cualquier momento a través de los enlaces de cancelación o escribiendo al correo de contacto indicado."
+            "Los datos podrán utilizarse para: facilitar el uso de la plataforma, responder consultas o solicitudes de soporte, enviar comunicaciones informativas o novedades (si se ha dado el consentimiento) y mejorar la experiencia de uso mediante análisis estadísticos agregados. La persona usuaria puede darse de baja de estas comunicaciones en cualquier momento a través de los enlaces de cancelación o escribiendo al correo de contacto indicado."
           )}
         </p>
       </section>
 
-      {/* 4. Sobre esta Política de Privacidad */}
+      {/* 4. Base legal del tratamiento */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-3">
+          {tr("privacyPolicy.legalBasisTitle", "4. Base legal del tratamiento")}
+        </h2>
+        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {tr(
+            "privacyPolicy.legalBasisBody",
+            "El tratamiento de los datos personales se realiza conforme a las siguientes bases legales:\n\n- Consentimiento: cuando el usuario lo otorga, por ejemplo para comunicaciones o cookies no esenciales.\n- Ejecución del servicio: para prestar las funcionalidades solicitadas dentro de la plataforma.\n- Interés legítimo: para seguridad, prevención de abuso y mejora del servicio.\n- Cumplimiento de obligaciones legales: cuando sea aplicable."
+          )}
+        </p>
+      </section>
+
+      {/* 5. Datos tratados */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-3">
+          {tr("privacyPolicy.dataTitle", "5. Datos tratados")}
+        </h2>
+        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {tr(
+            "privacyPolicy.dataBody",
+            "Euskalia puede tratar las siguientes categorías de datos:\n\n- Datos de contacto: correo electrónico (si el usuario contacta o se registra).\n- Datos técnicos: dirección IP, navegador, dispositivo, identificadores de sesión y eventos de uso.\n- Contenidos aportados por el usuario: texto/documentos/enlaces que se introduzcan para su procesamiento.\n\nSe recomienda no introducir información sensible. Euskalia no solicita intencionalmente categorías especiales de datos."
+          )}
+        </p>
+      </section>
+
+      {/* 6. Conservación */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-3">
+          {tr("privacyPolicy.retentionTitle", "6. Conservación de los datos")}
+        </h2>
+        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {tr(
+            "privacyPolicy.retentionBody",
+            "Los datos se conservarán durante el tiempo necesario para cumplir la finalidad para la que fueron recogidos y para atender posibles responsabilidades legales.\n\nComo regla general:\n- Consultas/soporte: el tiempo imprescindible para resolver la solicitud.\n- Comunicaciones: hasta que el usuario solicite la baja.\n- Datos técnicos y de medición: según plazos razonables o los definidos por las herramientas utilizadas.\n\nPosteriormente, los datos se eliminarán o anonimizarán cuando sea posible."
+          )}
+        </p>
+      </section>
+
+      {/* 7. Destinatarios y terceros */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-3">
+          {tr("privacyPolicy.recipientsTitle", "7. Destinatarios y terceros")}
+        </h2>
+        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {tr(
+            "privacyPolicy.recipientsBody",
+            "Euskalia puede apoyarse en proveedores tecnológicos (por ejemplo, alojamiento, analítica o servicios publicitarios) que pueden tratar datos en nombre del responsable como encargados del tratamiento.\n\nEn la versión gratuita pueden mostrarse anuncios y, cuando sea necesario, su uso se gestionará mediante el sistema de consentimiento correspondiente.\n\nEuskalia no vende datos personales."
+          )}
+        </p>
+      </section>
+
+      {/* 8. Transferencias internacionales */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr(
-            "privacyPolicy.section4Title",
-            "4. Sobre esta Política de Privacidad"
+            "privacyPolicy.intlTransfersTitle",
+            "8. Transferencias internacionales"
           )}
         </h2>
         <p className="text-gray-700 leading-relaxed">
           {tr(
-            "privacyPolicy.section4Body",
-            "Euskalia mantiene un compromiso firme con la protección de los datos personales de sus usuarios. Esta Política busca ser clara y sencilla, para que cada persona pueda decidir de forma informada qué información facilita y con qué finalidad se utilizará."
+            "privacyPolicy.intlTransfersBody",
+            "Algunos proveedores pueden estar ubicados fuera del Espacio Económico Europeo. En esos casos, se aplicarán garantías adecuadas conforme a la normativa, como cláusulas contractuales tipo u otros mecanismos legalmente reconocidos."
           )}
         </p>
       </section>
 
-      {/* 5. Confidencialidad y seguridad */}
+      {/* 9. Confidencialidad y seguridad */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
-          {tr(
-            "privacyPolicy.section5Title",
-            "5. Confidencialidad y seguridad"
-          )}
+          {tr("privacyPolicy.section5Title", "9. Confidencialidad y seguridad")}
         </h2>
         <p className="text-gray-700 leading-relaxed">
           {tr(
@@ -102,28 +153,28 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      {/* 6. Derechos de las personas usuarias */}
+      {/* 10. Derechos de las personas usuarias */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr(
             "privacyPolicy.section6Title",
-            "6. Derechos de las personas usuarias"
+            "10. Derechos de las personas usuarias"
           )}
         </h2>
         <p className="text-gray-700 leading-relaxed">
           {tr(
             "privacyPolicy.section6Body",
-            "De acuerdo con la normativa aplicable, las personas usuarias pueden ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad de sus datos. Para ello, pueden dirigirse al correo de contacto indicado, señalando de forma clara el derecho que desean ejercer. Si lo consideran necesario, también pueden presentar una reclamación ante la autoridad de control competente."
+            "De acuerdo con la normativa aplicable, las personas usuarias pueden ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad de sus datos. Para ello, pueden dirigirse al correo de contacto indicado, señalando de forma clara el derecho que desean ejercer. En caso necesario, también podrán presentar una reclamación ante la autoridad de control competente."
           )}
         </p>
       </section>
 
-      {/* 7. Envíos comerciales y spam */}
+      {/* 11. Envíos comerciales y spam */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr(
             "privacyPolicy.section7Title",
-            "7. Envíos comerciales y comunicaciones"
+            "11. Envíos comerciales y comunicaciones"
           )}
         </h2>
         <p className="text-gray-700 leading-relaxed">
@@ -134,25 +185,25 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      {/* 8. Publicidad */}
+      {/* 12. Publicidad */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
-          {tr("privacyPolicy.section8Title", "8. Publicidad")}
+          {tr("privacyPolicy.section8Title", "12. Publicidad")}
         </h2>
         <p className="text-gray-700 leading-relaxed">
           {tr(
             "privacyPolicy.section8Body",
-            "En la versión gratuita de Euskalia podrían mostrarse anuncios. En ningún caso se cederán datos personales a terceros con fines publicitarios sin una base legal adecuada o sin el consentimiento expreso de la persona usuaria."
+            "En la versión gratuita de Euskalia podrían mostrarse anuncios. El uso de cookies o tecnologías similares con fines publicitarios se gestionará conforme al sistema de consentimiento y a la Política de Cookies, cuando corresponda."
           )}
         </p>
       </section>
 
-      {/* 9. Comentarios de terceros */}
+      {/* 13. Comentarios de terceros */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
           {tr(
             "privacyPolicy.section9Title",
-            "9. Comentarios y opiniones de terceros"
+            "13. Comentarios y opiniones de terceros"
           )}
         </h2>
         <p className="text-gray-700 leading-relaxed">
@@ -163,12 +214,28 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      {/* 10. Modificaciones de la Política */}
+      {/* 14. Sobre esta Política de Privacidad */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-3">
+          {tr(
+            "privacyPolicy.section4Title",
+            "14. Sobre esta Política de Privacidad"
+          )}
+        </h2>
+        <p className="text-gray-700 leading-relaxed">
+          {tr(
+            "privacyPolicy.section4Body",
+            "Euskalia mantiene un compromiso firme con la protección de los datos personales de sus usuarios. Esta Política busca ser clara y sencilla, para que cada persona pueda decidir de forma informada qué información facilita y con qué finalidad se utilizará."
+          )}
+        </p>
+      </section>
+
+      {/* 15. Modificaciones de la Política */}
       <section className="mb-6">
         <h2 className="text-xl font-semibold mb-3">
           {tr(
             "privacyPolicy.section10Title",
-            "10. Modificaciones de la Política"
+            "15. Modificaciones de la Política"
           )}
         </h2>
         <p className="text-gray-700 leading-relaxed">
@@ -183,7 +250,7 @@ export default function PrivacyPolicyPage() {
       <p className="text-sm text-gray-500 italic">
         {tr(
           "privacyPolicy.footerNote",
-          "Esta Política de Privacidad está actualizada a fecha 27 de julio de 2025."
+          "Esta Política de Privacidad está actualizada a fecha 2025-11-21."
         )}
       </p>
     </main>
