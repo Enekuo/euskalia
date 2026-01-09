@@ -1981,10 +1981,10 @@ privacyPolicy: {
   },
 
   footerNote: {
-    ES: "Esta Política de Privacidad está actualizada a fecha 2025-11-21.",
-    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: 2025-11-21.",
-    EN: "This Privacy Policy is updated as of 2025-11-21.",
-    FR: "Cette Politique de confidentialité est à jour au 2025-11-21.",
+    ES: "Esta Política de Privacidad está actualizada a fecha 09-01-2026.",
+    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: 2026-01-09.",
+    EN: "This Privacy Policy is updated as of 09-01-2026.",
+    FR: "Cette Politique de confidentialité est à jour au 09-01-2026.",
   },
 },
 
