@@ -2361,102 +2361,106 @@ aiApiUsage: {
 
 
 
-// ====== POLÍTICA DE COOKIES – EUSKALIA ====== //
+////////////////// POLÍTICA DE cookies /////////////////////////
 
-cookies_title: {
-  ES: "Política de Cookies",
-  EUS: "Cookieen Politika",
-  EN: "Cookies Policy",
-  FR: "Politique de cookies",
-},
-cookies_section1_title: {
-  ES: "1. ¿Qué son las cookies?",
-  EUS: "1. Zer dira cookieak?",
-  EN: "1. What are cookies?",
-  FR: "1. What are cookies?",
+cookies: {
+  cookies_title: {
+    ES: "Política de Cookies",
+    EUS: "Cookieen Politika",
+    EN: "Cookies Policy",
+    FR: "Politique de cookies",
+  },
+
+  /* 1. ¿Qué son las cookies? */
+  cookies_section1_title: {
+    ES: "1. ¿Qué son las cookies?",
+    EUS: "1. Zer dira cookieak?",
+    EN: "1. What are cookies?",
+    FR: "1. Que sont les cookies ?",
+  },
+  cookies_section1_p1: {
+    ES: "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo (ordenador, tableta o teléfono móvil) cuando visitas un sitio web. Permiten recordar información sobre tu navegación, como preferencias o configuraciones básicas, con el fin de mejorar la experiencia de uso.",
+    EUS: "Cookieak testu-fitxategi txikiak dira, webgune bat bisitatzen duzunean zure gailuan (ordenagailua, tableta edo telefono mugikorra) gordetzen direnak. Nabigazioari buruzko informazioa gogoratzeko balio dute, hala nola lehentasunak edo oinarrizko ezarpenak, erabiltzailearen esperientzia hobetzeko.",
+    EN: "Cookies are small text files stored on your device (computer, tablet or mobile phone) when you visit a website. They allow information about your browsing, such as preferences or basic settings, to be remembered in order to improve the user experience.",
+    FR: "Les cookies sont de petits fichiers texte stockés sur votre appareil (ordinateur, tablette ou téléphone mobile) lorsque vous visitez un site web. Elles permettent de mémoriser des informations sur votre navigation, telles que des préférences ou des paramètres de base, afin d’améliorer l’expérience utilisateur.",
+  },
+
+  /* 2. Qué cookies utiliza Euskalia */
+  cookies_section2_title: {
+    ES: "2. Qué cookies utiliza Euskalia",
+    EUS: "2. Euskaliak erabiltzen dituen cookieak",
+    EN: "2. Cookies used by Euskalia",
+    FR: "2. Cookies utilisées par Euskalia",
+  },
+  cookies_section2_p1: {
+    ES: "Euskalia utiliza cookies técnicas necesarias para el correcto funcionamiento del sitio web y para permitir el uso de sus funcionalidades básicas. Estas cookies son esenciales y no requieren consentimiento.",
+    EUS: "Euskaliak cookie teknikoak erabiltzen ditu webgunearen funtzionamendu egokia bermatzeko eta oinarrizko funtzionalitateak erabili ahal izateko. Cookie hauek beharrezkoak dira eta ez dute baimenik behar.",
+    EN: "Euskalia uses technical cookies that are necessary for the proper functioning of the website and to enable its basic features. These cookies are essential and do not require consent.",
+    FR: "Euskalia utilise des cookies techniques nécessaires au bon fonctionnement du site web et à l’utilisation de ses fonctionnalités de base. Ces cookies sont essentielles et ne nécessitent pas de consentement.",
+  },
+  cookies_section2_p2: {
+    ES: "Asimismo, Euskalia puede utilizar cookies de análisis o medición (por ejemplo, Google Analytics) únicamente si la persona usuaria lo acepta, con el fin de obtener estadísticas de uso y mejorar el servicio.",
+    EUS: "Era berean, Euskaliak analisi- edo neurketa-cookieak erabil ditzake (adibidez, Google Analytics), erabiltzaileak baimena ematen badu soilik, erabilera-estatistikak lortzeko eta zerbitzua hobetzeko.",
+    EN: "Additionally, Euskalia may use analytics or measurement cookies (for example, Google Analytics) only if the user accepts them, in order to obtain usage statistics and improve the service.",
+    FR: "De plus, Euskalia peut utiliser des cookies d’analyse ou de mesure (par exemple Google Analytics) uniquement si l’utilisateur y consent, afin d’obtenir des statistiques d’utilisation et d’améliorer le service.",
+  },
+  cookies_section2_p3: {
+    ES: "En la versión gratuita de Euskalia pueden mostrarse anuncios gestionados por terceros, como Google. Estos terceros pueden utilizar cookies o tecnologías similares con fines publicitarios, siempre conforme a la base legal aplicable y, cuando corresponda, al consentimiento del usuario.",
+    EUS: "Euskaliaren doako bertsioan hirugarrenek kudeatutako iragarkiak ager daitezke, hala nola Googlek kudeatutakoak. Hirugarren horiek publizitate-helburuetarako cookieak edo antzeko teknologiak erabil ditzakete, aplikagarria den lege-oinarriaren eta, dagokionean, erabiltzailearen baimenaren arabera.",
+    EN: "In the free version of Euskalia, ads managed by third parties such as Google may be displayed. These third parties may use cookies or similar technologies for advertising purposes, always in accordance with the applicable legal basis and, when required, the user’s consent.",
+    FR: "Dans la version gratuite d’Euskalia, des publicités gérées par des tiers tels que Google peuvent être affichées. Ces tiers peuvent utiliser des cookies ou des technologies similaires à des fins publicitaires, conformément à la base légale applicable et, le cas échéant, au consentement de l’utilisateur.",
+  },
+
+  /* 3. Finalidad de las cookies */
+  cookies_section3_title: {
+    ES: "3. Finalidad de las cookies",
+    EUS: "3. Cookieen helburua",
+    EN: "3. Purpose of cookies",
+    FR: "3. Finalité des cookies",
+  },
+  cookies_section3_p1: {
+    ES: "Las cookies utilizadas en Euskalia tienen como finalidad garantizar el funcionamiento del sitio web, analizar su uso para mejorar el servicio y, en su caso, mostrar publicidad y medir su rendimiento.",
+    EUS: "Euskalian erabiltzen diren cookieen helburua da webgunearen funtzionamendua bermatzea, erabilera aztertzea zerbitzua hobetzeko eta, hala badagokio, publizitatea erakustea eta haren errendimendua neurtzea.",
+    EN: "Cookies used on Euskalia aim to ensure the proper functioning of the website, analyze its use to improve the service and, where applicable, display advertising and measure its performance.",
+    FR: "Les cookies utilisées sur Euskalia ont pour finalité d’assurer le bon fonctionnement du site, d’analyser son utilisation afin d’améliorer le service et, le cas échéant, d’afficher de la publicité et d’en mesurer les performances.",
+  },
+
+  /* 4. Consentimiento y gestión */
+  cookies_section4_title: {
+    ES: "4. Consentimiento y gestión de cookies",
+    EUS: "4. Cookieen baimena eta kudeaketa",
+    EN: "4. Consent and cookie management",
+    FR: "4. Consentement et gestion des cookies",
+  },
+  cookies_section4_p1: {
+    ES: "Al acceder al sitio web, el usuario puede aceptar, rechazar o configurar el uso de cookies no esenciales mediante el sistema de gestión de consentimiento. En cualquier momento podrá modificar su elección a través de las opciones habilitadas en el sitio o desde la configuración de su navegador.",
+    EUS: "Webgunean sartzean, erabiltzaileak cookie ez-funtsezkoen erabilera onartu, baztertu edo konfiguratu dezake baimenaren kudeaketa-sistemaren bidez. Edozein unetan aldatu ahal izango du bere aukera webgunean eskuragarri dauden aukeren bidez edo bere nabigatzailearen ezarpenetatik.",
+    EN: "When accessing the website, users may accept, reject or configure the use of non-essential cookies through the consent management system. They may change their choice at any time via the options available on the site or through their browser settings.",
+    FR: "Lors de l’accès au site, l’utilisateur peut accepter, refuser ou configurer l’utilisation des cookies non essentielles via le système de gestion du consentement. Il peut modifier son choix à tout moment via les options disponibles sur le site ou les paramètres de son navigateur.",
+  },
+
+  /* 5. Actualizaciones */
+  cookies_section5_title: {
+    ES: "5. Actualizaciones de la Política de Cookies",
+    EUS: "5. Cookieen Politikaren eguneraketak",
+    EN: "5. Updates to the Cookies Policy",
+    FR: "5. Mises à jour de la Politique de cookies",
+  },
+  cookies_section5_p1: {
+    ES: "Euskalia podrá actualizar esta Política de Cookies cuando sea necesario para adaptarla a cambios legales, técnicos o de funcionamiento del servicio. La versión vigente estará siempre disponible en el sitio web.",
+    EUS: "Euskaliak Cookieen Politika hau eguneratu ahal izango du, lege-, teknika- edo zerbitzuaren funtzionamendu-aldaketetara egokitzeko beharrezkoa denean. Indarrean dagoen bertsioa beti egongo da webgunean eskuragarri.",
+    EN: "Euskalia may update this Cookies Policy when necessary to adapt it to legal, technical or service-related changes. The current version will always be available on the website.",
+    FR: "Euskalia peut mettre à jour cette Politique de cookies lorsque cela est nécessaire afin de l’adapter aux changements légaux, techniques ou liés au fonctionnement du service. La version en vigueur sera toujours disponible sur le site.",
+  },
+
+  cookies_last_update: {
+    ES: "Esta Política de Cookies está actualizada a fecha 2025-11-21.",
+    EUS: "Cookieen Politika hau eguneratuta dago 2025-11-21ean.",
+    EN: "This Cookies Policy is updated as of 2025-11-21.",
+    FR: "Cette Politique de cookies est à jour au 2025-11-21.",
+  },
 },
 
-cookies_section1_p1: {
-  ES: "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo (ordenador, tableta edo telefono mugikorra) cuando visitas un sitio web. Permiten que la página recuerde determinadas acciones y preferencias, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
-  EUS: "Cookieak testu fitxategi txikiak dira, eta zure gailuan (ordenagailuan, tabletan edo telefono mugikorrean) gordetzen dira webgune bat bisitatzen duzunean. Webguneak zure ekintza eta lehentasun jakin batzuk gogoratzeko balio dute, hala nola hizkuntza edo oinarrizko ezarpenak, nabigazio esperientzia hobetzeko eta bisita bakoitzean berriro konfiguratu beharrik izan ez dezazun.",
-  EN: "Cookies are small text files stored on your device (computer, tablet edo telefono mugikorra) when you visit a website. They allow the page to remember certain actions and preferences, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
-  FR: "Les cookies sont de petits fichiers texte stockés sur votre appareil (ordinateur, tablette edo telefono mugikorra) lorsque vous visitez un site web. Elles permettent au site de mémoriser certaines actions et préférences, hala nola hizkuntza edo oinarrizko konfigurazioak, zure nabigazio esperientzia hobetzeko eta ez dezazun berriro konfiguratu behar bisita bakoitzean.",
-},
-
-cookies_section2_title: {
-  ES: "2. Tipos de cookies utilizadas por Euskalia",
-  EUS: "2. Euskaliak erabiltzen dituen cookie motak",
-  EN: "2. Types of cookies used by Euskalia",
-  FR: "2. Types de cookies utilisées par Euskalia",
-},
-
-cookies_section2_p1: {
-  ES: "Euskalia utiliza únicamente cookies técnicas esentziales, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. Cookie horiei esker, webgunean nabigatu eta eskaintzen diren funtzio oinarrizkoak erabil daitezke.",
-  EUS: "Euskaliak cookie tekniko esentzialak baino ez ditu erabiltzen, plataformaren funtzionamendu egokia bermatzeko beharrezkoak direnak. Cookie horiei esker, webgunean nabigatu eta eskaintzen diren funtzio oinarrizkoak erabili daitezke.",
-  EN: "Euskalia uses only essential technical cookies, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. These cookies allow you to browse the website and use the basic functions offered.",
-  FR: "Euskalia utilise uniquement des cookies techniques essentielles, behar-beharrezkoak plataformaren funtzionamendu egokia bermatzeko. Ces cookies permettent de naviguer sur le site et d’utiliser les fonctions de base proposées.",
-},
-
-cookies_section2_p2: {
-  ES: "Euskalia NO utiliza cookies de publizitatea, analisi aurreratua, pertsonalizazio maila altua, jokabidearen jarraipena edo helburu komertzialeko hirugarrenen cookieak.",
-  EUS: "Euskaliak EZ ditu erabiltzen publizitate cookieak, analisi aurreratukoak, pertsonalizazio maila handikoak, portaeraren jarraipeneko cookieak edo helburu komertzialeko hirugarrenen cookieak.",
-  EN: "Euskalia does NOT use advertising cookies, analisi aurreratua, high-level personalization, behavior tracking, or third-party cookies for commercial purposes.",
-  FR: "Euskalia n’utilise PAS de cookies publicitaires, analisi aurreratua, de personnalisation avancée, de suivi du comportement, ni de cookies de tiers à des fins commerciales.",
-},
-
-cookies_section3_title: {
-  ES: "3. Finalidad de las cookies",
-  EUS: "3. Cookieen helburua",
-  EN: "3. Purpose of cookies",
-  FR: "3. Finalité des cookies",
-},
-
-cookies_section3_p1: {
-  ES: "Euskaliak erabiltzen dituen cookie teknikoek helburu bakarra dute: plataforma behar bezala eta modu egonkorrean funtziona dezan bermatzea, oinarrizko konfigurazio batzuk gogoratuz eta webgunea behar bezala jardun dezan bisitan zehar.",
-  EUS: "Euskaliak erabiltzen dituen cookie teknikoen helburu bakarra da plataforma behar bezala eta modu egonkorrean funtziona dezan bermatzea, oinarrizko konfigurazio batzuk gogoratuz eta nabigazioan zehar webgunea ongi ibil dadin.",
-  EN: "The technical cookies used by Euskalia have a single purpose: to ensure the platform works properly and stably, remembering basic settings and allowing the website to function correctly during your visit.",
-  FR: "Les cookies techniques utilisées par Euskalia ont un seul objectif : garantir le bon fonctionnement et la stabilité de la plateforme, en mémorisant certains réglages de base et en permettant au site de fonctionner correctement pendant la visite.",
-},
-
-cookies_section4_title: {
-  ES: "4. Cómo gestionar las cookies",
-  EUS: "4. Nola kudeatu cookieak",
-  EN: "4. How to manage cookies",
-  FR: "4. Comment gérer les cookies",
-},
-
-cookies_section4_p1: {
-  ES: "Zure nabigatzailearen ezarpenen bidez baimendu, blokeatu edo ezaba ditzakezu zure gailuan instalatutako cookieak. Kontuan izan cookie teknikoak blokeatzen badituzu, baliteke webguneko zerbitzu edo funtzionalitate batzuk ez egotea erabilgarri edo behar bezala ez funtzionatzea.",
-  EUS: "Zure nabigatzailearen konfigurazioan, zure gailuan instalatutako cookieak baimendu, blokeatu edo ezaba ditzakezu. Gogoratu cookie teknikoak blokeatzen badituzu, baliteke webguneko zerbitzu edo funtzio batzuk ez egotea eskuragarri edo behar bezala ez ibiltzea.",
-  EN: "Through your browser settings you can allow, block or delete cookies installed on your device. Please note that if you block technical cookies, some services or functionalities of the website may not be available or may not work properly.",
-  FR: "Via les paramètres de votre navigateur, vous pouvez autoriser, bloquer ou supprimer les cookies installés sur votre appareil. Veuillez noter que si vous bloquez les cookies techniques, certains services ou fonctionnalités du site peuvent ne pas être disponibles ou ne pas fonctionner correctement.",
-},
-
-cookies_section5_title: {
-  ES: "5. Actualizaciones de la Política de Cookies",
-  EUS: "5. Cookieen Politika eguneratzea",
-  EN: "5. Updates to the Cookies Policy",
-  FR: "5. Mises à jour de la Politique de cookies",
-},
-
-cookies_section5_p1: {
-  ES: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, bai araudi-aldaketen ondorioz, bai aldaketa teknikoengatik edo plataforman egindako hobekuntzengatik. Aldaketa esanguratsuak egiten badira, erabiltzaileei webgunearen bidez jakinaraziko zaie.",
-  EUS: "Euskaliak Cookieen Politika hau eguneratu ahal izango du beharrezkoa denean, araudi-aldaketak, aldaketa teknikoak edo plataforman egindako hobekuntzak direla medio. Aldaketa garrantzitsuak eginez gero, erabiltzaileei webgunearen bidez emango zaie horren berri.",
-  EN: "Euskalia may update this Cookies Policy when necessary due to regulatory changes, technical changes, or improvements made to the platform. If significant changes are made, users will be informed through the website.",
-  FR: "Euskalia peut mettre à jour cette Politique de cookies lorsque nécessaire, en raison de changements réglementaires, techniques ou d’améliorations apportées à la plateforme. En cas de changements importants, les utilisateurs en seront informés via le site web.",
-},
-cookies_section2_p3: {
-  ES: "Euskalia utiliza cookies de análisis de Google Analytics únicamente si el usuario lo acepta, con el fin de obtener estadísticas de uso y mejorar el servicio. Actualmente Euskalia no muestra publicidad (AdSense). Cuando se implemente en el futuro, esta política se actualizará para reflejar dicho cambio.",
-  EUS: "Euskalíak Google Analyticsen analisi-cookieak erabiltzen ditu erabiltzaileak onartzen badu soilik, erabileraren estatistikak lortzeko eta zerbitzua hobetzeko. Une honetan Euskalíak ez du publizitaterik erakusten (AdSense). Etorkizunean inplementatzen denean, politika hau eguneratuko da aldaketa hori islatzeko.",
-  EN: "Euskalia uses Google Analytics analysis cookies only if the user accepts them, in order to obtain usage statistics and improve the service. Currently Euskalia does not display advertising (AdSense). When it is implemented in the future, this policy will be updated to reflect that change.",
-  FR: "Euskalia utilise des cookies d’analyse Google Analytics uniquement si l’utilisateur les accepte, afin d’obtenir des statistiques d’utilisation et d’améliorer le service. Actuellement, Euskalia n’affiche pas de publicité (AdSense). Lorsqu’elle sera mise en place à l’avenir, cette politique sera mise à jour pour refléter ce changement.",
-},
-cookies_last_update: {
-  ES: "Esta Política de Privacidad está actualizada a fecha [__________].",
-  EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: [__________].",
-  EN: "This Privacy Policy is updated as of [__________].",
-  FR: "This Privacy Policy is updated as of [__________].",
-},
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
