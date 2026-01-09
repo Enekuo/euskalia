@@ -1744,10 +1744,10 @@ legal_notice_section10_contact_email: {
 
 /* Footer */
 legal_notice_footer_note: {
-  ES: "Este aviso legal está actualizado a fecha: 2025-11-21.",
-  EUS: "Lege-ohar hau eguneratuta dago honako data honetan: 2025-11-21.",
-  EN: "This legal notice was last updated on: 2025-11-21.",
-  FR: "Ces mentions légales ont été mises à jour le : 2025-11-21.",
+  ES: "Este aviso legal está actualizado a fecha: 09/01/2026.",
+  EUS: "Lege-ohar hau eguneratuta dago honako data honetan: 2026/01/09.",
+  EN: "This legal notice was last updated on: 09/01/2026.",
+  FR: "Ces mentions légales ont été mises à jour le : 09/01/2026.",
 },
 
   
