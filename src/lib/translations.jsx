@@ -1476,11 +1476,15 @@ registerPage_login: {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // =========================
-  //        LEGAL 
-  // =========================
+                                        // =========================
+                                        //        LEGAL 
+                                        // =========================
 
-////////////////// AVISO LEGAL /////////////////////////
+
+/////////////////////////////////////////////////////
+////////////////// AVISO LEGAL //////////////////////
+/////////////////////////////////////////////////////
+
 legal_notice_title: {
   ES: "Aviso legal",
   EUS: "Lege-oharra",
@@ -1756,8 +1760,10 @@ legal_notice_footer_note: {
   FR: "Ces mentions légales ont été mises à jour le : 09/01/2026.",
 },
 
+////////////////////////////////////////////////////////////////
+//////////////////  POLÍTICA DE PRIVACIDAD  ////////////////////
+////////////////////////////////////////////////////////////////
 
-////////////////// POLÍTICA DE PRIVACIDAD /////////////////////////
 
 privacyPolicy: {
   title: {
@@ -1996,8 +2002,10 @@ privacyPolicy: {
 
 
 
+////////////////////////////////////////////////////////////////
+////////////////// TÉRMINOS Y CONDICIONES //////////////////////
+////////////////////////////////////////////////////////////////
 
-// ====== TÉRMINOS Y CONDICIONES – EUSKALIA ====== //
 
 terms_title: {
   ES: "Términos y Condiciones de Uso",
@@ -2208,167 +2216,187 @@ terms_footer_note: {
   FR: "Ces conditions d’utilisation sont à jour au [__________].",
 },
 
+////////////////////////////////////////////////////////////////
+//////////////////   USO DE APIS DE IA   ///////////////////////
+////////////////////////////////////////////////////////////////
 
-
-  //USO DE APIS DE INTELIGENCIA ARTIFICIAL //
 aiApiUsage: {
   title: {
     ES: "Uso de APIs de Inteligencia Artificial",
-    EUS: "Adimen Artifizialaren APIen erabilera",
+    EUS: "Adimen Artifizialeko APIen Erabilera",
     EN: "Use of Artificial Intelligence APIs",
-    FR: "Utilisation des API d’intelligence artificielle",
+    FR: "Utilisation des APIs d’intelligence artificielle",
   },
 
   intro: {
-    ES: "En esta página te explicamos cómo utiliza Euskalia las APIs de inteligencia artificial para traducir y resumir textos, qué datos se envían a estos proveedores y qué recomendaciones debes seguir para usar la herramienta de forma segura.",
-    EUS: "Orrialde honetan azaltzen dugu Euskaliak nola erabiltzen dituen adimen artifizialaren APIak testuak itzuli eta laburtzeko, zer datu bidaltzen diren hornitzaileei eta zein gomendio jarraitu behar diren tresna modu seguruan erabiltzeko.",
-    EN: "On this page we explain how Euskalia uses artificial intelligence APIs to translate and summarize texts, what data is sent to these providers, and what recommendations you should follow to use the tool safely.",
-    FR: "Sur cette page, nous expliquons comment Euskalia utilise des API d’intelligence artificielle pour traduire et résumer des textes, quelles données sont envoyées à ces fournisseurs et quelles recommandations suivre pour utiliser l’outil en toute sécurité.",
+    ES: "En esta página explicamos cómo utiliza Euskalia las APIs de inteligencia artificial para ofrecer herramientas lingüísticas basadas en IA, qué datos se envían a estos proveedores y qué recomendaciones debes seguir para usar el servicio de forma segura.",
+    EUS: "Orrialde honetan azaltzen dugu Euskaliak nola erabiltzen dituen adimen artifizialeko APIak IA bidezko hizkuntza-tresnak eskaintzeko, zein datu bidaltzen zaizkien hornitzaileei eta zer gomendio jarraitu behar dituzun zerbitzua modu seguruan erabiltzeko.",
+    EN: "This page explains how Euskalia uses AI APIs to provide language tools powered by artificial intelligence, what data is sent to providers, and what recommendations you should follow to use the service safely.",
+    FR: "Cette page explique comment Euskalia utilise des APIs d’IA pour proposer des outils linguistiques basés sur l’intelligence artificielle, quelles données sont envoyées aux fournisseurs et quelles recommandations suivre pour utiliser le service en toute sécurité.",
   },
+
   section1Title: {
     ES: "1. Qué APIs de IA utiliza Euskalia",
-    EUS: "1. Euskaliak erabiltzen dituen AA APIak",
+    EUS: "1. Euskaliak erabiltzen dituen IA APIak",
     EN: "1. Which AI APIs Euskalia uses",
-    FR: "1. Quelles API d’IA utilise Euskalia",
+    FR: "1. Quelles APIs d’IA utilise Euskalia",
   },
   section1Body: {
-    ES: "Para generar traducciones y resúmenes, Euskalia se conecta a servicios de inteligencia artificial ofrecidos por proveedores externos especializados. Estos procesan el texto enviado y devuelven una respuesta generada automáticamente.",
-    EUS: "Itzulpenak eta laburpenak sortzeko, Euskalia kanpoko hornitzaile espezializatuen adimen artifizialeko zerbitzuekin konektatzen da. Haiek jasotako testua prozesatu eta erantzun automatikoa itzultzen dute.",
-    EN: "To generate translations and summaries, Euskalia connects to artificial intelligence services provided by specialized external providers. They process the submitted text and return an automatically generated response.",
-    FR: "Pour générer des traductions et des résumés, Euskalia se connecte à des services d’intelligence artificielle fournis par des prestataires externes spécialisés. Ils traitent le texte envoyé et renvoient une réponse générée automatiquement.",
+    ES: "Para ofrecer sus funcionalidades (por ejemplo, traducción, resumen, corrección, reformulación y otras herramientas lingüísticas), Euskalia se conecta a servicios de inteligencia artificial ofrecidos por proveedores externos especializados. Estos proveedores procesan el contenido enviado y devuelven una respuesta generada automáticamente, que es la que se muestra en pantalla.",
+    EUS: "Bere funtzionalitateak eskaintzeko (adibidez, itzulpena, laburpena, zuzenketa, birformulazioa eta beste hizkuntza-tresna batzuk), Euskalia kanpoko hornitzaile espezializatuek eskaintzen dituzten adimen artifizialeko zerbitzuekin konektatzen da. Hornitzaileek bidalitako edukia prozesatzen dute eta automatikoki sortutako erantzun bat itzultzen dute, pantailan agertzen dena.",
+    EN: "To provide its features (for example, translation, summarization, correction, rephrasing and other language tools), Euskalia connects to AI services offered by specialized external providers. These providers process the submitted content and return an automatically generated response that is displayed on screen.",
+    FR: "Pour proposer ses fonctionnalités (par exemple traduction, résumé, correction, reformulation et autres outils linguistiques), Euskalia se connecte à des services d’IA fournis par des prestataires externes spécialisés. Ces prestataires traitent le contenu envoyé et renvoient une réponse générée automatiquement, affichée à l’écran.",
   },
   section1Body2: {
-    ES: "Los modelos de IA pueden actualizarse con el tiempo. Cuando esto ocurra, Euskalia mantendrá esta página actualizada para que conozcas qué tecnología está en uso.",
-    EUS: "AAko ereduak denborarekin eguneratu daitezke. Hori gertatzen denean, Euskaliak orrialde hau eguneratuta mantenduko du erabiltzen den teknologiari buruzko informazioa eskaintzeko.",
-    EN: "AI models may be updated over time. When that happens, Euskalia will keep this page updated so you know what technology is in use.",
-    FR: "Les modèles d’IA peuvent évoluer avec le temps. Le cas échéant, Euskalia maintiendra cette page à jour afin que vous sachiez quelle technologie est utilisée.",
+    ES: "Los modelos y proveedores de IA pueden cambiar con el tiempo (por ejemplo, nuevas versiones o proveedores). Cuando esto ocurra, Euskalia mantendrá esta página actualizada para que conozcas qué tecnología hay detrás del servicio.",
+    EUS: "IA ereduak eta hornitzaileak denborarekin alda daitezke (adibidez, bertsio edo hornitzaile berriak). Hori gertatzen denean, Euskaliak orrialde hau eguneratuta mantenduko du zer teknologiak ematen duen zerbitzua jakin dezazun.",
+    EN: "AI models and providers may change over time (for example, new versions or providers). When that happens, Euskalia will keep this page updated so you know what technology is behind the service.",
+    FR: "Les modèles et prestataires d’IA peuvent évoluer avec le temps (par exemple nouvelles versions ou fournisseurs). Le cas échéant, Euskalia maintiendra cette page à jour afin que vous sachiez quelle technologie est utilisée.",
   },
+
   section2Title: {
     ES: "2. Qué datos se envían a las APIs",
-    EUS: "2. Zer datu bidaltzen zaizkien APIei",
+    EUS: "2. Zein datu bidaltzen dira APIetara",
     EN: "2. What data is sent to the APIs",
-    FR: "2. Quelles données sont envoyées aux API",
+    FR: "2. Quelles données sont envoyées aux APIs",
   },
   section2Body: {
-    ES: "Cuando utilizas Euskalia, el texto que escribes o pegas (o fragmentos de documentos o URLs) se envía al proveedor de IA para generar la traducción o el resumen.",
-    EUS: "Euskalia erabiltzen duzunean, idazten edo itsasten duzun testua (edo dokumentuetako zatiak edo URLak) AA hornitzailera bidaltzen da itzulpena edo laburpena sortzeko.",
-    EN: "When you use Euskalia, the text you type or paste (or fragments from documents or URLs) is sent to the AI provider to generate the translation or summary.",
-    FR: "Lorsque vous utilisez Euskalia, le texte que vous saisissez ou collez (ou des extraits de documents ou d’URL) est envoyé au fournisseur d’IA afin de générer la traduction ou le résumé.",
+    ES: "Cuando utilizas cualquiera de las herramientas de Euskalia, el contenido que escribes o pegas (texto, fragmentos de documentos o contenidos obtenidos a partir de URLs) puede enviarse a los servidores del proveedor de IA para generar el resultado.",
+    EUS: "Euskaliako edozein tresna erabiltzen duzunean, idazten edo itsasten duzun edukia (testua, dokumentu-zatiak edo URLetatik ateratako edukia) IA hornitzailearen zerbitzarietara bidali daiteke emaitza sortzeko.",
+    EN: "When you use any Euskalia tool, the content you type or paste (text, document excerpts or content obtained from URLs) may be sent to the AI provider’s servers to generate the result.",
+    FR: "Lorsque vous utilisez l’un des outils d’Euskalia, le contenu que vous saisissez ou collez (texte, extraits de documents ou contenu obtenu via des URLs) peut être envoyé aux serveurs du fournisseur d’IA afin de générer le résultat.",
   },
   section2Li1: {
-    ES: "Texto introducido para traducir o resumir.",
-    EUS: "Itzultzeko edo laburtzeko sartutako testua.",
-    EN: "Text entered to translate or summarize.",
-    FR: "Texte saisi pour traduire ou résumer.",
+    ES: "Texto introducido por la persona usuaria.",
+    EUS: "Erabiltzaileak sartutako testua.",
+    EN: "User-provided text.",
+    FR: "Texte fourni par l’utilisateur.",
   },
   section2Li2: {
-    ES: "Idiomen arteko konbinazioa (adibidez, euskera → castellano).",
-    EUS: "Hizkuntzen arteko konbinazioa (adibidez, euskara → gaztelania).",
-    EN: "Language combination (e.g., Basque → Spanish).",
-    FR: "Combinaison de langues (ex. basque → espagnol).",
+    ES: "Parámetros lingüísticos seleccionados (por ejemplo, idioma de origen y destino o el tipo de herramienta utilizada).",
+    EUS: "Hautatutako hizkuntza-parametroak (adibidez, jatorrizko eta helmugako hizkuntza edo erabilitako tresna mota).",
+    EN: "Selected language parameters (for example, source/target language or the type of tool used).",
+    FR: "Paramètres linguistiques sélectionnés (par exemple langue source/cible ou type d’outil utilisé).",
   },
   section2Li3: {
     ES: "Instrucciones técnicas necesarias para que el modelo genere la respuesta.",
     EUS: "Ereduak erantzuna sortzeko behar dituen jarraibide teknikoak.",
-    EN: "Technical instructions necessary for the model to generate the response.",
+    EN: "Technical instructions needed for the model to generate a response.",
     FR: "Instructions techniques nécessaires pour que le modèle génère la réponse.",
   },
   section2Body2: {
-    ES: "Evita incluir datos personales o sensibles siempre que sea posible.",
-    EUS: "Ahal den guztietan, saihestu datu pertsonalak edo bereziki sentikorrak sartzea.",
-    EN: "Avoid including personal or sensitive data whenever possible.",
-    FR: "Évitez d’inclure des données personnelles ou sensibles autant que possible.",
+    ES: "Euskalia no necesita conocer tu identidad real para funcionar. Siempre que sea posible, evita incluir nombres completos, direcciones, datos de salud u otra información personal o sensible en los textos que envíes.",
+    EUS: "Euskaliak ez du zure benetako identitatea ezagutu behar funtzionatzeko. Ahal den guztietan, saihestu izen-abizenak, helbideak, osasun-datuak edo bestelako informazio pertsonal edo sentikorra bidaltzea.",
+    EN: "Euskalia does not need to know your real identity to work. Whenever possible, avoid including full names, addresses, health data or any other personal or sensitive information in the texts you submit.",
+    FR: "Euskalia n’a pas besoin de connaître votre identité réelle pour fonctionner. Lorsque c’est possible, évitez d’inclure des noms complets, des adresses, des données de santé ou toute autre information personnelle ou sensible dans les textes envoyés.",
   },
+
   section3Title: {
     ES: "3. Tratamiento, conservación y seguridad de los datos",
     EUS: "3. Datuen tratamendua, kontserbazioa eta segurtasuna",
-    EN: "3. Processing, retention and security of data",
-    FR: "3. Traitement, conservation et sécurité des données",
+    EN: "3. Processing, retention and security",
+    FR: "3. Traitement, conservation et sécurité",
   },
   section3Body: {
-    ES: "Los textos enviados se usan solo para generar la respuesta solicitada. Euskalia no vende tus textos ni los comparte con fines comerciales.",
-    EUS: "Bidaltzen diren testuak soilik eskatutako erantzuna sortzeko erabiltzen dira. Euskaliak ez ditu zure testuak saltzen edo helburu komertzialekin partekatzen.",
-    EN: "Submitted texts are used only to generate the requested response. Euskalia does not sell your texts or share them for commercial purposes.",
-    FR: "Les textes envoyés sont utilisés uniquement pour générer la réponse demandée. Euskalia ne vend pas vos textes et ne les partage pas à des fins commerciales.",
+    ES: "Los contenidos enviados a las APIs se utilizan exclusivamente para generar la respuesta solicitada. Euskalia no vende tus textos ni los comparte con terceros con fines comerciales.",
+    EUS: "APIetara bidalitako edukiak eskatutako erantzuna sortzeko baino ez dira erabiltzen. Euskaliak ez ditu zure testuak saltzen eta ez ditu hirugarrenekin partekatzen helburu komertzialekin.",
+    EN: "Content sent to the APIs is used solely to generate the requested response. Euskalia does not sell your texts or share them with third parties for commercial purposes.",
+    FR: "Les contenus envoyés aux APIs sont utilisés uniquement pour générer la réponse demandée. Euskalia ne vend pas vos textes et ne les partage pas avec des tiers à des fins commerciales.",
   },
   section3Body2: {
-    ES: "Los proveedores pueden conservar ciertos registros técnicos por seguridad y estabilidad del servicio.",
-    EUS: "Hornitzaileek zenbait erregistro tekniko gorde ditzakete zerbitzuaren segurtasuna eta egonkortasuna bermatzeko.",
-    EN: "Providers may retain certain technical logs for security and service stability purposes.",
-    FR: "Les fournisseurs peuvent conserver certains journaux techniques pour des raisons de sécurité et de stabilité du service.",
+    ES: "Los proveedores de IA pueden conservar durante un tiempo limitado ciertos registros técnicos para garantizar la seguridad, prevenir abusos y mejorar la estabilidad del servicio. Cada proveedor define sus plazos de conservación y medidas de seguridad en sus políticas oficiales.",
+    EUS: "IA hornitzaileek denbora mugatu batez erregistro tekniko batzuk gorde ditzakete segurtasuna bermatzeko, abusua prebenitzeko eta zerbitzuaren egonkortasuna hobetzeko. Hornitzaile bakoitzak bere kontserbazio-epeak eta segurtasun-neurriak zehazten ditu politika ofizialetan.",
+    EN: "AI providers may retain certain technical logs for a limited time to ensure security, prevent abuse and improve service stability. Each provider defines its retention periods and security measures in its official policies.",
+    FR: "Les fournisseurs d’IA peuvent conserver pendant une durée limitée certains journaux techniques afin d’assurer la sécurité, prévenir les abus et améliorer la stabilité du service. Chaque fournisseur définit ses durées de conservation et ses mesures de sécurité dans ses politiques officielles.",
   },
   section3Body3: {
-    ES: "Euskalia utiliza conexiones cifradas y minimiza la información enviada.",
-    EUS: "Euskaliak konexio enkriptatuak erabiltzen ditu eta bidaltzen den informazioa ahalik eta gehien murrizten du.",
-    EN: "Euskalia uses encrypted connections and minimizes the information sent.",
-    FR: "Euskalia utilise des connexions chiffrées et minimise les informations envoyées.",
+    ES: "Euskalia aplica medidas razonables para proteger las comunicaciones con estos proveedores (por ejemplo, usando conexiones cifradas HTTPS) y minimizar la cantidad de datos personales que se envían.",
+    EUS: "Euskaliak neurri arrazoizkoak aplikatzen ditu hornitzaile hauekin komunikazioak babesteko (adibidez, HTTPS konexio zifratuak erabiliz) eta bidaltzen diren datu pertsonalen kopurua minimizatzeko.",
+    EN: "Euskalia applies reasonable measures to protect communications with these providers (for example, using encrypted HTTPS connections) and to minimize the amount of personal data sent.",
+    FR: "Euskalia applique des mesures raisonnables pour protéger les communications avec ces fournisseurs (par exemple via des connexions HTTPS chiffrées) et minimiser la quantité de données personnelles envoyées.",
   },
+
   section4Title: {
     ES: "4. Recomendaciones de uso responsable",
     EUS: "4. Erabilera arduratsurako gomendioak",
-    EN: "4. Recommendations for responsible use",
+    EN: "4. Responsible use recommendations",
     FR: "4. Recommandations d’utilisation responsable",
   },
   section4Body: {
-    ES: "Para garantizar un uso seguro, sigue estas recomendaciones:",
-    EUS: "Erabilera segurua bermatzeko, jarraitu gomendio hauek:",
-    EN: "To ensure safe use, follow these recommendations:",
-    FR: "Pour garantir une utilisation sûre, suivez ces recommandations :",
+    ES: "Para usar Euskalia de forma segura y respetuosa con la privacidad, te recomendamos seguir estas pautas:",
+    EUS: "Euskalia modu seguruan eta pribatutasuna errespetatuz erabiltzeko, gomendio hauek jarraitzea gomendatzen dugu:",
+    EN: "To use Euskalia safely and with respect for privacy, we recommend following these guidelines:",
+    FR: "Pour utiliser Euskalia en toute sécurité et dans le respect de la vie privée, nous recommandons de suivre ces conseils :",
   },
   section4Li1: {
-    ES: "Evita datos personales identificables.",
-    EUS: "Saihestu datu pertsonal identifikagarriak.",
-    EN: "Avoid identifiable personal data.",
-    FR: "Évitez les données personnelles identifiables.",
+    ES: "Evita enviar datos personales identificables (nombres completos, direcciones, teléfonos, etc.) salvo que sea estrictamente necesario.",
+    EUS: "Saihestu datu pertsonal identifikagarriak bidaltzea (izen-abizenak, helbideak, telefonoak, etab.), behar-beharrezkoa ez bada.",
+    EN: "Avoid sending identifiable personal data (full names, addresses, phone numbers, etc.) unless strictly necessary.",
+    FR: "Évitez d’envoyer des données personnelles identifiables (noms complets, adresses, numéros de téléphone, etc.) sauf si cela est strictement nécessaire.",
   },
   section4Li2: {
-    ES: "No incluyas información sensible (salud, finanzas, ideología...).",
-    EUS: "Ez sartu informazio sentikorra (osasuna, finantzak, ideologia...).",
-    EN: "Do not include sensitive information (health, finances, ideology...).",
-    FR: "N’incluez pas d’informations sensibles (santé, finances, idéologie...).",
+    ES: "No incluyas información especialmente sensible (salud, ideología, datos financieros, menores de edad, etc.).",
+    EUS: "Ez sartu informazio bereziki sentikorra (osasuna, ideologia, finantza-datuak, adingabeak, etab.).",
+    EN: "Do not include particularly sensitive information (health, ideology, financial data, minors, etc.).",
+    FR: "N’incluez pas d’informations particulièrement sensibles (santé, idéologie, données financières, mineurs, etc.).",
   },
   section4Li3: {
-    ES: "Revisa siempre la respuesta antes de usarla en contextos importantes.",
-    EUS: "Beti berrikusi erantzuna erabilera garrantzitsuetan erabili aurretik.",
-    EN: "Always review the response before using it in important contexts.",
-    FR: "Vérifiez toujours la réponse avant de l’utiliser dans des contextes importants.",
+    ES: "Revisa siempre el resultado generado por la IA antes de utilizarlo en contextos importantes (trabajo, estudios, comunicaciones oficiales…).",
+    EUS: "Beti berrikusi IA-k sortutako emaitza, testuinguru garrantzitsuetan erabili aurretik (lana, ikasketak, komunikazio ofizialak…).",
+    EN: "Always review the AI-generated result before using it in important contexts (work, studies, official communications…).",
+    FR: "Vérifiez toujours le résultat généré par l’IA avant de l’utiliser dans des contextes importants (travail, études, communications officielles…).",
   },
   section4Li4: {
-    ES: "Respeta la ley y los derechos de terceros.",
-    EUS: "Errespetatu legea eta hirugarrenen eskubideak.",
-    EN: "Respect the law and third-party rights.",
-    FR: "Respectez la loi et les droits des tiers.",
+    ES: "Utiliza la herramienta respetando la legislación vigente y los derechos de terceros (propiedad intelectual, confidencialidad, etc.).",
+    EUS: "Erabili tresna indarreko legeria eta hirugarrenen eskubideak errespetatuz (jabetza intelektuala, konfidentzialtasuna, etab.).",
+    EN: "Use the tool in compliance with applicable law and third-party rights (intellectual property, confidentiality, etc.).",
+    FR: "Utilisez l’outil dans le respect de la législation en vigueur et des droits des tiers (propriété intellectuelle, confidentialité, etc.).",
   },
+
   section5Title: {
-    ES: "5. Relación con otras políticas",
-    EUS: "5. Beste politika batzuekin harremana",
-    EN: "5. Relationship with other policies",
-    FR: "5. Lien avec les autres politiques",
+    ES: "5. Ausencia de decisiones automatizadas",
+    EUS: "5. Erabaki automatizaturik ez",
+    EN: "5. No automated decision-making",
+    FR: "5. Absence de décisions automatisées",
   },
   section5Body: {
-    ES: "Esta información complementa la Política de Privacidad, el Aviso Legal y los Términos de Euskalia.",
-    EUS: "Informazio honek Pribatutasun Politika, Lege Oharra eta Euskaliaren Baldintzak osatzen ditu.",
-    EN: "This information complements the Privacy Policy, the Legal Notice and Euskalia’s Terms.",
-    FR: "Ces informations complètent la Politique de confidentialité, les Mentions légales et les Conditions d’Euskalia.",
+    ES: "Las herramientas de inteligencia artificial de Euskalia no realizan decisiones automatizadas con efectos legales ni elaboran perfiles de las personas usuarias. Los resultados tienen carácter asistencial y la persona usuaria mantiene el control sobre su uso.",
+    EUS: "Euskaliako adimen artifizialeko tresnek ez dute eragin juridikodun erabaki automatizaturik hartzen eta ez dute erabiltzaileen profilaketarik egiten. Emaitzek laguntza-izaera dute, eta erabiltzaileak bere erabileraren kontrola mantentzen du.",
+    EN: "Euskalia’s AI tools do not make automated decisions with legal effects and do not create user profiles. The outputs are assistive, and the user remains in control of how they are used.",
+    FR: "Les outils d’IA d’Euskalia ne prennent pas de décisions automatisées ayant des effets juridiques et n’effectuent pas de profilage des utilisateurs. Les résultats sont à titre d’assistance et l’utilisateur garde le contrôle de leur utilisation.",
   },
-  section5Body2: {
-    ES: "Cada proveedor dispone de sus propias políticas, que recomendamos consultar.",
-    EUS: "Hornitzaile bakoitzak bere politika propioak ditu; gomendagarria da horiek kontsultatzea.",
-    EN: "Each provider has its own policies, which we recommend consulting.",
-    FR: "Chaque fournisseur dispose de ses propres politiques, que nous recommandons de consulter.",
+
+  section6Title: {
+    ES: "6. Relación con la Política de Privacidad y otros documentos",
+    EUS: "6. Pribatutasun Politikarekin eta beste dokumentuekin lotura",
+    EN: "6. Relationship with other policies",
+    FR: "6. Lien avec les autres politiques",
   },
+  section6Body: {
+    ES: "Esta información sobre el uso de APIs de IA se complementa con la Política de Privacidad, la Política de Cookies, el Aviso Legal y los Términos y Condiciones de Euskalia. En caso de duda, debe interpretarse junto con el resto de documentos legales disponibles en el sitio web.",
+    EUS: "IA APIen erabilerari buruzko informazio hau Pribatutasun Politikarekin, Cookieen Politikarekin, Aviso Legalarekin eta Euskaliaren Termino eta Baldintzekin osatzen da. Zalantzarik izanez gero, webgunean dauden gainerako dokumentu legalekin batera interpretatu behar da.",
+    EN: "This information about AI API usage complements the Privacy Policy, Cookies Policy, Legal Notice and Terms & Conditions of Euskalia. If in doubt, it should be interpreted together with the other legal documents available on the website.",
+    FR: "Ces informations sur l’utilisation des APIs d’IA complètent la Politique de confidentialité, la Politique de cookies, les Mentions légales et les Conditions d’utilisation d’Euskalia. En cas de doute, elles doivent être interprétées conjointement avec les autres documents légaux disponibles sur le site.",
+  },
+  section6Body2: {
+    ES: "Además, cada proveedor de inteligencia artificial cuenta con sus propias políticas de privacidad y términos de servicio, que recomendamos consultar para conocer en detalle cómo tratan la información que procesan.",
+    EUS: "Gainera, adimen artifizialeko hornitzaile bakoitzak bere pribatutasun-politikak eta zerbitzu-baldintzak ditu; gomendatzen dugu kontsultatzea, prozesatzen duten informazioa nola tratatzen duten xehetasunez ezagutzeko.",
+    EN: "In addition, each AI provider has its own privacy policies and terms of service, which we recommend reviewing to understand how they process information in detail.",
+    FR: "De plus, chaque fournisseur d’IA dispose de ses propres politiques de confidentialité et conditions de service, que nous recommandons de consulter pour connaître en détail la manière dont ils traitent les informations.",
+  },
+
   lastUpdate: {
-    ES: "Esta información sobre el uso de APIs de IA está actualizada a fecha [________].",
-    EUS: "AA APIen erabilerari buruzko informazio hau [________] eguneratu da.",
-    EN: "This information about the use of AI APIs is updated as of [________].",
-    FR: "Ces informations sur l’utilisation des API d’IA sont à jour au [________].",
+    ES: "Esta información sobre el uso de APIs de IA está actualizada a fecha 2025-11-21.",
+    EUS: "IA APIen erabilerari buruzko informazio hau 2025-11-21ean eguneratua dago.",
+    EN: "This information about the use of AI APIs is updated as of 2025-11-21.",
+    FR: "Ces informations sur l’utilisation des APIs d’IA sont à jour au 2025-11-21.",
   },
 },
 
 
-
+////////////////////////////////////////////////////////////////
 ////////////////// POLÍTICA DE cookies /////////////////////////
-
+////////////////////////////////////////////////////////////////
 
   cookies_title: {
     ES: "Política de Cookies",
