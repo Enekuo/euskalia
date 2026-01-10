@@ -60,6 +60,12 @@ export const translations = {
     EN: "detected",
     FR: "détecté",
   },
+  stop: {
+    ES: "detener",
+    EUS: "gelditu",
+    EN: "stop",
+    FR: "arrêter",
+  },
 
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
     listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
