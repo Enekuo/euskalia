@@ -2007,214 +2007,214 @@ privacyPolicy: {
 ////////////////////////////////////////////////////////////////
 
 
-terms_title: {
-  ES: "Términos y Condiciones de Uso",
-  EUS: "Erabilera-baldintzak",
-  EN: "Terms and Conditions of Use",
-  FR: "Conditions d’utilisation",
+terms: { 
+  /* Título */
+  terms_title: {
+    ES: "Términos y Condiciones de Uso",
+    EUS: "Erabilera Baldintzak",
+    EN: "Terms and Conditions of Use",
+    FR: "Conditions Générales d’Utilisation",
+  },
+
+  /* 1. Objeto y aceptación */
+  terms_section1_title: {
+    ES: "1. Objeto y aceptación",
+    EUS: "1. Xedea eta onarpena",
+    EN: "1. Purpose and acceptance",
+    FR: "1. Objet et acceptation",
+  },
+  terms_section1_p1: {
+    ES: "Los presentes Términos y Condiciones regulan el acceso, la navegación y el uso de la plataforma Euskalia. El uso del sitio web implica la aceptación plena de estas condiciones por parte de la persona usuaria. Si no estás de acuerdo con ellas, deberás abstenerte de utilizar la plataforma.",
+    EUS: "Erabilera Baldintza hauek Euskalia plataformaren sarbidea, nabigazioa eta erabilera arautzen dituzte. Webgunea erabiltzeak baldintza hauek osorik onartzea dakar. Ados ez bazaude, plataformaren erabilerari uko egin beharko diozu.",
+    EN: "These Terms and Conditions govern access to, browsing of and use of the Euskalia platform. Use of the website implies full acceptance of these terms by the user. If you do not agree, you must refrain from using the platform.",
+    FR: "Les présentes Conditions Générales régissent l’accès, la navigation et l’utilisation de la plateforme Euskalia. L’utilisation du site implique l’acceptation pleine et entière de ces conditions. En cas de désaccord, vous devez vous abstenir d’utiliser la plateforme.",
+  },
+
+  /* 2. Identidad del responsable */
+  terms_section2_title: {
+    ES: "2. Identidad del responsable",
+    EUS: "2. Arduradunaren identitatea",
+    EN: "2. Identity of the controller",
+    FR: "2. Identité du responsable",
+  },
+  terms_section2_p1: {
+    ES: "El responsable de la plataforma es Euskalia (en adelante, el Prestador), accesible a través del dominio principal https://euskalia.ai. Los datos de contacto completos se encuentran disponibles en el Aviso Legal del sitio web.",
+    EUS: "Plataformaren arduraduna Euskalia da (aurrerantzean, Zerbitzu-emailea), https://euskalia.ai domeinu nagusiaren bidez eskuragarri. Harremanetarako datu osoak webguneko Lege Oharrean daude.",
+    EN: "The platform is operated by Euskalia (hereinafter, the Provider), accessible via the main domain https://euskalia.ai. Full contact details are available in the Legal Notice on the website.",
+    FR: "La plateforme est exploitée par Euskalia (ci-après, le Prestataire), accessible via le domaine principal https://euskalia.ai. Les coordonnées complètes figurent dans les Mentions légales du site.",
+  },
+
+  /* 3. Servicios ofrecidos */
+  terms_section3_title: {
+    ES: "3. Servicios ofrecidos",
+    EUS: "3. Eskainitako zerbitzuak",
+    EN: "3. Services provided",
+    FR: "3. Services proposés",
+  },
+  terms_section3_p1: {
+    ES: "Euskalia ofrece una plataforma digital que permite introducir textos, fragmentos de documentos o contenidos obtenidos a partir de enlaces para utilizar herramientas lingüísticas basadas en inteligencia artificial.",
+    EUS: "Euskaliak plataforma digital bat eskaintzen du, testuak, dokumentu-zatiak edo esteketatik lortutako edukiak sartzeko aukera ematen duena, adimen artifizialean oinarritutako hizkuntza-tresnak erabiltzeko.",
+    EN: "Euskalia offers a digital platform that allows users to enter texts, document excerpts or content obtained from links in order to use language tools based on artificial intelligence.",
+    FR: "Euskalia propose une plateforme numérique permettant d’introduire des textes, des extraits de documents ou des contenus issus de liens afin d’utiliser des outils linguistiques basés sur l’intelligence artificielle.",
+  },
+  terms_section3_p2: {
+    ES: "Euskalia podrá ofrecer acceso gratuito y uno o varios planes de pago con funcionalidades ampliadas, cuyas características se indicarán en la web en el momento de la contratación.",
+    EUS: "Euskaliak doako sarbidea eta ordainpeko plan bat edo gehiago eskaini ahal izango ditu, funtzionalitate zabalduarekin; horien ezaugarriak kontratazio-unean azalduko dira webgunean.",
+    EN: "Euskalia may offer free access as well as one or more paid plans with extended features, whose characteristics will be shown on the website at the time of subscription.",
+    FR: "Euskalia peut proposer un accès gratuit ainsi qu’un ou plusieurs plans payants avec des fonctionnalités étendues, dont les caractéristiques seront indiquées sur le site lors de la souscription.",
+  },
+
+  /* 4. Registro de usuarios */
+  terms_section4_title: {
+    ES: "4. Registro de usuarios",
+    EUS: "4. Erabiltzaileen erregistroa",
+    EN: "4. User registration",
+    FR: "4. Inscription des utilisateurs",
+  },
+  terms_section4_p1: {
+    ES: "Para contratar planes de pago, la persona usuaria deberá registrarse proporcionando información veraz y actualizada. La cuenta es personal e intransferible, y la persona usuaria es responsable de las actividades realizadas desde ella.",
+    EUS: "Ordainpeko planak kontratatzeko, erabiltzaileak informazio egiazkoa eta eguneratua eman beharko du. Kontua pertsonala eta besterenezina da, eta bertatik egindako jardueren erantzukizuna erabiltzailearena da.",
+    EN: "To subscribe to paid plans, users must register by providing accurate and up-to-date information. The account is personal and non-transferable, and users are responsible for activities carried out through it.",
+    FR: "Pour souscrire à des plans payants, l’utilisateur doit s’inscrire en fournissant des informations exactes et à jour. Le compte est personnel et non transférable, et l’utilisateur est responsable des activités effectuées depuis celui-ci.",
+  },
+
+  /* 5. Condiciones económicas */
+  terms_section5_title: {
+    ES: "5. Condiciones económicas y facturación",
+    EUS: "5. Baldintza ekonomikoak eta fakturazioa",
+    EN: "5. Pricing and billing",
+    FR: "5. Conditions financières et facturation",
+  },
+  terms_section5_p1: {
+    ES: "El precio de cada plan se mostrará antes de la contratación. Las suscripciones se renuevan automáticamente salvo cancelación previa por parte de la persona usuaria. En caso de impago, Euskalia podrá suspender el acceso al servicio.",
+    EUS: "Plan bakoitzaren prezioa kontratazioaren aurretik erakutsiko da. Harpidetzak automatikoki berritzen dira, erabiltzaileak aurrez ezeztatzen ez baditu. Ez-ordaintze kasuan, Euskaliak zerbitzurako sarbidea eten dezake.",
+    EN: "The price of each plan will be shown before subscription. Subscriptions renew automatically unless cancelled by the user. In case of non-payment, Euskalia may suspend access to the service.",
+    FR: "Le prix de chaque plan sera affiché avant la souscription. Les abonnements sont renouvelés automatiquement sauf résiliation préalable par l’utilisateur. En cas de non-paiement, Euskalia peut suspendre l’accès au service.",
+  },
+
+  /* 6. Uso permitido */
+  terms_section6_title: {
+    ES: "6. Uso permitido y prohibido",
+    EUS: "6. Erabilera baimendua eta debekatua",
+    EN: "6. Permitted and prohibited use",
+    FR: "6. Utilisation autorisée et interdite",
+  },
+  terms_section6_p1: {
+    ES: "La persona usuaria se compromete a utilizar Euskalia conforme a la ley, la buena fe y el orden público. En particular, queda prohibido:",
+    EUS: "Erabiltzaileak Euskalia legearekin, fede onarekin eta ordena publikoarekin bat etorriz erabiltzeko konpromisoa hartzen du. Bereziki, debekatuta dago:",
+    EN: "Users agree to use Euskalia in accordance with the law, good faith and public order. In particular, the following is prohibited:",
+    FR: "L’utilisateur s’engage à utiliser Euskalia conformément à la loi, à la bonne foi et à l’ordre public. En particulier, il est interdit de :",
+  },
+  terms_section6_li1: {
+    ES: "Crear o difundir contenidos ilícitos, ofensivos, violentos o que vulneren derechos de terceros.",
+    EUS: "Eduki ilegalak, iraingarriak, bortitzak edo hirugarrenen eskubideak urratzen dituztenak sortzea edo zabaltzea.",
+    EN: "Create or distribute unlawful, offensive or harmful content that infringes third-party rights.",
+    FR: "Créer ou diffuser des contenus illicites, offensants, violents ou portant atteinte aux droits de tiers.",
+  },
+  terms_section6_li2: {
+    ES: "Utilizar la plataforma con fines de spam, fraude o manipulación de datos.",
+    EUS: "Plataforma spam-erako, iruzurrerako edo datuen manipulaziorako erabiltzea.",
+    EN: "Use the platform for spam, fraud or data manipulation purposes.",
+    FR: "Utiliser la plateforme à des fins de spam, de fraude ou de manipulation de données.",
+  },
+  terms_section6_li3: {
+    ES: "Intentar dañar, alterar o sobrecargar los sistemas o medidas de seguridad de Euskalia.",
+    EUS: "Euskaliaren sistemak edo segurtasun-neurriak kaltetzen, aldatzen edo gainkargatzen saiatzea.",
+    EN: "Attempt to damage, alter or overload Euskalia’s systems or security measures.",
+    FR: "Tenter d’endommager, de modifier ou de surcharger les systèmes ou mesures de sécurité d’Euskalia.",
+  },
+  terms_section6_p2: {
+    ES: "El incumplimiento de estas normas podrá dar lugar a la suspensión o cancelación inmediata de la cuenta, sin derecho a reembolso.",
+    EUS: "Arau hauek ez betetzeak kontua berehala etetea edo baliogabetzea ekar dezake, itzulketarako eskubiderik gabe.",
+    EN: "Failure to comply with these rules may result in immediate suspension or termination of the account without refund.",
+    FR: "Le non-respect de ces règles peut entraîner la suspension ou la résiliation immédiate du compte, sans droit à remboursement.",
+  },
+
+  /* 7. Propiedad intelectual */
+  terms_section7_title: {
+    ES: "7. Propiedad intelectual",
+    EUS: "7. Jabetza intelektuala",
+    EN: "7. Intellectual property",
+    FR: "7. Propriété intellectuelle",
+  },
+  terms_section7_p1: {
+    ES: "Todos los elementos de Euskalia son propiedad del Prestador o cuentan con las licencias correspondientes. El uso de la plataforma no otorga ningún derecho de propiedad intelectual a la persona usuaria.",
+    EUS: "Euskaliako elementu guztiak Zerbitzu-emailearen jabetzakoak dira edo dagokien lizentzia dute. Plataformaren erabilerak ez dio erabiltzaileari jabetza intelektualeko eskubiderik ematen.",
+    EN: "All elements of Euskalia are owned by the Provider or licensed accordingly. Use of the platform does not grant users any intellectual property rights.",
+    FR: "Tous les éléments d’Euskalia sont la propriété du Prestataire ou font l’objet de licences appropriées. L’utilisation de la plateforme ne confère aucun droit de propriété intellectuelle à l’utilisateur.",
+  },
+
+  /* 8. Responsabilidad */
+  terms_section8_title: {
+    ES: "8. Responsabilidad",
+    EUS: "8. Erantzukizuna",
+    EN: "8. Liability",
+    FR: "8. Responsabilité",
+  },
+  terms_section8_p1: {
+    ES: "Euskalia no garantiza la disponibilidad continua del servicio, aunque adoptará medidas razonables para mantener su funcionamiento.",
+    EUS: "Euskaliak ez du zerbitzuaren etengabeko erabilgarritasuna bermatzen, baina funtzionamendua mantentzeko neurri arrazoizkoak hartuko ditu.",
+    EN: "Euskalia does not guarantee uninterrupted availability of the service, although reasonable measures will be taken to maintain its operation.",
+    FR: "Euskalia ne garantit pas une disponibilité continue du service, bien qu’elle prenne des mesures raisonnables pour en assurer le fonctionnement.",
+  },
+  terms_section8_p2: {
+    ES: "Los resultados generados por inteligencia artificial tienen carácter orientativo y la persona usuaria es responsable de su uso final.",
+    EUS: "Adimen artifizialak sortutako emaitzek orientazio-izaera dute, eta azken erabileraren erantzukizuna erabiltzailearena da.",
+    EN: "Results generated by artificial intelligence are indicative only, and the user is responsible for their final use.",
+    FR: "Les résultats générés par l’intelligence artificielle ont un caractère indicatif et l’utilisateur est responsable de leur utilisation finale.",
+  },
+
+  /* 9. Cancelación */
+  terms_section9_title: {
+    ES: "9. Cancelación y desistimiento",
+    EUS: "9. Ezeztapena eta atzera egiteko eskubidea",
+    EN: "9. Cancellation and withdrawal",
+    FR: "9. Résiliation et droit de rétractation",
+  },
+  terms_section9_p1: {
+    ES: "La persona usuaria podrá cancelar su suscripción en cualquier momento. La cancelación evitará futuras renovaciones, manteniéndose el acceso hasta el final del periodo ya abonado, conforme a la normativa vigente.",
+    EUS: "Erabiltzaileak edozein unetan ezeztatu ahal izango du harpidetza. Ezeztapenak etorkizuneko berritzeak saihestuko ditu, ordaindutako epea amaitu arte sarbidea mantenduz, indarreko araudiaren arabera.",
+    EN: "Users may cancel their subscription at any time. Cancellation prevents future renewals, while access remains available until the end of the paid period, in accordance with applicable law.",
+    FR: "L’utilisateur peut résilier son abonnement à tout moment. La résiliation empêche les renouvellements futurs, l’accès restant disponible jusqu’à la fin de la période payée, conformément à la législation applicable.",
+  },
+
+  /* 10. Modificaciones */
+  terms_section10_title: {
+    ES: "10. Modificaciones",
+    EUS: "10. Aldaketak",
+    EN: "10. Modifications",
+    FR: "10. Modifications",
+  },
+  terms_section10_p1: {
+    ES: "Euskalia se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Las modificaciones serán publicadas en el sitio web.",
+    EUS: "Euskaliak Erabilera Baldintza hauek edozein unetan aldatzeko eskubidea gordetzen du. Aldaketak webgunean argitaratuko dira.",
+    EN: "Euskalia reserves the right to modify these Terms and Conditions at any time. Any changes will be published on the website.",
+    FR: "Euskalia se réserve le droit de modifier ces Conditions Générales à tout moment. Les modifications seront publiées sur le site.",
+  },
+
+  /* 11. Legislación */
+  terms_section11_title: {
+    ES: "11. Legislación aplicable y jurisdicción",
+    EUS: "11. Aplikatu beharreko legeria eta jurisdikzioa",
+    EN: "11. Applicable law and jurisdiction",
+    FR: "11. Droit applicable et juridiction",
+  },
+  terms_section11_p1: {
+    ES: "Los presentes Términos y Condiciones se rigen por la legislación española. En caso de conflicto, las partes se someterán a los Juzgados y Tribunales que correspondan conforme a la normativa aplicable.",
+    EUS: "Erabilera Baldintza hauek Espainiako legeria aplikagarriaren mende daude. Gatazka kasuan, alderdiek dagokien epaitegi eta auzitegien menpe jarriko dira.",
+    EN: "These Terms and Conditions are governed by Spanish law. In the event of a dispute, the parties shall submit to the competent courts in accordance with applicable regulations.",
+    FR: "Les présentes Conditions Générales sont régies par le droit espagnol. En cas de litige, les parties se soumettront aux juridictions compétentes conformément à la réglementation applicable.",
+  },
+
+  /* Fecha */
+  terms_footer_note: {
+    ES: "Estos Términos y Condiciones están actualizados a fecha 2025-11-21.",
+    EUS: "Erabilera Baldintza hauek 2025-11-21ean eguneratuak daude.",
+    EN: "These Terms and Conditions are updated as of 2025-11-21.",
+    FR: "Ces Conditions Générales sont à jour au 2025-11-21.",
+  },
 },
 
-terms_section1_title: {
-  ES: "1. Objeto y aceptación",
-  EUS: "1. Xedea eta onarpena",
-  EN: "1. Purpose and acceptance",
-  FR: "1. Objet et acceptation",
-},
-
-terms_section1_p1: {
-  ES: "Los presentes Términos y Condiciones regulan el acceso, navegación y uso de la plataforma Euskalia, así como la contratación de los servicios ofrecidos a través de la misma. El uso del sitio web implica la aceptación plena de estas condiciones por parte de la persona usuaria. En caso de no estar de acuerdo, deberá abstenerse de utilizar la plataforma.",
-  EUS: "Erabilera-baldintza hauek Euskalia plataformara sartzea, nabigatzea eta hura erabiltzea arautzen dute, baita bertan eskaintzen diren zerbitzuen kontratazioa ere. Webgunea erabiltzeak baldintza hauek osorik onartzea dakar. Ados ez badago, erabiltzaileak plataformaren erabilerari uko egin beharko dio.",
-  EN: "These Terms and Conditions govern access to, browsing and use of the Euskalia platform, as well as the contracting of the services offered through it. Use of the website implies full acceptance of these conditions by the user. If you do not agree, you must refrain from using the platform.",
-  FR: "Les présentes Conditions régissent l’accès, la navigation et l’utilisation de la plateforme Euskalia, ainsi que la souscription des services qui y sont proposés. L’utilisation du site implique l’acceptation pleine et entière de ces conditions. En cas de désaccord, l’utilisateur doit s’abstenir d’utiliser la plateforme.",
-},
-
-terms_section2_title: {
-  ES: "2. Identidad del responsable",
-  EUS: "2. Arduradunaren identitatea",
-  EN: "2. Controller identity",
-  FR: "2. Identité du responsable",
-},
-
-terms_section2_p1: {
-  ES: "El responsable de la plataforma es Euskalia, en adelante \"el Prestador\", accesible a través del dominio principal https://euskalia.ai.",
-  EUS: "Plataformaren arduraduna Euskalia da, aurrerantzean \"Zerbitzu-emailea\", https://euskalia.ai domeinu nagusiaren bidez eskuragarria.",
-  EN: "The platform is operated by Euskalia, hereinafter the “Provider”, accessible through the main domain https://euskalia.ai.",
-  FR: "La plateforme est exploitée par Euskalia, ci-après le « Prestataire », accessible via le domaine principal https://euskalia.ai.",
-},
-
-terms_section3_title: {
-  ES: "3. Servicios ofrecidos",
-  EUS: "3. Eskaintzen diren zerbitzuak",
-  EN: "3. Services offered",
-  FR: "3. Services proposés",
-},
-
-terms_section3_p1: {
-  ES: "Euskalia permite a las personas usuarias introducir textos, documentos o enlaces en euskera, castellano eta beste hizkuntza batzuetan para obtener traducciones y resúmenes generados mediante inteligencia artificial.",
-  EUS: "Euskaliak aukera ematen die erabiltzaileei testuak, dokumentuak edo estekak sartzeko, euskaraz, gaztelaniaz eta beste hizkuntza batzuetan, eta horien itzulpenak eta laburpenak lortzeko adimen artifiziala erabiliz.",
-  EN: "Euskalia allows users to input texts, documents or links in Basque, Spanish eta beste hizkuntza batzuetan to obtain translations and summaries generated using artificial intelligence.",
-  FR: "Euskalia permet aux utilisateurs de saisir des textes, des documents ou des liens en basque, espagnol eta beste hizkuntza batzuetan afin d’obtenir des traductions et des résumés générés au moyen de l’intelligence artificielle.",
-},
-
-terms_section3_p2: {
-  ES: "Podrá existir un acceso gratuito y uno o varios planes de pago con prestaciones ampliadas. Los planes de pago se contratan mediante suscripción con renovación automática, salvo cancelación previa por parte de la persona usuaria.",
-  EUS: "Sarbide mota desberdinak izan daitezke: doako sarbidea eta ezaugarri zabalduak dituzten ordainpeko planak. Ordainpeko planak harpidetzaren bidez kontratatzen dira eta automatikoki berritzen dira, erabiltzaileak aldez aurretik ezeztatzen ez baditu.",
-  EN: "There may be free access and one or more paid plans with extended features. Paid plans are contracted through a subscription with automatic renewal, unless cancelled in advance by the user.",
-  FR: "Un accès gratuit peut exister, ainsi qu’un ou plusieurs plans payants avec des fonctionnalités étendues. Les plans payants sont souscrits via un abonnement avec renouvellement automatique, sauf résiliation préalable par l’utilisateur.",
-},
-
-terms_section4_title: {
-  ES: "4. Registro de usuarios",
-  EUS: "4. Erabiltzaileen erregistroa",
-  EN: "4. User registration",
-  FR: "4. Inscription des utilisateurs",
-},
-
-terms_section4_p1: {
-  ES: "Para contratar cualquiera de los planes de pago, la persona usuaria deberá registrarse facilitando información veraz y actualizada. La cuenta es personal e intransferible.",
-  EUS: "Ordainpeko planetako edozein kontratatzeko, erabiltzaileak erregistratu beharko du, egiazko eta eguneratutako informazioa emanez. Kontua pertsonala eta besterenezinakoa da.",
-  EN: "To subscribe to any paid plan, the user must register by providing truthful and up-to-date information. The account is personal and non-transferable.",
-  FR: "Pour souscrire à l’un des plans payants, l’utilisateur doit s’inscrire en fournissant des informations exactes et à jour. Le compte est personnel et non transférable.",
-},
-
-terms_section5_title: {
-  ES: "5. Condiciones económicas y facturación",
-  EUS: "5. Baldintza ekonomikoak eta fakturazioa",
-  EN: "5. Pricing and billing",
-  FR: "5. Conditions économiques et facturation",
-},
-
-terms_section5_p1: {
-  ES: "El precio de cada plan de pago se mostrará en el momento de la contratación. Los pagos se realizan mediante los métodos habilitados en la web. Las suscripciones se renuevan automáticamente cada periodo de facturación, salvo que la persona usuaria cancele su plan antes de la fecha de renovación. En caso de impago, el Prestador podrá suspender o cancelar el acceso al servicio.",
-  EUS: "Ordainpeko plan bakoitzaren prezioa kontratazio unean erakutsiko da. Ordainketak webgunean gaitutako metodoen bidez egingo dira. Harpidetzak automatikoki berritzen dira fakturazio epe bakoitzean, erabiltzaileak berritze-data baino lehen plana ezeztatzen ez badu. Ordainketarik ez badago, Zerbitzu-emaileak zerbitzua eteteko edo bertan behera uzteko eskubidea izango du.",
-  EN: "The price of each paid plan will be displayed at the time of subscription. Payments are made using the methods enabled on the website. Subscriptions renew automatically each billing period unless the user cancels before the renewal date. In case of non-payment, the Provider may suspend or cancel access to the service.",
-  FR: "Le prix de chaque plan payant est affiché au moment de la souscription. Les paiements sont effectués via les moyens disponibles sur le site. Les abonnements se renouvellent automatiquement à chaque période de facturation, sauf résiliation avant la date de renouvellement. En cas de non-paiement, le Prestataire peut suspendre ou annuler l’accès au service.",
-},
-
-terms_section6_title: {
-  ES: "6. Uso permitido y prohibido",
-  EUS: "6. Onartutako eta debekatutako erabilera",
-  EN: "6. Permitted and prohibited use",
-  FR: "6. Usage autorisé et interdit",
-},
-
-terms_section6_p1: {
-  ES: "La persona usuaria se compromete a utilizar Euskalia conforme a la ley, la moral y el orden público. En particular, queda prohibido:",
-  EUS: "Erabiltzaileak Euskalia legearen, moralaren eta ordena publikoaren arabera erabiltzeko konpromisoa hartzen du. Bereziki, debekatuta dago:",
-  EN: "The user undertakes to use Euskalia in accordance with the law, morality and public order. In particular, it is prohibited to:",
-  FR: "L’utilisateur s’engage à utiliser Euskalia conformément à la loi, à la morale et à l’ordre public. Il est notamment interdit de :",
-},
-
-terms_section6_li1: {
-  ES: "Utilizar la plataforma para crear, difundir o almacenar contenidos ilícitos, difamatorios, ofensivos, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak.",
-  EUS: "Plataforma edukirik ez-legala, iraingarria, bortitza, diskriminatzailea edo hirugarrenen eskubideen aurkakoa sortu, zabaldu edo gordetzeko erabiltzea.",
-  EN: "Use the platform to create, distribute or store unlawful, defamatory, offensive, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak content.",
-  FR: "Utiliser la plateforme pour créer, diffuser ou stocker des contenus illicites, diffamatoires, offensants, bortitzak, diskriminatzaileak edo hirugarrenen eskubideen aurkakoak.",
-},
-
-terms_section6_li2: {
-  ES: "Utilizar la plataforma con fines de spam, fraude o manipulación de datos.",
-  EUS: "Plataforma spam egiteko, iruzurra burutzeko edo datuak modu desegokian manipulatzeko erabiltzea.",
-  EN: "Use the platform for spam, fraud or data manipulation purposes.",
-  FR: "Utiliser la plateforme à des fins de spam, de fraude ou de manipulation de données.",
-},
-
-terms_section6_li3: {
-  ES: "Intentar kaltetzea, aldatzea edo gainkargatzea Euskaliaren sistemak edo segurtasun-neurriak.",
-  EUS: "Euskaliaren sistemak edo segurtasun-neurriak kaltetzen, aldatzen edo gainkargatzen saiatzea.",
-  EN: "Attempt to damage, alter or overload Euskalia’s systems or security measures.",
-  FR: "Tenter d’endommager, de modifier ou de surcharger les systèmes d’Euskalia ou ses mesures de sécurité.",
-},
-
-terms_section6_p2: {
-  ES: "El incumplimiento de estas obligaciones podrá dar lugar a la suspensión inmediata de la cuenta sin derecho a reembolso.",
-  EUS: "Baldintza hauek ez betetzeak kontua berehala etetea ekar dezake, inolako itzulketarik egiteko eskubiderik gabe.",
-  EN: "Failure to comply with these obligations may lead to immediate suspension of the account with no right to a refund.",
-  FR: "Le non-respect de ces obligations peut entraîner la suspension immédiate du compte, sans droit à remboursement.",
-},
-
-terms_section7_title: {
-  ES: "7. Propiedad intelectual",
-  EUS: "7. Jabetza intelektuala",
-  EN: "7. Intellectual property",
-  FR: "7. Propriété intellectuelle",
-},
-
-terms_section7_p1: {
-  ES: "Todos los elementos que conforman Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) son propiedad del Prestador o cuentan con las licencias correspondientes. El uso de la plataforma no otorga a la persona usuaria ningún derecho de propiedad intelectual sobre dichos elementos.",
-  EUS: "Euskalia osatzen duten elementu guztiak (kodea, diseinua, testuak, sortutako audioak, logotipoa eta abar) Zerbitzu-emailearen jabetzakoak dira edo dagokien lizentzia dute. Plataformaren erabilerak ez dio erabiltzaileari jabetza intelektualeko eskubiderik ematen elementu horien gainean.",
-  EN: "All elements that make up Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) are owned by the Provider or used under the corresponding licenses. Use of the platform does not grant the user any intellectual property rights over these elements.",
-  FR: "Tous les éléments composant Euskalia (kodea, diseinua, testuak, sortutako audioak, logotipoa, eta abar) sont la propriété du Prestataire ou disposent des licences correspondantes. L’utilisation de la plateforme ne confère aucun droit de propriété intellectuelle à l’utilisateur sur ces éléments.",
-},
-
-terms_section8_title: {
-  ES: "8. Responsabilidad",
-  EUS: "8. Erantzukizuna",
-  EN: "8. Liability",
-  FR: "8. Responsabilité",
-},
-
-terms_section8_p1: {
-  ES: "Euskalia no garantiza la disponibilidad continua de la plataforma, aunque adoptará medidas razonables para asegurar un servicio estable.",
-  EUS: "Euskaliak ez du bermatzen plataformaren etengabeko erabilgarritasuna, nahiz eta zerbitzu egonkorra eskaintzeko neurri arrazoizkoak hartuko diren.",
-  EN: "Euskalia does not guarantee continuous availability of the platform, although it will take reasonable measures to ensure a stable service.",
-  FR: "Euskalia ne garantit pas la disponibilité continue de la plateforme, bien qu’elle adopte des mesures raisonnables pour assurer un service stable.",
-},
-
-terms_section8_p2: {
-  ES: "El Prestador no se responsabiliza del uso indebido de los textos, itzulpenak o laburpenak generados por la persona usuaria, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
-  EUS: "Zerbitzu-emailea ez da erantzule izango erabiltzaileak sortutako testu, itzulpen edo laburpenen erabilera desegokiaren aurrean, eta erabiltzailea izango da plataforman sartzen dituen eduki, testu eta fitxategien erantzule bakarra.",
-  EN: "The Provider is not responsible for improper use of the texts, itzulpenak or laburpenak generated by the user, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
-  FR: "Le Prestataire n’est pas responsable de l’utilisation inappropriée des textes, itzulpenak ou laburpenak générés par l’utilisateur, eta erabiltzaileak sartzen dituen eduki, testu edo fitxategien erantzule bakarra izango da.",
-},
-
-terms_section9_title: {
-  ES: "9. Cancelación y desistimiento",
-  EUS: "9. Baliogabetzea eta atzera egitea",
-  EN: "9. Cancellation and withdrawal",
-  FR: "9. Résiliation et rétractation",
-},
-
-terms_section9_p1: {
-  ES: "La persona usuaria podrá cancelar su suscripción en cualquier momento desde su cuenta. La cancelación evitará renovaciones futuras, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
-  EUS: "Erabiltzaileak bere harpidetza edozein unetan baliogabetu ahal izango du bere kontutik. Baliogabetzeak etorkizuneko berritzeak ekidinen ditu, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeengatik, legeak kontrakoa agintzen ez badu.",
-  EN: "The user may cancel the subscription at any time from their account. Cancellation will prevent future renewals, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
-  FR: "L’utilisateur peut résilier son abonnement à tout moment depuis son compte. La résiliation empêchera les renouvellements futurs, baina ez da itzulketarik egingo dagoeneko hasitako fakturazio epeei dagokienez, legez kontrakoa ez bada behintzat.",
-},
-
-terms_section10_title: {
-  ES: "10. Modificaciones",
-  EUS: "10. Aldaketak",
-  EN: "10. Changes",
-  FR: "10. Modifications",
-},
-
-terms_section10_p1: {
-  ES: "Euskalia se reserva el derecho de modificar en cualquier momento los presentes Términos y Condiciones. Las modificaciones se publicarán en el sitio web y serán aplicables desde el momento de su publicación.",
-  EUS: "Euskaliak eskubidea du erabilera-baldintza hauek edozein unetan aldatzeko. Aldaketak webgunean argitaratuko dira eta argitaratzen diren unetik aurrera izango dira aplikagarriak.",
-  EN: "Euskalia reserves the right to modify these Terms and Conditions at any time. Changes will be published on the website and will apply from the time of publication.",
-  FR: "Euskalia se réserve le droit de modifier à tout moment les présentes Conditions. Les modifications seront publiées sur le site et seront applicables dès leur publication.",
-},
-
-terms_section11_title: {
-  ES: "11. Legislación aplicable y jurisdicción",
-  EUS: "11. Aplikatu beharreko legeria eta jurisdikzioa",
-  EN: "11. Applicable law and jurisdiction",
-  FR: "11. Droit applicable et juridiction",
-},
-
-terms_section11_p1: {
-  ES: "Los presentes Términos y Condiciones se rigen por la legislación española. En caso de conflicto, las partes se someterán a los Juzgados y Tribunales que correspondan conforme a la normativa aplicable.",
-  EUS: "Erabilera-baldintza hauek Espainiako legeriarekin bat etorriz arautzen dira. Gatazkarik izanez gero, alderdiak aplikatu beharreko araudiaren arabera dagokien epaitegi eta auzitegien jurisdikzioari men egingo diote.",
-  EN: "These Terms and Conditions are governed by Spanish law. In the event of a dispute, the parties submit to the Courts and Tribunals that correspond in accordance with applicable regulations.",
-  FR: "Les présentes Conditions sont régies par le droit espagnol. En cas de litige, les parties se soumettront aux tribunaux compétents conformément à la réglementation applicable.",
-},
-terms_footer_note: {
-  ES: "Estos Términos y Condiciones están actualizados a fecha [__________].",
-  EUS: "Erabilera-baldintza hauek eguneratuta daude honako data honetan: [__________].",
-  EN: "These Terms and Conditions are updated as of [__________].",
-  FR: "Ces conditions d’utilisation sont à jour au [__________].",
-},
 
 ////////////////////////////////////////////////////////////////
 //////////////////   USO DE APIS DE IA   ///////////////////////
