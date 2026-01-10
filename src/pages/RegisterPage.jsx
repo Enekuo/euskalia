@@ -10,6 +10,7 @@ export default function RegisterPage() {
       <header className="px-8 py-6 flex items-center justify-between">
         <Link
           to="/"
+          tabIndex={-1}
           className="font-bold text-xl text-slate-800 hover:opacity-80 transition-opacity"
         >
           Euskalia

@@ -46,6 +46,7 @@ export default function AuthPage() {
       >
         <Link
           to="/"
+          tabIndex={-1}
           style={{
             fontSize: "18px",
             fontWeight: "600",
