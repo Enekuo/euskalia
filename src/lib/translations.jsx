@@ -2006,8 +2006,6 @@ privacyPolicy: {
 ////////////////// TÉRMINOS Y CONDICIONES //////////////////////
 ////////////////////////////////////////////////////////////////
 
-
-terms: { 
   /* Título */
   terms_title: {
     ES: "Términos y Condiciones de Uso",
@@ -2213,7 +2211,7 @@ terms: {
     EN: "These Terms and Conditions are updated as of 2025-11-21.",
     FR: "Ces Conditions Générales sont à jour au 2025-11-21.",
   },
-},
+
 
 
 ////////////////////////////////////////////////////////////////
