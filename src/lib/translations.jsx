@@ -1754,10 +1754,10 @@ legal_notice_section10_contact_email: {
 
 /* Footer */
 legal_notice_footer_note: {
-  ES: "Este aviso legal está actualizado a fecha: 09/01/2026.",
-  EUS: "Lege-ohar hau honako data honetan eguneratua dago: 2026/01/09.",
-  EN: "This legal notice was last updated on: 09/01/2026.",
-  FR: "Ces mentions légales ont été mises à jour le : 09/01/2026.",
+  ES: "Este aviso legal está actualizado a fecha: 09-01-2026.",
+  EUS: "Lege-ohar hau honako data honetan eguneratua dago: 2026-01-09.",
+  EN: "This legal notice was last updated on: 09-01-2026.",
+  FR: "Ces mentions légales ont été mises à jour le : 09-01-2026.",
 },
 
 ////////////////////////////////////////////////////////////////
@@ -2206,10 +2206,10 @@ privacyPolicy: {
 
   /* Fecha */
   terms_footer_note: {
-    ES: "Estos Términos y Condiciones están actualizados a fecha 2025-11-21.",
-    EUS: "Erabilera Baldintza hauek 2025-11-21ean eguneratuak daude.",
-    EN: "These Terms and Conditions are updated as of 2025-11-21.",
-    FR: "Ces Conditions Générales sont à jour au 2025-11-21.",
+    ES: "Estos Términos y Condiciones están actualizados a fecha 09-01-2026.",
+    EUS: "Erabilera Baldintza hauek 2026-01-09an eguneratuak daude.",
+    EN: "These Terms and Conditions are updated as of 09-01-2026.",
+    FR: "Ces Conditions Générales sont à jour au 09-01-2026.",
   },
 
 
