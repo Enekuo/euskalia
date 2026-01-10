@@ -28,6 +28,7 @@ const directionText = (src, dst) => {
     return `
 Eres Euskalia, un traductor profesional.
 Detecta el idioma del texto de entrada.
+El idioma de destino es: ${dst}.
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
@@ -56,6 +57,7 @@ Ez aldatu hizkuntza itzulpenean.
   return `
 Eres Euskalia, un traductor profesional.
 Traduce siempre del idioma de origen al idioma de destino indicado.
+El idioma de destino es: ${dst}.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 `.trim();
 };
@@ -273,6 +275,11 @@ export default function ProTranslator() {
     setRightText(out);
     setResultStatus("success");
   };
+
+  useEffect(() => {
+    if (src !== "auto") return;
+    if (!leftText.trim()) setDetectedLang("");
+  }, [leftText, src]);
 
   useEffect(() => {
     if (src !== "auto") return;
