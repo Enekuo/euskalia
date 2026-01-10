@@ -28,7 +28,6 @@ const directionText = (src, dst) => {
     return `
 Eres Euskalia, un traductor profesional.
 Detecta el idioma del texto de entrada.
-El idioma de destino es: ${dst}.
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
@@ -57,7 +56,6 @@ Ez aldatu hizkuntza itzulpenean.
   return `
 Eres Euskalia, un traductor profesional.
 Traduce siempre del idioma de origen al idioma de destino indicado.
-El idioma de destino es: ${dst}.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 `.trim();
 };
@@ -275,11 +273,6 @@ export default function ProTranslator() {
     setRightText(out);
     setResultStatus("success");
   };
-
-  useEffect(() => {
-    if (src !== "auto") return;
-    if (!leftText.trim()) setDetectedLang("");
-  }, [leftText, src]);
 
   useEffect(() => {
     if (src !== "auto") return;
@@ -647,6 +640,22 @@ export default function ProTranslator() {
     setSpeaking(false);
   };
 
+  const ttsLocaleFromDst = (dst) => {
+    if (dst === "eus") return "eu-ES";
+    if (dst === "es") return "es-ES";
+    if (dst === "en") return "en-US";
+    if (dst === "fr") return "fr-FR";
+    return "en-US";
+  };
+
+  const ttsInstructionsFromDst = (dst) => {
+    if (dst === "eus") return "Read this text in Basque (Euskara).";
+    if (dst === "es") return "Read this text in Spanish (Spain).";
+    if (dst === "en") return "Read this text in English (US).";
+    if (dst === "fr") return "Read this text in French (France).";
+    return "Read this text naturally.";
+  };
+
   const handleSpeakToggle = async () => {
     if (speaking) {
       stopPlayback();
@@ -668,6 +677,9 @@ export default function ProTranslator() {
     ttsAbortRef.current = ctrl;
 
     try {
+      const locale = ttsLocaleFromDst(dst);
+      const instructions = ttsInstructionsFromDst(dst);
+
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -676,6 +688,8 @@ export default function ProTranslator() {
           text,
           voice: "alloy",
           format: "wav",
+          locale,
+          instructions,
         }),
       });
 
