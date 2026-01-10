@@ -1755,7 +1755,7 @@ legal_notice_section10_contact_email: {
 /* Footer */
 legal_notice_footer_note: {
   ES: "Este aviso legal está actualizado a fecha: 09/01/2026.",
-  EUS: "Lege-ohar hau eguneratuta dago honako data honetan: 2026/01/09.",
+  EUS: "Lege-ohar hau honako data honetan eguneratua dago: 2026/01/09.",
   EN: "This legal notice was last updated on: 09/01/2026.",
   FR: "Ces mentions légales ont été mises à jour le : 09/01/2026.",
 },
@@ -1994,7 +1994,7 @@ privacyPolicy: {
 
   footerNote: {
     ES: "Esta Política de Privacidad está actualizada a fecha 09-01-2026.",
-    EUS: "Pribatutasun-politika hau eguneratuta dago honako data honetan: 2026-01-09.",
+    EUS: "Pribatutasun-politika hau honako data honetan eguneratua dago: 2026-01-09.",
     EN: "This Privacy Policy is updated as of 09-01-2026.",
     FR: "Cette Politique de confidentialité est à jour au 09-01-2026.",
   },
@@ -2489,7 +2489,7 @@ aiApiUsage: {
 
   cookies_last_update: {
     ES: "Esta Política de Cookies está actualizada a fecha 09-11-2026.",
-    EUS: "Cookieen Politika hau eguneratuta dago 2026-11-09.",
+    EUS: "Cookieen Politika 2026-11-09an eguneratua dago.",
     EN: "This Cookies Policy is updated as of 09-11-2026.",
     FR: "Cette Politique de cookies est à jour au 09-11-2026.",
   },
