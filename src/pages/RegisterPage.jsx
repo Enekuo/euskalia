@@ -15,12 +15,6 @@ export default function RegisterPage() {
           Euskalia
         </Link>
 
-        <Link
-          to="/cuenta-pro"
-          className="text-sm font-semibold px-5 py-2.5 rounded-full bg-[#2563EB] text-white shadow-md hover:bg-blue-700 transition-all active:scale-95"
-        >
-          Cuenta Pro
-        </Link>
       </header>
 
       {/* Contenido centrado con tarjeta */}

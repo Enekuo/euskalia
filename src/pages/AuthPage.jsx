@@ -58,20 +58,6 @@ export default function AuthPage() {
           Euskalia
         </Link>
 
-        <Link
-          to="/cuenta-pro"
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            backgroundColor: "#2563eb",
-            color: "white",
-            padding: "8px 16px",
-            borderRadius: "9999px",
-            textDecoration: "none",
-          }}
-        >
-          Cuenta Pro
-        </Link>
       </header>
 
       {/* Fondo con halo suave + tarjeta */}
