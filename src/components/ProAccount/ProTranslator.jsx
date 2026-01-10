@@ -640,20 +640,12 @@ export default function ProTranslator() {
     setSpeaking(false);
   };
 
-  const ttsLocaleFromDst = (dst) => {
-    if (dst === "eus") return "eu-ES";
-    if (dst === "es") return "es-ES";
-    if (dst === "en") return "en-US";
-    if (dst === "fr") return "fr-FR";
-    return "en-US";
-  };
-
-  const ttsInstructionsFromDst = (dst) => {
-    if (dst === "eus") return "Read this text in Basque (Euskara).";
-    if (dst === "es") return "Read this text in Spanish (Spain).";
-    if (dst === "en") return "Read this text in English (US).";
-    if (dst === "fr") return "Read this text in French (France).";
-    return "Read this text naturally.";
+  // ✅ NUEVO: instrucciones TTS según selector derecho (dst)
+  const ttsInstructionsFor = (lang) => {
+    if (lang === "es") return "Speak in Spanish (Spain). Natural, clear pronunciation.";
+    if (lang === "fr") return "Speak in French. Natural, clear pronunciation.";
+    if (lang === "eus") return "Speak in Basque (Euskara). Natural, clear pronunciation.";
+    return "Speak in English. Natural, clear pronunciation.";
   };
 
   const handleSpeakToggle = async () => {
@@ -677,9 +669,6 @@ export default function ProTranslator() {
     ttsAbortRef.current = ctrl;
 
     try {
-      const locale = ttsLocaleFromDst(dst);
-      const instructions = ttsInstructionsFromDst(dst);
-
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -688,8 +677,10 @@ export default function ProTranslator() {
           text,
           voice: "alloy",
           format: "wav",
-          locale,
-          instructions,
+          // ✅ CLAVE: que el backend lo pase al modelo TTS
+          instructions: ttsInstructionsFor(dst),
+          // (opcional) por si quieres log/debug en backend
+          lang: dst,
         }),
       });
 
