@@ -2386,10 +2386,10 @@ aiApiUsage: {
   },
 
   lastUpdate: {
-    ES: "Esta información sobre el uso de APIs de IA está actualizada a fecha 2025-11-21.",
-    EUS: "IA APIen erabilerari buruzko informazio hau 2025-11-21ean eguneratua dago.",
-    EN: "This information about the use of AI APIs is updated as of 2025-11-21.",
-    FR: "Ces informations sur l’utilisation des APIs d’IA sont à jour au 2025-11-21.",
+    ES: "Esta información sobre el uso de APIs de IA está actualizada a fecha 09-01-2026.",
+    EUS: "IA APIen erabilerari buruzko informazio hau 2026-01-09an eguneratua dago.",
+    EN: "This information about the use of AI APIs is updated as of 09-01-2026.",
+    FR: "Ces informations sur l’utilisation des APIs d’IA sont à jour 09-01-2026.",
   },
 },
 
