@@ -24,6 +24,11 @@ import Footer from "@/components/Footer";
 
 const MAX_CHARS = 5000;
 
+// ✅ Igual que Pro
+const OPTIONS = ["eus", "es", "en", "fr"]; // ✅ EUS, ES, EN, FR (en este orden)
+const OPTIONS_SRC = ["auto", ...OPTIONS]; // ✅ Origen: Detectar + idiomas
+const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas (NO auto)
+
 export default function Translator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
@@ -31,7 +36,7 @@ export default function Translator() {
   const uiLang =
     (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
 
-  // ✅ NUEVO: Detectar idioma (auto)
+  // ✅ Detectar idioma (auto)
   const LBL_DETECT = tr(
     "translator.detect_language",
     uiLang === "EUS" ? "Hizkuntza detektatu" : "Detectar idioma"
@@ -47,14 +52,36 @@ export default function Translator() {
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
-  // ===== opciones selector =====
-  const OPTIONS = [
-    { value: "auto", label: LBL_DETECT }, // ✅ por defecto
-    { value: "es", label: LBL_ES },
-    { value: "eus", label: LBL_EUS },
-    { value: "en", label: LBL_EN },
-    { value: "fr", label: LBL_FR },
-  ];
+  // ✅ Igual que Pro: label por código
+  const langLabel = (val) => {
+    if (val === "auto") return LBL_DETECT;
+    if (val === "eus") return LBL_EUS;
+    if (val === "es") return LBL_ES;
+    if (val === "en") return LBL_EN;
+    if (val === "fr") return LBL_FR;
+    return val;
+  };
+
+  const normalizeDetected = (code) => {
+    const c = (code || "").trim();
+    if (!c) return "";
+    return c.split("-")[0]; // "en-US" -> "en"
+  };
+
+  const getDisplayLanguageName = (code) => {
+    const c = (code || "").trim();
+    if (!c) return "";
+    try {
+      const ui = ((language || "es") + "").toLowerCase();
+      // En tu app: language suele ser "EUS" o "ES"
+      const locale = ui === "eus" || ui === "eu" ? "eu" : "es";
+      const dn = new Intl.DisplayNames([locale], { type: "language" });
+      const out = dn.of(c);
+      return out || c;
+    } catch {
+      return c;
+    }
+  };
 
   // ===== estado idioma / texto =====
   const [src, setSrc] = useState("auto"); // ✅ AUTO por defecto
@@ -69,8 +96,8 @@ export default function Translator() {
   const [err, setErr] = useState("");
   const [listening, setListening] = useState(false);
 
-  // ✅ NUEVO: idioma detectado para mostrar "(...) detectado"
-  const [detectedLangLabel, setDetectedLangLabel] = useState("");
+  // ✅ Igual que Pro: guardamos código detectado, no label
+  const [detectedLang, setDetectedLang] = useState("");
 
   // ===== tabs (Texto / Documento / URL) =====
   const [sourceMode, setSourceMode] = useState("text"); // "text" | "document" | "url"
@@ -129,7 +156,7 @@ export default function Translator() {
     return "Idioma";
   };
 
-  // ✅ parseo DETECTED_LANGUAGE
+  // ✅ parseo DETECTED_LANGUAGE (devuelve code + traducción limpia)
   const parseDetectedLanguage = (raw) => {
     const s = String(raw || "");
     const lines = s.split(/\r?\n/);
@@ -249,12 +276,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     []
   );
 
+  // ✅ Igual que Pro: NO swap si src=auto
   const swap = () => {
-    setDetectedLangLabel("");
-    const nextSrc = dst;
-    const nextDst = src === "auto" ? "es" : src;
-    setSrc(nextSrc);
-    setDst(nextDst);
+    if (src === "auto") return;
+    setSrc(dst);
+    setDst(src);
+    setDetectedLang("");
   };
 
   // cerrar dropdowns
@@ -280,13 +307,18 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") autoResize(rightTA.current);
   }, [rightText, sourceMode]);
 
-  // ✅ etiqueta que se ve en el selector de ORIGEN
-  const srcButtonLabel =
-    src !== "auto"
-      ? OPTIONS.find((o) => o.value === src)?.label
-      : detectedLangLabel && leftText.trim()
-      ? `(${detectedLangLabel}) ${LBL_DETECTED_SUFFIX}`
-      : LBL_DETECT;
+  // ✅ Igual que Pro: label auto mostrado (detectado)
+  useEffect(() => {
+    if (src !== "auto") return;
+    if (!leftText.trim()) setDetectedLang("");
+  }, [leftText, src]);
+
+  const detectedName = getDisplayLanguageName(normalizeDetected(detectedLang));
+  const autoShownLabel = !leftText.trim()
+    ? LBL_DETECT
+    : detectedName
+    ? `${detectedName} (${LBL_DETECTED_SUFFIX})`
+    : LBL_DETECT;
 
   // ==== Traducción TEXTO /api/public (debounced) ====
   useEffect(() => {
@@ -296,7 +328,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
     if (!leftText.trim()) {
       setRightText("");
-      setDetectedLangLabel("");
+      setDetectedLang("");
       return;
     }
 
@@ -344,7 +376,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (isRefusal(out)) {
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setErr(
             uiLang === "EUS"
               ? "Ezin izan da edukia itzuli."
@@ -355,10 +387,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (src === "auto") {
           const parsed = parseDetectedLanguage(out);
-          setDetectedLangLabel(parsed.detected || "");
+          setDetectedLang(parsed.detected || "");
           setRightText((parsed.translation || "").trim());
         } else {
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setRightText(out);
         }
       } catch (e) {
@@ -385,7 +417,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (!urlItems.length) {
       setRightText("");
       setErr("");
-      setDetectedLangLabel("");
+      setDetectedLang("");
       return;
     }
 
@@ -436,7 +468,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (isRefusal(out)) {
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setErr(
             uiLang === "EUS"
               ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin."
@@ -447,10 +479,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (src === "auto") {
           const parsed = parseDetectedLanguage(out);
-          setDetectedLangLabel(parsed.detected || "");
+          setDetectedLang(parsed.detected || "");
           setRightText((parsed.translation || "").trim());
         } else {
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setRightText(out);
         }
       } catch (e) {
@@ -506,7 +538,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (!documents.length) {
       setRightText("");
       setErr("");
-      setDetectedLangLabel("");
+      setDetectedLang("");
       return;
     }
 
@@ -524,7 +556,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (unreadable.length > 0 && readable.length === 0) {
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setErr(
             uiLang === "EUS"
               ? "Ezin da dokumentua irakurri. Saiatu TXT/MD bezalako fitxategi batekin edo itsatsi testua."
@@ -540,7 +572,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (combinedFull.length > MAX_CHARS) {
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setErr(
             uiLang === "EUS"
               ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere (dokumentuak guztira).`
@@ -556,7 +588,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               : "No se ha podido leer el contenido del documento."
           );
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           return;
         }
 
@@ -601,7 +633,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (isRefusal(out)) {
           setRightText("");
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setErr(
             uiLang === "EUS"
               ? "Ezin izan da edukia itzuli. Saiatu beste fitxategi batekin edo itsatsi testua."
@@ -612,10 +644,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (src === "auto") {
           const parsed = parseDetectedLanguage(out);
-          setDetectedLangLabel(parsed.detected || "");
+          setDetectedLang(parsed.detected || "");
           setRightText((parsed.translation || "").trim());
         } else {
-          setDetectedLangLabel("");
+          setDetectedLang("");
           setRightText(out);
         }
       } catch (e) {
@@ -653,7 +685,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     </button>
   );
 
-  const Dropdown = ({ open, selected, onSelect, align = "left" }) => {
+  // ✅ Igual que Pro: Dropdown recibe options (códigos) y usa langLabel()
+  const Dropdown = ({ open, selected, onSelect, align = "left", options }) => {
     if (!open) return null;
     return (
       <div
@@ -667,12 +700,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
             <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
           </svg>
           <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
-            {OPTIONS.map((opt) => (
+            {(options || []).map((val) => (
               <Item
-                key={opt.value}
-                label={opt.label}
-                active={selected === opt.value}
-                onClick={() => onSelect(opt.value)}
+                key={val}
+                label={langLabel(val)}
+                active={selected === val}
+                onClick={() => onSelect(val)}
               />
             ))}
           </div>
@@ -733,27 +766,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setSpeaking(false);
   };
 
-  // ✅✅✅ NUEVO (IGUAL QUE EN PRO): forzar idioma del TTS según selector dst
-  const ttsLocaleFromDst = (dstVal) => {
-    if (dstVal === "eus") return "eu-ES";
-    if (dstVal === "es") return "es-ES";
-    if (dstVal === "en") return "en-US";
-    if (dstVal === "fr") return "fr-FR";
-    return "en-US";
-  };
-
-  const ttsInstructionsFromDst = (dstVal) => {
-    if (dstVal === "eus")
-      return "Read this text in Basque (Euskara). Pronounce numbers in Basque as words (not in Spanish).";
-    if (dstVal === "es")
-      return "Read this text in Spanish (Spain). Pronounce numbers in Spanish.";
-    if (dstVal === "en")
-      return "Read this text in English (US). Pronounce numbers in English.";
-    if (dstVal === "fr")
-      return "Read this text in French (France). Pronounce numbers in French.";
-    return "Read this text naturally.";
-  };
-
   const handleSpeakToggle = async () => {
     if (!hasRealResult) return;
 
@@ -778,10 +790,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     ttsAbortRef.current = ctrl;
 
     try {
-      // ✅✅✅ NUEVO: locale + instructions según destino
-      const locale = ttsLocaleFromDst(dst);
-      const instructions = ttsInstructionsFromDst(dst);
-
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -790,8 +798,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           text,
           voice: "alloy",
           format: "wav",
-          locale,
-          instructions,
         }),
       });
 
@@ -839,7 +845,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlItems([]);
     setUrlsTextarea("");
     setErr("");
-    setDetectedLangLabel("");
+    setDetectedLang("");
   };
 
   // ===== Acciones: copiar / PDF =====
@@ -1034,7 +1040,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         }}
                         className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{srcButtonLabel}</span>
+                        <span>{src === "auto" ? autoShownLabel : langLabel(src)}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1051,10 +1057,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         selected={src}
                         onSelect={(val) => {
                           setSrc(val);
-                          setDetectedLangLabel("");
                           setOpenLeft(false);
+                          if (val !== "auto") setDetectedLang("");
                         }}
                         align="left"
+                        options={OPTIONS_SRC}
                       />
                     </div>
 
@@ -1093,7 +1100,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         }}
                         className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{OPTIONS.find((o) => o.value === dst)?.label}</span>
+                        <span>{langLabel(dst)}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1113,6 +1120,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           setOpenRight(false);
                         }}
                         align="right"
+                        options={OPTIONS_DST}
                       />
                     </div>
                   </div>
