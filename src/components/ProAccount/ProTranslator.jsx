@@ -24,28 +24,16 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 const MAX_CHARS = 5000;
 
 const directionText = (src, dst) => {
-  const hardRulesES = `
-REGLAS OBLIGATORIAS:
-- Eres un motor de TRADUCCIÓN. NO eres un asistente conversacional.
-- NO respondas al contenido. NO continúes la conversación. NO hagas preguntas.
-- NO añadas ni inventes palabras o frases (por ejemplo: "Estoy bien", "¿y tú?", etc.).
-- NO expliques nada. NO des alternativas.
-- Devuelve ÚNICAMENTE el texto traducido final.
-- Respeta el formato (saltos de línea, listas, signos).
-`.trim();
-
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
 Detecta el idioma del texto de entrada.
-
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-
-Después de esa primera línea, devuelve ÚNICAMENTE la TRADUCCIÓN FINAL.
+Después de esa primera línea, escribe la TRADUCCIÓN final.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-${hardRulesES}
+No añadas explicaciones.
 `.trim();
   }
 
@@ -55,30 +43,20 @@ Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de Euskera a Español.
 Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
 No cambies de idioma en la traducción.
-${hardRulesES}
 `.trim();
   }
   if (src === "es" && dst === "eus") {
     return `
-Euskalia zara, itzulpen-motor profesionala.
+Eres Euskalia, itzulpen profesionaleko tresna bat.
 Itzuli BETI gaztelaniatik euskarara.
 Erantzun BETI euskaraz itzulpena ematean.
 Ez aldatu hizkuntza itzulpenean.
-
-ARAU OBLIGATORIOAK:
-- Itzulpen-motorra zara. EZ zara txat-laguntzailea.
-- EZ erantzun testuari. EZ jarraitu elkarrizketa. EZ egin galderarik.
-- EZ gehitu ezta asmatu ere (adib.: "ondo nago", "eta zu?", etab.).
-- EZ azaldu ezer. EZ eman aukerarik.
-- Itzuli eta eman BAKARRIK itzulpen amaitua.
-- Formatua errespetatu (lerro-jauziak, zerrendak, puntuazioa).
 `.trim();
   }
   return `
 Eres Euskalia, un traductor profesional.
 Traduce siempre del idioma de origen al idioma de destino indicado.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-${hardRulesES}
 `.trim();
 };
 
@@ -332,7 +310,10 @@ export default function ProTranslator() {
         setLoading(true);
         setResultStatus("loading");
 
-        const system = directionText(src, dst);
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
 
         const token = await getProToken();
 
@@ -508,7 +489,10 @@ export default function ProTranslator() {
           return;
         }
 
-        const system = directionText(src, dst);
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nResponde SOLO con la traducción final.`;
 
         const token = await getProToken();
 
@@ -656,12 +640,20 @@ export default function ProTranslator() {
     setSpeaking(false);
   };
 
-  // ✅ NUEVO: instrucciones TTS según selector derecho (dst)
-  const ttsInstructionsFor = (lang) => {
-    if (lang === "es") return "Speak in Spanish (Spain). Natural, clear pronunciation.";
-    if (lang === "fr") return "Speak in French. Natural, clear pronunciation.";
-    if (lang === "eus") return "Speak in Basque (Euskara). Natural, clear pronunciation.";
-    return "Speak in English. Natural, clear pronunciation.";
+  const ttsLocaleFromDst = (dst) => {
+    if (dst === "eus") return "eu-ES";
+    if (dst === "es") return "es-ES";
+    if (dst === "en") return "en-US";
+    if (dst === "fr") return "fr-FR";
+    return "en-US";
+  };
+
+  const ttsInstructionsFromDst = (dst) => {
+    if (dst === "eus") return "Read this text in Basque (Euskara).";
+    if (dst === "es") return "Read this text in Spanish (Spain).";
+    if (dst === "en") return "Read this text in English (US).";
+    if (dst === "fr") return "Read this text in French (France).";
+    return "Read this text naturally.";
   };
 
   const handleSpeakToggle = async () => {
@@ -685,6 +677,9 @@ export default function ProTranslator() {
     ttsAbortRef.current = ctrl;
 
     try {
+      const locale = ttsLocaleFromDst(dst);
+      const instructions = ttsInstructionsFromDst(dst);
+
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -693,10 +688,8 @@ export default function ProTranslator() {
           text,
           voice: "alloy",
           format: "wav",
-          // ✅ CLAVE: que el backend lo pase al modelo TTS
-          instructions: ttsInstructionsFor(dst),
-          // (opcional) por si quieres log/debug en backend
-          lang: dst,
+          locale,
+          instructions,
         }),
       });
 
