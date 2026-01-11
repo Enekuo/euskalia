@@ -6,18 +6,22 @@ import crypto from "crypto";
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
 // ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR) ======
-// Traductor (FREE)
+// Traductor
 const FREE_TRANSLATOR_MAX_CHARS    = Number(process.env.FREE_TRANSLATOR_MAX_CHARS || 5000);
 const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 20000);
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
-// Resumidor (FREE)
+// Resumidor
 const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 12000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 6);
+
+// ✅ Modelos (para que PUBLIC pueda ser EXACTAMENTE igual que PRO)
+const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // ej: "gpt-4.1-mini"
+const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // opcional
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -34,7 +38,8 @@ function canonicalize(s) {
 function makeCacheKey({ task, model, system, messages, src, dst, lang, length }) {
   const userText = canonicalize((messages || []).map(m => m?.content || "").join(" "));
   const payload = JSON.stringify({
-    v: "v1",
+    // ✅ bump cache version para NO reutilizar resultados antiguos malos
+    v: "v2",
     task,
     model,
     pair: lang || `${src || ""}-${dst || ""}` || "na",
@@ -73,6 +78,19 @@ function htmlToText(html) {
   );
   text = text.replace(/<[^>]+>/g, " ");
   return text.replace(/\s+/g, " ").trim();
+}
+
+// ✅ “guardrail” para EUS (evita frases raras tipo “Nahi izan nuen…” y mantiene números)
+function eusGuardrail() {
+  return `
+EUSKERA-ARAUAK (oso garrantzitsua):
+- Eman itzulpena EUSKARA NATURALEAN, eta EZ erantsi esaldi arrarorik (adib.: "Nahi izan nuen..." debekatuta).
+- Itzuli "Nací en el año X en un pueblo llamado Y" moduko egiturak honela, orden naturalarekin:
+  "X. urtean Y izeneko herri batean jaio nintzen."
+- Zenbakiak (1969, 123, 1.000, 2,5...) mantendu berdin (EZ idatzi hitzez), eta EZ aldatu kokapena modu artifizialean.
+- Ez nahastu hizkuntzak: emaitza %100 euskaraz, salbu eta izen propioak.
+- Erantzun BAKARRIK itzulpenarekin (formatua mantenduz).
+`.trim();
 }
 
 // ====== Handler ======
@@ -120,7 +138,7 @@ export default async function handler(req, res) {
       max_tokens
     } = body;
 
-    // ====== Soporte especial: traducir desde URLs (MISMO QUE PRO) ======
+    // ====== Soporte especial: traducir desde URLs ======
     if (body?.mode === "translate_urls") {
       const urls = Array.isArray(body.urls)
         ? body.urls.map((u) => String(u || "").trim()).filter(Boolean)
@@ -156,7 +174,7 @@ export default async function handler(req, res) {
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto según par de idiomas (MISMO QUE PRO)
+      // System por defecto según par de idiomas
       if (!system) {
         if (src === "eus" && dst === "es") {
           system = `
@@ -188,7 +206,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       delete body.to;
     }
 
-    // Admite dos contratos (MISMO QUE PRO):
+    // Admite dos contratos:
     // A) { messages:[{role,content}, ...], system?, model?, temperature?, max_tokens? }
     // B) { text, from, to } -> traducir simple
     const hasMessages  = Array.isArray(body?.messages) && body.messages.length > 0;
@@ -218,11 +236,6 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    const finalMessages = [
-      ...(system ? [{ role: "system", content: system }] : []),
-      ...messages,
-    ];
-
     // ====== Identificar herramienta (Traductor vs Resumidor) ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
@@ -234,9 +247,25 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     const isTranslator =
       hasTranslate || body?.mode === "translate_urls" ||
       rawTask.includes("translate") || rawMode.includes("translate") ||
-      rawTask.includes("traduc") || rawMode.includes("traduc");
+      rawTask.includes("traduc") || rawMode.includes("traduc") ||
+      rawMode.includes("translate_text") || rawMode.includes("translate_urls");
 
     const tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
+
+    // ✅ FORZAR MODELO POR HERRAMIENTA (esto hace PUBLIC = PRO si pones la env var igual)
+    if (tool === "translator" && FREE_TRANSLATOR_MODEL) model = FREE_TRANSLATOR_MODEL;
+    if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
+
+    // ✅ Guardrail EUS (solo traductor y cuando destino sea eus)
+    const dst = hasTranslate ? body.to : (body?.dst || null);
+    if (tool === "translator" && String(dst || "").toLowerCase() === "eus") {
+      system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
+    }
+
+    const finalMessages = [
+      ...(system ? [{ role: "system", content: system }] : []),
+      ...messages,
+    ];
 
     // Límites según herramienta
     const MAX_CHARS =
@@ -254,7 +283,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
-    // ====== LÍMITES (por IP) ======
+    // ====== LÍMITES ======
     const ip  = getClientIp(req);
     const day = todayKey();
 
@@ -276,7 +305,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
     // 2) Rate-limit RPM por IP
     try {
-      const rpmKey = `rl:free:rpm:${tool}:${ip}`;
+      const rpmKey = `rl:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
       if (count === 1) {
         await kv.expire(rpmKey, 60);
@@ -294,7 +323,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     // 3) Límite de resúmenes por día (solo resumidor)
     if (tool === "summary") {
       try {
-        const dailySummaryKey = `quota:free:summary:reqs:${day}:${ip}`;
+        const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
         const usedReqs = (await kv.get(dailySummaryKey)) || 0;
 
         if (Number(usedReqs) >= FREE_SUMMARY_DAILY_REQUESTS) {
@@ -316,7 +345,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     // 4) Cuota diaria de tokens por IP
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
-      const dailyKey = `quota:free:${tool}:${day}:${ip}`;
+      const dailyKey = `quota:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
       if (used + estTokens > DAILY_TOKENS) {
         return res.status(429).json({
@@ -331,10 +360,9 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {}
 
-    // ====== KV CACHE (MISMO QUE PRO) ======
+    // ====== KV CACHE ======
     const task = hasTranslate ? "translate" : (body?.task || body?.mode || "chat");
     const src  = hasTranslate ? body.from : (body?.src || null);
-    const dst  = hasTranslate ? body.to   : (body?.dst || null);
     const lang = body?.lang || null;
     const length = body?.length || null;
 
@@ -356,7 +384,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {}
 
-    // ====== Llamada a OpenAI (MISMO QUE PRO) ======
+    // ====== Llamada a OpenAI ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -397,7 +425,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
     // ====== Actualizar cuota diaria real (tokens) ======
     try {
-      const dailyKey = `quota:free:${tool}:${day}:${ip}`;
+      const dailyKey = `quota:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
 
       const realTokens =
