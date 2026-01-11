@@ -24,16 +24,28 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 const MAX_CHARS = 5000;
 
 const directionText = (src, dst) => {
+  const hardRulesES = `
+REGLAS OBLIGATORIAS:
+- Eres un motor de TRADUCCIÓN. NO eres un asistente conversacional.
+- NO respondas al contenido. NO continúes la conversación. NO hagas preguntas.
+- NO añadas ni inventes palabras o frases (por ejemplo: "Estoy bien", "¿y tú?", etc.).
+- NO expliques nada. NO des alternativas.
+- Devuelve ÚNICAMENTE el texto traducido final.
+- Respeta el formato (saltos de línea, listas, signos).
+`.trim();
+
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
 Detecta el idioma del texto de entrada.
+
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-Después de esa primera línea, escribe la TRADUCCIÓN final.
+
+Después de esa primera línea, devuelve ÚNICAMENTE la TRADUCCIÓN FINAL.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-No añadas explicaciones.
+${hardRulesES}
 `.trim();
   }
 
@@ -43,20 +55,30 @@ Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de Euskera a Español.
 Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
 No cambies de idioma en la traducción.
+${hardRulesES}
 `.trim();
   }
   if (src === "es" && dst === "eus") {
     return `
-Eres Euskalia, itzulpen profesionaleko tresna bat.
+Euskalia zara, itzulpen-motor profesionala.
 Itzuli BETI gaztelaniatik euskarara.
 Erantzun BETI euskaraz itzulpena ematean.
 Ez aldatu hizkuntza itzulpenean.
+
+ARAU OBLIGATORIOAK:
+- Itzulpen-motorra zara. EZ zara txat-laguntzailea.
+- EZ erantzun testuari. EZ jarraitu elkarrizketa. EZ egin galderarik.
+- EZ gehitu ezta asmatu ere (adib.: "ondo nago", "eta zu?", etab.).
+- EZ azaldu ezer. EZ eman aukerarik.
+- Itzuli eta eman BAKARRIK itzulpen amaitua.
+- Formatua errespetatu (lerro-jauziak, zerrendak, puntuazioa).
 `.trim();
   }
   return `
 Eres Euskalia, un traductor profesional.
 Traduce siempre del idioma de origen al idioma de destino indicado.
 Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+${hardRulesES}
 `.trim();
 };
 
@@ -310,10 +332,7 @@ export default function ProTranslator() {
         setLoading(true);
         setResultStatus("loading");
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
+        const system = directionText(src, dst);
 
         const token = await getProToken();
 
@@ -489,10 +508,7 @@ export default function ProTranslator() {
           return;
         }
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con la traducción final.`;
+        const system = directionText(src, dst);
 
         const token = await getProToken();
 
