@@ -23,42 +23,40 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
-/* ✅ FIX CRÍTICO:
-   Prompt duro: motor de traducción, NO asistente, NO conversa, NO inventa.
-   Esto es lo que evitaba que “respondiera” en vez de traducir.
-*/
 const directionText = (src, dst) => {
-  const HARD_RULES = `
-REGLAS ABSOLUTAS:
-- Eres un MOTOR DE TRADUCCIÓN, no un asistente.
-- NO respondas, NO converses, NO completes frases.
-- NO añadas texto nuevo que no esté en el original.
-- NO reformules, NO hagas preguntas.
-- Devuelve ÚNICAMENTE el texto traducido.
-- Mantén el formato del original (saltos de línea, puntuación, etc.).
-`.trim();
-
   if (src === "auto") {
     return `
-Eres Euskalia, motor profesional de traducción.
+Eres Euskalia, un traductor profesional.
 Detecta el idioma del texto de entrada.
-
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
-
-Después:
-${HARD_RULES}
-
-Traduce SOLO al idioma de destino: ${dst}
+Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
+Después de esa primera línea, escribe la TRADUCCIÓN final.
+Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+No añadas explicaciones.
 `.trim();
   }
 
+  if (src === "eus" && dst === "es") {
+    return `
+Eres Euskalia, un traductor profesional.
+Traduce SIEMPRE de Euskera a Español.
+Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
+No cambies de idioma en la traducción.
+`.trim();
+  }
+  if (src === "es" && dst === "eus") {
+    return `
+Eres Euskalia, itzulpen profesionaleko tresna bat.
+Itzuli BETI gaztelaniatik euskarara.
+Erantzun BETI euskaraz itzulpena ematean.
+Ez aldatu hizkuntza itzulpenean.
+`.trim();
+  }
   return `
-Eres Euskalia, motor profesional de traducción.
-Idioma origen: ${src}
-Idioma destino: ${dst}
-
-${HARD_RULES}
+Eres Euskalia, un traductor profesional.
+Traduce siempre del idioma de origen al idioma de destino indicado.
+Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 `.trim();
 };
 
@@ -214,7 +212,7 @@ export default function ProTranslator() {
       "barkatu",
       "ez naiz gai",
 
-      // ✅ mensajes típicos de “no traducción”
+      // ✅ NUEVO: mensajes típicos de “no traducción”
       "no se puede traducir",
       "no puedo traducir",
       "no es una palabra",
@@ -312,8 +310,10 @@ export default function ProTranslator() {
         setLoading(true);
         setResultStatus("loading");
 
-        // ✅ FIX: system SOLO con prompt duro (sin frases blandas)
-        const system = directionText(src, dst);
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
 
         const token = await getProToken();
 
@@ -407,8 +407,6 @@ export default function ProTranslator() {
             urls,
             model: "gpt-4o-mini",
             temperature: 0.2,
-            // ✅ Para que backend pueda usar prompt duro si lo soporta:
-            system: directionText(src, dst),
           }),
         });
 
@@ -491,8 +489,10 @@ export default function ProTranslator() {
           return;
         }
 
-        // ✅ FIX: system SOLO con prompt duro
-        const system = directionText(src, dst);
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nResponde SOLO con la traducción final.`;
 
         const token = await getProToken();
 
@@ -656,6 +656,51 @@ export default function ProTranslator() {
     return "Read this text naturally.";
   };
 
+  // ✅ NUEVO: convertir números a texto en euskera para que el TTS no los lea en castellano
+  const numberToBasque = (n) => {
+    n = Number(n);
+    if (!Number.isFinite(n) || n < 0 || n > 9999) return String(n);
+
+    const units = ["zero","bat","bi","hiru","lau","bost","sei","zazpi","zortzi","bederatzi"];
+    const tenToNineteen = {
+      10:"hamar", 11:"hamaika", 12:"hamabi", 13:"hamahiru", 14:"hamalau",
+      15:"hamabost", 16:"hamasei", 17:"hamazazpi", 18:"hamazortzi", 19:"hemeretzi"
+    };
+    const tens = {
+      20:"hogei", 30:"hogeita hamar", 40:"berrogei", 50:"berrogeita hamar",
+      60:"hirurogei", 70:"hirurogeita hamar", 80:"laurogei", 90:"laurogeita hamar"
+    };
+
+    if (n < 10) return units[n];
+    if (n < 20) return tenToNineteen[n];
+
+    if (n < 100) {
+      const t = Math.floor(n / 10) * 10;
+      const u = n % 10;
+      if (u === 0) return tens[t] || String(n);
+      if (t === 20) return `hogei eta ${units[u]}`;
+      return `${tens[t] || String(t)} eta ${units[u]}`;
+    }
+
+    if (n < 1000) {
+      const h = Math.floor(n / 100);
+      const r = n % 100;
+      const hundred = h === 1 ? "ehun" : `${units[h]} ehun`;
+      if (r === 0) return hundred;
+      return `${hundred} eta ${numberToBasque(r)}`;
+    }
+
+    const th = Math.floor(n / 1000);
+    const r = n % 1000;
+    const thousand = th === 1 ? "mila" : `${units[th]} mila`;
+    if (r === 0) return thousand;
+    return `${thousand} eta ${numberToBasque(r)}`;
+  };
+
+  const replaceNumbersEu = (text) => {
+    return (text || "").replace(/\b\d{1,4}\b/g, (m) => numberToBasque(m));
+  };
+
   const handleSpeakToggle = async () => {
     if (speaking) {
       stopPlayback();
@@ -680,12 +725,14 @@ export default function ProTranslator() {
       const locale = ttsLocaleFromDst(dst);
       const instructions = ttsInstructionsFromDst(dst);
 
+      const textForTts = dst === "eus" ? replaceNumbersEu(text) : text;
+
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
-          text,
+          text: textForTts,
           voice: "alloy",
           format: "wav",
           locale,
@@ -1134,20 +1181,6 @@ export default function ProTranslator() {
                       {leftText.length.toLocaleString()} /{" "}
                       {MAX_CHARS.toLocaleString()}
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={handleToggleMic}
-                      className={`absolute bottom-3 left-6 inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium border ${
-                        listening
-                          ? "bg-red-50 border-red-200 text-red-700"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-                      }`}
-                      title={listening ? "Detener" : "Dictar"}
-                    >
-                      <Mic className="w-4 h-4" />
-                      {listening ? "Stop" : "Mic"}
-                    </button>
                   </>
                 )}
 
