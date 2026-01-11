@@ -23,40 +23,43 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
+// ✅ CAMBIO: directionText reforzado para que SIEMPRE respete dst y no “se vaya” a inglés
 const directionText = (src, dst) => {
+  const name = (c) => {
+    if (c === "eus") return "Euskera (eu)";
+    if (c === "es") return "Español (es)";
+    if (c === "en") return "English (en)";
+    if (c === "fr") return "Français (fr)";
+    return c;
+  };
+
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
-Detecta el idioma del texto de entrada.
-La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
-DETECTED_LANGUAGE: <codigo_idioma>
-Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-Después de esa primera línea, escribe la TRADUCCIÓN final.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-No añadas explicaciones.
+
+1) Detecta el idioma del texto de entrada.
+2) Traduce SIEMPRE al idioma de destino: ${name(dst)}.
+3) NO añadas explicaciones, NO resumas, NO cambies el formato.
+
+FORMATO OBLIGATORIO DE SALIDA:
+- Primera línea EXACTA:
+DETECTED_LANGUAGE: <codigo>
+- A partir de la segunda línea: SOLO la traducción final en ${name(dst)}.
 `.trim();
   }
 
-  if (src === "eus" && dst === "es") {
-    return `
-Eres Euskalia, un traductor profesional.
-Traduce SIEMPRE de Euskera a Español.
-Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
-No cambies de idioma en la traducción.
-`.trim();
-  }
-  if (src === "es" && dst === "eus") {
-    return `
-Eres Euskalia, itzulpen profesionaleko tresna bat.
-Itzuli BETI gaztelaniatik euskarara.
-Erantzun BETI euskaraz itzulpena ematean.
-Ez aldatu hizkuntza itzulpenean.
-`.trim();
-  }
   return `
 Eres Euskalia, un traductor profesional.
-Traduce siempre del idioma de origen al idioma de destino indicado.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+
+Idioma de ORIGEN: ${name(src)}.
+Idioma de DESTINO: ${name(dst)}.
+
+REGLAS:
+- Traduce SIEMPRE del idioma de ORIGEN al de DESTINO.
+- Responde SOLO con la traducción final en ${name(dst)}.
+- NO incluyas "DETECTED_LANGUAGE".
+- NO añadas explicaciones, títulos, notas ni comillas.
+- Mantén el formato original (saltos de línea, listas, etc.).
 `.trim();
 };
 
@@ -613,12 +616,21 @@ export default function ProTranslator() {
   const labelAddUrl = tr("proTranslator.add_url", "Añadir URLs");
   const labelSaveUrls = tr("proTranslator.save_urls", "Guardar");
   const labelCancel = tr("proTranslator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("proTranslator.urls_note_visible", "Solo se importará el texto visible.");
-  const labelUrlsNotePaywalled = tr("proTranslator.urls_note_paywalled", "No se admiten artículos de pago.");
+  const labelUrlsNoteVisible = tr(
+    "proTranslator.urls_note_visible",
+    "Solo se importará el texto visible."
+  );
+  const labelUrlsNotePaywalled = tr(
+    "proTranslator.urls_note_paywalled",
+    "No se admiten artículos de pago."
+  );
   const labelRemove = tr("proTranslator.remove", "Quitar");
 
   const labelSaveTranslation = tr("proTranslator.save_button_label", "Guardar");
-  const librarySavedMessage = tr("proTranslator.library_saved_toast", "Guardado en biblioteca");
+  const librarySavedMessage = tr(
+    "proTranslator.library_saved_toast",
+    "Guardado en biblioteca"
+  );
 
   const stopPlayback = () => {
     if (speaking && ttsAbortRef.current) {
@@ -656,51 +668,6 @@ export default function ProTranslator() {
     return "Read this text naturally.";
   };
 
-  // ✅ NUEVO: convertir números a texto en euskera para que el TTS no los lea en castellano
-  const numberToBasque = (n) => {
-    n = Number(n);
-    if (!Number.isFinite(n) || n < 0 || n > 9999) return String(n);
-
-    const units = ["zero","bat","bi","hiru","lau","bost","sei","zazpi","zortzi","bederatzi"];
-    const tenToNineteen = {
-      10:"hamar", 11:"hamaika", 12:"hamabi", 13:"hamahiru", 14:"hamalau",
-      15:"hamabost", 16:"hamasei", 17:"hamazazpi", 18:"hamazortzi", 19:"hemeretzi"
-    };
-    const tens = {
-      20:"hogei", 30:"hogeita hamar", 40:"berrogei", 50:"berrogeita hamar",
-      60:"hirurogei", 70:"hirurogeita hamar", 80:"laurogei", 90:"laurogeita hamar"
-    };
-
-    if (n < 10) return units[n];
-    if (n < 20) return tenToNineteen[n];
-
-    if (n < 100) {
-      const t = Math.floor(n / 10) * 10;
-      const u = n % 10;
-      if (u === 0) return tens[t] || String(n);
-      if (t === 20) return `hogei eta ${units[u]}`;
-      return `${tens[t] || String(t)} eta ${units[u]}`;
-    }
-
-    if (n < 1000) {
-      const h = Math.floor(n / 100);
-      const r = n % 100;
-      const hundred = h === 1 ? "ehun" : `${units[h]} ehun`;
-      if (r === 0) return hundred;
-      return `${hundred} eta ${numberToBasque(r)}`;
-    }
-
-    const th = Math.floor(n / 1000);
-    const r = n % 1000;
-    const thousand = th === 1 ? "mila" : `${units[th]} mila`;
-    if (r === 0) return thousand;
-    return `${thousand} eta ${numberToBasque(r)}`;
-  };
-
-  const replaceNumbersEu = (text) => {
-    return (text || "").replace(/\b\d{1,4}\b/g, (m) => numberToBasque(m));
-  };
-
   const handleSpeakToggle = async () => {
     if (speaking) {
       stopPlayback();
@@ -725,14 +692,12 @@ export default function ProTranslator() {
       const locale = ttsLocaleFromDst(dst);
       const instructions = ttsInstructionsFromDst(dst);
 
-      const textForTts = dst === "eus" ? replaceNumbersEu(text) : text;
-
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
-          text: textForTts,
+          text,
           voice: "alloy",
           format: "wav",
           locale,
@@ -976,8 +941,7 @@ export default function ProTranslator() {
     setUrlInputOpen(false);
   };
 
-  const removeUrl = (id) =>
-    setUrlItems((prev) => prev.filter((u) => u.id !== id));
+  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
@@ -1001,9 +965,7 @@ export default function ProTranslator() {
                   >
                     <FileText
                       className={`w-4 h-4 ${
-                        sourceMode === "text"
-                          ? "text-blue-600"
-                          : "text-slate-500"
+                        sourceMode === "text" ? "text-blue-600" : "text-slate-500"
                       }`}
                     />
                     <span>{labelTabText}</span>
@@ -1043,9 +1005,7 @@ export default function ProTranslator() {
                   >
                     <UrlIcon
                       className={`w-4 h-4 ${
-                        sourceMode === "url"
-                          ? "text-blue-600"
-                          : "text-slate-500"
+                        sourceMode === "url" ? "text-blue-600" : "text-slate-500"
                       }`}
                     />
                     <span>{labelTabUrl}</span>
@@ -1171,15 +1131,12 @@ export default function ProTranslator() {
                     <textarea
                       ref={leftTA}
                       value={leftText}
-                      onChange={(e) =>
-                        setLeftText(e.target.value.slice(0, MAX_CHARS))
-                      }
+                      onChange={(e) => setLeftText(e.target.value.slice(0, MAX_CHARS))}
                       placeholder={t("translator.left_placeholder")}
                       className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${HIDE_SCROLLBAR}`}
                     />
                     <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
-                      {leftText.length.toLocaleString()} /{" "}
-                      {MAX_CHARS.toLocaleString()}
+                      {leftText.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
                     </div>
                   </>
                 )}
@@ -1216,12 +1173,8 @@ export default function ProTranslator() {
                       <div className="text-xl font-semibold text-slate-800">
                         {labelChooseFileTitle}
                       </div>
-                      <div className="mt-3 text-sm text-slate-500">
-                        {labelAcceptedFormats}
-                      </div>
-                      <div className="mt-1 text-xs text-slate-400">
-                        {labelFolderHint}
-                      </div>
+                      <div className="mt-3 text-sm text-slate-500">{labelAcceptedFormats}</div>
+                      <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                     </button>
 
                     {documents.length > 0 && (
@@ -1370,16 +1323,12 @@ export default function ProTranslator() {
                 />
 
                 {err && (
-                  <div className="absolute bottom-4 left-8 text-sm text-red-500">
-                    {err}
-                  </div>
+                  <div className="absolute bottom-4 left-8 text-sm text-red-500">{err}</div>
                 )}
 
                 <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
                   {savedToLibrary && (
-                    <p className="text-xs text-emerald-600 mb-1">
-                      {librarySavedMessage}
-                    </p>
+                    <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>
                   )}
 
                   <div className="flex items-center gap-4">
@@ -1407,11 +1356,7 @@ export default function ProTranslator() {
                       aria-label={t("translator.copy")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
-                      {copied ? (
-                        <Check className="w-5 h-5" />
-                      ) : (
-                        <CopyIcon className="w-5 h-5" />
-                      )}
+                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>
