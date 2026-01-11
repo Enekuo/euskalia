@@ -23,7 +23,19 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
+// ✅ FIX: siempre forzar el idioma destino (dst) en el prompt
+const languageNameForPrompt = (code) => {
+  if (code === "eus") return "euskera (Euskara)";
+  if (code === "es") return "español";
+  if (code === "en") return "inglés";
+  if (code === "fr") return "francés";
+  return code || "idioma de destino";
+};
+
 const directionText = (src, dst) => {
+  const dstName = languageNameForPrompt(dst);
+  const srcName = src === "auto" ? "el idioma detectado" : languageNameForPrompt(src);
+
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
@@ -32,17 +44,21 @@ La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
 Después de esa primera línea, escribe la TRADUCCIÓN final.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-No añadas explicaciones.
+
+Traduce SIEMPRE al idioma de destino: ${dstName}.
+Responde SIEMPRE en ${dstName}.
+No añadas explicaciones ni comentarios.
 `.trim();
   }
 
+  // Mantengo tus casos especiales tal cual, pero reforzando destino (sin cambiar el sentido)
   if (src === "eus" && dst === "es") {
     return `
 Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de Euskera a Español.
 Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
 No cambies de idioma en la traducción.
+No añadas explicaciones.
 `.trim();
   }
   if (src === "es" && dst === "eus") {
@@ -51,12 +67,16 @@ Eres Euskalia, itzulpen profesionaleko tresna bat.
 Itzuli BETI gaztelaniatik euskarara.
 Erantzun BETI euskaraz itzulpena ematean.
 Ez aldatu hizkuntza itzulpenean.
+Ez eman azalpenik.
 `.trim();
   }
+
+  // ✅ FIX: resto de combinaciones SIEMPRE explícitas
   return `
 Eres Euskalia, un traductor profesional.
-Traduce siempre del idioma de origen al idioma de destino indicado.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+Traduce SIEMPRE de ${srcName} a ${dstName}.
+Responde SIEMPRE en ${dstName} cuando des la TRADUCCIÓN.
+No añadas explicaciones ni comentarios.
 `.trim();
 };
 
@@ -489,10 +509,7 @@ export default function ProTranslator() {
           return;
         }
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con la traducción final.`;
+        const system = `${directionText(src, dst)}\n\nResponde SOLO con la traducción final.`;
 
         const token = await getProToken();
 
@@ -613,14 +630,8 @@ export default function ProTranslator() {
   const labelAddUrl = tr("proTranslator.add_url", "Añadir URLs");
   const labelSaveUrls = tr("proTranslator.save_urls", "Guardar");
   const labelCancel = tr("proTranslator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "proTranslator.urls_note_visible",
-    "Solo se importará el texto visible."
-  );
-  const labelUrlsNotePaywalled = tr(
-    "proTranslator.urls_note_paywalled",
-    "No se admiten artículos de pago."
-  );
+  const labelUrlsNoteVisible = tr("proTranslator.urls_note_visible", "Solo se importará el texto visible.");
+  const labelUrlsNotePaywalled = tr("proTranslator.urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("proTranslator.remove", "Quitar");
 
   const labelSaveTranslation = tr("proTranslator.save_button_label", "Guardar");
@@ -776,7 +787,6 @@ export default function ProTranslator() {
     const hasDot = s.includes(".");
     const hasComma = s.includes(",");
 
-    // si tiene ambos, el ÚLTIMO separador suele ser decimal
     if (hasDot && hasComma) {
       const lastDot = s.lastIndexOf(".");
       const lastComma = s.lastIndexOf(",");
@@ -789,12 +799,10 @@ export default function ProTranslator() {
       return { type: "decimal", intDigits, fracDigits: fracRaw, sep: decSep };
     }
 
-    // un separador: decidir si es decimal o miles
     if (hasDot || hasComma) {
       const sep = hasDot ? "." : ",";
       const parts = s.split(sep);
       if (parts.length !== 2) {
-        // múltiples separadores -> probablemente miles
         const all = s.replace(/[.,]/g, "");
         if (!/^\d+$/.test(all)) return { type: "none" };
         return { type: "int", digits: all };
@@ -803,21 +811,17 @@ export default function ProTranslator() {
       const [a, b] = parts;
       if (!/^\d+$/.test(a) || !/^\d+$/.test(b)) return { type: "none" };
 
-      // si la parte decimal es corta (1-2), tratamos como decimal
       if (b.length <= 2) return { type: "decimal", intDigits: a, fracDigits: b, sep };
 
-      // si la parte tras separador es 3 y la parte antes es larga -> miles
       if (b.length === 3 && a.length >= 2) {
         const all = (a + b).replace(/[^\d]/g, "");
         if (!/^\d+$/.test(all)) return { type: "none" };
         return { type: "int", digits: all };
       }
 
-      // por defecto: decimal
       return { type: "decimal", intDigits: a, fracDigits: b, sep };
     }
 
-    // sin separadores
     if (!/^\d+$/.test(s)) return { type: "none" };
     return { type: "int", digits: s };
   };
@@ -826,7 +830,6 @@ export default function ProTranslator() {
     const input = (text || "").toString();
     if (!input) return input;
 
-    // números tipo 123, 1.234, 1,234, 3,5, 3.5, 2026, etc.
     const re = /\b\d[\d.,]*\d|\b\d\b/g;
 
     return input.replace(re, (match) => {
@@ -841,7 +844,6 @@ export default function ProTranslator() {
         if (!Number.isFinite(n)) return match;
         const intWords = basqueNumberToWords(n);
         const fracWords = digitsToWords(info.fracDigits);
-        // en euskera suele decirse "koma"
         return `${intWords} koma ${fracWords}`;
       }
       return match;
@@ -857,7 +859,6 @@ export default function ProTranslator() {
     const raw = rightText?.trim();
     if (!raw) return;
 
-    // ✅ CAMBIO (A): si el destino es euskera, convertimos números a palabras
     const text = dst === "eus" ? replaceNumbersToBasqueWords(raw) : raw;
 
     setSpeaking(true);
@@ -1106,7 +1107,9 @@ export default function ProTranslator() {
     }
 
     const seen = new Set();
-    return valid.filter((v) => (seen.has(v.href) ? false : (seen.add(v.href), true)));
+    return valid.filter((v) =>
+      seen.has(v.href) ? false : (seen.add(v.href), true)
+    );
   };
 
   const addUrlsFromTextarea = () => {
@@ -1122,7 +1125,8 @@ export default function ProTranslator() {
     setUrlInputOpen(false);
   };
 
-  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
+  const removeUrl = (id) =>
+    setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
@@ -1146,7 +1150,9 @@ export default function ProTranslator() {
                   >
                     <FileText
                       className={`w-4 h-4 ${
-                        sourceMode === "text" ? "text-blue-600" : "text-slate-500"
+                        sourceMode === "text"
+                          ? "text-blue-600"
+                          : "text-slate-500"
                       }`}
                     />
                     <span>{labelTabText}</span>
@@ -1186,7 +1192,9 @@ export default function ProTranslator() {
                   >
                     <UrlIcon
                       className={`w-4 h-4 ${
-                        sourceMode === "url" ? "text-blue-600" : "text-slate-500"
+                        sourceMode === "url"
+                          ? "text-blue-600"
+                          : "text-slate-500"
                       }`}
                     />
                     <span>{labelTabUrl}</span>
@@ -1207,7 +1215,9 @@ export default function ProTranslator() {
                         }}
                         className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{src === "auto" ? autoShownLabel : langLabel(src)}</span>
+                        <span>
+                          {src === "auto" ? autoShownLabel : langLabel(src)}
+                        </span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1312,12 +1322,15 @@ export default function ProTranslator() {
                     <textarea
                       ref={leftTA}
                       value={leftText}
-                      onChange={(e) => setLeftText(e.target.value.slice(0, MAX_CHARS))}
+                      onChange={(e) =>
+                        setLeftText(e.target.value.slice(0, MAX_CHARS))
+                      }
                       placeholder={t("translator.left_placeholder")}
                       className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${HIDE_SCROLLBAR}`}
                     />
                     <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
-                      {leftText.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                      {leftText.length.toLocaleString()} /{" "}
+                      {MAX_CHARS.toLocaleString()}
                     </div>
                   </>
                 )}
@@ -1354,8 +1367,12 @@ export default function ProTranslator() {
                       <div className="text-xl font-semibold text-slate-800">
                         {labelChooseFileTitle}
                       </div>
-                      <div className="mt-3 text-sm text-slate-500">{labelAcceptedFormats}</div>
-                      <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
+                      <div className="mt-3 text-sm text-slate-500">
+                        {labelAcceptedFormats}
+                      </div>
+                      <div className="mt-1 text-xs text-slate-400">
+                        {labelFolderHint}
+                      </div>
                     </button>
 
                     {documents.length > 0 && (
@@ -1504,12 +1521,16 @@ export default function ProTranslator() {
                 />
 
                 {err && (
-                  <div className="absolute bottom-4 left-8 text-sm text-red-500">{err}</div>
+                  <div className="absolute bottom-4 left-8 text-sm text-red-500">
+                    {err}
+                  </div>
                 )}
 
                 <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
                   {savedToLibrary && (
-                    <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>
+                    <p className="text-xs text-emerald-600 mb-1">
+                      {librarySavedMessage}
+                    </p>
                   )}
 
                   <div className="flex items-center gap-4">
@@ -1537,7 +1558,11 @@ export default function ProTranslator() {
                       aria-label={t("translator.copy")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
-                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+                      {copied ? (
+                        <Check className="w-5 h-5" />
+                      ) : (
+                        <CopyIcon className="w-5 h-5" />
+                      )}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>
