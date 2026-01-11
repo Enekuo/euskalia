@@ -23,43 +23,40 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
-// ✅ CAMBIO: directionText reforzado para que SIEMPRE respete dst y no “se vaya” a inglés
 const directionText = (src, dst) => {
-  const name = (c) => {
-    if (c === "eus") return "Euskera (eu)";
-    if (c === "es") return "Español (es)";
-    if (c === "en") return "English (en)";
-    if (c === "fr") return "Français (fr)";
-    return c;
-  };
-
   if (src === "auto") {
     return `
 Eres Euskalia, un traductor profesional.
-
-1) Detecta el idioma del texto de entrada.
-2) Traduce SIEMPRE al idioma de destino: ${name(dst)}.
-3) NO añadas explicaciones, NO resumas, NO cambies el formato.
-
-FORMATO OBLIGATORIO DE SALIDA:
-- Primera línea EXACTA:
-DETECTED_LANGUAGE: <codigo>
-- A partir de la segunda línea: SOLO la traducción final en ${name(dst)}.
+Detecta el idioma del texto de entrada.
+La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
+DETECTED_LANGUAGE: <codigo_idioma>
+Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
+Después de esa primera línea, escribe la TRADUCCIÓN final.
+Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+No añadas explicaciones.
 `.trim();
   }
 
+  if (src === "eus" && dst === "es") {
+    return `
+Eres Euskalia, un traductor profesional.
+Traduce SIEMPRE de Euskera a Español.
+Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
+No cambies de idioma en la traducción.
+`.trim();
+  }
+  if (src === "es" && dst === "eus") {
+    return `
+Eres Euskalia, itzulpen profesionaleko tresna bat.
+Itzuli BETI gaztelaniatik euskarara.
+Erantzun BETI euskaraz itzulpena ematean.
+Ez aldatu hizkuntza itzulpenean.
+`.trim();
+  }
   return `
 Eres Euskalia, un traductor profesional.
-
-Idioma de ORIGEN: ${name(src)}.
-Idioma de DESTINO: ${name(dst)}.
-
-REGLAS:
-- Traduce SIEMPRE del idioma de ORIGEN al de DESTINO.
-- Responde SOLO con la traducción final en ${name(dst)}.
-- NO incluyas "DETECTED_LANGUAGE".
-- NO añadas explicaciones, títulos, notas ni comillas.
-- Mantén el formato original (saltos de línea, listas, etc.).
+Traduce siempre del idioma de origen al idioma de destino indicado.
+Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 `.trim();
 };
 
@@ -627,10 +624,7 @@ export default function ProTranslator() {
   const labelRemove = tr("proTranslator.remove", "Quitar");
 
   const labelSaveTranslation = tr("proTranslator.save_button_label", "Guardar");
-  const librarySavedMessage = tr(
-    "proTranslator.library_saved_toast",
-    "Guardado en biblioteca"
-  );
+  const librarySavedMessage = tr("proTranslator.library_saved_toast", "Guardado en biblioteca");
 
   const stopPlayback = () => {
     if (speaking && ttsAbortRef.current) {
@@ -668,14 +662,203 @@ export default function ProTranslator() {
     return "Read this text naturally.";
   };
 
+  // ✅ NUEVO (A): convertir números a palabras en euskera antes de TTS
+  const basqueNumberToWords = (n) => {
+    const units = {
+      0: "zero",
+      1: "bat",
+      2: "bi",
+      3: "hiru",
+      4: "lau",
+      5: "bost",
+      6: "sei",
+      7: "zazpi",
+      8: "zortzi",
+      9: "bederatzi",
+      10: "hamar",
+      11: "hamaika",
+      12: "hamabi",
+      13: "hamahiru",
+      14: "hamalau",
+      15: "hamabost",
+      16: "hamasei",
+      17: "hamazazpi",
+      18: "hamazortzi",
+      19: "hemeretzi",
+    };
+
+    const hundredWords = {
+      1: "ehun",
+      2: "berrehun",
+      3: "hirurehun",
+      4: "laurehun",
+      5: "bostehun",
+      6: "seiehun",
+      7: "zazpiehun",
+      8: "zortziehun",
+      9: "bederatziehun",
+    };
+
+    const toWordsUnder100 = (x) => {
+      if (x < 20) return units[x];
+      if (x < 40) {
+        const r = x - 20;
+        if (r === 0) return "hogei";
+        return "hogeita " + toWordsUnder100(r);
+      }
+      if (x < 60) {
+        const r = x - 40;
+        if (r === 0) return "berrogei";
+        return "berrogeita " + toWordsUnder100(r);
+      }
+      if (x < 80) {
+        const r = x - 60;
+        if (r === 0) return "hirurogei";
+        return "hirurogeita " + toWordsUnder100(r);
+      }
+      const r = x - 80;
+      if (r === 0) return "laurogei";
+      return "laurogeita " + toWordsUnder100(r);
+    };
+
+    const toWordsUnder1000 = (x) => {
+      if (x < 100) return toWordsUnder100(x);
+      const h = Math.floor(x / 100);
+      const r = x % 100;
+      const head = hundredWords[h] || (units[h] ? units[h] + "ehun" : "ehun");
+      if (r === 0) return head;
+      return head + " eta " + toWordsUnder100(r);
+    };
+
+    const toWordsUnder1000000 = (x) => {
+      if (x < 1000) return toWordsUnder1000(x);
+      const th = Math.floor(x / 1000);
+      const r = x % 1000;
+
+      const thHead = th === 1 ? "mila" : toWordsUnder1000(th) + " mila";
+      if (r === 0) return thHead;
+      return thHead + " eta " + toWordsUnder1000(r);
+    };
+
+    if (typeof n !== "number" || !Number.isFinite(n)) return "";
+    if (n < 0) return "minus " + basqueNumberToWords(Math.abs(n));
+    if (n === 0) return units[0];
+    if (n < 1000000) return toWordsUnder1000000(n);
+
+    // fallback simple para números grandes
+    const s = Math.trunc(n).toString();
+    return s.split("").map((d) => units[Number(d)] || d).join(" ");
+  };
+
+  const digitsToWords = (s) => {
+    const map = {
+      "0": "zero",
+      "1": "bat",
+      "2": "bi",
+      "3": "hiru",
+      "4": "lau",
+      "5": "bost",
+      "6": "sei",
+      "7": "zazpi",
+      "8": "zortzi",
+      "9": "bederatzi",
+    };
+    return (s || "")
+      .split("")
+      .map((ch) => (map[ch] ? map[ch] : ch))
+      .join(" ");
+  };
+
+  const parseNumberToken = (tok) => {
+    const s = (tok || "").trim();
+    if (!s) return { type: "none" };
+
+    const hasDot = s.includes(".");
+    const hasComma = s.includes(",");
+
+    // si tiene ambos, el ÚLTIMO separador suele ser decimal
+    if (hasDot && hasComma) {
+      const lastDot = s.lastIndexOf(".");
+      const lastComma = s.lastIndexOf(",");
+      const decPos = Math.max(lastDot, lastComma);
+      const decSep = s[decPos];
+      const intPartRaw = s.slice(0, decPos);
+      const fracRaw = s.slice(decPos + 1);
+      const intDigits = intPartRaw.replace(/[.,]/g, "");
+      if (!/^\d+$/.test(intDigits) || !/^\d+$/.test(fracRaw)) return { type: "none" };
+      return { type: "decimal", intDigits, fracDigits: fracRaw, sep: decSep };
+    }
+
+    // un separador: decidir si es decimal o miles
+    if (hasDot || hasComma) {
+      const sep = hasDot ? "." : ",";
+      const parts = s.split(sep);
+      if (parts.length !== 2) {
+        // múltiples separadores -> probablemente miles
+        const all = s.replace(/[.,]/g, "");
+        if (!/^\d+$/.test(all)) return { type: "none" };
+        return { type: "int", digits: all };
+      }
+
+      const [a, b] = parts;
+      if (!/^\d+$/.test(a) || !/^\d+$/.test(b)) return { type: "none" };
+
+      // si la parte decimal es corta (1-2), tratamos como decimal
+      if (b.length <= 2) return { type: "decimal", intDigits: a, fracDigits: b, sep };
+
+      // si la parte tras separador es 3 y la parte antes es larga -> miles
+      if (b.length === 3 && a.length >= 2) {
+        const all = (a + b).replace(/[^\d]/g, "");
+        if (!/^\d+$/.test(all)) return { type: "none" };
+        return { type: "int", digits: all };
+      }
+
+      // por defecto: decimal
+      return { type: "decimal", intDigits: a, fracDigits: b, sep };
+    }
+
+    // sin separadores
+    if (!/^\d+$/.test(s)) return { type: "none" };
+    return { type: "int", digits: s };
+  };
+
+  const replaceNumbersToBasqueWords = (text) => {
+    const input = (text || "").toString();
+    if (!input) return input;
+
+    // números tipo 123, 1.234, 1,234, 3,5, 3.5, 2026, etc.
+    const re = /\b\d[\d.,]*\d|\b\d\b/g;
+
+    return input.replace(re, (match) => {
+      const info = parseNumberToken(match);
+      if (info.type === "int") {
+        const n = Number(info.digits);
+        if (!Number.isFinite(n)) return match;
+        return basqueNumberToWords(n);
+      }
+      if (info.type === "decimal") {
+        const n = Number(info.intDigits);
+        if (!Number.isFinite(n)) return match;
+        const intWords = basqueNumberToWords(n);
+        const fracWords = digitsToWords(info.fracDigits);
+        // en euskera suele decirse "koma"
+        return `${intWords} koma ${fracWords}`;
+      }
+      return match;
+    });
+  };
+
   const handleSpeakToggle = async () => {
     if (speaking) {
       stopPlayback();
       return;
     }
 
-    const text = rightText?.trim();
-    if (!text) return;
+    const raw = rightText?.trim();
+    if (!raw) return;
+
+    // ✅ CAMBIO (A): si el destino es euskera, convertimos números a palabras
+    const text = dst === "eus" ? replaceNumbersToBasqueWords(raw) : raw;
 
     setSpeaking(true);
 
@@ -923,9 +1106,7 @@ export default function ProTranslator() {
     }
 
     const seen = new Set();
-    return valid.filter((v) =>
-      seen.has(v.href) ? false : (seen.add(v.href), true)
-    );
+    return valid.filter((v) => (seen.has(v.href) ? false : (seen.add(v.href), true)));
   };
 
   const addUrlsFromTextarea = () => {
