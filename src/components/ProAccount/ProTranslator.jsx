@@ -23,40 +23,42 @@ const OPTIONS_DST = [...OPTIONS]; // ✅ Destino: solo idiomas
 
 const MAX_CHARS = 5000;
 
+/* ✅ FIX CRÍTICO:
+   Prompt duro: motor de traducción, NO asistente, NO conversa, NO inventa.
+   Esto es lo que evitaba que “respondiera” en vez de traducir.
+*/
 const directionText = (src, dst) => {
+  const HARD_RULES = `
+REGLAS ABSOLUTAS:
+- Eres un MOTOR DE TRADUCCIÓN, no un asistente.
+- NO respondas, NO converses, NO completes frases.
+- NO añadas texto nuevo que no esté en el original.
+- NO reformules, NO hagas preguntas.
+- Devuelve ÚNICAMENTE el texto traducido.
+- Mantén el formato del original (saltos de línea, puntuación, etc.).
+`.trim();
+
   if (src === "auto") {
     return `
-Eres Euskalia, un traductor profesional.
+Eres Euskalia, motor profesional de traducción.
 Detecta el idioma del texto de entrada.
+
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
-Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-Después de esa primera línea, escribe la TRADUCCIÓN final.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
-No añadas explicaciones.
+
+Después:
+${HARD_RULES}
+
+Traduce SOLO al idioma de destino: ${dst}
 `.trim();
   }
 
-  if (src === "eus" && dst === "es") {
-    return `
-Eres Euskalia, un traductor profesional.
-Traduce SIEMPRE de Euskera a Español.
-Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
-No cambies de idioma en la traducción.
-`.trim();
-  }
-  if (src === "es" && dst === "eus") {
-    return `
-Eres Euskalia, itzulpen profesionaleko tresna bat.
-Itzuli BETI gaztelaniatik euskarara.
-Erantzun BETI euskaraz itzulpena ematean.
-Ez aldatu hizkuntza itzulpenean.
-`.trim();
-  }
   return `
-Eres Euskalia, un traductor profesional.
-Traduce siempre del idioma de origen al idioma de destino indicado.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+Eres Euskalia, motor profesional de traducción.
+Idioma origen: ${src}
+Idioma destino: ${dst}
+
+${HARD_RULES}
 `.trim();
 };
 
@@ -212,7 +214,7 @@ export default function ProTranslator() {
       "barkatu",
       "ez naiz gai",
 
-      // ✅ NUEVO: mensajes típicos de “no traducción”
+      // ✅ mensajes típicos de “no traducción”
       "no se puede traducir",
       "no puedo traducir",
       "no es una palabra",
@@ -310,10 +312,8 @@ export default function ProTranslator() {
         setLoading(true);
         setResultStatus("loading");
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
+        // ✅ FIX: system SOLO con prompt duro (sin frases blandas)
+        const system = directionText(src, dst);
 
         const token = await getProToken();
 
@@ -407,6 +407,8 @@ export default function ProTranslator() {
             urls,
             model: "gpt-4o-mini",
             temperature: 0.2,
+            // ✅ Para que backend pueda usar prompt duro si lo soporta:
+            system: directionText(src, dst),
           }),
         });
 
@@ -489,10 +491,8 @@ export default function ProTranslator() {
           return;
         }
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con la traducción final.`;
+        // ✅ FIX: system SOLO con prompt duro
+        const system = directionText(src, dst);
 
         const token = await getProToken();
 
@@ -1134,6 +1134,20 @@ export default function ProTranslator() {
                       {leftText.length.toLocaleString()} /{" "}
                       {MAX_CHARS.toLocaleString()}
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={handleToggleMic}
+                      className={`absolute bottom-3 left-6 inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium border ${
+                        listening
+                          ? "bg-red-50 border-red-200 text-red-700"
+                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                      }`}
+                      title={listening ? "Detener" : "Dictar"}
+                    >
+                      <Mic className="w-4 h-4" />
+                      {listening ? "Stop" : "Mic"}
+                    </button>
                   </>
                 )}
 
