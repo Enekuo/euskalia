@@ -1320,13 +1320,13 @@ registerPage_login: {
 
   pro_name: {
     ES: "Plan Pro",
-    EUS: "Plan Pro",
+    EUS: "Pro plana",
     EN: "Pro Plan",
     FR: "Offre Pro",
   },
   premium_name: {
     ES: "Plan Premium+",
-    EUS: "Plan Premium+",
+    EUS: "Premium+ plana",
     EN: "Premium+ Plan",
     FR: "Offre Premium+",
   },
