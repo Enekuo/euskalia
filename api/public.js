@@ -79,6 +79,45 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
+// ==============================
+// ✅ BLINDAJE TRADUCTOR (igual filosofía que Pro)
+// ==============================
+function strictTranslatorGuard(src, dst) {
+  const s = String(src || "").trim().toLowerCase();
+  const d = String(dst || "").trim().toLowerCase();
+
+  const base = `
+Eres Euskalia, un traductor profesional. Tu tarea es TRADUCIR de forma estricta.
+
+REGLAS OBLIGATORIAS:
+- Responde SOLO con la traducción final. No expliques nada.
+- NO reescribas, NO resumas, NO interpretes: traducción literal y natural.
+- Mantén EXACTAMENTE números (1969, 123, etc.), símbolos, fechas y unidades.
+- Mantén nombres propios tal cual (personas, lugares, marcas).
+- Mantén el formato: saltos de línea, listas, mayúsculas, signos.
+- No inventes información ni cambies el sentido.
+`.trim();
+
+  const autoBlock = `
+SI src = auto:
+- Primera línea EXACTA: DETECTED_LANGUAGE: <codigo>
+- Segunda línea en blanco.
+- A partir de la tercera línea: SOLO la traducción final en el idioma destino.
+`.trim();
+
+  const esToEus = `
+EXTRA (es -> eus):
+- Traduce "nacer / nací / nació / nacieron" usando el verbo "jaio" (ej: "Nací en 1969" -> "1969an jaio nintzen").
+- No traduzcas números a palabras: conserva "1969", "123", etc. EXACTAMENTE.
+`.trim();
+
+  let out = base;
+  if (s === "auto") out += `\n\n${autoBlock}`;
+  if (s === "es" && d === "eus") out += `\n\n${esToEus}`;
+
+  return out.trim();
+}
+
 // ====== Handler ======
 export default async function handler(req, res) {
   // CORS / Preflight
@@ -138,7 +177,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const src = body.src || null;
+      const src = body.src || "auto";
       const dst = body.dst || null;
 
       // Descargar contenido de cada URL
@@ -160,29 +199,16 @@ export default async function handler(req, res) {
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto según par de idiomas
+      // System por defecto (si no llega)
       if (!system) {
-        if (src === "eus" && dst === "es") {
-          system = `
-Eres Euskalia, un traductor profesional.
-Tu tarea es traducir el contenido de varias páginas web del euskera al español.
-Responde SOLO con la traducción en español, manteniendo en lo posible la estructura (títulos, párrafos, listas).
-No añadas explicaciones externas, solo la traducción.
-          `.trim();
-        } else if (src === "es" && dst === "eus") {
-          system = `
-Euskalia zara, itzulpen profesionaleko tresna bat.
-Zure lana hainbat webguneren edukia gaztelaniatik euskarara itzultzea da.
-Erantzun BETI euskaraz, eta saiatu egitura mantentzen (izenburuak, paragrafoak, zerrendak).
-Ez gehitu azalpen gehigarririk, soilik itzulpena.
-          `.trim();
-        } else {
-          system = `
-Eres Euskalia, un traductor profesional.
+        const guard = strictTranslatorGuard(src, dst);
+        system = `
+${guard}
+
 Tu tarea es traducir el contenido de varias páginas web al idioma de destino indicado.
-Responde SOLO con la traducción final en el idioma de destino y mantén en lo posible la estructura (títulos, párrafos, listas).
-          `.trim();
-        }
+Responde SOLO con la traducción final en el idioma de destino.
+Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nombres propios y números.
+        `.trim();
       }
 
       body.system = system;
@@ -223,11 +249,6 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    const finalMessages = [
-      ...(system ? [{ role: "system", content: system }] : []),
-      ...messages,
-    ];
-
     // ====== Identificar herramienta (Traductor vs Resumidor) ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
@@ -242,6 +263,22 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("traduc") || rawMode.includes("traduc");
 
     const tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
+
+    // ✅ Si es traductor: blindaje obligatorio SIEMPRE (para que sea igual al Pro)
+    if (tool === "translator") {
+      const srcForGuard = hasTranslate ? body.from : (body?.src || "auto");
+      const dstForGuard = hasTranslate ? body.to   : (body?.dst || null);
+
+      const guard = strictTranslatorGuard(srcForGuard, dstForGuard);
+
+      // Prepend guard siempre, incluso si el front manda system
+      system = `${guard}\n\n${(system || "").trim()}`.trim();
+    }
+
+    const finalMessages = [
+      ...(system ? [{ role: "system", content: system }] : []),
+      ...messages,
+    ];
 
     // Límites según herramienta
     const MAX_CHARS =
