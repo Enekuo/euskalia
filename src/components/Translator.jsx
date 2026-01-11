@@ -1079,12 +1079,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       type="button"
                       aria-label="Intercambiar idiomas"
                       onClick={swap}
-                      disabled={src === "auto"}
-                      className={`absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 transition ${
-                        src === "auto"
-                          ? "opacity-40 cursor-not-allowed"
-                          : "hover:bg-slate-200"
-                      }`}
+                      className="absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition"
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path
