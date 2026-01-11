@@ -733,7 +733,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setSpeaking(false);
   };
 
-  // ✅ Igual que en Pro: locale/instructions según dst
+  // ✅✅✅ NUEVO (IGUAL QUE EN PRO): forzar idioma del TTS según selector dst
   const ttsLocaleFromDst = (dstVal) => {
     if (dstVal === "eus") return "eu-ES";
     if (dstVal === "es") return "es-ES";
@@ -743,125 +743,15 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   };
 
   const ttsInstructionsFromDst = (dstVal) => {
-    if (dstVal === "eus") return "Read this text in Basque (Euskara).";
-    if (dstVal === "es") return "Read this text in Spanish (Spain).";
-    if (dstVal === "en") return "Read this text in English (US).";
-    if (dstVal === "fr") return "Read this text in French (France).";
+    if (dstVal === "eus")
+      return "Read this text in Basque (Euskara). Pronounce numbers in Basque as words (not in Spanish).";
+    if (dstVal === "es")
+      return "Read this text in Spanish (Spain). Pronounce numbers in Spanish.";
+    if (dstVal === "en")
+      return "Read this text in English (US). Pronounce numbers in English.";
+    if (dstVal === "fr")
+      return "Read this text in French (France). Pronounce numbers in French.";
     return "Read this text naturally.";
-  };
-
-  // ✅ Igual que en Pro: convertir números a euskera para TTS
-  const eusUnits = [
-    "zero",
-    "bat",
-    "bi",
-    "hiru",
-    "lau",
-    "bost",
-    "sei",
-    "zazpi",
-    "zortzi",
-    "bederatzi",
-  ];
-
-  const eusTeens = {
-    10: "hamar",
-    11: "hamaika",
-    12: "hamabi",
-    13: "hamahiru",
-    14: "hamalau",
-    15: "hamabost",
-    16: "hamasei",
-    17: "hamazazpi",
-    18: "hamazortzi",
-    19: "hemeretzi",
-  };
-
-  const eusTens = {
-    20: "hogei",
-    30: "hogeita hamar",
-    40: "berrogei",
-    50: "berrogeita hamar",
-    60: "hirurogei",
-    70: "hirurogeita hamar",
-    80: "laurogei",
-    90: "laurogeita hamar",
-  };
-
-  const eusHundreds = {
-    100: "ehun",
-    200: "berrehun",
-    300: "hirurehun",
-    400: "laurehun",
-    500: "bostehun",
-    600: "seiehun",
-    700: "zazpiehun",
-    800: "zortziehun",
-    900: "bederatziehun",
-  };
-
-  const toEusNumber = (n) => {
-    if (!Number.isFinite(n)) return "";
-    n = Math.trunc(n);
-
-    if (n < 0) return `minus ${toEusNumber(Math.abs(n))}`;
-    if (n < 10) return eusUnits[n];
-    if (n < 20) return eusTeens[n];
-
-    if (n < 100) {
-      const tens = Math.floor(n / 10) * 10;
-      const rest = n % 10;
-      const tensWord = eusTens[tens] || "";
-      if (!rest) return tensWord;
-      if (tens === 20) return `hogei ta ${eusUnits[rest]}`;
-      return `${tensWord} eta ${eusUnits[rest]}`;
-    }
-
-    if (n < 1000) {
-      const hundreds = Math.floor(n / 100) * 100;
-      const rest = n % 100;
-      const hWord = eusHundreds[hundreds] || "";
-      if (!rest) return hWord;
-      return `${hWord} eta ${toEusNumber(rest)}`;
-    }
-
-    if (n < 1000000) {
-      const thousands = Math.floor(n / 1000);
-      const rest = n % 1000;
-
-      const thWord = thousands === 1 ? "mila" : `${toEusNumber(thousands)} mila`;
-      if (!rest) return thWord;
-      if (rest < 100) return `${thWord} eta ${toEusNumber(rest)}`;
-      return `${thWord} ${toEusNumber(rest)}`;
-    }
-
-    return String(n)
-      .split("")
-      .map((d) => (d >= "0" && d <= "9" ? eusUnits[Number(d)] : d))
-      .join(" ");
-  };
-
-  const eusNumberifyText = (text) => {
-    return String(text || "").replace(/-?\d+(?:[.,]\d+)?/g, (m) => {
-      if (m.includes(".") || m.includes(",")) {
-        const sep = m.includes(",") ? "," : ".";
-        const [a, b] = m.split(sep);
-        const intPart = Number(a);
-        if (!Number.isFinite(intPart)) return m;
-
-        const dec = (b || "").replace(/\D/g, "");
-        if (!dec) return toEusNumber(intPart);
-
-        const decNum = Number(dec);
-        if (!Number.isFinite(decNum)) return m;
-
-        return `${toEusNumber(intPart)} koma ${toEusNumber(decNum)}`;
-      }
-
-      const num = Number(m);
-      if (!Number.isFinite(num)) return m;
-      return toEusNumber(num);
-    });
   };
 
   const handleSpeakToggle = async () => {
@@ -888,23 +778,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     ttsAbortRef.current = ctrl;
 
     try {
+      // ✅✅✅ NUEVO: locale + instructions según destino
       const locale = ttsLocaleFromDst(dst);
       const instructions = ttsInstructionsFromDst(dst);
-
-      // ✅ EUS: convertir números a palabras para evitar que los lea en castellano
-      const ttsText = dst === "eus" ? eusNumberifyText(text) : text;
 
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
-          text: ttsText,
+          text,
           voice: "alloy",
           format: "wav",
           locale,
           instructions,
-          lang: dst,
         }),
       });
 
