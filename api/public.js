@@ -2,7 +2,7 @@
 import { kv } from "@vercel/kv";
 import crypto from "crypto";
 
-// ====== Configuración de límites (via ENV con defaults sensatos) ======
+// ====== Configuración de caché ======
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
 // ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR) ======
@@ -120,7 +120,7 @@ export default async function handler(req, res) {
       max_tokens
     } = body;
 
-    // ====== Soporte especial: traducir desde URLs ======
+    // ====== Soporte especial: traducir desde URLs (MISMO QUE PRO) ======
     if (body?.mode === "translate_urls") {
       const urls = Array.isArray(body.urls)
         ? body.urls.map((u) => String(u || "").trim()).filter(Boolean)
@@ -156,7 +156,7 @@ export default async function handler(req, res) {
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto según par de idiomas
+      // System por defecto según par de idiomas (MISMO QUE PRO)
       if (!system) {
         if (src === "eus" && dst === "es") {
           system = `
@@ -188,7 +188,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       delete body.to;
     }
 
-    // Admite dos contratos:
+    // Admite dos contratos (MISMO QUE PRO):
     // A) { messages:[{role,content}, ...], system?, model?, temperature?, max_tokens? }
     // B) { text, from, to } -> traducir simple
     const hasMessages  = Array.isArray(body?.messages) && body.messages.length > 0;
@@ -254,11 +254,11 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
-    // ====== LÍMITES (FREE por IP) ======
+    // ====== LÍMITES (por IP) ======
     const ip  = getClientIp(req);
     const day = todayKey();
 
-    // 1) Máx. caracteres por request (según herramienta)
+    // 1) Máx. caracteres por request
     const totalChars =
       (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
@@ -274,11 +274,13 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    // 2) Rate-limit RPM por IP (según herramienta)
+    // 2) Rate-limit RPM por IP
     try {
       const rpmKey = `rl:free:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
-      if (count === 1) await kv.expire(rpmKey, 60);
+      if (count === 1) {
+        await kv.expire(rpmKey, 60);
+      }
       if (count > RPM) {
         return res.status(429).json({
           ok: false,
@@ -311,7 +313,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       } catch {}
     }
 
-    // 4) Cuota diaria de tokens por IP (según herramienta)
+    // 4) Cuota diaria de tokens por IP
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
       const dailyKey = `quota:free:${tool}:${day}:${ip}`;
@@ -329,7 +331,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {}
 
-    // ====== KV CACHE (igual estilo Pro) ======
+    // ====== KV CACHE (MISMO QUE PRO) ======
     const task = hasTranslate ? "translate" : (body?.task || body?.mode || "chat");
     const src  = hasTranslate ? body.from : (body?.src || null);
     const dst  = hasTranslate ? body.to   : (body?.dst || null);
@@ -354,7 +356,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {}
 
-    // ====== Llamada a OpenAI (igual que Pro) ======
+    // ====== Llamada a OpenAI (MISMO QUE PRO) ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
