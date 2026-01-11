@@ -31,7 +31,7 @@ export default function Translator() {
   const uiLang =
     (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
 
-  // ✅ NUEVO: Detectar idioma (auto)
+  // ✅ Detectar idioma (auto)
   const LBL_DETECT = tr(
     "translator.detect_language",
     uiLang === "EUS" ? "Hizkuntza detektatu" : "Detectar idioma"
@@ -48,8 +48,17 @@ export default function Translator() {
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
   // ===== opciones selector =====
-  const OPTIONS = [
-    { value: "auto", label: LBL_DETECT }, // ✅ por defecto
+  // ✅ ORIGEN: incluye Detectar idioma
+  const OPTIONS_SRC = [
+    { value: "auto", label: LBL_DETECT },
+    { value: "es", label: LBL_ES },
+    { value: "eus", label: LBL_EUS },
+    { value: "en", label: LBL_EN },
+    { value: "fr", label: LBL_FR },
+  ];
+
+  // ✅ DESTINO: SIN Detectar idioma (como en Pro)
+  const OPTIONS_DST = [
     { value: "es", label: LBL_ES },
     { value: "eus", label: LBL_EUS },
     { value: "en", label: LBL_EN },
@@ -57,7 +66,7 @@ export default function Translator() {
   ];
 
   // ===== estado idioma / texto =====
-  const [src, setSrc] = useState("auto"); // ✅ AUTO por defecto (y quedará fijo en UI)
+  const [src, setSrc] = useState("auto"); // AUTO por defecto
   const [dst, setDst] = useState("es");
   const [openLeft, setOpenLeft] = useState(false);
   const [openRight, setOpenRight] = useState(false);
@@ -67,9 +76,8 @@ export default function Translator() {
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [listening, setListening] = useState(false);
 
-  // ✅ NUEVO: idioma detectado para mostrar "(...) detectado"
+  // idioma detectado para mostrar "(...) detectado"
   const [detectedLangLabel, setDetectedLangLabel] = useState("");
 
   // ===== tabs (Texto / Documento / URL) =====
@@ -99,7 +107,7 @@ export default function Translator() {
   const leftTA = useRef(null);
   const rightTA = useRef(null);
 
-  // === refs para grabación ===
+  // === refs para grabación (no usado aquí, pero lo dejo tal cual) ===
   const mediaRecorderRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const micChunksRef = useRef([]);
@@ -129,7 +137,7 @@ export default function Translator() {
     return "Idioma";
   };
 
-  // ✅ parseo DETECTED_LANGUAGE
+  // parseo DETECTED_LANGUAGE
   const parseDetectedLanguage = (raw) => {
     const s = String(raw || "");
     const lines = s.split(/\r?\n/);
@@ -232,7 +240,6 @@ Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de ${langNameES(srcVal)} a Español.
 Objetivo: traducción NATURAL y CORRECTA.
 Puedes reordenar o reformular frases si es necesario para que suenen naturales en el idioma de destino.
-No inventes información ni añallow a reformular frases si es necesario para que suenen naturales en el idioma de destino.
 No inventes información ni añadas datos nuevos. No expliques nada.
 Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
 No cambies de idioma en la traducción.
@@ -280,10 +287,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     []
   );
 
+  // ✅ Swap: bloqueado si origen es "auto" (Detectar idioma)
   const swap = () => {
-    // ✅ Si el ORIGEN es "Detectar idioma", no se puede cambiar de lado
     if (src === "auto") return;
-
     setDetectedLangLabel("");
     const nextSrc = dst;
     const nextDst = src === "auto" ? "es" : src;
@@ -314,10 +320,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") autoResize(rightTA.current);
   }, [rightText, sourceMode]);
 
-  // ✅ etiqueta que se ve en el selector de ORIGEN
+  // etiqueta que se ve en el selector de ORIGEN
   const srcButtonLabel =
     src !== "auto"
-      ? OPTIONS.find((o) => o.value === src)?.label
+      ? OPTIONS_SRC.find((o) => o.value === src)?.label
       : detectedLangLabel && leftText.trim()
       ? `(${detectedLangLabel}) ${LBL_DETECTED_SUFFIX}`
       : LBL_DETECT;
@@ -687,7 +693,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     </button>
   );
 
-  const Dropdown = ({ open, selected, onSelect, align = "left" }) => {
+  // ✅ Dropdown ahora acepta options (para poder quitar "auto" en el derecho)
+  const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
     if (!open) return null;
     return (
       <div
@@ -701,7 +708,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
             <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
           </svg>
           <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
-            {OPTIONS.map((opt) => (
+            {options.map((opt) => (
               <Item
                 key={opt.value}
                 label={opt.label}
@@ -838,7 +845,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     }
   };
 
-  // ===== Botón de borrar: limpia TODO =====
+  // Botón de borrar: limpia TODO
   const handleClearLeft = () => {
     setLeftText("");
     setRightText("");
@@ -849,7 +856,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setDetectedLangLabel("");
   };
 
-  // ===== Acciones: copiar / PDF =====
+  // Acciones: copiar / PDF
   const handleCopy = async () => {
     if (!hasRealResult) return;
     try {
@@ -882,7 +889,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     w.print();
   };
 
-  // ===== helpers Documentos / URLs (solo UI) =====
+  // helpers Documentos / URLs (solo UI)
   const addFiles = async (list) => {
     if (!list?.length) return;
     const arr = Array.from(list);
@@ -956,7 +963,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlInputOpen(false);
   };
 
-  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
+  const removeUrl = (id) =>
+    setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
   return (
     <>
@@ -1031,41 +1039,72 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 {/* selector: centrado */}
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="relative pointer-events-auto flex items-center">
-                    {/* ORIGEN (FIJO: Detectar idioma) */}
+                    {/* ORIGEN */}
                     <div className="relative mr-16" ref={leftRef}>
-                      <div className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 rounded-md select-none">
-                        <span>{srcButtonLabel}</span>
-                      </div>
-                    </div>
-
-                    {/* SWAP (OCULTO cuando ORIGEN es detectar idioma) */}
-                    {src !== "auto" && (
                       <button
                         type="button"
-                        aria-label="Intercambiar idiomas"
-                        onClick={swap}
-                        className="absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition"
+                        onClick={() => {
+                          setOpenLeft((v) => !v);
+                          setOpenRight(false);
+                        }}
+                        className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <span>{srcButtonLabel}</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
-                            d="M7 7h11M7 7l3-3M7 7l3 3"
-                            stroke="#475569"
-                            strokeWidth="1.7"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M17 17H6M17 17l-3-3M17 17l-3 3"
-                            stroke="#475569"
+                            d="M6 9l6 6 6-6"
+                            stroke="#334155"
                             strokeWidth="1.7"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
                         </svg>
                       </button>
-                    )}
 
-                    {/* DESTINO */}
+                      <Dropdown
+                        open={openLeft}
+                        selected={src}
+                        onSelect={(val) => {
+                          setSrc(val);
+                          setDetectedLangLabel("");
+                          setOpenLeft(false);
+                        }}
+                        align="left"
+                        options={OPTIONS_SRC}
+                      />
+                    </div>
+
+                    {/* SWAP (se queda igual, pero bloqueado si src === auto) */}
+                    <button
+                      type="button"
+                      aria-label="Intercambiar idiomas"
+                      onClick={swap}
+                      disabled={src === "auto"}
+                      className={`absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 transition ${
+                        src === "auto"
+                          ? "opacity-40 cursor-not-allowed"
+                          : "hover:bg-slate-200"
+                      }`}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M7 7h11M7 7l3-3M7 7l3 3"
+                          stroke="#475569"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M17 17H6M17 17l-3-3M17 17l-3 3"
+                          stroke="#475569"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    {/* DESTINO (SIN Detectar idioma) */}
                     <div className="relative ml-16" ref={rightRef}>
                       <button
                         type="button"
@@ -1075,7 +1114,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         }}
                         className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{OPTIONS.find((o) => o.value === dst)?.label}</span>
+                        <span>{OPTIONS_DST.find((o) => o.value === dst)?.label}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1095,6 +1134,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           setOpenRight(false);
                         }}
                         align="right"
+                        options={OPTIONS_DST}
                       />
                     </div>
                   </div>
@@ -1137,41 +1177,15 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   </>
                 )}
 
-                {/* ... (resto del componente igual que tenías) ... */}
                 {sourceMode === "document" && (
                   <div
                     className={`h-full w-full flex flex-col relative min-h-0 ${
                       dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
                     }`}
-                    onDragEnter={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(true);
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(false);
-                    }}
-                    onDrop={async (e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDragActive(false);
-                      const dt = e.dataTransfer;
-                      if (dt?.files?.length) {
-                        const arr = Array.from(dt.files);
-                        const withIds = arr.map((file) => ({
-                          id: crypto.randomUUID(),
-                          file,
-                        }));
-                        setDocuments((prev) => [...prev, ...withIds]);
-                      }
-                    }}
+                    onDragEnter={onDragEnter}
+                    onDragOver={onDragOver}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
                   >
                     <input
                       ref={fileInputRef}
@@ -1179,18 +1193,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       className="hidden"
                       multiple
                       accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={async (e) => {
-                        const list = e.target.files;
-                        if (list?.length) {
-                          const arr = Array.from(list);
-                          const withIds = arr.map((file) => ({
-                            id: crypto.randomUUID(),
-                            file,
-                          }));
-                          setDocuments((prev) => [...prev, ...withIds]);
-                        }
-                        e.target.value = "";
-                      }}
+                      onChange={onFiles}
                     />
 
                     <button
@@ -1235,9 +1238,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                               </div>
 
                               <button
-                                onClick={() =>
-                                  setDocuments((prev) => prev.filter((d) => d.id !== id))
-                                }
+                                onClick={() => removeDocument(id)}
                                 className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                                 title={labelRemove}
                                 aria-label={labelRemove}
@@ -1396,7 +1397,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                     }`}
                   >
-                    {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+                    {copied ? (
+                      <Check className="w-5 h-5" />
+                    ) : (
+                      <CopyIcon className="w-5 h-5" />
+                    )}
                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                       {copied ? t("translator.copied") : t("translator.copy")}
                     </span>
