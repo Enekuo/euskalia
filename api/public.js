@@ -6,12 +6,12 @@ import crypto from "crypto";
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
 // ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR) ======
-// Traductor
+// Traductor (FREE)
 const FREE_TRANSLATOR_MAX_CHARS    = Number(process.env.FREE_TRANSLATOR_MAX_CHARS || 5000);
 const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 20000);
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
-// Resumidor
+// Resumidor (FREE)
 const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 12000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
@@ -64,58 +64,15 @@ function todayKey(date = new Date()) {
 // Very simple HTML → texto
 function htmlToText(html) {
   if (!html) return "";
-  // quitar scripts y estilos
   let text = html
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "");
-  // saltos de línea en bloques
   text = text.replace(
     /<\/(p|div|li|h[1-6]|br|section|article|header|footer|main)>/gi,
     "$&\n"
   );
-  // quitar resto de etiquetas
   text = text.replace(/<[^>]+>/g, " ");
-  // normalizar espacios
   return text.replace(/\s+/g, " ").trim();
-}
-
-// ==============================
-// ✅ BLINDAJE TRADUCTOR (igual filosofía que Pro)
-// ==============================
-function strictTranslatorGuard(src, dst) {
-  const s = String(src || "").trim().toLowerCase();
-  const d = String(dst || "").trim().toLowerCase();
-
-  const base = `
-Eres Euskalia, un traductor profesional. Tu tarea es TRADUCIR de forma estricta.
-
-REGLAS OBLIGATORIAS:
-- Responde SOLO con la traducción final. No expliques nada.
-- NO reescribas, NO resumas, NO interpretes: traducción literal y natural.
-- Mantén EXACTAMENTE números (1969, 123, etc.), símbolos, fechas y unidades.
-- Mantén nombres propios tal cual (personas, lugares, marcas).
-- Mantén el formato: saltos de línea, listas, mayúsculas, signos.
-- No inventes información ni cambies el sentido.
-`.trim();
-
-  const autoBlock = `
-SI src = auto:
-- Primera línea EXACTA: DETECTED_LANGUAGE: <codigo>
-- Segunda línea en blanco.
-- A partir de la tercera línea: SOLO la traducción final en el idioma destino.
-`.trim();
-
-  const esToEus = `
-EXTRA (es -> eus):
-- Traduce "nacer / nací / nació / nacieron" usando el verbo "jaio" (ej: "Nací en 1969" -> "1969an jaio nintzen").
-- No traduzcas números a palabras: conserva "1969", "123", etc. EXACTAMENTE.
-`.trim();
-
-  let out = base;
-  if (s === "auto") out += `\n\n${autoBlock}`;
-  if (s === "es" && d === "eus") out += `\n\n${esToEus}`;
-
-  return out.trim();
 }
 
 // ====== Handler ======
@@ -177,7 +134,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const src = body.src || "auto";
+      const src = body.src || null;
       const dst = body.dst || null;
 
       // Descargar contenido de cada URL
@@ -199,21 +156,33 @@ export default async function handler(req, res) {
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto (si no llega)
+      // System por defecto según par de idiomas
       if (!system) {
-        const guard = strictTranslatorGuard(src, dst);
-        system = `
-${guard}
-
+        if (src === "eus" && dst === "es") {
+          system = `
+Eres Euskalia, un traductor profesional.
+Tu tarea es traducir el contenido de varias páginas web del euskera al español.
+Responde SOLO con la traducción en español, manteniendo en lo posible la estructura (títulos, párrafos, listas).
+No añadas explicaciones externas, solo la traducción.
+          `.trim();
+        } else if (src === "es" && dst === "eus") {
+          system = `
+Euskalia zara, itzulpen profesionaleko tresna bat.
+Zure lana hainbat webguneren edukia gaztelaniatik euskarara itzultzea da.
+Erantzun BETI euskaraz, eta saiatu egitura mantentzen (izenburuak, paragrafoak, zerrendak).
+Ez gehitu azalpen gehigarririk, soilik itzulpena.
+          `.trim();
+        } else {
+          system = `
+Eres Euskalia, un traductor profesional.
 Tu tarea es traducir el contenido de varias páginas web al idioma de destino indicado.
-Responde SOLO con la traducción final en el idioma de destino.
-Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nombres propios y números.
-        `.trim();
+Responde SOLO con la traducción final en el idioma de destino y mantén en lo posible la estructura (títulos, párrafos, listas).
+          `.trim();
+        }
       }
 
       body.system = system;
       body.messages = [{ role: "user", content: combined }];
-      // aseguramos que no entra por el contrato text/from/to
       delete body.text;
       delete body.from;
       delete body.to;
@@ -249,6 +218,11 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
       });
     }
 
+    const finalMessages = [
+      ...(system ? [{ role: "system", content: system }] : []),
+      ...messages,
+    ];
+
     // ====== Identificar herramienta (Traductor vs Resumidor) ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
@@ -263,22 +237,6 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
       rawTask.includes("traduc") || rawMode.includes("traduc");
 
     const tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
-
-    // ✅ Si es traductor: blindaje obligatorio SIEMPRE (para que sea igual al Pro)
-    if (tool === "translator") {
-      const srcForGuard = hasTranslate ? body.from : (body?.src || "auto");
-      const dstForGuard = hasTranslate ? body.to   : (body?.dst || null);
-
-      const guard = strictTranslatorGuard(srcForGuard, dstForGuard);
-
-      // Prepend guard siempre, incluso si el front manda system
-      system = `${guard}\n\n${(system || "").trim()}`.trim();
-    }
-
-    const finalMessages = [
-      ...(system ? [{ role: "system", content: system }] : []),
-      ...messages,
-    ];
 
     // Límites según herramienta
     const MAX_CHARS =
@@ -296,7 +254,7 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
-    // ====== LÍMITES ======
+    // ====== LÍMITES (FREE por IP) ======
     const ip  = getClientIp(req);
     const day = todayKey();
 
@@ -318,11 +276,9 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
 
     // 2) Rate-limit RPM por IP (según herramienta)
     try {
-      const rpmKey = `rl:rpm:${tool}:${ip}`;
+      const rpmKey = `rl:free:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
-      if (count === 1) {
-        await kv.expire(rpmKey, 60); // ventana 60s
-      }
+      if (count === 1) await kv.expire(rpmKey, 60);
       if (count > RPM) {
         return res.status(429).json({
           ok: false,
@@ -331,14 +287,12 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
           message: `Demasiadas peticiones. Límite ${RPM}/min. Espera unos segundos.`
         });
       }
-    } catch {
-      // si KV falla, continuamos sin romper UX
-    }
+    } catch {}
 
     // 3) Límite de resúmenes por día (solo resumidor)
     if (tool === "summary") {
       try {
-        const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
+        const dailySummaryKey = `quota:free:summary:reqs:${day}:${ip}`;
         const usedReqs = (await kv.get(dailySummaryKey)) || 0;
 
         if (Number(usedReqs) >= FREE_SUMMARY_DAILY_REQUESTS) {
@@ -353,16 +307,14 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
         }
 
         const newUsed = Number(usedReqs) + 1;
-        await kv.set(dailySummaryKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
-      } catch {
-        // si KV falla, no bloqueamos
-      }
+        await kv.set(dailySummaryKey, newUsed, { ex: 60 * 60 * 26 });
+      } catch {}
     }
 
     // 4) Cuota diaria de tokens por IP (según herramienta)
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
-      const dailyKey = `quota:${tool}:${day}:${ip}`;
+      const dailyKey = `quota:free:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
       if (used + estTokens > DAILY_TOKENS) {
         return res.status(429).json({
@@ -375,12 +327,9 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
             `Vuelve mañana o mejora de plan.`
         });
       }
-      // no reservamos aún; sumaremos tras obtener usage real
-    } catch {
-      // si KV falla, no bloqueamos
-    }
+    } catch {}
 
-    // ====== KV CACHE ======
+    // ====== KV CACHE (igual estilo Pro) ======
     const task = hasTranslate ? "translate" : (body?.task || body?.mode || "chat");
     const src  = hasTranslate ? body.from : (body?.src || null);
     const dst  = hasTranslate ? body.to   : (body?.dst || null);
@@ -403,11 +352,9 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
           cached: true
         });
       }
-    } catch {
-      // sin caché, continuamos
-    }
+    } catch {}
 
-    // ====== Llamada a OpenAI ======
+    // ====== Llamada a OpenAI (igual que Pro) ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -448,7 +395,7 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
 
     // ====== Actualizar cuota diaria real (tokens) ======
     try {
-      const dailyKey = `quota:${tool}:${day}:${ip}`;
+      const dailyKey = `quota:free:${tool}:${day}:${ip}`;
       const used = (await kv.get(dailyKey)) || 0;
 
       const realTokens =
@@ -456,10 +403,8 @@ Mantén en lo posible la estructura (títulos, párrafos, listas) y respeta nomb
         Math.max(estTokens, 1);
 
       const newUsed = used + realTokens;
-      await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
-    } catch {
-      // si KV falla, seguimos
-    }
+      await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 });
+    } catch {}
 
     return res.status(200).json({
       ok: true,
