@@ -20,30 +20,43 @@ export default function RegisterPage() {
         </Link>
       </header>
 
-      {/* Contenido centrado con tarjeta */}
-      <main className="relative flex-1 flex flex-col items-center justify-center px-4 pb-20">
+      {/* Contenido */}
+      <main className="relative flex-1 flex items-center justify-center px-4 pb-20">
         {/* Halo suave */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-[520px] w-[520px] rounded-full bg-blue-500/10 blur-3xl" />
         </div>
 
-        {/* Cuadro reutilizable (mismo que en el modal de Pricing) */}
-        <div className="relative w-full flex flex-col items-center">
-          <AuthCard variant="page" />
+        {/* Layout: tarjeta izquierda + botones derecha */}
+        <div className="relative w-full max-w-6xl flex flex-col items-center justify-center gap-10 lg:flex-row lg:items-start">
+          {/* Izquierda: AuthCard */}
+          <div className="w-full max-w-xl flex justify-center">
+            <AuthCard variant="page" />
+          </div>
 
-          {/* Botones de test navegación */}
-          <div className="mt-6 w-full max-w-md flex flex-col gap-3">
-            <Button onClick={() => navigate("/cuenta-pro")}>
-              Entrar a Pro
-            </Button>
+          {/* Derecha: botones (más estrechos) */}
+          <div className="w-full max-w-[360px] flex justify-center lg:justify-start">
+            <div className="w-full flex flex-col gap-3">
+              <Button className="w-full" onClick={() => navigate("/cuenta-pro")}>
+                Entrar a Pro
+              </Button>
 
-            <Button variant="outline" onClick={() => navigate("/pago-correcto")}>
-              Ir a Pago Correcto
-            </Button>
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => navigate("/pago-correcto")}
+              >
+                Ir a Pago Correcto
+              </Button>
 
-            <Button variant="outline" onClick={() => navigate("/pago-cancelado")}>
-              Ir a Pago Cancelado
-            </Button>
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => navigate("/pago-cancelado")}
+              >
+                Ir a Pago Cancelado
+              </Button>
+            </div>
           </div>
         </div>
       </main>
