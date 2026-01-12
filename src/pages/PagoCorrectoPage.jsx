@@ -4,11 +4,11 @@ import { CheckCircle2 } from "lucide-react";
 
 export default function PagoCorrectoPage() {
   return (
-    <main className="min-h-[70vh] flex items-center justify-center px-6 py-12">
+    <main className="min-h-screen bg-[#F7F9FC] flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-2xl">
-        {/* ✅ TEXTO ARRIBA (FUERA de la tarjeta) */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3">
+        {/* ✅ TEXTO ARRIBA (CENTRADO, FUERA de la tarjeta) */}
+        <div className="mb-8 text-center">
+          <div className="flex items-center justify-center gap-3">
             <CheckCircle2 className="h-7 w-7 text-emerald-600" />
             <h1 className="text-3xl font-semibold text-slate-900">
               Pago realizado correctamente
@@ -21,10 +21,12 @@ export default function PagoCorrectoPage() {
         </div>
 
         {/* ✅ TARJETA ORIGINAL (mismo tamaño y fondo que antes) */}
-        <AuthCard variant="page" />
+        <div className="flex justify-center">
+          <AuthCard variant="page" />
+        </div>
 
-        {/* ✅ TEXTO ABAJO (FUERA de la tarjeta) */}
-        <p className="mt-6 text-sm text-slate-500">
+        {/* ✅ TEXTO ABAJO (CENTRADO, FUERA de la tarjeta) */}
+        <p className="mt-8 text-center text-sm text-slate-500">
           Importante: entra con el mismo email con el que realizaste el pago.
         </p>
       </div>
