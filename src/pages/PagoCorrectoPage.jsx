@@ -1,35 +1,32 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import AuthCard from "@/components/Auth/AuthCard";
+import { CheckCircle2 } from "lucide-react";
 
 export default function PagoCorrectoPage() {
-  const navigate = useNavigate();
-
   return (
     <main className="min-h-[70vh] flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-2xl">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h1 className="text-3xl font-semibold text-slate-900">
-            Pago realizado correctamente
-          </h1>
+        {/* ✅ TEXTO ARRIBA (FUERA de la tarjeta) */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+            <h1 className="text-3xl font-semibold text-slate-900">
+              Pago realizado correctamente
+            </h1>
+          </div>
 
           <p className="mt-2 text-slate-600">
             Ahora entra con tu cuenta de Google para activar tu acceso Pro.
           </p>
-
-          <div className="mt-6">
-            <AuthCard
-              variant="page"
-              onSuccess={() => {
-                navigate("/cuenta-pro");
-              }}
-            />
-          </div>
-
-          <p className="mt-5 text-sm text-slate-500">
-            Importante: entra con el mismo email con el que realizaste el pago.
-          </p>
         </div>
+
+        {/* ✅ TARJETA ORIGINAL (mismo tamaño y fondo que antes) */}
+        <AuthCard variant="page" />
+
+        {/* ✅ TEXTO ABAJO (FUERA de la tarjeta) */}
+        <p className="mt-6 text-sm text-slate-500">
+          Importante: entra con el mismo email con el que realizaste el pago.
+        </p>
       </div>
     </main>
   );
