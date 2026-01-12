@@ -1451,8 +1451,56 @@ registerPage_login: {
   },
 },
 
+  // =========================
+  //       PAYING PAGES
+  // =========================
+  paymentSuccess: {
+  title: {
+    ES: "Pago realizado correctamente",
+    EUS: "Ordainketa behar bezala egin da",
+    EN: "Payment successful",
+    FR: "Paiement effectué avec succès",
+  },
+  subtitle: {
+    ES: "Ahora entra con tu cuenta de Google para activar tu acceso Pro.",
+    EUS: "Orain sartu zure Google kontuarekin zure Pro sarbidea aktibatzeko.",
+    EN: "Now sign in with your Google account to activate your Pro access.",
+    FR: "Connecte-toi avec ton compte Google pour activer ton accès Pro.",
+  },
+  note: {
+    ES: "Importante: entra con el mismo email con el que realizaste el pago.",
+    EUS: "Garrantzitsua: sartu ordainketa egin duzun email berarekin.",
+    EN: "Important: sign in with the same email you used to pay.",
+    FR: "Important : connecte-toi avec le même e-mail que celui utilisé pour payer.",
+  },
+},
 
-
+paymentCancel: {
+  title: {
+    ES: "Pago cancelado",
+    EUS: "Ordainketa bertan behera utzi da",
+    EN: "Payment cancelled",
+    FR: "Paiement annulé",
+  },
+  subtitle: {
+    ES: "No se ha realizado ningún cargo. Puedes volver cuando quieras.",
+    EUS: "Ez da kargurik egin. Nahi duzunean itzul zaitezke.",
+    EN: "No charge was made. You can come back anytime.",
+    FR: "Aucun prélèvement n’a été effectué. Tu peux revenir quand tu veux.",
+  },
+  backPricing: {
+    ES: "Volver a planes",
+    EUS: "Planetara itzuli",
+    EN: "Back to plans",
+    FR: "Retour aux offres",
+  },
+  backHome: {
+    ES: "Ir al inicio",
+    EUS: "Hasierara joan",
+    EN: "Go to home",
+    FR: "Aller à l’accueil",
+  },
+},
 
 
 
