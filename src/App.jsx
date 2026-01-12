@@ -17,6 +17,9 @@ import UseAIPage from "@/components/Legal/UseAIPage";
 import PricingPage from "@/pages/PricingPage";
 import Suggestions from "@/pages/Suggestions";
 import CookieBanner from "@/components/CookieBanner";
+import PagoCorrectoPage from "@/pages/PagoCorrectoPage";
+import PagoCanceladoPage from "@/pages/PagoCanceladoPage";
+
 
 // Pro-Account //
 import ProLayout from "@/components/ProAccount/ProLayout";
@@ -32,6 +35,9 @@ import ProLibraryDetail from "@/components/ProAccount/ProLibraryDetail";
 import ProParaphraser from "@/components/ProAccount/ProParaphraser";
 import ProAiDetector from "@/components/ProAccount/ProAiDetector"; 
 import ProHumanizer from "@/components/ProAccount/ProHumanizer";
+
+
+
 
 function App() {
   const location = useLocation();
@@ -77,6 +83,8 @@ function App() {
             <Route path="/uso-de-ia" element={<UseAIPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/sugerencias" element={<Suggestions />} />
+            <Route path="/pago-correcto" element={<PagoCorrectoPage />} />
+            <Route path="/pago-cancelado" element={<PagoCanceladoPage />} />
 
 
             {/* Pro-Account */}
