@@ -34,7 +34,41 @@ export default function PagoCorrectoPage() {
 
         {/* Tarjeta original (sin tocar tamaño) */}
         <div className="flex justify-center">
-          <AuthCard variant="page" />
+          <AuthCard
+            variant="page"
+            onSuccess={async () => {
+              try {
+                const { auth } = await import("@/lib/firebase");
+                const user = auth.currentUser;
+
+                const token = user ? await user.getIdToken() : null;
+
+                const r = await fetch("/api/claim-pro", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+
+                const data = await r.json().catch(() => ({}));
+
+                if (!r.ok) {
+                  alert(
+                    data?.message ||
+                      "No se ha podido verificar el pago. Entra con el mismo email del pago."
+                  );
+                  return;
+                }
+
+                window.location.href = "/cuenta-pro";
+              } catch (e) {
+                console.error("PagoCorrecto onSuccess error:", e);
+                alert(
+                  "Ha ocurrido un error al activar Pro. Vuelve a intentarlo."
+                );
+              }
+            }}
+          />
         </div>
 
         {/* Texto abajo (centrado, fuera de la tarjeta) */}
