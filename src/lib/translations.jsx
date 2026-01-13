@@ -2817,7 +2817,7 @@ proHome: {
     // Guardar
     save_button_label:   { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
     library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
-  },
+  
   errorAuthRequired: {
   ES: "Necesitas una cuenta Pro para usar el traductor.",
   EUS: "Itzultzailea erabiltzeko Pro kontu bat behar duzu.",
@@ -2831,7 +2831,7 @@ errorGeneric: {
   EN: "Couldn’t translate right now.",
   FR: "Impossible de traduire pour le moment.",
 },
- 
+},
 
 
 
@@ -2913,14 +2913,18 @@ errorGeneric: {
   error_rate_limit:     { ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium.", EUS: "Eskaeren muga gainditu duzu. Saiatu geroago edo probatu Premium plana.", EN: "You’ve hit the request limit. Try again later or try Premium.", FR: "Vous avez atteint la limite de requêtes. Réessayez plus tard ou essayez Premium." },
   error_no_text:        { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik.", EN: "No text was received from the API.", FR: "Aucun texte n’a été reçu de l’API." },
   error_generic:        { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
-},proSummary_error_auth_required: {
+
+error_auth_required: {
   ES: "Necesitas una cuenta Pro para usar el resumidor.",
   EUS: "Laburpenak sortzeko Pro kontu bat behar duzu.",
   EN: "You need a Pro account to use the summarizer.",
   FR: "Vous avez besoin d’un compte Pro pour utiliser le résumeur.",
 },
+},
+  
 
-  // =========================
+
+// =========================
   //        Pro Grammar Corrector
   // ========================= 
   grammar: {
