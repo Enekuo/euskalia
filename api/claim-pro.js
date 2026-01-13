@@ -59,7 +59,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const status = String((paidSnap.data() || {}).status || "").toLowerCase();
+    const data = paidSnap.data() || {};
+    const status = String(data.status || "").toLowerCase();
     if (status && status !== "paid" && status !== "active") {
       return res.status(403).json({
         error: "payment_not_active",
@@ -67,7 +68,16 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({ ok: true, uid, email });
+    // ✅ AQUÍ está la clave: activar Pro de verdad
+    const plan = data.plan || "pro";
+
+    await admin.auth().setCustomUserClaims(uid, {
+      pro: true,
+      plan,
+      paidEmail: email,
+    });
+
+    return res.status(200).json({ ok: true, uid, email, pro: true, plan });
   } catch (err) {
     console.error("CLAIM PRO ERROR:", err);
     return res.status(500).json({ error: "server_error" });

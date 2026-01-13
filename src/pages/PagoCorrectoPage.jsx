@@ -41,7 +41,16 @@ export default function PagoCorrectoPage() {
                 const { auth } = await import("@/lib/firebase");
                 const user = auth.currentUser;
 
-                const token = user ? await user.getIdToken() : null;
+                if (!user) {
+                  window.location.href = "/pricing";
+                  return;
+                }
+
+                const token = await user.getIdToken();
+                if (!token) {
+                  window.location.href = "/pricing";
+                  return;
+                }
 
                 const r = await fetch("/api/claim-pro", {
                   method: "POST",
@@ -52,20 +61,18 @@ export default function PagoCorrectoPage() {
 
                 const data = await r.json().catch(() => ({}));
 
-                if (!r.ok) {
-                  alert(
-                    data?.message ||
-                      "No se ha podido verificar el pago. Entra con el mismo email del pago."
-                  );
+                if (!r.ok || !data?.ok) {
+                  window.location.href = "/pricing";
                   return;
                 }
+
+                // 🔁 Si el backend pone custom claims (pro: true), refresca el token
+                await user.getIdToken(true);
 
                 window.location.href = "/cuenta-pro";
               } catch (e) {
                 console.error("PagoCorrecto onSuccess error:", e);
-                alert(
-                  "Ha ocurrido un error al activar Pro. Vuelve a intentarlo."
-                );
+                window.location.href = "/pricing";
               }
             }}
           />
