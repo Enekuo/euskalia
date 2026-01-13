@@ -372,9 +372,9 @@ export default function ProTranslator() {
           const hasPrev = !!(rightText && rightText.trim().length > 0);
 
           if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
-            if (!hasPrev) setErr("Debes iniciar sesión para usar esta herramienta Pro.");
+          if (!hasPrev) setErr(tr("proTranslator_errorAuthRequired", ""));
           } else {
-            if (!hasPrev) setErr("No se pudo traducir ahora mismo.");
+          if (!hasPrev) setErr(tr("proTranslator_errorGeneric", ""));
           }
 
           setResultStatus("error");
