@@ -2817,21 +2817,21 @@ proHome: {
     // Guardar
     save_button_label:   { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
     library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
-  
-  errorAuthRequired: {
+  },
+  proTranslator_errorAuthRequired: {
   ES: "Necesitas una cuenta Pro para usar el traductor.",
   EUS: "Itzultzailea erabiltzeko Pro kontu bat behar duzu.",
   EN: "You need a Pro account to use the translator.",
   FR: "Vous avez besoin d’un compte Pro pour utiliser le traducteur.",
 },
 
-errorGeneric: {
+proTranslator_errorGeneric: {
   ES: "No se pudo traducir ahora mismo.",
   EUS: "Ezin izan da orain itzuli.",
   EN: "Couldn’t translate right now.",
   FR: "Impossible de traduire pour le moment.",
 },
-},
+
 
 
 
