@@ -2894,7 +2894,13 @@ proHome: {
   error_rate_limit:     { ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium.", EUS: "Eskaeren muga gainditu duzu. Saiatu geroago edo probatu Premium plana.", EN: "You’ve hit the request limit. Try again later or try Premium.", FR: "Vous avez atteint la limite de requêtes. Réessayez plus tard ou essayez Premium." },
   error_no_text:        { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik.", EN: "No text was received from the API.", FR: "Aucun texte n’a été reçu de l’API." },
   error_generic:        { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
+},proSummary_error_auth_required: {
+  ES: "Necesitas una cuenta Pro para usar el resumidor.",
+  EUS: "Laburpenak sortzeko Pro kontu bat behar duzu.",
+  EN: "You need a Pro account to use the summarizer.",
+  FR: "Vous avez besoin d’un compte Pro pour utiliser le résumeur.",
 },
+
   // =========================
   //        Pro Grammar Corrector
   // ========================= 
@@ -3050,6 +3056,12 @@ proHome: {
     EN: "Nice job! We didn’t spot any mistakes.",
     FR: "Bravo ! Nous n’avons détecté aucune erreur.",
   },
+  error_auth_required: {
+  ES: "Necesitas una cuenta Pro para usar el corrector gramatical.",
+  EUS: "Zuzentzaile gramatikala erabiltzeko Pro kontu bat behar duzu.",
+  EN: "You need a Pro account to use the grammar checker.",
+  FR: "Vous avez besoin d’un compte Pro pour utiliser le correcteur grammatical.",
+},
 },
 
 // =========================
@@ -3391,6 +3403,12 @@ proParaphraser_error_generic: {
   EUS: "Errorea parafraseoa sortzean.",
   EN: "Error creating the paraphrase.",
   FR: "Erreur lors de la création du paraphrase.",
+},
+proParaphraser_error_auth_required: {
+  ES: "Necesitas una cuenta Pro para usar el parafraseador.",
+  EUS: "Parafraseatzailea erabiltzeko Pro kontu bat behar duzu.",
+  EN: "You need a Pro account to use the paraphraser.",
+  FR: "Vous avez besoin d’un compte Pro pour utiliser le paraphraseur.",
 },
 
 
@@ -3803,6 +3821,12 @@ proHumanizer_errorGeneric: {
   EUS: "Errorea testua humanizatzean.",
   EN: "Error humanizing the text.",
   FR: "Erreur lors de l’humanisation du texte.",
+},
+proHumanizer_errorAuthRequired: {
+  ES: "Necesitas una cuenta Pro para usar el humanizador.",
+  EUS: "Humanizatzailea erabiltzeko Pro kontu bat behar duzu.",
+  EN: "You need a Pro account to use the humanizer.",
+  FR: "Vous avez besoin d’un compte Pro pour utiliser l’humaniseur.",
 },
 
 
