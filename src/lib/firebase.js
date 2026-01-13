@@ -1,6 +1,3 @@
-console.log("ENV API KEY:", import.meta.env.VITE_FIREBASE_API_KEY);
-console.log("ENV AUTH DOMAIN:", import.meta.env.VITE_FIREBASE_AUTH_DOMAIN);
-
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
