@@ -4,11 +4,14 @@ import { Gem, CheckCircle } from "lucide-react";
 import AuthModal from "@/components/Auth/AuthModal";
 import { auth } from "@/lib/firebase";
 
+const LEMON_CHECKOUT_URL = "https://euskalia.lemonsqueezy.com/checkout/buy/14a2f3b2-08bd-4b2b-a044-17c880f7cc57";
+
 export default function PricingPage() {
   const { t } = useTranslation();
   const tr = (k, fallback = "") => t(k) || fallback;
 
   const [authOpen, setAuthOpen] = useState(false);
+  const [pendingProCheckout, setPendingProCheckout] = useState(false);
 
   const plans = [
     // PLAN PRO (actual)
@@ -69,10 +72,11 @@ export default function PricingPage() {
   const handlePlanClick = (planId) => {
     if (planId === "pro") {
       if (!auth?.currentUser) {
+        setPendingProCheckout(true);
         setAuthOpen(true);
         return;
       }
-      // Aquí en el futuro: iniciar checkout / activar plan
+      window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
       return;
     }
   };
@@ -82,7 +86,13 @@ export default function PricingPage() {
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        onSuccess={() => setAuthOpen(false)}
+        onSuccess={() => {
+          setAuthOpen(false);
+          if (pendingProCheckout) {
+            setPendingProCheckout(false);
+            window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
+          }
+        }}
       />
 
       {/* Título / subtítulo */}
