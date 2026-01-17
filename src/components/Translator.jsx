@@ -26,12 +26,14 @@ const MAX_CHARS = 5000;
 
 export default function Translator() {
   const { t, language } = useTranslation();
+
   const tr = (k, f = "") => {
-  const val = typeof t === "function" ? t(k) : null;
-  if (!val) return f;
-  if (val === k) return f;
-  return val;
+    const val = typeof t === "function" ? t(k) : null;
+    if (!val) return f;
+    if (val === k) return f;
+    return val;
   };
+
   const uiLang =
     (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
 
@@ -979,7 +981,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
             <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
               <div className="flex flex-col sm:flex-row sm:items-center h-full px-6 gap-2 sm:gap-0">
                 {/* Tabs */}
-                <div className="flex items-center text-sm font-medium text-slate-600">
+                <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
                   <button
                     type="button"
                     onClick={() => setSourceMode("text")}
@@ -997,7 +999,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     <span>{labelTabText}</span>
                   </button>
 
-                  <span className="mx-4 h-5 w-px bg-slate-200" />
+                  <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
 
                   <button
                     type="button"
@@ -1018,7 +1020,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     <span>{labelTabDocument}</span>
                   </button>
 
-                  <span className="mx-4 h-5 w-px bg-slate-200" />
+                  <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
 
                   <button
                     type="button"
@@ -1051,9 +1053,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           setOpenLeft((v) => !v);
                           setOpenRight(false);
                         }}
-                        className="inline-flex items-center gap-2 px-1.5 sm:px-2 py-1 text-[14px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span className="max-w-[150px] sm:max-w-none truncate">{srcButtonLabel}</span>
+                        <span className="max-w-[150px] sm:max-w-none truncate">
+                          {srcButtonLabel}
+                        </span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1078,7 +1082,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       />
                     </div>
 
-                    {/* SWAP (se queda igual, pero bloqueado si src === auto) */}
+                    {/* SWAP */}
                     <button
                       type="button"
                       aria-label="Intercambiar idiomas"
@@ -1103,7 +1107,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       </svg>
                     </button>
 
-                    {/* DESTINO (SIN Detectar idioma) */}
+                    {/* DESTINO */}
                     <div className="relative ml-8 sm:ml-16" ref={rightRef}>
                       <button
                         type="button"
@@ -1111,7 +1115,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           setOpenRight((v) => !v);
                           setOpenLeft(false);
                         }}
-                        className="inline-flex items-center gap-2 px-1.5 sm:px-2 py-1 text-[14px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
                         <span className="max-w-[150px] sm:max-w-none truncate">
                           {OPTIONS_DST.find((o) => o.value === dst)?.label}
