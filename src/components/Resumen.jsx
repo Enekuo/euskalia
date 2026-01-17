@@ -850,7 +850,7 @@ export default function Resumen() {
             </aside>
 
             {/* ===== Panel Derecho ===== */}
-            <section className="relative h-[630px] pb-[140px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
+            <section className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
               {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
               <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
@@ -955,29 +955,30 @@ export default function Resumen() {
                 </div>
               </div>
 
-              {!loading && !result && !errorKind && (
-                <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
-                    <Button
-                      type="button"
-                      onClick={handleGenerate}
-                      disabled={loading || !hasValidInput}
-                      className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                    >
-                      {labelGenerateFromSources}
-                    </Button>
-                  </div>
+              {/* ✅ Zona de contenido con scroll interno (barra lateral) */}
+              <div className="flex-1 overflow-y-auto">
+                {!loading && !result && !errorKind && (
+                  <div className="relative h-full">
+                    <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                      <Button
+                        type="button"
+                        onClick={handleGenerate}
+                        disabled={loading || !hasValidInput}
+                        className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                      >
+                        {labelGenerateFromSources}
+                      </Button>
+                    </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                    <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
+                      <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                    </div>
                   </div>
-                </>
-              )}
+                )}
 
-              <div className="w-full">
                 {(result || errorMsg || loading || errorKind) && (
-                  <div className="px-3 sm:px-6 pt-24 pb-32 max-w-3xl mx-auto">
+                  <div className="px-3 sm:px-6 pt-6 pb-6 max-w-3xl mx-auto">
                     {errorKind === "limit" && <LimitCard />}
 
                     {errorMsg && !errorKind && (
@@ -1030,7 +1031,8 @@ export default function Resumen() {
                 )}
               </div>
 
-              <div className="absolute left-0 right-0 p-4 bottom-[8px] md:bottom-2">
+              {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
+              <div className="border-t border-slate-200 bg-white p-4">
                 {showPremiumNote && (
                   <div className="mx-auto max-w-4xl mb-3">
                     <PremiumPromptNote />
