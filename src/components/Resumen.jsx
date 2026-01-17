@@ -851,20 +851,20 @@ export default function Resumen() {
 
             {/* ===== Panel Derecho ===== */}
             <section className="relative h-[630px] pb-[140px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              {/* Barra superior con tabs + selector + acciones */}
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-2">
+              {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
+              <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
+                <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
                   <LengthTab active={summaryLength === "breve"} label={LBL_SHORT} onClick={() => handleLengthChange("breve")} showDivider />
                   <LengthTab active={summaryLength === "medio"} label={LBL_MED} onClick={() => handleLengthChange("medio")} showDivider />
                   <LengthTab active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between sm:justify-end gap-1">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800
+                        className="h-9 min-w-[120px] sm:min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800
                                    flex items-center justify-between hover:border-slate-400
                                    shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
                         aria-label="Idioma de salida"
