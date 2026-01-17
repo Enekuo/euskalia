@@ -972,8 +972,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
             {/* barra superior */}
-            <div className="relative h-12 border-b border-slate-200">
-              <div className="flex items-center h-full px-6">
+            <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
+              <div className="flex flex-col sm:flex-row sm:items-center h-full px-6 gap-2 sm:gap-0">
                 {/* Tabs */}
                 <div className="flex items-center text-sm font-medium text-slate-600">
                   <button
@@ -1036,20 +1036,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   <span className="ml-4 h-5 w-px bg-slate-200" />
                 </div>
 
-                {/* selector: centrado */}
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                {/* selector: centrado (desktop) / debajo (móvil) */}
+                <div className="w-full flex items-center justify-center pointer-events-auto sm:pointer-events-none sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
                   <div className="relative pointer-events-auto flex items-center">
                     {/* ORIGEN */}
-                    <div className="relative mr-16" ref={leftRef}>
+                    <div className="relative mr-8 sm:mr-16" ref={leftRef}>
                       <button
                         type="button"
                         onClick={() => {
                           setOpenLeft((v) => !v);
                           setOpenRight(false);
                         }}
-                        className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        className="inline-flex items-center gap-2 px-1.5 sm:px-2 py-1 text-[14px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{srcButtonLabel}</span>
+                        <span className="max-w-[150px] sm:max-w-none truncate">{srcButtonLabel}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
@@ -1100,16 +1100,18 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     </button>
 
                     {/* DESTINO (SIN Detectar idioma) */}
-                    <div className="relative ml-16" ref={rightRef}>
+                    <div className="relative ml-8 sm:ml-16" ref={rightRef}>
                       <button
                         type="button"
                         onClick={() => {
                           setOpenRight((v) => !v);
                           setOpenLeft(false);
                         }}
-                        className="inline-flex items-center gap-2 px-2 py-1 text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        className="inline-flex items-center gap-2 px-1.5 sm:px-2 py-1 text-[14px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                       >
-                        <span>{OPTIONS_DST.find((o) => o.value === dst)?.label}</span>
+                        <span className="max-w-[150px] sm:max-w-none truncate">
+                          {OPTIONS_DST.find((o) => o.value === dst)?.label}
+                        </span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                           <path
                             d="M6 9l6 6 6-6"
