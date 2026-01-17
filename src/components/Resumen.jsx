@@ -641,7 +641,7 @@ export default function Resumen() {
   return (
     <>
       <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
-        <div className="max-w-7xl mx-auto w-full px-6">
+        <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <motion.section
             className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
             initial="initial"
@@ -969,7 +969,7 @@ export default function Resumen() {
                     </Button>
                   </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
+                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
                     <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
                   </div>
                 </>
@@ -977,7 +977,7 @@ export default function Resumen() {
 
               <div className="w-full">
                 {(result || errorMsg || loading || errorKind) && (
-                  <div className="px-6 pt-24 pb-32 max-w-3xl mx-auto">
+                  <div className="px-3 sm:px-6 pt-24 pb-32 max-w-3xl mx-auto">
                     {errorKind === "limit" && <LimitCard />}
 
                     {errorMsg && !errorKind && (
@@ -1037,7 +1037,7 @@ export default function Resumen() {
                   </div>
                 )}
 
-                <div className="mx-auto max-w-4xl rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
+                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <input
                       value={chatInput}
