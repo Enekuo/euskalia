@@ -1032,7 +1032,7 @@ export default function Resumen() {
               </div>
 
               {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
-              <div className="border-t border-slate-200 bg-white p-4">
+              <div className="bg-white p-4">
                 {showPremiumNote && (
                   <div className="mx-auto max-w-4xl mb-3">
                     <PremiumPromptNote />
