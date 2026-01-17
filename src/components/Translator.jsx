@@ -1039,6 +1039,16 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     <span>{labelTabUrl}</span>
                   </button>
 
+                  {/* ✅ Botón borrar en móvil: justo a la derecha de URL */}
+                  <button
+                    type="button"
+                    onClick={handleClearLeft}
+                    aria-label={t("translator.clear_left")}
+                    className="sm:hidden ml-3 p-2 rounded-md hover:bg-slate-100"
+                  >
+                    <Trash2 className="w-5 h-5 text-slate-500" />
+                  </button>
+
                   <span className="ml-4 h-5 w-px bg-slate-200" />
                 </div>
 
@@ -1146,11 +1156,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
               </div>
 
+              {/* ✅ Botón borrar original SOLO desktop */}
               <button
                 type="button"
                 onClick={handleClearLeft}
                 aria-label={t("translator.clear_left")}
-                className="group absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-md hover:bg-slate-100"
+                className="group hidden sm:block absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-md hover:bg-slate-100"
               >
                 <Trash2 className="w-5 h-5 text-slate-500" />
                 <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
