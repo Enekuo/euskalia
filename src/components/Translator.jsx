@@ -26,8 +26,12 @@ const MAX_CHARS = 5000;
 
 export default function Translator() {
   const { t, language } = useTranslation();
-  const tr = (k, f) => t(k) || f;
-
+  const tr = (k, f = "") => {
+  const val = typeof t === "function" ? t(k) : null;
+  if (!val) return f;
+  if (val === k) return f;
+  return val;
+  };
   const uiLang =
     (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
 
