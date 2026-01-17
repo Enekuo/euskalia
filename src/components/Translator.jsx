@@ -975,11 +975,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   return (
     <>
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
             {/* barra superior */}
             <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
-              <div className="flex flex-col sm:flex-row sm:items-center h-full px-6 gap-2 sm:gap-0">
+              <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
                 {/* Tabs */}
                 <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
                   <button
@@ -1453,5 +1453,4 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       <Footer />
     </>
   );
-} 
-                  
+}
