@@ -1044,9 +1044,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
                 {/* selector: centrado (desktop) / debajo (móvil) */}
                 <div className="w-full flex items-center justify-center pointer-events-auto sm:pointer-events-none sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
-                  <div className="relative pointer-events-auto flex items-center">
+                  <div className="relative pointer-events-auto w-full sm:w-auto grid grid-cols-[1fr_auto_1fr] items-center sm:flex sm:items-center">
                     {/* ORIGEN */}
-                    <div className="relative mr-8 sm:mr-16" ref={leftRef}>
+                    <div className="relative justify-self-end sm:mr-16" ref={leftRef}>
                       <button
                         type="button"
                         onClick={() => {
@@ -1087,7 +1087,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       type="button"
                       aria-label="Intercambiar idiomas"
                       onClick={swap}
-                      className="absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path
@@ -1108,7 +1108,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     </button>
 
                     {/* DESTINO */}
-                    <div className="relative ml-8 sm:ml-16" ref={rightRef}>
+                    <div className="relative justify-self-start sm:ml-16" ref={rightRef}>
                       <button
                         type="button"
                         onClick={() => {
