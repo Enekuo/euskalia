@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
-import { Instagram, Twitter, Linkedin, Mail, Sparkles } from "lucide-react";
+import { Instagram, X as XIcon, Linkedin, Mail, Sparkles } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 /* ==== Banderas en SVG (24×18) ==== */
@@ -212,10 +212,10 @@ export default function Footer() {
                   <Instagram size={20} />
                 </span>
                 <span
-                  aria-label="Twitter"
+                  aria-label="X"
                   className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
                 >
-                  <Twitter size={20} />
+                  <XIcon size={20} />
                 </span>
                 <span
                   aria-label="LinkedIn"
@@ -287,7 +287,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 items-center">
             <div className="hidden md:block" />
             <div className="text-center">
-              © {new Date().getFullYear()} Euskalia — {tr("eusFooterRights", "Eskubide guztiak erreserbatta")}
+              © {new Date().getFullYear()} Euskalia — {tr("eusFooterRights", "Eskubide guztiak erreserbatuta")}
             </div>
             <div className="flex justify-end gap-4">
               <Link to="/cookies" className="hover:text-primary dark:hover:text-primary">
