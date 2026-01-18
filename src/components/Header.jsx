@@ -269,7 +269,7 @@ export default function Header() {
             {t("header.signIn")}
           </Link>
 
-          <Link to="/crear-cuenta">
+          <Link to="/pricing">
             <motion.button
               className="h-9 px-4 bg-blue-600 text-white font-semibold text-sm rounded-full shadow-sm hover:bg-blue-700"
               whileTap={{ scale: 0.95 }}
