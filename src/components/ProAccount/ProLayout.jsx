@@ -456,7 +456,7 @@ export default function LayoutPro({ children }) {
                 hover:bg-slate-50
               "
             >
-              Plan Pro
+               {tr("proHeader_planPro", "Plan Pro")}
             </button>
 
             <DropdownMenu>

@@ -2669,7 +2669,12 @@ proSidebar_collapse: {
   EN: "Collapse",
   FR: "Réduire",
 },
-
+proHeader_planPro: {
+  ES: "Plan Pro",
+  EUS: "Pro Plana",
+  EN: "Pro Plan",
+  FR: "Plan Pro",
+},
 
 // =========================
 //        Pro Home
