@@ -4675,6 +4675,12 @@ settings_cta_save: {
   EN: "Save changes",
   FR: "Enregistrer les modifications",
 },
+settings_cta_saving: {
+  ES: "Guardando…",
+  EUS: "Gordetzen…",
+  EN: "Saving…",
+  FR: "Enregistrement…",
+},
 settings_saved_ok: { 
   ES: "Configuración guardada.",
   EUS: "Ezarpenak gordeta.",
