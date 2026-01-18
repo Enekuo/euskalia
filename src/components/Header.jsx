@@ -357,7 +357,7 @@ export default function Header() {
                 </Link>
 
                 <Link
-                  to="/crear-cuenta"
+                  to="/pricing"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full"
                 >
