@@ -315,7 +315,7 @@ export default function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="h-9 px-3 rounded-full border border-slate-200 bg-white
+                className="h-9 px-3 rounded-full border border-transparent bg-white
                            flex items-center gap-1.5 text-sm font-medium text-slate-700
                            hover:bg-slate-50"
                 aria-label="Language"
