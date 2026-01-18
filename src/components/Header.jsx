@@ -24,9 +24,9 @@ import {
 
 const languages = [
   { code: "EUS", name: "Euskara" },
-  { code: "ES",  name: "Español" },
-  { code: "EN",  name: "English" },
-  { code: "FR",  name: "Français"},
+  { code: "ES", name: "Español" },
+  { code: "EN", name: "English" },
+  { code: "FR", name: "Français" },
 ];
 
 function HelpBulbIcon({ size = 16, className = "" }) {
@@ -81,11 +81,14 @@ export default function Header() {
   }, [setLanguage]);
 
   const handleFeatureClick = () => {
-    toast({ title: t("not_implemented_title"), description: t("not_implemented_subtitle") });
+    toast({
+      title: t("not_implemented_title"),
+      description: t("not_implemented_subtitle"),
+    });
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
 
-  // ✅ AHORA CON CLAVES (lo marcado en rojo)
+  // ✅ AHORA CON CLAVES
   const tools = [
     {
       name: t("toolsMenu.translatorTitle"),
@@ -114,10 +117,10 @@ export default function Header() {
             {item.icon}
           </span>
           <div className="flex flex-col">
-          <span className="font-semibold text-[15px] leading-5">{item.name}</span>
+            <span className="font-semibold text-[15px] leading-5">{item.name}</span>
             {item.subtitle && (
-          <span className="text-xs text-slate-500 leading-4">{item.subtitle}</span>
-       )}
+              <span className="text-xs text-slate-500 leading-4">{item.subtitle}</span>
+            )}
           </div>
         </Link>
       ))}
@@ -132,7 +135,7 @@ export default function Header() {
       path: "/soporte",
     },
     {
-      name: t("resourcesMenu.suggestions"), 
+      name: t("resourcesMenu.suggestions"),
       icon: <HelpBulbIcon size={20} className="-ml-1 mr-2 text-slate-500" />,
       isLink: true,
       path: "/sugerencias",
@@ -185,9 +188,13 @@ export default function Header() {
               src="/euskalia-logo.svg"
               alt="Euskalia"
               className="h-6 mr-2"
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
             />
-            <span className="text-xl font-bold text-slate-900 tracking-tight">Euskalia</span>
+            <span className="text-xl font-bold text-slate-900 tracking-tight">
+              Euskalia
+            </span>
           </Link>
 
           {/* NAV DESKTOP */}
@@ -195,11 +202,14 @@ export default function Header() {
             {/* Herramientas */}
             <DropdownMenu open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
               <DropdownMenuTrigger asChild>
-                <button
-                  className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0"
-                >
+                <button className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0">
                   {t("header.tools")}
-                  <ChevronDown size={16} className={`transition-transform ${isToolsMenuOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${
+                      isToolsMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -207,19 +217,29 @@ export default function Header() {
                 align="start"
                 sideOffset={8}
               >
-                <DropdownMenuArrow className="fill-white stroke-slate-200" width={16} height={8} />
+                <DropdownMenuArrow
+                  className="fill-white stroke-slate-200"
+                  width={16}
+                  height={8}
+                />
                 <ToolsDropdownContent />
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Recursos */}
-            <DropdownMenu open={isResourcesMenuOpen} onOpenChange={setIsResourcesMenuOpen}>
+            <DropdownMenu
+              open={isResourcesMenuOpen}
+              onOpenChange={setIsResourcesMenuOpen}
+            >
               <DropdownMenuTrigger asChild>
-                <button
-                  className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0"
-                >
+                <button className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0">
                   {t("header.resources")}
-                  <ChevronDown size={16} className={`transition-transform ${isResourcesMenuOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${
+                      isResourcesMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -227,7 +247,11 @@ export default function Header() {
                 align="start"
                 sideOffset={8}
               >
-                <DropdownMenuArrow className="fill-white stroke-slate-200" width={16} height={8} />
+                <DropdownMenuArrow
+                  className="fill-white stroke-slate-200"
+                  width={16}
+                  height={8}
+                />
                 <ResourcesDropdownContent />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -252,7 +276,10 @@ export default function Header() {
                 <ChevronDown size={16} className="opacity-70" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white rounded-lg shadow-lg border border-slate-200 mt-2">
+            <DropdownMenuContent
+              align="end"
+              className="w-40 bg-white rounded-lg shadow-lg border border-slate-200 mt-2"
+            >
               {languages.map((lang) => (
                 <DropdownMenuItem
                   key={lang.code}
@@ -265,7 +292,10 @@ export default function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/iniciar-sesion" className="text-sm font-medium text-slate-700 hover:text-slate-900">
+          <Link
+            to="/iniciar-sesion"
+            className="text-sm font-medium text-slate-700 hover:text-slate-900"
+          >
             {t("header.signIn")}
           </Link>
 
@@ -280,9 +310,44 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* HAMBURGER (mobile) */}
-        <div className="lg:hidden">
-          <button onClick={() => setIsMobileMenuOpen(true)} className="text-slate-800">
+        {/* MOBILE RIGHT: selector visible + hamburger */}
+        <div className="lg:hidden flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="h-9 px-3 rounded-full border border-slate-200 bg-white
+                           flex items-center gap-1.5 text-sm font-medium text-slate-700
+                           hover:bg-slate-50"
+                aria-label="Language"
+                title="Language"
+              >
+                <Globe size={16} />
+                <span>{language}</span>
+                <ChevronDown size={14} className="opacity-70" />
+              </button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="end"
+              className="w-44 bg-white rounded-lg shadow-lg border border-slate-200 mt-2"
+            >
+              {languages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onSelect={() => setLanguage(lang.code)}
+                  className="px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 cursor-pointer"
+                >
+                  {lang.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="text-slate-800 p-1"
+            aria-label="Menu"
+          >
             <Menu size={24} />
           </button>
         </div>
@@ -299,23 +364,37 @@ export default function Header() {
             className="fixed inset-0 z-[100] bg-white lg:hidden"
           >
             <div className="flex justify-between items-center h-16 px-4 border-b border-slate-200">
-              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-slate-900">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-lg font-bold text-slate-900"
+              >
                 Euskalia
               </Link>
-              <button onClick={() => setIsMobileMenuOpen(false)}>
+              <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close">
                 <X size={24} className="text-slate-800" />
               </button>
             </div>
 
             <div className="p-4 flex flex-col h-[calc(100%-64px)]">
               <div className="flex flex-col gap-1">
-                <p className="px-2 text-sm font-semibold text-slate-500 mt-2 mb-1">{t("header.tools")}</p>
-                <div className="px-2"><ToolsDropdownContent inMobileMenu /></div>
+                <p className="px-2 text-sm font-semibold text-slate-500 mt-2 mb-1">
+                  {t("header.tools")}
+                </p>
+                <div className="px-2">
+                  <ToolsDropdownContent inMobileMenu />
+                </div>
 
-                <div className="px-2 my-2"><DropdownMenuSeparator /></div>
+                <div className="px-2 my-2">
+                  <DropdownMenuSeparator />
+                </div>
 
-                <p className="px-2 text-sm font-semibold text-slate-500 mt-2 mb-1">{t("header.resources")}</p>
-                <div className="px-2"><ResourcesDropdownContent inMobileMenu /></div>
+                <p className="px-2 text-sm font-semibold text-slate-500 mt-2 mb-1">
+                  {t("header.resources")}
+                </p>
+                <div className="px-2">
+                  <ResourcesDropdownContent inMobileMenu />
+                </div>
 
                 <Link
                   to="/pricing"
@@ -356,11 +435,7 @@ export default function Header() {
                   {t("header.signIn")}
                 </Link>
 
-                <Link
-                  to="/pricing"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full"
-                >
+                <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
                   <motion.button
                     className="w-full h-11 bg-blue-600 text-white font-bold text-base rounded-full"
                     whileTap={{ scale: 0.98 }}
@@ -374,6 +449,5 @@ export default function Header() {
         )}
       </AnimatePresence>
     </header>
-    
   );
 }
