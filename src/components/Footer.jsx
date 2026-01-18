@@ -205,39 +205,24 @@ export default function Footer() {
                 {tr("eusFooterContactEmailValue", "contacto@euskalia.ai")}
               </a>
               <div className="flex space-x-3">
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleClick();
-                  }}
+                <span
                   aria-label="Instagram"
-                  className="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
+                  className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
                 >
                   <Instagram size={20} />
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleClick();
-                  }}
+                </span>
+                <span
                   aria-label="Twitter"
-                  className="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
+                  className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
                 >
                   <Twitter size={20} />
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleClick();
-                  }}
+                </span>
+                <span
                   aria-label="LinkedIn"
-                  className="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
+                  className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
                 >
                   <Linkedin size={20} />
-                </a>
+                </span>
               </div>
             </div>
 
@@ -302,7 +287,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 items-center">
             <div className="hidden md:block" />
             <div className="text-center">
-              © {new Date().getFullYear()} Euskalia — {tr("eusFooterRights", "Eskubide guztiak erreserbatuta")}
+              © {new Date().getFullYear()} Euskalia — {tr("eusFooterRights", "Eskubide guztiak erreserbatta")}
             </div>
             <div className="flex justify-end gap-4">
               <Link to="/cookies" className="hover:text-primary dark:hover:text-primary">
