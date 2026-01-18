@@ -1172,7 +1172,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
               {/* IZQUIERDA */}
-              <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[320px] sm:h-[320px] overflow-hidden flex flex-col">
+             {/* IZQUIERDA */}
+              <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                 {sourceMode === "text" && (
                   <>
                     <div className="flex-1 min-h-0">
@@ -1360,7 +1361,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               </div>
 
               {/* DERECHA */}
-              <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[320px] sm:h-[500px] overflow-hidden flex flex-col">
+              <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                 <div className="flex-1 min-h-0 pb-8">
                   <textarea
                     ref={rightTA}
