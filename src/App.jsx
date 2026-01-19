@@ -81,7 +81,7 @@ const seo =
   <meta name="description" content={seo.desc} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-  <link rel="icon" type="image/png" href="/favicon.ico.png" />
+  <link rel="icon" type="image/png" href="/favicon.ico" />
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@700&display=swap"
     rel="stylesheet"
