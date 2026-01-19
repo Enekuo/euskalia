@@ -53,6 +53,18 @@ function App() {
     <>
       <Helmet>
         <title>Euskalia</title>
+        <script
+         type="application/ld+json"
+         dangerouslySetInnerHTML={{
+         __html: JSON.stringify({
+               "@context": "https://schema.org",
+               "@type": "WebSite",
+         name: "Euskalia",
+          url: "https://euskaliaweb.com",
+           }),
+         }}
+       />
+
         <meta
           name="description"
           content="Plataforma de IA centrada en el euskera para traducir, resumir, corregir y optimizar textos de forma rápida y precisa."
