@@ -1,16 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AuthCard from "@/components/Auth/AuthCard";
 import { CheckCircle2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function PagoCorrectoPage() {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const tr = (k, f = "") => {
     const val = typeof t === "function" ? t(k) : null;
     if (!val || val === k) return f;
     return val;
   };
+
+  // ✅ Bloqueo: solo permitir si llega "pulsera" en la URL
+  useEffect(() => {
+    const sp = new URLSearchParams(location.search || "");
+
+    const hasBracelet =
+      sp.has("checkout") ||
+      sp.has("checkout_id") ||
+      sp.has("order") ||
+      sp.has("order_id") ||
+      sp.has("session_id") ||
+      sp.has("receipt") ||
+      sp.has("receipt_id");
+
+    if (!hasBracelet) {
+      navigate("/pricing", { replace: true });
+    }
+  }, [location.search, navigate]);
 
   return (
     <main className="min-h-screen bg-[#F7F9FC] flex items-center justify-center px-6 py-12">
