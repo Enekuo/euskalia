@@ -58,8 +58,8 @@ const seo =
         desc: "Resume textos largos en segundos con inteligencia artificial. Ideal para estudiar, trabajar o ahorrar tiempo.",
       }
     : {
-        title: "Euskalia",
-        desc: "Plataforma de IA centrada en el euskera para traducir, resumir, corregir y optimizar textos de forma rápida y precisa.",
+        title: "Traductor y resumidor de euskera | Euskalia",
+        desc: "Euskalia es una plataforma de inteligencia artificial centrada en el euskera que permite traducir, resumir y mejorar textos, junto con otras funcionalidades basadas en IA.",
       };
 
   return (
