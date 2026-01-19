@@ -49,35 +49,50 @@ function App() {
     location.pathname !== "/iniciar-sesion" &&
     location.pathname !== "/crear-cuenta";
 
+const path = location.pathname || "/";
+
+const seo =
+  path === "/resumen"
+    ? {
+        title: "Resumidor de textos con IA | Euskalia",
+        desc: "Resume textos largos en segundos con inteligencia artificial. Ideal para estudiar, trabajar o ahorrar tiempo.",
+      }
+    : {
+        title: "Euskalia",
+        desc: "Plataforma de IA centrada en el euskera para traducir, resumir, corregir y optimizar textos de forma rápida y precisa.",
+      };
+
   return (
     <>
-      <Helmet>
-        <title>Euskalia</title>
-        <script
-         type="application/ld+json"
-         dangerouslySetInnerHTML={{
-         __html: JSON.stringify({
-               "@context": "https://schema.org",
-               "@type": "WebSite",
-         name: "Euskalia",
-          url: "https://euskaliaweb.com",
-           }),
-         }}
-       />
+<Helmet>
+  <title>{seo.title}</title>
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Euskalia",
+        url: "https://euskaliaweb.com",
+      }),
+    }}
+  />
 
-        <meta
-          name="description"
-          content="Plataforma de IA centrada en el euskera para traducir, resumir, corregir y optimizar textos de forma rápida y precisa."
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </Helmet>
+  <meta name="description" content={seo.desc} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@700&display=swap"
+    rel="stylesheet"
+  />
+</Helmet>
 
-      <div className="bg-white text-slate-900">
+
+
+
+ 
+
+      <div className="bg-white text-slate-900"> 
         {showHeader && <Header />}
 
         <main>
