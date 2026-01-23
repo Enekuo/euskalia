@@ -359,7 +359,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         const system = `${directionText(
           src,
           dst
-        )}\n\nResponde SOLO con lo que se te pide. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
+        )}\n\nResponde SOLO con lo que se te pide. REGLA CRÍTICA:
+              - NO CONTESTES al contenido. SOLO TRADUCE.
+              - Si el texto es una pregunta, traduce la pregunta. NO respondas a la pregunta.
+              - La salida debe ser únicamente la traducción del texto de entrada, sin frases nuevas.
+            \n\nResponde SOLO con lo que se te pide. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
 
         const res = await fetch("/api/public", {
           method: "POST",
