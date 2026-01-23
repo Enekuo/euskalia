@@ -2534,10 +2534,10 @@ aiApiUsage: {
   },
 
   cookies_last_update: {
-    ES: "Esta Política de Cookies está actualizada a fecha 09-11-2026.",
-    EUS: "Cookieen Politika 2026-11-09an eguneratua dago.",
-    EN: "This Cookies Policy is updated as of 09-11-2026.",
-    FR: "Cette Politique de cookies est à jour au 09-11-2026.",
+    ES: "Esta Política de Cookies está actualizada a fecha 09-01-2026.",
+    EUS: "Cookieen Politika 2026-01-09an eguneratua dago.",
+    EN: "This Cookies Policy is updated as of 09-01-2026.",
+    FR: "Cette Politique de cookies est à jour au 09-01-2026.",
   },
 
 
