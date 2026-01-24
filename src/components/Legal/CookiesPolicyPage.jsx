@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "@/lib/translations";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 
 export default function CookiesPolicyPage() {
   const { t } = useTranslation();
