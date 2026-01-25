@@ -221,7 +221,7 @@ translator_limit_reached: {
  /* === NUEVAS CLAVES: aviso límite plan gratis === */
   summary_limit_reached: {
     ES: "Límite máximo: {{count}} caracteres.",
-    EUS: "Gehieneko muga: {{count}} karaktere.",
+    EUS: "Gehienezko muga: {{count}} karaktere.",
     EN: "Maximum limit: {{count}} characters.",
     FR: "Limite maximum : {{count}} caractères.",
   },

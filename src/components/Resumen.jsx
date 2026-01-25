@@ -965,7 +965,7 @@ export default function Resumen() {
       <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
         <div className="w-full max-w-3xl space-y-3">
           <UpgradeBanner />
-          <div className="text-sm text-red-600">
+          <div className="text-sm text-red-600 mt-6">
             {tr(
               "summary_limit_reached",
               `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
