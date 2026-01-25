@@ -73,7 +73,7 @@ const seo =
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "Euskalia",
-        alternateName: "Euskalia AI",
+        alternateName: "Euskalia",
         url: "https://euskaliaweb.com",
       }),
     }}
