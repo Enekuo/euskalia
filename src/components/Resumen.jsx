@@ -962,17 +962,20 @@ export default function Resumen() {
   <>
     {/* ✅ LIMIT centrado */}
     {errorKind === "limit" ? (
-      <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
-        <div className="w-full max-w-3xl space-y-3 translate-y-8">
-          <UpgradeBanner />
-          <div className="text-sm text-red-600">
-            {tr(
-              "summary_limit_reached",
-              `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-            ).replace("{{count}}", MAX_CHARS.toLocaleString())}
-          </div>
+  <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
+    <div className="w-full max-w-3xl space-y-3">
+      <UpgradeBanner />
+
+      <div className="translate-y-6">
+        <div className="text-sm text-red-600">
+          {tr(
+            "summary_limit_reached",
+            `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+          ).replace("{{count}}", MAX_CHARS.toLocaleString())}
         </div>
       </div>
+    </div>
+  </div>
     ) : (
       <div className="px-3 sm:px-6 pt-6 pb-6 max-w-3xl mx-auto">
         {errorMsg && !errorKind && (
