@@ -963,9 +963,9 @@ export default function Resumen() {
     {/* ✅ LIMIT centrado */}
     {errorKind === "limit" ? (
       <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
-        <div className="w-full max-w-3xl space-y-3">
+        <div className="w-full max-w-3xl space-y-3 translate-y-8">
           <UpgradeBanner />
-          <div className="text-sm text-red-600 mt-6">
+          <div className="text-sm text-red-600">
             {tr(
               "summary_limit_reached",
               `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
