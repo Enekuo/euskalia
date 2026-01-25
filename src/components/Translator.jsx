@@ -1390,7 +1390,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
 
                 {isLimitReached && (
-                  <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-14 z-10">
+                  <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
                     <UpgradeBanner />
                   </div>
                 )}
