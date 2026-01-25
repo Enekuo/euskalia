@@ -959,110 +959,114 @@ export default function Resumen() {
                 )}
 
                 {(result || errorMsg || loading || errorKind) && (
-                  <div className="px-3 sm:px-6 pt-6 pb-6 max-w-3xl mx-auto">
-                    {/* ✅ LIMIT: Nuevo banner + alerta roja */}
-                    {errorKind === "limit" && (
-                      <div className="space-y-3">
-                        <UpgradeBanner />
-                        <div className="text-sm text-red-600">
-                          {tr(
-                            "summary_limit_reached",
-                            `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-                          ).replace("{{count}}", MAX_CHARS.toLocaleString())}
-                        </div>
-                      </div>
-                    )}
-
-                    {errorMsg && !errorKind && (
-                      <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                        {errorMsg}
-                      </div>
-                    )}
-
-                    {isOutdated && !loading && result && (
-                      <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                        <span className="truncate">
-                          {tr("summary.outdated_notice", "El texto ha cambiado. Actualiza el resumen.")}
-                        </span>
-                        <div className="shrink-0 flex items-center gap-2">
-                          <Button
-                            type="button"
-                            onClick={handleGenerate}
-                            className="h-8 px-3 rounded-full text-[13px]"
-                            style={{ backgroundColor: "#2563eb", color: "#fff" }}
-                          >
-                            {tr("summary.outdated_update", "Actualizar")}
-                          </Button>
-                          <button
-                            type="button"
-                            onClick={() => setIsOutdated(false)}
-                            className="h-8 w-8 rounded-md hover:bg-amber-100 text-amber-700"
-                            title={tr("summary.outdated_close", "Ocultar aviso")}
-                            aria-label={tr("summary.outdated_close", "Ocultar aviso")}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {result && (
-                      <article className="prose prose-slate max-w-none">
-                        <p className="whitespace-normal">{result}</p>
-                      </article>
-                    )}
-
-                    {loading && !result && (
-                      <div className="space-y-3 animate-pulse">
-                        <div className="h-4 bg-slate-200 rounded" />
-                        <div className="h-4 bg-slate-200 rounded w-11/12" />
-                        <div className="h-4 bg-slate-200 rounded w-10/12" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
-              <div className="bg-white p-4">
-                {showPremiumNote && (
-                  <div className="mx-auto max-w-4xl mb-3">
-                    <PremiumPromptNote />
-                  </div>
-                )}
-
-                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
-                  <div className="flex items-center gap-2 px-4 py-2">
-                    <input
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      placeholder={labelBottomInputPh}
-                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
-                      aria-label={labelBottomInputPh}
-                    />
-                    <Button
-                      type="button"
-                      className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
-                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                      onClick={() => setShowPremiumNote(true)}
-                    >
-                      {labelGenerateWithPrompt}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </motion.section>
+  <>
+    {/* ✅ LIMIT centrado */}
+    {errorKind === "limit" ? (
+      <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
+        <div className="w-full max-w-3xl space-y-3">
+          <UpgradeBanner />
+          <div className="text-sm text-red-600">
+            {tr(
+              "summary_limit_reached",
+              `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+            ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+          </div>
         </div>
-      </section>
+      </div>
+    ) : (
+      <div className="px-3 sm:px-6 pt-6 pb-6 max-w-3xl mx-auto">
+        {errorMsg && !errorKind && (
+          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+            {errorMsg}
+          </div>
+        )}
 
-      <BenefitsSection />
-      <ToolsSection />
-      <FeaturesSection />
-      <HowItWorks />
-      <FaqSection />
-      <CtaSection />
-      <Footer />
-    </>
-  );
+        {isOutdated && !loading && result && (
+          <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <span className="truncate">
+              {tr("summary.outdated_notice", "El texto ha cambiado. Actualiza el resumen.")}
+            </span>
+            <div className="shrink-0 flex items-center gap-2">
+              <Button
+                type="button"
+                onClick={handleGenerate}
+                className="h-8 px-3 rounded-full text-[13px]"
+                style={{ backgroundColor: "#2563eb", color: "#fff" }}
+              >
+                {tr("summary.outdated_update", "Actualizar")}
+              </Button>
+              <button
+                type="button"
+                onClick={() => setIsOutdated(false)}
+                className="h-8 w-8 rounded-md hover:bg-amber-100 text-amber-700"
+                title={tr("summary.outdated_close", "Ocultar aviso")}
+                aria-label={tr("summary.outdated_close", "Ocultar aviso")}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        {result && (
+          <article className="prose prose-slate max-w-none">
+            <p className="whitespace-normal">{result}</p>
+          </article>
+        )}
+
+        {loading && !result && (
+          <div className="space-y-3 animate-pulse">
+            <div className="h-4 bg-slate-200 rounded" />
+            <div className="h-4 bg-slate-200 rounded w-11/12" />
+            <div className="h-4 bg-slate-200 rounded w-10/12" />
+          </div>
+        )}
+      </div>
+    )}
+  </>
+)}
+</div>
+
+{/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
+<div className="bg-white p-4">
+  {showPremiumNote && (
+    <div className="mx-auto max-w-4xl mb-3">
+      <PremiumPromptNote />
+    </div>
+  )}
+
+  <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
+    <div className="flex items-center gap-2 px-4 py-2">
+      <input
+        value={chatInput}
+        onChange={(e) => setChatInput(e.target.value)}
+        placeholder={labelBottomInputPh}
+        className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
+        aria-label={labelBottomInputPh}
+      />
+      <Button
+        type="button"
+        className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
+        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+        onClick={() => setShowPremiumNote(true)}
+      >
+        {labelGenerateWithPrompt}
+      </Button>
+    </div>
+  </div>
+</div>
+</section>
+</motion.section>
+</div>
+</section>
+
+<BenefitsSection />
+<ToolsSection />
+<FeaturesSection />
+<HowItWorks />
+<FaqSection />
+<CtaSection />
+<Footer />
+</>
+);
 }
