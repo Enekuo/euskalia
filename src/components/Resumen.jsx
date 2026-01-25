@@ -18,6 +18,7 @@ import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
+import UpgradeBanner from "@/components/UpgradeBanner";
 
 export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
@@ -395,26 +396,6 @@ export default function Resumen() {
     setTextValue("");
     clearRight();
   };
-
-  // ===== Tarjetas =====
-  const LimitCard = () => (
-    <div className="rounded-xl border border-sky-200 bg-sky-50 px-6 py-5 text-sky-900 text-center">
-      <div className="text-sm font-semibold">{tr("summary.limit_title", "Has alcanzado el límite del plan Gratis")}</div>
-      <p className="text-xs text-slate-600 mt-1">{tr("summary.limit_note", "Límite actual: 12.000 caracteres por petición.")}</p>
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <Link
-          to="/pricing"
-          className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
-          style={{ backgroundColor: "#2563eb" }}
-        >
-          {tr("summary.limit_cta", "Probar plan Premium")}
-        </Link>
-        <button onClick={() => setErrorKind(null)} className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white">
-          {tr("summary.limit_dismiss", "Seguir con plan Gratis")}
-        </button>
-      </div>
-    </div>
-  );
 
   const PremiumPromptNote = () => (
     <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-5 text-indigo-900 shadow-sm">
@@ -979,7 +960,18 @@ export default function Resumen() {
 
                 {(result || errorMsg || loading || errorKind) && (
                   <div className="px-3 sm:px-6 pt-6 pb-6 max-w-3xl mx-auto">
-                    {errorKind === "limit" && <LimitCard />}
+                    {/* ✅ LIMIT: Nuevo banner + alerta roja */}
+                    {errorKind === "limit" && (
+                      <div className="space-y-3">
+                        <UpgradeBanner />
+                        <div className="text-sm text-red-600">
+                          {tr(
+                            "summary_limit_reached",
+                            `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+                          ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+                        </div>
+                      </div>
+                    )}
 
                     {errorMsg && !errorKind && (
                       <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
