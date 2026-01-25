@@ -188,11 +188,12 @@ translator_limit_reached: {
     },
 
     /* === NUEVAS CLAVES: aviso límite plan gratis === */
-    limit_title:   { ES: "Has alcanzado el límite del plan Gratis", EUS: "Doako planaren muga gainditu duzu", EN: "You have reached the Free plan limit", FR: "Vous avez atteint la limite du plan gratuit" },
-    limit_cta:     { ES: "Probar plan Premium", EUS: "Premium plana probatu", EN: "Try Premium plan", FR: "Essayer le plan Premium" },
-    limit_dismiss: { ES: "Seguir con plan Gratis", EUS: "Jarraitu doako planarekin", EN: "Continue with Free plan", FR: "Continuer avec le plan gratuit" },
-    limit_note:    { ES: "Límite actual: 12.000 caracteres por petición.", EUS: "Uneko muga: 12.000 karaktere eskaerako.", EN: "Current limit: 12,000 characters per request.", FR: "Limite actuelle : 12 000 caractères par requête." },
-
+  summary_limit_reached: {
+    ES: "Límite máximo: {{count}} caracteres.",
+    EUS: "Gehieneko muga: {{count}} karaktere.",
+    EN: "Maximum limit: {{count}} characters.",
+    FR: "Limite maximum : {{count}} caractères.",
+  },
     /* === NUEVAS CLAVES: aviso de función premium (prompt) === */
     premium_prompt_title: {
       ES: "Función disponible en el plan Premium",
