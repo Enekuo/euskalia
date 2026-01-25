@@ -354,7 +354,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     }
 
     if (leftText.length >= MAX_CHARS) {
-      setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
+       tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
+      .replace("{{count}}", MAX_CHARS.toLocaleString())
       return;
     }
 

@@ -91,7 +91,32 @@ export const translations = {
     EN: "Saved to library",
     FR: "Enregistré dans la bibliothèque",
   },
+upgradeBanner_title: {
+  ES: "¡Desbloquea Euskalia PRO!",
+  EUS: "Desblokeatu Euskalia PRO!",
+  EN: "Unlock Euskalia PRO!",
+  FR: "Débloquez Euskalia PRO !",
+},
 
+upgradeBanner_subtitle: {
+  ES: "Más capacidad y límites mucho más amplios.",
+  EUS: "Edukiera handiagoa eta muga askoz zabalagoak.",
+  EN: "More capacity and much higher limits.",
+  FR: "Plus de capacité et des limites beaucoup plus élevées.",
+},
+
+upgradeBanner_cta: {
+  ES: "Mejorar ahora",
+  EUS: "Hobetu orain",
+  EN: "Upgrade now",
+  FR: "Passer à Pro",
+},
+translator_limit_reached: {
+  ES: "Límite máximo: {{count}} caracteres.",
+  EUS: "Gehienezko muga: {{count}} karaktere.",
+  EN: "Maximum limit: {{count}} characters.",
+  FR: "Limite maximum : {{count}} caractères.",
+},
 
 
   // =========================
