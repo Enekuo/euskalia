@@ -187,13 +187,6 @@ translator_limit_reached: {
       FR: "Enregistrer"
     },
 
-    /* === NUEVAS CLAVES: aviso límite plan gratis === */
-  summary_limit_reached: {
-    ES: "Límite máximo: {{count}} caracteres.",
-    EUS: "Gehieneko muga: {{count}} karaktere.",
-    EN: "Maximum limit: {{count}} characters.",
-    FR: "Limite maximum : {{count}} caractères.",
-  },
     /* === NUEVAS CLAVES: aviso de función premium (prompt) === */
     premium_prompt_title: {
       ES: "Función disponible en el plan Premium",
@@ -225,9 +218,13 @@ translator_limit_reached: {
     outdated_update: { ES: "Actualizar", EUS: "Eguneratu", EN: "Update", FR: "Mettre à jour" },
     outdated_close:  { ES: "Ocultar aviso", EUS: "Abisua ezkutatu", EN: "Hide notice", FR: "Masquer l’avertissement" },
   },
-
-
-
+ /* === NUEVAS CLAVES: aviso límite plan gratis === */
+  summary_limit_reached: {
+    ES: "Límite máximo: {{count}} caracteres.",
+    EUS: "Gehieneko muga: {{count}} karaktere.",
+    EN: "Maximum limit: {{count}} characters.",
+    FR: "Limite maximum : {{count}} caractères.",
+  },
 
   
   // =========================
