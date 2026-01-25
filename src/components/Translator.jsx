@@ -22,7 +22,7 @@ import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
-const MAX_CHARS = 5000;
+const MAX_CHARS = 3000;
 
 export default function Translator() {
   const { t, language } = useTranslation();
