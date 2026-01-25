@@ -353,10 +353,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       return;
     }
 
-    if (leftText.length >= MAX_CHARS) {
-       tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
+   if (leftText.length >= MAX_CHARS) {
+  setErr(
+    tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
       .replace("{{count}}", MAX_CHARS.toLocaleString())
-      return;
+  );
+  return;
     }
 
     const controller = new AbortController();
