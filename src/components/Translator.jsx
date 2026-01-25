@@ -21,6 +21,7 @@ import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
+import UpgradeBanner from "@/components/UpgradeBanner";
 
 const MAX_CHARS = 3000;
 
@@ -119,6 +120,12 @@ export default function Translator() {
   const micChunksRef = useRef([]);
 
   const hasRealResult = !!(rightText && rightText.trim().length > 0);
+
+  const isLimitReached =
+    (sourceMode === "text" && leftText.length >= MAX_CHARS) ||
+    (sourceMode !== "text" &&
+      (String(err || "").includes("Límite máximo") ||
+        String(err || "").includes("Gehienezko muga")));
 
   const isRefusal = (s) => {
     const x = String(s || "").trim().toLowerCase();
@@ -1381,6 +1388,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     }`}
                   />
                 </div>
+
+                {isLimitReached && (
+                  <div className="mb-6">
+                    <UpgradeBanner />
+                  </div>
+                )}
 
                 {err && (
                   <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
