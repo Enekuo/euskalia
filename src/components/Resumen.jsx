@@ -1007,7 +1007,7 @@ export default function Resumen() {
                         </div>
                       </div>
                     ) : (
-                      <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto">
+                      <div className="px-3 sm:px-6 pt-26 pb-6 max-w-3xl mx-auto">
                         {errorMsg && !errorKind && (
                           <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                             {errorMsg}
