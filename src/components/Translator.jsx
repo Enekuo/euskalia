@@ -38,7 +38,6 @@ export default function Translator() {
   const uiLang =
     (language || "ES").toString().toUpperCase() === "EUS" ? "EUS" : "ES";
 
-  // ✅ Detectar idioma (auto)
   const LBL_DETECT = tr(
     "translator.detect_language",
     uiLang === "EUS" ? "Hizkuntza detektatu" : "Detectar idioma"
@@ -48,14 +47,11 @@ export default function Translator() {
     uiLang === "EUS" ? "detektatua" : "detectado"
   );
 
-  // ====== Labels idioma (claves comunes) ======
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
-  // ===== opciones selector =====
-  // ✅ ORIGEN: incluye Detectar idioma
   const OPTIONS_SRC = [
     { value: "auto", label: LBL_DETECT },
     { value: "es", label: LBL_ES },
@@ -64,7 +60,6 @@ export default function Translator() {
     { value: "fr", label: LBL_FR },
   ];
 
-  // ✅ DESTINO: SIN Detectar idioma (como en Pro)
   const OPTIONS_DST = [
     { value: "es", label: LBL_ES },
     { value: "eus", label: LBL_EUS },
@@ -72,8 +67,7 @@ export default function Translator() {
     { value: "fr", label: LBL_FR },
   ];
 
-  // ===== estado idioma / texto =====
-  const [src, setSrc] = useState("auto"); // AUTO por defecto
+  const [src, setSrc] = useState("auto");
   const [dst, setDst] = useState("es");
   const [openLeft, setOpenLeft] = useState(false);
   const [openRight, setOpenRight] = useState(false);
@@ -84,26 +78,18 @@ export default function Translator() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  // ✅ NUEVO: trigger manual para traducir (botón)
-  const [translateTick, setTranslateTick] = useState(0);
-
-  // idioma detectado para mostrar "(...) detectado"
   const [detectedLangLabel, setDetectedLangLabel] = useState("");
 
-  // ===== tabs (Texto / Documento / URL) =====
   const [sourceMode, setSourceMode] = useState("text"); // "text" | "document" | "url"
 
-  // Documentos (solo UI)
-  const [documents, setDocuments] = useState([]); // [{id,file}]
+  const [documents, setDocuments] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  // URLs (solo UI)
   const [urlInputOpen, setUrlInputOpen] = useState(false);
   const [urlsTextarea, setUrlsTextarea] = useState("");
-  const [urlItems, setUrlItems] = useState([]); // [{id,url,host}]
+  const [urlItems, setUrlItems] = useState([]);
 
-  // === TTS ===
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const audioElRef = useRef(null);
@@ -117,7 +103,6 @@ export default function Translator() {
   const leftTA = useRef(null);
   const rightTA = useRef(null);
 
-  // === refs para grabación (no usado aquí, pero lo dejo tal cual) ===
   const mediaRecorderRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const micChunksRef = useRef([]);
@@ -144,7 +129,6 @@ export default function Translator() {
     );
   };
 
-  // Para el prompt (nombres en ES)
   const langNameES = (code) => {
     if (code === "eus") return "Euskera";
     if (code === "es") return "Español";
@@ -153,7 +137,6 @@ export default function Translator() {
     return "Idioma";
   };
 
-  // parseo DETECTED_LANGUAGE
   const parseDetectedLanguage = (raw) => {
     const s = String(raw || "");
     const lines = s.split(/\r?\n/);
@@ -170,7 +153,6 @@ export default function Translator() {
     return { detected, translation };
   };
 
-  // Texto de dirección (incluye AUTO)
   const directionText = (srcVal, dstVal) => {
     if (srcVal === "auto") {
       if (dstVal === "eus") {
@@ -303,7 +285,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     []
   );
 
-  // ✅ Swap: bloqueado si origen es "auto" (Detectar idioma)
   const swap = () => {
     if (src === "auto") return;
     setDetectedLangLabel("");
@@ -313,7 +294,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setDst(nextDst);
   };
 
-  // cerrar dropdowns
   useEffect(() => {
     const onDown = (e) => {
       if (leftRef.current && !leftRef.current.contains(e.target)) setOpenLeft(false);
@@ -323,7 +303,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     return () => window.removeEventListener("mousedown", onDown);
   }, []);
 
-  // auto-resize (solo cuando NO estamos en modo texto)
   const autoResize = (el) => {
     if (!el) return;
     el.style.height = "auto";
@@ -336,7 +315,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") autoResize(rightTA.current);
   }, [rightText, sourceMode]);
 
-  // etiqueta que se ve en el selector de ORIGEN
   const srcButtonLabel =
     src !== "auto"
       ? OPTIONS_SRC.find((o) => o.value === src)?.label
@@ -344,18 +322,18 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       ? `(${detectedLangLabel}) ${LBL_DETECTED_SUFFIX}`
       : LBL_DETECT;
 
-  // ==== Traducción TEXTO /api/public (MANUAL con botón) ====
-  useEffect(() => {
+  // ✅ NUEVO: botón Traducir (sin auto mientras escribes)
+  const [translateTick, setTranslateTick] = useState(0);
+  const [dirty, setDirty] = useState(false);
+
+  const labelTranslateBtn = tr(
+    "translator.translate_button",
+    uiLang === "EUS" ? "Itzuli" : "Traducir"
+  );
+
+  const handleTranslateClick = () => {
     if (sourceMode !== "text") return;
-
-    if (leftText.length < MAX_CHARS) setErr("");
-
-    if (!leftText.trim()) {
-      setRightText("");
-      setDetectedLangLabel("");
-      return;
-    }
-
+    if (!leftText.trim()) return;
     if (leftText.length >= MAX_CHARS) {
       setErr(
         tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
@@ -363,13 +341,19 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       );
       return;
     }
+    setErr("");
+    setTranslateTick((v) => v + 1);
+    setDirty(false);
+  };
 
-    // ✅ si no has pulsado "Traducir" todavía, no hacemos nada
+  // ✅ Traducción TEXTO SOLO cuando pulsas el botón
+  useEffect(() => {
+    if (sourceMode !== "text") return;
     if (translateTick === 0) return;
 
     const controller = new AbortController();
 
-    (async () => {
+    const run = async () => {
       try {
         setLoading(true);
 
@@ -437,7 +421,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    run();
 
     return () => {
       controller.abort();
@@ -542,7 +528,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [sourceMode, src, dst, urlItems, language]);
 
-  // === Helper para leer archivos como texto ===
   const readFileAsText = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -719,7 +704,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     </button>
   );
 
-  // ✅ Dropdown ahora acepta options (para poder quitar "auto" en el derecho)
   const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
     if (!open) return null;
     return (
@@ -748,7 +732,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     );
   };
 
-  // ===== tabs i18n =====
   const labelTabText = tr("summary.sources_tab_text", "Testua");
   const labelTabDocument = tr("summary.sources_tab_document", "Dokumentua");
   const labelTabUrl = tr("summary.sources_tab_url", "URLa");
@@ -779,7 +762,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   );
   const labelRemove = tr("summary.remove", "Quitar");
 
-  // ====== ALTAVOZ (TTS backend) ======
   const stopPlayback = () => {
     if (speaking && ttsAbortRef.current) {
       try {
@@ -871,7 +853,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     }
   };
 
-  // Botón de borrar: limpia TODO
   const handleClearLeft = () => {
     setLeftText("");
     setRightText("");
@@ -880,10 +861,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlsTextarea("");
     setErr("");
     setDetectedLangLabel("");
-    setTranslateTick(0);
+    setDirty(false);
   };
 
-  // Acciones: copiar / PDF
   const handleCopy = async () => {
     if (!hasRealResult) return;
     try {
@@ -916,7 +896,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     w.print();
   };
 
-  // helpers Documentos / URLs (solo UI)
   const addFiles = async (list) => {
     if (!list?.length) return;
     const arr = Array.from(list);
@@ -998,10 +977,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
-            {/* barra superior */}
             <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
               <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
-                {/* Tabs */}
                 <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
                   <button
                     type="button"
@@ -1060,7 +1037,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     <span>{labelTabUrl}</span>
                   </button>
 
-                  {/* ✅ Botón borrar en móvil: justo a la derecha de URL */}
                   <button
                     type="button"
                     onClick={handleClearLeft}
@@ -1073,10 +1049,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   <span className="ml-4 h-5 w-px bg-slate-200" />
                 </div>
 
-                {/* selector: centrado (desktop) / debajo (móvil) */}
                 <div className="w-full flex items-center justify-center pointer-events-auto sm:pointer-events-none sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
                   <div className="relative pointer-events-auto w-full sm:w-auto grid grid-cols-[1fr_auto_1fr] items-center sm:flex sm:items-center">
-                    {/* ORIGEN */}
                     <div className="relative justify-self-end sm:mr-16" ref={leftRef}>
                       <button
                         type="button"
@@ -1113,7 +1087,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       />
                     </div>
 
-                    {/* SWAP */}
                     <button
                       type="button"
                       aria-label="Intercambiar idiomas"
@@ -1138,7 +1111,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       </svg>
                     </button>
 
-                    {/* DESTINO */}
                     <div className="relative justify-self-start sm:ml-16" ref={rightRef}>
                       <button
                         type="button"
@@ -1177,7 +1149,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
               </div>
 
-              {/* ✅ Botón borrar original SOLO desktop */}
               <button
                 type="button"
                 onClick={handleClearLeft}
@@ -1192,7 +1163,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-              {/* IZQUIERDA */}
               <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                 {sourceMode === "text" && (
                   <>
@@ -1200,24 +1170,14 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       <textarea
                         ref={leftTA}
                         value={leftText}
-                        onChange={(e) =>
-                          setLeftText(e.target.value.slice(0, MAX_CHARS))
-                        }
+                        onChange={(e) => {
+                          setLeftText(e.target.value.slice(0, MAX_CHARS));
+                          setDirty(true);
+                          if (leftText.length < MAX_CHARS) setErr("");
+                        }}
                         placeholder={t("translator.left_placeholder")}
                         className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
                       />
-                    </div>
-
-                    {/* ✅ NUEVO: botón Traducir */}
-                    <div className="mt-4 flex items-center gap-3">
-                      <Button
-                        type="button"
-                        onClick={() => setTranslateTick((v) => v + 1)}
-                        disabled={!leftText.trim() || loading || leftText.length >= MAX_CHARS}
-                        className="h-10 px-5 rounded-full"
-                      >
-                        {uiLang === "EUS" ? "Itzuli" : "Traducir"}
-                      </Button>
                     </div>
 
                     <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
@@ -1392,7 +1352,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 )}
               </div>
 
-              {/* DERECHA */}
               <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                 <div className="flex-1 min-h-0 pb-8">
                   <textarea
@@ -1409,6 +1368,24 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     }`}
                   />
                 </div>
+
+                {/* ✅ BOTÓN “TRADUCIR” EN LA TABLA DERECHA (como resumen) */}
+                {sourceMode === "text" && !loading && !hasRealResult && !err && (
+                  <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={handleTranslateClick}
+                      disabled={!leftText.trim() || leftText.length >= MAX_CHARS}
+                      className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
+                        !leftText.trim() || leftText.length >= MAX_CHARS
+                          ? "bg-slate-300 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      {labelTranslateBtn}
+                    </button>
+                  </div>
+                )}
 
                 {isLimitReached && (
                   <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
