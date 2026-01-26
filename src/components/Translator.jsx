@@ -84,6 +84,9 @@ export default function Translator() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+  // ✅ NUEVO: trigger manual para traducir (botón)
+  const [translateTick, setTranslateTick] = useState(0);
+
   // idioma detectado para mostrar "(...) detectado"
   const [detectedLangLabel, setDetectedLangLabel] = useState("");
 
@@ -341,7 +344,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       ? `(${detectedLangLabel}) ${LBL_DETECTED_SUFFIX}`
       : LBL_DETECT;
 
-  // ==== Traducción TEXTO /api/public (debounced) ====
+  // ==== Traducción TEXTO /api/public (MANUAL con botón) ====
   useEffect(() => {
     if (sourceMode !== "text") return;
 
@@ -353,16 +356,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       return;
     }
 
-   if (leftText.length >= MAX_CHARS) {
-  setErr(
-    tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
-      .replace("{{count}}", MAX_CHARS.toLocaleString())
-  );
-  return;
+    if (leftText.length >= MAX_CHARS) {
+      setErr(
+        tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
+          .replace("{{count}}", MAX_CHARS.toLocaleString())
+      );
+      return;
     }
 
+    // ✅ si no has pulsado "Traducir" todavía, no hacemos nada
+    if (translateTick === 0) return;
+
     const controller = new AbortController();
-    const timer = setTimeout(async () => {
+
+    (async () => {
       try {
         setLoading(true);
 
@@ -430,13 +437,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       } finally {
         setLoading(false);
       }
-    }, 900);
+    })();
 
     return () => {
-      clearTimeout(timer);
       controller.abort();
     };
-  }, [leftText, src, dst, sourceMode]);
+  }, [translateTick, src, dst, sourceMode]);
 
   // ==== Traducción URLs /api/public ====
   useEffect(() => {
@@ -874,6 +880,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlsTextarea("");
     setErr("");
     setDetectedLangLabel("");
+    setTranslateTick(0);
   };
 
   // Acciones: copiar / PDF
@@ -1186,7 +1193,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
               {/* IZQUIERDA */}
-             {/* IZQUIERDA */}
               <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                 {sourceMode === "text" && (
                   <>
@@ -1200,6 +1206,18 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         placeholder={t("translator.left_placeholder")}
                         className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
                       />
+                    </div>
+
+                    {/* ✅ NUEVO: botón Traducir */}
+                    <div className="mt-4 flex items-center gap-3">
+                      <Button
+                        type="button"
+                        onClick={() => setTranslateTick((v) => v + 1)}
+                        disabled={!leftText.trim() || loading || leftText.length >= MAX_CHARS}
+                        className="h-10 px-5 rounded-full"
+                      >
+                        {uiLang === "EUS" ? "Itzuli" : "Traducir"}
+                      </Button>
                     </div>
 
                     <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
