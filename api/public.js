@@ -12,12 +12,14 @@ const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TO
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
 // Resumidor
-const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 12000);
+const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 13000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 6);
+// ✅ límite de traducciones por día (solo traductor)
+const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 20);
 
 // ✅ Modelos (para que PUBLIC pueda ser EXACTAMENTE igual que PRO)
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // ej: "gpt-4.1-mini"
@@ -339,6 +341,28 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
         const newUsed = Number(usedReqs) + 1;
         await kv.set(dailySummaryKey, newUsed, { ex: 60 * 60 * 26 });
+      } catch {}
+    }
+
+    // 3b) Límite de traducciones por día (solo traductor)
+    if (tool === "translator") {
+      try {
+        const dailyTranslatorKey = `quota:translator:reqs:${day}:${ip}`;
+        const usedReqs = (await kv.get(dailyTranslatorKey)) || 0;
+
+        if (Number(usedReqs) >= FREE_TRANSLATOR_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily translator requests exceeded",
+            limit: { daily_translator_requests: FREE_TRANSLATOR_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del traductor (${FREE_TRANSLATOR_DAILY_REQUESTS} traducciones/día). ` +
+              `Vuelve mañana o mejora de plan.`
+          });
+        }
+
+        const newUsed = Number(usedReqs) + 1;
+        await kv.set(dailyTranslatorKey, newUsed, { ex: 60 * 60 * 26 });
       } catch {}
     }
 
