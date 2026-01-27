@@ -871,6 +871,7 @@ export default function Resumen() {
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-1 sm:mr-10">
+                <div className="sm:mx-4"></div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
