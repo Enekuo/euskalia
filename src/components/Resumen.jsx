@@ -1042,7 +1042,7 @@ export default function Resumen() {
                         )}
 
                         {result && (
-                          <article className="prose prose-slate max-w-none">
+                          <article className="prose prose-slate max-w-none mt-10">
                             <p className="whitespace-normal">{result}</p>
                           </article>
                         )}
