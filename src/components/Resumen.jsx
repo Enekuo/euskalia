@@ -948,7 +948,7 @@ export default function Resumen() {
                     aria-label="Copiar resultado"
                     disabled={!result}
                   >
-                    {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
+                    {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
                   </button>
 
                   <button
@@ -961,7 +961,7 @@ export default function Resumen() {
                     aria-label="Eliminar texto de la izquierda y resultado"
                     disabled={!(sourceMode === "text" && textValue)}
                   >
-                    <Trash className="w-4 h-4" />
+                    <Trash className="w-5 h-5" />
                   </button>
                 </div>
               </div>
