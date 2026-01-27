@@ -1378,7 +1378,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       disabled={!leftText.trim() || leftText.length >= MAX_CHARS}
                       className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
                         !leftText.trim() || leftText.length >= MAX_CHARS
-                          ? "bg-slate-300 cursor-not-allowed"
+                          ? "bg-blue-600 opacity-50 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
                       }`}
                     >
