@@ -870,7 +870,7 @@ export default function Resumen() {
                   <LengthTab active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-1 w-full">
+                <div className="flex items-center justify-between sm:justify-end gap-1 sm:mr-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
