@@ -3006,7 +3006,7 @@ error_auth_required: {
   },
   paste_urls_label: {
     ES: "Pegar URLs*",
-    EUS: "URLak itsatsi*",
+    EUS: "URLak itsatsi*", 
     EN: "Paste URLs*",
     FR: "Coller des URLs*",
   },
