@@ -47,6 +47,12 @@ export const translations = {
       EN: "The translation will appear here.",
       FR: "La traduction apparaîtra ici."
     },
+    translate_button: {
+    ES: "Traducir",
+    EUS: "Itzuli",
+    EN: "Translate",
+    FR: "Traduire"
+   },
 
   detect_language: {
     ES: "Detectar idioma",
