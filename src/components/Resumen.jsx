@@ -371,12 +371,12 @@ export default function Resumen() {
     return trimmed.length >= 20 && words.length >= 5;
   }, [textValue]);
 
-  // ✅ para documentos: basta con que haya algo de texto extraído
+  // ✅ CAMBIO: para documentos, con que haya documentos subidos ya es válido
   const docsTextHasAny = useMemo(() => {
-    return (documentsText || []).some((d) => String(d?.text || "").trim().length > 0);
-  }, [documentsText]);
+    return documents.length > 0 || (documentsText || []).some((d) => String(d?.text || "").trim().length > 0);
+  }, [documents, documentsText]);
 
-  // ✅ input válido REAL (no “documentos.length”)
+  // ✅ input válido REAL
   const hasValidInput = textIsValid || urlItems.length > 0 || docsTextHasAny;
 
   // ===== Acciones barra derecha =====
@@ -444,15 +444,7 @@ export default function Resumen() {
     const words = trimmed.split(/\s+/).filter(Boolean);
     const textOk = trimmed.length >= 20 && words.length >= 5;
 
-    // ✅ Caso clave: has subido documento pero NO hay texto extraído (public solo lee txt/md)
-    const userHasDocs = documents.length > 0;
-    const canReadDocs = docsTextHasAny;
-
-    if (userHasDocs && !canReadDocs && !textOk && urlItems.length === 0) {
-      setErrorMsg(tr("summary.error_doc_unreadable", "No se ha podido leer el documento. Prueba con un TXT/MD o pega el texto directamente."));
-      setLoading(false);
-      return;
-    }
+    // ✅ CAMBIO: eliminado el bloqueo “documento no legible”
 
     const validNow = textOk || urlItems.length > 0 || docsTextHasAny;
 
