@@ -238,6 +238,31 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
+    // ✅✅✅ AÑADIDO (ÚNICO) PARA RESUMIDOR CON DOCUMENTOS
+    // Si llega documentsText (texto extraído en frontend), lo metemos dentro de messages.
+    // Esto hace que al subir un DOCX/PDF (si tú extraes/mandas texto) el resumen se genere.
+    if (Array.isArray(body?.documentsText) && body.documentsText.length > 0) {
+      const docsInline =
+        "\nDOCUMENTOS (texto extraído):\n" +
+        body.documentsText
+          .map((d) => `--- ${d?.name || "documento"} ---\n${String(d?.text || "")}`)
+          .join("\n\n");
+
+      // Lo añadimos al contenido del primer user message si existe,
+      // o creamos uno nuevo si no existe.
+      const firstUserIdx = messages.findIndex((m) => m?.role === "user");
+      if (firstUserIdx >= 0) {
+        const prev = String(messages[firstUserIdx]?.content || "");
+        messages[firstUserIdx] = {
+          ...messages[firstUserIdx],
+          content: `${prev}${docsInline}`
+        };
+      } else {
+        messages = [{ role: "user", content: docsInline }, ...messages];
+      }
+    }
+    // ✅✅✅ FIN AÑADIDO
+
     // ====== Identificar herramienta (Traductor vs Resumidor) ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
@@ -466,7 +491,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       content,
       usage,
       cached: false
-    });
+    }); 
   } catch (err) {
     return res.status(500).json({ ok: false, error: err?.message || "Server error" });
   }
