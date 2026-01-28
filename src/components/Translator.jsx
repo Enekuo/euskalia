@@ -201,7 +201,7 @@ Détecte d'abord la LANGUE SOURCE du texte de l'utilisateur.
 À la première ligne écris EXACTEMENT : DETECTED_LANGUAGE: <langue>
 À la deuxième ligne, laisse une ligne vide.
 À partir de la troisième ligne, réponds UNIQUEMENT avec la traduction finale en Français.
-Objectif : une traduction NATURELLE et CORRECTE.
+Objetif : une traduction NATURELLE et CORRECTE.
 Tu peux réorganiser ou reformuler pour que ce soit naturel dans la langue cible.
 N'ajoute pas de nouvelles informations. Pas d'explications.
 Ne change pas de langue dans la traduction.
@@ -528,7 +528,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [sourceMode, src, dst, urlItems, language]);
 
-  // ✅ NUEVO: lectura real de DOCX y PDF
+  // ✅ lectura real de DOCX y PDF
   const readFileAsText = async (file) => {
     const name = String(file?.name || "").toLowerCase();
 
@@ -589,7 +589,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     );
   };
 
-  // ==== Traducción DOCUMENTOS /api/public ====
+  // ==== Traducción DOCUMENTO /api/public (solo 1 documento) ====
   useEffect(() => {
     if (sourceMode !== "document") return;
 
@@ -633,8 +633,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           setDetectedLangLabel("");
           setErr(
             uiLang === "EUS"
-              ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere (dokumentuak guztira).`
-              : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres (documentos en total).`
+              ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere (dokumentua).`
+              : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres (documento).`
           );
           return;
         }
@@ -675,13 +675,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/public (documents) error:", res.status, raw);
+          console.error("API /api/public (document) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(
               uiLang === "EUS"
-                ? "Ezin izan dira dokumentuak orain prozesatu."
-                : "No se han podido procesar los documentos ahora mismo."
+                ? "Ezin izan da dokumentua orain prozesatu."
+                : "No se ha podido procesar el documento ahora mismo."
             );
           return;
         }
@@ -710,13 +710,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         }
       } catch (e) {
         if (e.name !== "AbortError") {
-          console.error("translate documents error:", e);
+          console.error("translate document error:", e);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
             setErr(
               uiLang === "EUS"
-                ? "Ezin izan dira dokumentuak orain prozesatu."
-                : "No se han podido procesar los documentos ahora mismo."
+                ? "Ezin izan da dokumentua orain prozesatu."
+                : "No se ha podido procesar el documento ahora mismo."
             );
         }
       } finally {
@@ -935,14 +935,19 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     w.print();
   };
 
+  // ✅ SOLO 1 DOCUMENTO (selector + drag&drop)
   const addFiles = async (list) => {
     if (!list?.length) return;
+
     const arr = Array.from(list);
-    const withIds = arr.map((file) => ({
+    const file = arr[0];
+
+    const withId = {
       id: crypto.randomUUID(),
       file,
-    }));
-    setDocuments((prev) => [...prev, ...withIds]);
+    };
+
+    setDocuments([withId]);
   };
 
   const onFiles = async (e) => {
@@ -1239,7 +1244,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       ref={fileInputRef}
                       type="file"
                       className="hidden"
-                      multiple
                       accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
                       onChange={onFiles}
                     />
