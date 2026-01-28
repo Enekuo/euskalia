@@ -528,13 +528,50 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [sourceMode, src, dst, urlItems, language]);
 
-  const readFileAsText = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result || "");
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
+  // ✅ NUEVO: lectura real de DOCX y PDF
+  const readFileAsText = async (file) => {
+    const name = String(file?.name || "").toLowerCase();
+
+    const readPlain = (f) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result || "");
+        reader.onerror = reject;
+        reader.readAsText(f);
+      });
+
+    const readDocx = async (f) => {
+      const arrayBuffer = await f.arrayBuffer();
+      const mammoth = await import("mammoth/mammoth.browser");
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result?.value || "";
+    };
+
+    const readPdf = async (f) => {
+      const pdfjsLib = await import("pdfjs-dist");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        "pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
+
+      const data = new Uint8Array(await f.arrayBuffer());
+      const pdf = await pdfjsLib.getDocument({ data }).promise;
+
+      let fullText = "";
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        const strings = (content.items || []).map((it) => it.str || "");
+        fullText += strings.join(" ") + "\n\n";
+      }
+      return fullText;
+    };
+
+    if (name.endsWith(".docx")) return await readDocx(file);
+    if (name.endsWith(".pdf")) return await readPdf(file);
+
+    return await readPlain(file);
+  };
 
   const isTextReadableExt = (name) => {
     const lower = String(name || "").toLowerCase();
@@ -546,7 +583,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       lower.endsWith(".xml") ||
       lower.endsWith(".html") ||
       lower.endsWith(".htm") ||
-      lower.endsWith(".rtf")
+      lower.endsWith(".rtf") ||
+      lower.endsWith(".docx") ||
+      lower.endsWith(".pdf")
     );
   };
 
@@ -1388,25 +1427,24 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 )}
 
                 {isLimitReached && (
-  <>
-    <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
-      <UpgradeBanner />
-    </div>
+                  <>
+                    <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
+                      <UpgradeBanner />
+                    </div>
 
-    {!!err && (
-      <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[calc(50%+78px)] -translate-y-1/2 z-10 text-sm text-red-500 text-center">
-        {err}
-      </div>
-    )}
-  </>
-)}
+                    {!!err && (
+                      <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[calc(50%+78px)] -translate-y-1/2 z-10 text-sm text-red-500 text-center">
+                        {err}
+                      </div>
+                    )}
+                  </>
+                )}
 
-{!!err && !isLimitReached && (
-  <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
-    {err}
-  </div>
-)}
-
+                {!!err && !isLimitReached && (
+                  <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
+                    {err}
+                  </div>
+                )}
 
                 <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                   <button
