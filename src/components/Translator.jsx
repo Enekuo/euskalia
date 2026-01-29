@@ -129,6 +129,17 @@ export default function Translator() {
     );
   };
 
+  // ✅ NUEVO: fuerza siempre el mismo error de límite (3000) para que salga banner + rojo en los 3 modos
+  const setLimitError = () => {
+    setRightText("");
+    setDetectedLangLabel("");
+    setErr(
+      uiLang === "EUS"
+        ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere.`
+        : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+    );
+  };
+
   const langNameES = (code) => {
     if (code === "eus") return "Euskera";
     if (code === "es") return "Español";
@@ -322,7 +333,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       ? `(${detectedLangLabel}) ${LBL_DETECTED_SUFFIX}`
       : LBL_DETECT;
 
-  // ✅ NUEVO: botón Traducir (sin auto mientras escribes)
   const [translateTick, setTranslateTick] = useState(0);
   const [dirty, setDirty] = useState(false);
 
@@ -335,10 +345,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") return;
     if (!leftText.trim()) return;
     if (leftText.length >= MAX_CHARS) {
-      setErr(
-        tr("translator_limit_reached", `Límite máximo: ${MAX_CHARS} caracteres.`)
-          .replace("{{count}}", MAX_CHARS.toLocaleString())
-      );
+      setLimitError(); // ✅ antes: setErr(...)
       return;
     }
     setErr("");
@@ -346,7 +353,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setDirty(false);
   };
 
-  // ✅ Traducción TEXTO SOLO cuando pulsas el botón
   useEffect(() => {
     if (sourceMode !== "text") return;
     if (translateTick === 0) return;
@@ -385,6 +391,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
+          // ✅ NUEVO: si backend devuelve límite, mostramos SIEMPRE 3000 y activamos banner+rojo
+          if (res.status === 413) {
+            setLimitError();
+            return;
+          }
           const raw = await res.text().catch(() => "");
           console.error("API /api/public error:", res.status, raw);
           throw new Error(`API /api/public ${res.status}`);
@@ -430,7 +441,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [translateTick, src, dst, sourceMode]);
 
-  // ==== Traducción URLs /api/public ====
   useEffect(() => {
     if (sourceMode !== "url") return;
 
@@ -471,17 +481,33 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
-          let msg = "";
-          try {
-            const j = await res.json();
-            msg = String(j?.message || "");
-          } catch {}
+          // ✅ NUEVO: límite => banner + rojo (con 3000)
+          if (res.status === 413) {
+            setLimitError();
+            return;
+          }
 
-          setRightText("");
-          setDetectedLangLabel("");
-          setErr(
-            msg || "No se ha podido extraer texto de esta URL. Prueba con el texto o documento."
-          );
+          // ✅ NUEVO: también por JSON "Input too long"
+          let j = null;
+          try {
+            j = await res.json();
+          } catch {}
+          const maxChars = j?.limit?.max_chars;
+          const errCode = String(j?.error || "");
+          if (errCode.toLowerCase().includes("input too long") || maxChars) {
+            setLimitError();
+            return;
+          }
+
+          const raw = await res.text().catch(() => "");
+          console.error("API /api/public (urls) error:", res.status, raw);
+          const hasPrev = !!(rightText && rightText.trim().length > 0);
+          if (!hasPrev)
+            setErr(
+              uiLang === "EUS"
+                ? "Ezin izan dira URLak orain prozesatu."
+                : "No se pudieron procesar las URLs ahora mismo."
+            );
           return;
         }
 
@@ -491,7 +517,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         if (isRefusal(out)) {
           setRightText("");
           setDetectedLangLabel("");
-          setErr("No se ha podido extraer texto de esta URL. Prueba con el texto o documento.");
+          setErr(
+            uiLang === "EUS"
+              ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin."
+              : "No se pudo traducir el contenido. Prueba con otra URL."
+          );
           return;
         }
 
@@ -506,9 +536,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate urls error:", e);
-          setRightText("");
-          setDetectedLangLabel("");
-          setErr("No se ha podido extraer texto de esta URL. Prueba con el texto o documento.");
+          const hasPrev = !!(rightText && rightText.trim().length > 0);
+          if (!hasPrev)
+            setErr(
+              uiLang === "EUS"
+                ? "Ezin izan dira URLak orain prozesatu."
+                : "No se pudieron procesar las URLs ahora mismo."
+            );
         }
       } finally {
         setLoading(false);
@@ -522,7 +556,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     };
   }, [sourceMode, src, dst, urlItems, language]);
 
-  // ✅ lectura real de DOCX y PDF
   const readFileAsText = async (file) => {
     const name = String(file?.name || "").toLowerCase();
 
@@ -583,7 +616,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     );
   };
 
-  // ==== Traducción DOCUMENTO /api/public (solo 1 documento) ====
   useEffect(() => {
     if (sourceMode !== "document") return;
 
@@ -623,13 +655,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         const combinedFull = contents.join("\n\n---\n\n");
 
         if (combinedFull.length > MAX_CHARS) {
-          setRightText("");
-          setDetectedLangLabel("");
-          setErr(
-            uiLang === "EUS"
-              ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere (dokumentua).`
-              : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres (documento).`
-          );
+          setLimitError(); // ✅ antes: setErr(...) con texto distinto
           return;
         }
 
@@ -668,6 +694,22 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
+          // ✅ NUEVO: límite => banner + rojo (con 3000)
+          if (res.status === 413) {
+            setLimitError();
+            return;
+          }
+          let j = null;
+          try {
+            j = await res.json();
+          } catch {}
+          const maxChars = j?.limit?.max_chars;
+          const errCode = String(j?.error || "");
+          if (errCode.toLowerCase().includes("input too long") || maxChars) {
+            setLimitError();
+            return;
+          }
+
           const raw = await res.text().catch(() => "");
           console.error("API /api/public (document) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
@@ -929,7 +971,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     w.print();
   };
 
-  // ✅ SOLO 1 DOCUMENTO (selector + drag&drop)
   const addFiles = async (list) => {
     if (!list?.length) return;
 
@@ -1406,7 +1447,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   />
                 </div>
 
-                {/* ✅ BOTÓN “TRADUCIR” EN LA TABLA DERECHA (como resumen) */}
                 {sourceMode === "text" && !loading && !hasRealResult && !err && (
                   <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
                     <button
