@@ -1120,7 +1120,7 @@ export default function Resumen() {
                   <div className="flex items-center gap-2 px-4 py-2">
                     <input
                       value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
+                      onChange={(e) => setTextValue(e.target.value.slice(0, MAX_CHARS))}
                       placeholder={labelBottomInputPh}
                       className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
                       aria-label={labelBottomInputPh}
