@@ -19,6 +19,7 @@ import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import * as mammoth from "mammoth/mammoth.browser";
 
 export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
@@ -109,6 +110,12 @@ export default function Resumen() {
 
   // ✅ SOLO 1 DOC
   const labelOnlyOneDoc = tr("summary.only_one_document", "Solo se admite un documento por resumen.");
+
+  // ✅ DOC antiguo no soportado
+  const labelDocNotSupported = tr(
+    "summary.doc_not_supported",
+    "El formato .doc (Word antiguo) no se puede leer. Sube un .docx o pega el texto."
+  );
 
   // Longitud
   const LBL_SHORT = tr("summary.length_short", "Breve");
@@ -274,23 +281,56 @@ export default function Resumen() {
   // ===== Documentos =====
   const readTextFromFiles = async (items) => {
     const results = await Promise.all(
-      items.map(
-        ({ id, file }) =>
-          new Promise((resolve) => {
-            const name = file?.name || "";
-            const lower = name.toLowerCase();
-            const isTxt = lower.endsWith(".txt");
-            const isMd = lower.endsWith(".md");
-            if (!isTxt && !isMd) return resolve(null);
+      items.map(async ({ id, file }) => {
+        const name = file?.name || "";
+        const lower = name.toLowerCase();
 
+        const isTxt = lower.endsWith(".txt");
+        const isMd = lower.endsWith(".md");
+        const isDocx = lower.endsWith(".docx");
+        const isDoc = lower.endsWith(".doc");
+
+        if (isDoc) {
+          return { id, name, text: "" , __error: "DOC_NOT_SUPPORTED" };
+        }
+
+        if (isTxt || isMd) {
+          return await new Promise((resolve) => {
             const fr = new FileReader();
             fr.onload = () => resolve({ id, name, text: String(fr.result || "") });
             fr.onerror = () => resolve(null);
             fr.readAsText(file, "utf-8");
-          })
-      )
+          });
+        }
+
+        if (isDocx) {
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            const { value } = await mammoth.extractRawText({ arrayBuffer });
+            const clean = String(value || "")
+              .replace(/\r/g, "")
+              .replace(/\n{3,}/g, "\n\n")
+              .trim();
+            return { id, name, text: clean };
+          } catch {
+            return null;
+          }
+        }
+
+        return null;
+      })
     );
-    return results.filter(Boolean);
+
+    // Si hay DOC antiguo, lo avisamos
+    const hasDocError = results?.some((r) => r && r.__error === "DOC_NOT_SUPPORTED");
+    if (hasDocError) {
+      setErrorMsg(labelDocNotSupported);
+      setErrorKind(null);
+      setResult("");
+      setIsOutdated(false);
+    }
+
+    return results.filter((r) => r && !r.__error);
   };
 
   const triggerPick = () => fileInputRef.current?.click();
@@ -462,8 +502,6 @@ export default function Resumen() {
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     const textOk = trimmed.length >= 20 && words.length >= 5;
-
-    // ✅ CAMBIO: eliminado el bloqueo “documento no legible”
 
     const validNow = textOk || urlItems.length > 0 || docsTextHasAny;
 
@@ -735,7 +773,7 @@ export default function Resumen() {
                       ref={fileInputRef}
                       type="file"
                       className="hidden"
-                      accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
+                      accept=".docx,.txt,.md,.pdf,.ppt,.pptx,.doc,.csv,.json,.xml,.epub,.vtt,.srt,.rtf,.html,.htm,.jpg,.jpeg,.png"
                       onChange={onFiles}
                     />
                     <button
