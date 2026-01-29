@@ -471,15 +471,17 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
-          const raw = await res.text().catch(() => "");
-          console.error("API /api/public (urls) error:", res.status, raw);
-          const hasPrev = !!(rightText && rightText.trim().length > 0);
-          if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan dira URLak orain prozesatu."
-                : "No se pudieron procesar las URLs ahora mismo."
-            );
+          let msg = "";
+          try {
+            const j = await res.json();
+            msg = String(j?.message || "");
+          } catch {}
+
+          setRightText("");
+          setDetectedLangLabel("");
+          setErr(
+            msg || "No se ha podido extraer texto de esta URL. Prueba con el texto o documento."
+          );
           return;
         }
 
@@ -489,11 +491,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         if (isRefusal(out)) {
           setRightText("");
           setDetectedLangLabel("");
-          setErr(
-            uiLang === "EUS"
-              ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin."
-              : "No se pudo traducir el contenido. Prueba con otra URL."
-          );
+          setErr("No se ha podido extraer texto de esta URL. Prueba con el texto o documento.");
           return;
         }
 
@@ -508,13 +506,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate urls error:", e);
-          const hasPrev = !!(rightText && rightText.trim().length > 0);
-          if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan dira URLak orain prozesatu."
-                : "No se pudieron procesar las URLs ahora mismo."
-            );
+          setRightText("");
+          setDetectedLangLabel("");
+          setErr("No se ha podido extraer texto de esta URL. Prueba con el texto o documento.");
         }
       } finally {
         setLoading(false);
