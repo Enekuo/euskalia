@@ -1126,7 +1126,7 @@ export default function Resumen() {
                       aria-label={labelBottomInputPh}
                     />
                     <Button
-                      type="button"
+                      type="button" 
                       className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
                       style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
                       onClick={() => setShowPremiumNote(true)}
