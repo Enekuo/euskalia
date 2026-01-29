@@ -109,11 +109,18 @@ export default function Translator() {
 
   const hasRealResult = !!(rightText && rightText.trim().length > 0);
 
+  const isLimitTextES = (s) => String(s || "").includes("Límite máximo");
+  const isLimitTextEUS = (s) => String(s || "").includes("Gehienezko muga");
+  const isLimitErr = (s) => isLimitTextES(s) || isLimitTextEUS(s);
+
+  const getLimitMsg = () =>
+    uiLang === "EUS"
+      ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere.`
+      : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`;
+
   const isLimitReached =
     (sourceMode === "text" && leftText.length >= MAX_CHARS) ||
-    (sourceMode !== "text" &&
-      (String(err || "").includes("Límite máximo") ||
-        String(err || "").includes("Gehienezko muga")));
+    (sourceMode !== "text" && isLimitErr(err));
 
   const isRefusal = (s) => {
     const x = String(s || "").trim().toLowerCase();
@@ -129,16 +136,31 @@ export default function Translator() {
     );
   };
 
-  // ✅ NUEVO: fuerza siempre el mismo error de límite (3000) para que salga banner + rojo en los 3 modos
-  const setLimitError = () => {
-    setRightText("");
-    setDetectedLangLabel("");
-    setErr(
-      uiLang === "EUS"
-        ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere.`
-        : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-    );
+  // ✅ LIMITE (3000) consistente para los 3 modos
+  const setLimitError = (clearResult = true) => {
+    if (clearResult) {
+      setRightText("");
+      setDetectedLangLabel("");
+    }
+    setErr(getLimitMsg());
   };
+
+  // ✅ NUEVO: en TEXTO, cuando el contador llega a 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
+  useEffect(() => {
+    if (sourceMode !== "text") return;
+
+    if (leftText.length >= MAX_CHARS) {
+      if (!isLimitErr(err)) setLimitError(false);
+      else {
+        const next = getLimitMsg();
+        if (err !== next) setErr(next);
+      }
+      return;
+    }
+
+    // si baja de 3000, limpiamos SOLO si era el error de límite
+    if (isLimitErr(err)) setErr("");
+  }, [leftText, sourceMode, uiLang]);
 
   const langNameES = (code) => {
     if (code === "eus") return "Euskera";
@@ -345,7 +367,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     if (sourceMode !== "text") return;
     if (!leftText.trim()) return;
     if (leftText.length >= MAX_CHARS) {
-      setLimitError(); // ✅ antes: setErr(...)
+      setLimitError(true);
       return;
     }
     setErr("");
@@ -391,9 +413,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
-          // ✅ NUEVO: si backend devuelve límite, mostramos SIEMPRE 3000 y activamos banner+rojo
           if (res.status === 413) {
-            setLimitError();
+            setLimitError(true);
             return;
           }
           const raw = await res.text().catch(() => "");
@@ -481,13 +502,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
-          // ✅ NUEVO: límite => banner + rojo (con 3000)
           if (res.status === 413) {
-            setLimitError();
+            setLimitError(true);
             return;
           }
 
-          // ✅ NUEVO: también por JSON "Input too long"
           let j = null;
           try {
             j = await res.json();
@@ -495,7 +514,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           const maxChars = j?.limit?.max_chars;
           const errCode = String(j?.error || "");
           if (errCode.toLowerCase().includes("input too long") || maxChars) {
-            setLimitError();
+            setLimitError(true);
             return;
           }
 
@@ -655,7 +674,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         const combinedFull = contents.join("\n\n---\n\n");
 
         if (combinedFull.length > MAX_CHARS) {
-          setLimitError(); // ✅ antes: setErr(...) con texto distinto
+          setLimitError(true);
           return;
         }
 
@@ -694,9 +713,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
-          // ✅ NUEVO: límite => banner + rojo (con 3000)
           if (res.status === 413) {
-            setLimitError();
+            setLimitError(true);
             return;
           }
           let j = null;
@@ -706,7 +724,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           const maxChars = j?.limit?.max_chars;
           const errCode = String(j?.error || "");
           if (errCode.toLowerCase().includes("input too long") || maxChars) {
-            setLimitError();
+            setLimitError(true);
             return;
           }
 
@@ -1250,9 +1268,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         ref={leftTA}
                         value={leftText}
                         onChange={(e) => {
-                          setLeftText(e.target.value.slice(0, MAX_CHARS));
+                          const next = e.target.value.slice(0, MAX_CHARS);
+                          setLeftText(next);
                           setDirty(true);
-                          if (leftText.length < MAX_CHARS) setErr("");
+
+                          if (next.length < MAX_CHARS && isLimitErr(err)) setErr("");
                         }}
                         placeholder={t("translator.left_placeholder")}
                         className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
