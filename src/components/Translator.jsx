@@ -1491,7 +1491,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     </div>
 
                     {!!err && (
-                      <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[calc(50%+78px)] -translate-y-1/2 z-10 text-sm text-red-500 text-center">
+                      <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-16 z-10 text-sm text-red-500 text-center">
                         {err}
                       </div>
                     )}
