@@ -164,13 +164,24 @@ export default async function handler(req, res) {
           const r = await fetch(url, { method: "GET" });
           const html = await r.text();
           const text = htmlToText(html);
-          if (text) {
-            parts.push(`URL: ${url}\n\n${text.slice(0, 9000)}`);
-          } else {
-            parts.push(`URL: ${url}\n\n[No se ha podido extraer texto útil de esta página.]`);
+
+          // ✅ NUEVO: si falla extracción, devolvemos SIEMPRE tu frase (y no llamamos a OpenAI)
+          if (!text || text.trim().length < 80) {
+            return res.status(422).json({
+              ok: false,
+              error: "URL_EXTRACT_FAILED",
+              message: "No se ha podido extraer texto de esta URL. Prueba con el texto o documento."
+            });
           }
+
+          parts.push(`URL: ${url}\n\n${text.slice(0, 9000)}`);
         } catch (e) {
-          parts.push(`URL: ${url}\n\n[No se ha podido descargar el contenido de esta página.]`);
+          // ✅ NUEVO: si falla descarga, devolvemos SIEMPRE tu frase
+          return res.status(422).json({
+            ok: false,
+            error: "URL_EXTRACT_FAILED",
+            message: "No se ha podido extraer texto de esta URL. Prueba con el texto o documento."
+          });
         }
       }
 
