@@ -107,6 +107,9 @@ export default function Resumen() {
   );
   const labelGenerateWithPrompt = tr("summary.generate_with_prompt", "Argibideekin sortu");
 
+  // ✅ SOLO 1 DOC
+  const labelOnlyOneDoc = tr("summary.only_one_document", "Solo se admite un documento por resumen.");
+
   // Longitud
   const LBL_SHORT = tr("summary.length_short", "Breve");
   const LBL_MED = tr("summary.length_medium", "Medio");
@@ -295,8 +298,25 @@ export default function Resumen() {
   const addFiles = async (list) => {
     if (!list?.length) return;
 
+    // ✅ SOLO 1 DOCUMENTO: si ya hay uno, no dejamos añadir otro
+    if (documents.length >= 1) {
+      setErrorMsg(labelOnlyOneDoc);
+      setErrorKind(null);
+      setResult("");
+      setIsOutdated(false);
+      return;
+    }
+
     const arr = Array.from(list);
-    const withIds = arr.map((file) => ({ id: crypto.randomUUID(), file }));
+
+    // ✅ si intentan meter varios, cogemos SOLO el primero y avisamos
+    if (arr.length > 1) {
+      setErrorMsg(labelOnlyOneDoc);
+      setErrorKind(null);
+    }
+
+    const file = arr[0];
+    const withIds = [{ id: crypto.randomUUID(), file }];
 
     setDocuments((prev) => [...prev, ...withIds]);
 
@@ -304,7 +324,6 @@ export default function Resumen() {
     if (texts.length) setDocumentsText((prev) => [...prev, ...texts]);
 
     setResult("");
-    setErrorMsg("");
     setErrorKind(null);
     setIsOutdated(false);
   };
@@ -716,7 +735,6 @@ export default function Resumen() {
                       ref={fileInputRef}
                       type="file"
                       className="hidden"
-                      multiple
                       accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
                       onChange={onFiles}
                     />
@@ -999,7 +1017,7 @@ export default function Resumen() {
                         </div>
                       </div>
                     ) : (
-                      <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto"> 
+                      <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto">
                         {errorMsg && !errorKind && (
                           <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                             {errorMsg}
