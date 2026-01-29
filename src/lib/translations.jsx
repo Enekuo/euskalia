@@ -59,7 +59,7 @@ export const translations = {
     EUS: "Hizkuntza detektatu",
     EN: "Detect language",
     FR: "Détecter la langue",
-  },
+  }, 
   detected: {
     ES: "detectado",
     EUS: "detektatua",
