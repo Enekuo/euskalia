@@ -333,7 +333,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       return res.status(413).json({
         ok: false,
         error: "Input too long",
-        limit: { max_chars: MAX_CHARS, tool },
+        limit: { max_chars: MAX_CHARS, tool }, 
         message:
           `El texto es demasiado largo. Máximo ${MAX_CHARS.toLocaleString()} caracteres por petición. ` +
           `Divide el texto y vuelve a intentarlo.`
