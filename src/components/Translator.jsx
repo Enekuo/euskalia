@@ -119,7 +119,7 @@ export default function Translator() {
       : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`;
 
   const isLimitReached =
-    (sourceMode === "text" && leftText.length >= MAX_CHARS) ||
+    (sourceMode === "text" && leftText.length > MAX_CHARS) ||
     (sourceMode !== "text" && isLimitErr(err));
 
   const isRefusal = (s) => {
@@ -145,11 +145,11 @@ export default function Translator() {
     setErr(getLimitMsg());
   };
 
-  // ✅ NUEVO: en TEXTO, cuando el contador llega a 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
+  // ✅ NUEVO: en TEXTO, cuando el contador pasa de 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
   useEffect(() => {
     if (sourceMode !== "text") return;
 
-    if (leftText.length >= MAX_CHARS) {
+    if (leftText.length > MAX_CHARS) {
       if (!isLimitErr(err)) setLimitError(false);
       else {
         const next = getLimitMsg();
@@ -158,7 +158,7 @@ export default function Translator() {
       return;
     }
 
-    // si baja de 3000, limpiamos SOLO si era el error de límite
+    // si baja a 3000 o menos, limpiamos SOLO si era el error de límite
     if (isLimitErr(err)) setErr("");
   }, [leftText, sourceMode, uiLang]);
 
@@ -376,7 +376,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const handleTranslateClick = () => {
     if (sourceMode !== "text") return;
     if (!leftText.trim()) return;
-    if (leftText.length >= MAX_CHARS) {
+    if (leftText.length > MAX_CHARS) {
       setLimitError(true);
       return;
     }
@@ -1278,19 +1278,24 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         ref={leftTA}
                         value={leftText}
                         onChange={(e) => {
-                          const next = e.target.value.slice(0, MAX_CHARS);
+                          const next = e.target.value;
                           setLeftText(next);
                           setDirty(true);
 
-                          if (next.length < MAX_CHARS && isLimitErr(err)) setErr("");
+                          if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
                         }}
                         placeholder={t("translator.left_placeholder")}
                         className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
                       />
                     </div>
 
-                    <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
-                      {leftText.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                    <div
+                      className={`absolute bottom-4 right-6 text-[13px] ${
+                        leftText.length > MAX_CHARS ? "text-red-500" : "text-slate-400"
+                      }`}
+                    >
+                      {leftText.length.toLocaleString("es-ES")} /{" "}
+                      {MAX_CHARS.toLocaleString("es-ES")}
                     </div>
                   </>
                 )}
@@ -1482,9 +1487,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     <button
                       type="button"
                       onClick={handleTranslateClick}
-                      disabled={!leftText.trim() || leftText.length >= MAX_CHARS}
+                      disabled={!leftText.trim() || leftText.length > MAX_CHARS}
                       className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
-                        !leftText.trim() || leftText.length >= MAX_CHARS
+                        !leftText.trim() || leftText.length > MAX_CHARS
                           ? "bg-blue-600 opacity-50 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
                       }`}
