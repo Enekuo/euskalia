@@ -627,10 +627,10 @@ export default function Resumen() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          task: "summary", 
           messages,
           length: summaryLength,
           cacheKey,
-          documentsText,
         }),
       });
 
@@ -1120,7 +1120,7 @@ export default function Resumen() {
                   <div className="flex items-center gap-2 px-4 py-2">
                     <input
                       value={chatInput}
-                      onChange={(e) => setTextValue(e.target.value.slice(0, MAX_CHARS))}
+                      onChange={(e) => setChatInput(e.target.value.slice(0, MAX_CHARS))}
                       placeholder={labelBottomInputPh}
                       className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
                       aria-label={labelBottomInputPh}

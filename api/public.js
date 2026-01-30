@@ -12,7 +12,7 @@ const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TO
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
 // Resumidor
-const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 13000);
+const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 12000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
@@ -327,7 +327,6 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
     // 1) Máx. caracteres por request
     const totalChars =
-      (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
     if (totalChars > MAX_CHARS) {
