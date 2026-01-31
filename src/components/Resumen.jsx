@@ -700,6 +700,7 @@ export default function Resumen() {
 
   return (
     <>
+    <h1 className="sr-only">Resumidor de euskera online</h1>
       <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <motion.section

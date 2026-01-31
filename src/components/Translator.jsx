@@ -1081,6 +1081,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
   return (
     <>
+    <h1 className="sr-only">Traductor de euskera online y gratis</h1>
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">

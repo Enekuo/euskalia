@@ -15,7 +15,7 @@ export default function TraductorSeoRedirect() {
         <title>Traductor de euskera online y gratis | Euskalia</title>
         <meta
           name="description"
-          content="Traductor de euskera online para traducir textos y frases entre euskera y español de forma rápida."
+          content="Traductor de euskera online para traducir textos y frases entre euskera y español de forma rápida, sencilla y gratuita."
         />
       </Helmet>
     </>

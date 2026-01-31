@@ -56,8 +56,8 @@ const path = location.pathname || "/";
 const seo =
   path === "/resumen"
     ? {
-        title: "Resumidor de textos con IA | Euskalia",
-        desc: "Resume textos largos en segundos con inteligencia artificial. Ideal para estudiar, trabajar o ahorrar tiempo.",
+        title: "Resumidor de euskera online | Euskalia",
+        desc: "Resumidor de euskera para crear resúmenes claros y rápidos de textos largos en segundos.",
       }
     : {
         title: "Traductor y resumidor de euskera | Euskalia",
