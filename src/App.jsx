@@ -19,6 +19,8 @@ import Suggestions from "@/pages/Suggestions";
 import CookieBanner from "@/components/CookieBanner";
 import PagoCorrectoPage from "@/pages/PagoCorrectoPage";
 import PagoCanceladoPage from "@/pages/PagoCanceladoPage";
+import TraductorSeoRedirect from "./TraductorSeoRedirect";
+
 
 
 // Pro-Account //
@@ -114,6 +116,8 @@ const seo =
             <Route path="/sugerencias" element={<Suggestions />} />
             <Route path="/pago-correcto" element={<PagoCorrectoPage />} />
             <Route path="/pago-cancelado" element={<PagoCanceladoPage />} />
+            <Route path="/traductor" element={<TraductorSeoRedirect />} />
+
 
 
             {/* Pro-Account */}
