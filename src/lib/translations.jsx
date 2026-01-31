@@ -707,7 +707,7 @@ toolsSection_cardAiDetector_desc: {
 
   item4_title: {
     ES: "Euskera en el día a día",
-    EUS: "Euskara egunerokoan erabiltzeko",
+    EUS: "Euskara egunerokotasunean erabiltzeko",
     EN: "Basque in everyday life",
     FR: "Le basque au quotidien",
   },
