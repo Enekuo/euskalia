@@ -1,6 +1,6 @@
 // Iniciar sesión
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
@@ -10,9 +10,28 @@ export default function AuthPage() {
   const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
 
   const navigate = useNavigate();
+  const location = useLocation();
   const REDIRECT_TO = "/cuenta-pro";
 
-  // ✅ Si el usuario ya está logeado, fuera de aquí
+  const [allowed, setAllowed] = useState(false);
+
+  // ✅ 1) BLOQUEO ANTES DEL BOTÓN (si no vienes “habilitado”, fuera a /pricing)
+  useEffect(() => {
+    const qs = new URLSearchParams(location.search);
+    const allowParam = qs.get("allow") === "1";
+    const allowFlag = sessionStorage.getItem("pro_login_allowed") === "1";
+
+    if (allowParam || allowFlag) {
+      setAllowed(true);
+      // si venías por ?allow=1, ya dejamos el flag para recargas
+      sessionStorage.setItem("pro_login_allowed", "1");
+      return;
+    }
+
+    navigate("/pricing", { replace: true });
+  }, [location.search, navigate]);
+
+  // ✅ 2) Si el usuario ya está logeado, fuera de aquí
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -26,11 +45,18 @@ export default function AuthPage() {
   const handleGoogleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
+
+      // Mantener el permiso mientras dure esta sesión
+      sessionStorage.setItem("pro_login_allowed", "1");
+
       navigate(REDIRECT_TO, { replace: true });
     } catch (e) {
       console.error("Google login error:", e);
     }
   };
+
+  // Si no está allowed, no renderizamos nada (porque ya redirige)
+  if (!allowed) return null;
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col">
@@ -58,7 +84,6 @@ export default function AuthPage() {
         >
           Euskalia
         </Link>
-
       </header>
 
       {/* Fondo con halo suave + tarjeta */}
