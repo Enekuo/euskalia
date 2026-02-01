@@ -121,22 +121,28 @@ export default function LayoutPro({ children }) {
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
+      {/* ✅ LOGO FIJO (FUERA DEL RECORTE DEL SIDEBAR) */}
+      <div
+        className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] border-b border-slate-200"
+        style={{ width: collapsed ? 64 : 192 }}
+      >
+        <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4">
+          Euskalia
+        </span>
+      </div>
+
       {/* ========== SIDEBAR FIJO ========== */}
       <aside
         className={`
           fixed top-0 left-0 h-screen
-          bg-white flex flex-col pb-2
+          bg-white flex flex-col pt-16 pb-2
           transition-[width] duration-200
+          overflow-visible
           ${collapsed ? "w-16 px-2" : "w-48 px-4"}
         `}
       >
-        {/* ✅ LOGO SIEMPRE INTACTO (se mantiene visible incluso al contraer y puede quedar por encima del header) */}
-        <div className="fixed top-0 left-0 h-16 w-48 bg-white flex items-center px-4 z-50 border-b border-slate-200">
-          <span className="font-bold tracking-tight text-2xl">Euskalia</span>
-        </div>
-
-        {/* Contenido (bajado para no quedar debajo del logo fijo) */}
-        <div className="pt-3 flex-1 flex flex-col" style={{ marginTop: 64 }}>
+        {/* Contenido */}
+        <div className="flex-1 flex flex-col">
           {/* Home */}
           <nav className="space-y-1 text-sm">
             <button
@@ -355,7 +361,6 @@ export default function LayoutPro({ children }) {
               )}
             </button>
 
-            {/* ✅ ÚNICO CAMBIO: antes era /cuenta-pro/ayuda */}
             <button
               onClick={() => navigate("/cuenta-pro/ayuda")}
               className={`
@@ -490,7 +495,6 @@ export default function LayoutPro({ children }) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* ✅ AQUÍ: avatar real del usuario (foto Google o inicial estilo Google) */}
             <button
               type="button"
               onClick={() => navigate("/cuenta-pro/ajustes")}
