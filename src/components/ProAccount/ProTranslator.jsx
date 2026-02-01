@@ -1620,6 +1620,6 @@ export default function ProTranslator() {
           </div>
         </div>
       </section>
-    </>
+    </> 
   );
 }
