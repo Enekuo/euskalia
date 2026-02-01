@@ -126,7 +126,7 @@ export default function LayoutPro({ children }) {
         className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] "
         style={{ width: collapsed ? 64 : 192 }}
       >
-        <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4">
+        <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4 pl-6">
           Euskalia
         </span>
       </div>
