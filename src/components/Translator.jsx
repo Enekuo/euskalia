@@ -665,7 +665,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         const readable = documents.filter(({ file }) =>
           isTextReadableExt(file?.name)
         );
-        const unreadable = documents.filter(({ file }) => !isTextReadableExt(file?.name));
+        const unreadable = documents.filter(
+          ({ file }) => !isTextReadableExt(file?.name)
+        );
 
         if (unreadable.length > 0 && readable.length === 0) {
           setRightText("");
@@ -1081,7 +1083,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
   return (
     <>
-    <h1 className="sr-only">Traductor de euskera online y gratis</h1>
+      <h1 className="sr-only">Traductor de euskera online y gratis</h1>
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
@@ -1404,7 +1406,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                             "summary.paste_urls_placeholder",
                             "Introduce aquí una o más URLs (separadas por línea)"
                           )}
-                          className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
+                          rows={2}
+                          className="w-full min-h-[56px] sm:min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                           aria-label={labelPasteUrls}
                         />
                         <div className="mt-2 flex items-center gap-2">
