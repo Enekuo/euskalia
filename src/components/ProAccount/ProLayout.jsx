@@ -144,7 +144,7 @@ export default function LayoutPro({ children }) {
         {/* Contenido */}
         <div className="flex-1 flex flex-col">
           {/* Home */}
-          <nav className="space-y-1 text-sm">
+          <nav className="space-y-1 text-sm mt-4">
             <button
               onClick={() => navigate("/cuenta-pro")}
               className={`
