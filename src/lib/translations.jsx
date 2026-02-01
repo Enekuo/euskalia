@@ -4159,6 +4159,8 @@ folder_modal_no_docs: {
   EN: "You haven’t selected any documents.",
   FR: "Aucun document n’a été sélectionné."
 },
+folder_delete_confirm: { ES: "¿Eliminar esta carpeta? Esta acción no se puede deshacer.", EUS: "Karpeta hau ezabatu? Ekintza hau ezin da desegin.", EN: "Delete this folder? This action can’t be undone.", FR: "Supprimer ce dossier ? Cette action est irréversible." },
+
 
 // =========================
 //        Pro Suggestions
