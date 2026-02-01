@@ -1483,7 +1483,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   />
                 </div>
 
-                {sourceMode === "text" && !loading && !hasRealResult && !err && (
+                {sourceMode === "text" && !loading && !err && (!hasRealResult || dirty) && (
                   <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
                     <button
                       type="button"
