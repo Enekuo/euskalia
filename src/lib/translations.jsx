@@ -4153,7 +4153,12 @@ library_doc_title_placeholder: {
   EN: "Write a title…",
   FR: "Écrivez un titre…",
 },
-
+folder_modal_no_docs: {
+  EUS: "Ez duzu dokumenturik hautatu.",
+  ES: "No has seleccionado ningún documento.",
+  EN: "You haven’t selected any documents.",
+  FR: "Aucun document n’a été sélectionné."
+},
 
 // =========================
 //        Pro Suggestions
