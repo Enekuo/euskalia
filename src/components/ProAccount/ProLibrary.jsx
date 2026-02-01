@@ -15,7 +15,7 @@ export default function ProLibrary() {
   const { docs, renameDoc, deleteDoc } = useLibraryDocs();
 
   // ===== STORE CARPETAS =====
-  const { folders } = useLibraryFolders();
+  const { folders, deleteFolder } = useLibraryFolders();
 
   // ===== Filtros =====
   // all | text | summary | corrections | paraphraser | humanizer | folders
@@ -150,6 +150,22 @@ export default function ProLibrary() {
     setSelectedDocIds([]);
   };
 
+  // ✅ BORRAR CARPETA
+  const handleDeleteFolder = (folderId, folderName) => {
+    const msg = tr(
+      "folder_delete_confirm",
+      `¿Eliminar la carpeta "${folderName || ""}"? Esta acción no se puede deshacer.`
+    );
+    const ok = window.confirm(msg);
+    if (!ok) return;
+
+    deleteFolder(folderId);
+
+    if (viewFolderId === folderId) {
+      setViewFolderId(null);
+    }
+  };
+
   // ========= Helpers visuales =========
   const svgToDataUri = (svg) => {
     const cleaned = svg
@@ -234,19 +250,6 @@ export default function ProLibrary() {
       };
     }
 
-    // humanizer
-    const iconSvg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-        <rect x="0" y="0" width="96" height="96" rx="20" fill="#DCFCE7"/>
-        <path d="M48 22c-10.5 0-19 8.5-19 19v8c0 6 3.7 11.4 9.4 13.7V74c0 3.3 2.7 6 6 6h7.2c3.3 0 6-2.7 6-6V62.7C63.3 60.4 67 55 67 49v-8c0-10.5-8.5-19-19-19z"
-          fill="none" stroke="#16A34A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M41 44c-2.8 0-5 2.2-5 5v1c-1.8.6-3 2.3-3 4.2 0 2.5 2 4.5 4.5 4.5"
-          fill="none" stroke="#16A34A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M55 44c2.8 0 5 2.2 5 5v1c1.8.6 3 2.3 3 4.2 0 2.5-2 4.5-4.5 4.5"
-          fill="none" stroke="#16A34A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M48 40v24" fill="none" stroke="#16A34A" stroke-width="5" stroke-linecap="round"/>
-      </svg>
-    `;
     return {
       bg: "#F0FDF4",
       border: "#CFF5DB",
@@ -601,14 +604,22 @@ export default function ProLibrary() {
                       <span className="text-base font-semibold text-slate-900 truncate">
                         {currentFolder.name}
                       </span>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteFolder(currentFolder.id, currentFolder.name)}
+                        className="ml-auto inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                        aria-label={tr("folder_delete", "Eliminar carpeta")}
+                        title={tr("folder_delete", "Eliminar carpeta")}
+                      >
+                        <Trash2 className="w-4 h-4 text-slate-600" />
+                        {tr("folder_delete", "Eliminar carpeta")}
+                      </button>
                     </div>
 
                     {folderDocs.length === 0 ? (
                       <p className="text-sm text-slate-500">
-                        {tr(
-                          "folder_empty",
-                          "Esta carpeta todavía no tiene documentos."
-                        )}
+                        {tr("folder_empty", "Esta carpeta todavía no tiene documentos.")}
                       </p>
                     ) : (
                       <div className="flex flex-wrap gap-[38px]">
@@ -654,8 +665,7 @@ export default function ProLibrary() {
                                     {labelPrefix}
                                   </span>{" "}
                                   <span className="font-normal text-slate-700">
-                                    {doc.title ||
-                                      tr("library_untitled", "Sin título")}
+                                    {doc.title || tr("library_untitled", "Sin título")}
                                   </span>
                                 </h3>
                                 {dateLabel && (
@@ -677,10 +687,7 @@ export default function ProLibrary() {
                   <div className="flex flex-col gap-3 w-full max-w-xl">
                     {folders.length === 0 && (
                       <div className="rounded-xl border border-dashed border-slate-300 p-6 text-slate-500">
-                        {tr(
-                          "library_no_folders",
-                          "Aún no tienes carpetas. Crea la primera."
-                        )}
+                        {tr("library_no_folders", "Aún no tienes carpetas. Crea la primera.")}
                       </div>
                     )}
 
@@ -691,13 +698,30 @@ export default function ProLibrary() {
                         onClick={() => setViewFolderId(f.id)}
                         className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm hover:shadow-md hover:border-sky-200 transition text-left"
                       >
-                        <div className="flex items-center gap-2 text-slate-700">
+                        <div className="flex items-center gap-2 text-slate-700 min-w-0">
                           <Folder className="w-5 h-5 text-sky-500" />
                           <span className="font-medium truncate">{f.name}</span>
                         </div>
-                        <p className="text-xs text-slate-500">
-                          {new Date(f.createdAt).toLocaleString()}
-                        </p>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <p className="text-xs text-slate-500">
+                            {new Date(f.createdAt).toLocaleString()}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleDeleteFolder(f.id, f.name);
+                            }}
+                            className="h-9 w-9 inline-flex items-center justify-center rounded-full hover:bg-slate-100"
+                            aria-label={tr("folder_delete", "Eliminar carpeta")}
+                            title={tr("folder_delete", "Eliminar carpeta")}
+                          >
+                            <Trash2 className="w-5 h-5 text-slate-500" />
+                          </button>
+                        </div>
                       </button>
                     ))}
                   </div>
