@@ -169,30 +169,6 @@ export default function ProTranslator() {
 
   const [resultStatus, setResultStatus] = useState("idle"); // "idle" | "loading" | "success" | "error"
 
-  // ✅ NUEVO: botón manual como en public
-  const [translateTick, setTranslateTick] = useState(0);
-  const [dirty, setDirty] = useState(false);
-  const [lastTranslatedText, setLastTranslatedText] = useState("");
-
-  const hasRealResult = !!(rightText && rightText.trim().length > 0);
-
-  const labelTranslateBtn = tr("translator.translate_button", "Traducir");
-
-  const handleTranslateClick = () => {
-    if (sourceMode !== "text") return;
-    if (!leftText.trim()) return;
-
-    if (leftText.length >= MAX_CHARS) {
-      setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
-      setResultStatus("error");
-      return;
-    }
-
-    setErr("");
-    setTranslateTick((v) => v + 1);
-    setDirty(false);
-  };
-
   // ✅ PRO: token para /api/pro
   const getProToken = async () => {
     const user = auth?.currentUser;
@@ -299,23 +275,24 @@ export default function ProTranslator() {
     if (flaggedRefusal) {
       setRightText(out || "");
       setResultStatus("error");
-      return;
+      return false;
     }
 
     if (!out.trim()) {
       setRightText("");
       setResultStatus("idle");
-      return;
+      return false;
     }
 
     if (isNonResultMessage(out)) {
       setRightText(out);
       setResultStatus("error");
-      return;
+      return false;
     }
 
     setRightText(out);
     setResultStatus("success");
+    return true;
   };
 
   useEffect(() => {
@@ -330,43 +307,38 @@ export default function ProTranslator() {
     ? `${detectedName} (${LBL_DETECTED})`
     : LBL_AUTO;
 
-  // ✅ NUEVO: límite + estado del botón al escribir (sin traducir automático)
-  useEffect(() => {
+  // ✅ BOTÓN igual que en público (siempre visible en modo texto)
+  const [translateTick, setTranslateTick] = useState(0);
+  const [dirty, setDirty] = useState(false);
+
+  const labelTranslateBtn = tr(
+    "proTranslator.translate_button",
+    language?.toString().toUpperCase() === "EUS" ? "Itzuli" : "Traducir"
+  );
+
+  const hasRealResult = !!(rightText && rightText.trim().length > 0);
+
+  const handleTranslateClick = () => {
     if (sourceMode !== "text") return;
+    if (!leftText.trim()) return;
 
-    if (!leftText.trim()) {
-      setErr("");
-      setRightText("");
-      setResultStatus("idle");
-      setDirty(false);
-      setLastTranslatedText("");
-      return;
-    }
-
-    if (leftText.length >= MAX_CHARS) {
+    // por si acaso, aunque ya cortas a MAX_CHARS
+    if (leftText.length > MAX_CHARS) {
       setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
       setResultStatus("error");
       return;
     }
 
-    // si el usuario cambia texto después de una traducción, reactivar botón
-    if (lastTranslatedText && leftText !== lastTranslatedText) {
-      if (!dirty) setDirty(true);
-    }
-  }, [leftText, sourceMode, lastTranslatedText, dirty]);
+    setErr("");
+    setResultStatus("idle");
+    setTranslateTick((v) => v + 1);
+    setDirty(false);
+  };
 
-  // === Traducción MODO TEXTO (SOLO botón)
+  // === Traducción MODO TEXTO (MANUAL: solo al pulsar botón)
   useEffect(() => {
     if (sourceMode !== "text") return;
     if (translateTick === 0) return;
-
-    if (!leftText.trim()) return;
-
-    if (leftText.length >= MAX_CHARS) {
-      setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
-      setResultStatus("error");
-      return;
-    }
 
     const controller = new AbortController();
 
@@ -383,9 +355,6 @@ export default function ProTranslator() {
 
         const token = await getProToken();
 
-        const input = leftText;
-        setLastTranslatedText(input);
-
         const res = await fetch("/api/pro", {
           method: "POST",
           headers: {
@@ -399,10 +368,10 @@ export default function ProTranslator() {
             mode: "translate_text",
             src,
             dst,
-            text: input,
+            text: leftText,
             messages: [
               { role: "system", content: system },
-              { role: "user", content: input },
+              { role: "user", content: leftText },
             ],
           }),
         });
@@ -414,10 +383,10 @@ export default function ProTranslator() {
         }
 
         const data = await res.json();
-        applyTranslationOutput(data);
+        const ok = applyTranslationOutput(data);
 
-        // si ha ido bien, ya no está dirty (hasta que el usuario cambie texto)
-        setDirty(false);
+        // si la traducción fue OK, dejamos dirty=false (ya se tradujo lo actual)
+        if (ok) setDirty(false);
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate error:", e);
@@ -430,7 +399,6 @@ export default function ProTranslator() {
           }
 
           setResultStatus("error");
-          setDirty(true); // para que reaparezca el botón
         }
       } finally {
         setLoading(false);
@@ -810,7 +778,6 @@ export default function ProTranslator() {
     if (n === 0) return units[0];
     if (n < 1000000) return toWordsUnder1000000(n);
 
-    // fallback simple para números grandes
     const s = Math.trunc(n).toString();
     return s.split("").map((d) => units[Number(d)] || d).join(" ");
   };
@@ -971,6 +938,74 @@ export default function ProTranslator() {
     }
   };
 
+  const stopRecording = () => {
+    try {
+      if (mediaRecorderRef.current?.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
+      mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+      mediaStreamRef.current = null;
+    } catch {}
+  };
+
+  const handleToggleMic = async () => {
+    if (listening) {
+      setListening(false);
+      stopRecording();
+      return;
+    }
+
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) return;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      micChunksRef.current = [];
+
+      const rec = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      mediaRecorderRef.current = rec;
+
+      rec.ondataavailable = (e) => {
+        if (e.data?.size > 0) micChunksRef.current.push(e.data);
+      };
+
+      rec.onstop = async () => {
+        try {
+          const blob = new Blob(micChunksRef.current, { type: "audio/webm" });
+          micChunksRef.current = [];
+
+          const form = new FormData();
+          form.append("file", blob, "audio.webm");
+          form.append("model", "whisper-1");
+
+          const r = await fetch("/api/transcribe", { method: "POST", body: form });
+          const data = await r.json().catch(() => null);
+          if (data?.ok && typeof data.text === "string") {
+            const txt = data.text.trim();
+            if (txt) {
+              setLeftText((prev) =>
+                (prev ? prev + "\n" + txt : txt).slice(0, MAX_CHARS)
+              );
+              setDirty(true);
+            }
+          }
+        } catch (e) {
+          console.error("transcribe error:", e);
+        } finally {
+          mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+          mediaStreamRef.current = null;
+        }
+      };
+
+      rec.start();
+      setListening(true);
+    } catch (e) {
+      console.error("mic error:", e);
+      setListening(false);
+      stopRecording();
+    }
+  };
+
   const handleClearLeft = () => {
     setLeftText("");
     setRightText("");
@@ -981,7 +1016,7 @@ export default function ProTranslator() {
     setResultStatus("idle");
     setDetectedLang("");
     setDirty(false);
-    setLastTranslatedText("");
+    setTranslateTick(0);
   };
 
   const handleCopy = async () => {
@@ -1119,14 +1154,9 @@ export default function ProTranslator() {
 
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
-  // ✅ mostrar botón si: hay texto válido y (no hay resultado o el texto cambió tras traducir)
-  const shouldShowTranslateButton =
-    sourceMode === "text" &&
-    !loading &&
-    !err &&
-    !!leftText.trim() &&
-    leftText.length < MAX_CHARS &&
-    (!hasRealResult || dirty);
+  // ✅ Mostrar botón cuando: modo texto y (no hay resultado o se ha modificado desde la última traducción)
+  const showTranslateButton =
+    sourceMode === "text" && !loading && (!hasRealResult || dirty || !!err);
 
   return (
     <>
@@ -1233,6 +1263,7 @@ export default function ProTranslator() {
                           setSrc(val);
                           setOpenLeft(false);
                           if (val !== "auto") setDetectedLang("");
+                          setDirty(true);
                         }}
                         align="left"
                         options={OPTIONS_SRC}
@@ -1241,7 +1272,10 @@ export default function ProTranslator() {
 
                     <button
                       type="button"
-                      onClick={swap}
+                      onClick={() => {
+                        swap();
+                        setDirty(true);
+                      }}
                       aria-label="Intercambiar idiomas"
                       className="absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition"
                     >
@@ -1289,6 +1323,7 @@ export default function ProTranslator() {
                         onSelect={(val) => {
                           setDst(val);
                           setOpenRight(false);
+                          setDirty(true);
                         }}
                         align="right"
                         options={OPTIONS_DST}
@@ -1321,14 +1356,9 @@ export default function ProTranslator() {
                       ref={leftTA}
                       value={leftText}
                       onChange={(e) => {
-                        const next = e.target.value.slice(0, MAX_CHARS);
-                        setLeftText(next);
-
-                        // activar botón si cambia el texto respecto a lo último traducido
-                        if (lastTranslatedText && next !== lastTranslatedText) setDirty(true);
-                        if (!lastTranslatedText) setDirty(true);
-
-                        if (next.length < MAX_CHARS && err) setErr("");
+                        setLeftText(e.target.value.slice(0, MAX_CHARS));
+                        setDirty(true);
+                        if (err) setErr("");
                       }}
                       placeholder={t("translator.left_placeholder")}
                       className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${HIDE_SCROLLBAR}`}
@@ -1518,22 +1548,22 @@ export default function ProTranslator() {
                       ? t("translator.loading")
                       : rightText
                   }
-                  onChange={(e) => setRightText(e.target.value)}
                   placeholder={t("translator.right_placeholder")}
+                  readOnly
                   className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${
                     loading ? "italic text-slate-500" : ""
                   } ${HIDE_SCROLLBAR}`}
                 />
 
-                {/* ✅ BOTÓN EXACTO (misma posición/estilo que public) */}
-                {shouldShowTranslateButton && (
-                  <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
+                {/* ✅ BOTÓN SIEMPRE visible en modo texto (aunque no haya nada) */}
+                {showTranslateButton && (
+                  <div className="absolute left-8 right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
                     <button
                       type="button"
                       onClick={handleTranslateClick}
-                      disabled={!leftText.trim() || leftText.length >= MAX_CHARS}
+                      disabled={!leftText.trim() || loading}
                       className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
-                        !leftText.trim() || leftText.length >= MAX_CHARS
+                        !leftText.trim() || loading
                           ? "bg-blue-600 opacity-50 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
                       }`}
@@ -1563,7 +1593,8 @@ export default function ProTranslator() {
                       aria-label={speaking ? t("translator.stop") : t("translator.listen")}
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${
                         speaking ? "text-slate-900" : ""
-                      }`}
+                      } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                      disabled={!hasRealResult}
                     >
                       {speaking ? (
                         <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
@@ -1579,7 +1610,10 @@ export default function ProTranslator() {
                       type="button"
                       onClick={handleCopy}
                       aria-label={t("translator.copy")}
-                      className="group relative p-2 rounded-md hover:bg-slate-100"
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                      }`}
+                      disabled={!hasRealResult}
                     >
                       {copied ? (
                         <Check className="w-5 h-5" />
@@ -1595,7 +1629,10 @@ export default function ProTranslator() {
                       type="button"
                       onClick={handleDownloadPdf}
                       aria-label={t("translator.pdf")}
-                      className="group relative p-2 rounded-md hover:bg-slate-100"
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                      }`}
+                      disabled={!hasRealResult}
                     >
                       <FileDown className="w-5 h-5" />
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
@@ -1620,6 +1657,6 @@ export default function ProTranslator() {
           </div>
         </div>
       </section>
-    </> 
+    </>
   );
 }
