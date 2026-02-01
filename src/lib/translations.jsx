@@ -2851,6 +2851,13 @@ proHome: {
   EN: "detected",
   FR: "détecté",
 },
+translate_button: {
+    ES: "Traducir",
+    EUS: "Itzuli",
+    EN: "Translate",
+    FR: "Traduire"
+   },
+
 
     // Tabs
     sources_tab_text:     { ES: "Texto",      EUS: "Testua",      EN: "Text",      FR: "Texte" },
