@@ -125,24 +125,18 @@ export default function LayoutPro({ children }) {
       <aside
         className={`
           fixed top-0 left-0 h-screen
-          bg-white flex flex-col pt-3 pb-2
+          bg-white flex flex-col pb-2
           transition-[width] duration-200
           ${collapsed ? "w-16 px-2" : "w-48 px-4"}
         `}
       >
-        {/* Marca – misma posición siempre */}
-        <div className="mb-6 flex items-center">
-          <span
-            className={`font-bold tracking-tight text-2xl ${
-              collapsed ? "ml-6" : "ml-4"
-            }`}
-          >
-            Euskalia
-          </span>
+        {/* ✅ LOGO SIEMPRE INTACTO (se mantiene visible incluso al contraer y puede quedar por encima del header) */}
+        <div className="fixed top-0 left-0 h-16 w-48 bg-white flex items-center px-4 z-50 border-b border-slate-200">
+          <span className="font-bold tracking-tight text-2xl">Euskalia</span>
         </div>
 
-        {/* Contenido */}
-        <div className="flex-1 flex flex-col">
+        {/* Contenido (bajado para no quedar debajo del logo fijo) */}
+        <div className="pt-3 flex-1 flex flex-col" style={{ marginTop: 64 }}>
           {/* Home */}
           <nav className="space-y-1 text-sm">
             <button
@@ -456,7 +450,7 @@ export default function LayoutPro({ children }) {
                 hover:bg-slate-50
               "
             >
-               {tr("proHeader_planPro", "Plan Pro")}
+              {tr("proHeader_planPro", "Plan Pro")}
             </button>
 
             <DropdownMenu>
