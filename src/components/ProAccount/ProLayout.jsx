@@ -123,7 +123,7 @@ export default function LayoutPro({ children }) {
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
       {/* ✅ LOGO FIJO (FUERA DEL RECORTE DEL SIDEBAR) */}
       <div
-        className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] border-b border-slate-200"
+        className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] "
         style={{ width: collapsed ? 64 : 192 }}
       >
         <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4">
