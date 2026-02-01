@@ -1398,7 +1398,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                     </div>
 
                     {urlInputOpen && (
-                      <div className="mb-4 rounded-xl border border-slate-300 p-3 bg-white">
+                      <div className="mb-4 rounded-xl border border-slate-300 p-2 sm:p-3 bg-white">
                         <textarea
                           value={urlsTextarea}
                           onChange={(e) => setUrlsTextarea(e.target.value)}
@@ -1425,7 +1425,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                             {labelCancel}
                           </button>
                         </div>
-                        <div className="mt-6 text-xs text-slate-500">
+                        <div className="mt-3 sm:mt-6 text-[11px] sm:text-xs text-slate-500">
                           • {labelUrlsNoteVisible}
                           <br />• {labelUrlsNotePaywalled}
                         </div>
