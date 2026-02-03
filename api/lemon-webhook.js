@@ -116,7 +116,7 @@ export default async function handler(req, res) {
           email,
           updatedAt: now,
           lemon,
-        },
+        }, 
         { merge: true }
       );
 
