@@ -31,11 +31,27 @@ async function readRawBody(req) {
 }
 
 function verifySignature({ rawBody, signature, secret }) {
-  const hmac = crypto.createHmac("sha256", secret);
-  const digest = Buffer.from(hmac.update(rawBody).digest("hex"), "utf8");
-  const sig = Buffer.from(signature || "", "utf8");
+  // Lemon: HMAC-SHA256(rawBody, secret) -> hex, enviado en header X-Signature :contentReference[oaicite:2]{index=2}
+  const digestHex = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  const sigHex = String(signature || "").trim();
+
+  // Comparación segura por bytes (hex)
+  const digest = Buffer.from(digestHex, "hex");
+  const sig = Buffer.from(sigHex, "hex");
   if (digest.length !== sig.length) return false;
   return crypto.timingSafeEqual(digest, sig);
+}
+
+function pickEmail(payload) {
+  return String(
+    payload?.data?.attributes?.user_email ||
+      payload?.data?.attributes?.customer_email ||
+      payload?.data?.attributes?.order_email ||
+      payload?.data?.attributes?.email ||
+      ""
+  )
+    .trim()
+    .toLowerCase();
 }
 
 export default async function handler(req, res) {
@@ -49,6 +65,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "missing_lemon_webhook_secret" });
     }
 
+    // Header real: X-Signature :contentReference[oaicite:3]{index=3}
     const signature = req.headers["x-signature"];
     const rawBody = await readRawBody(req);
 
@@ -59,35 +76,36 @@ export default async function handler(req, res) {
 
     const payload = JSON.parse(rawBody || "{}");
 
-    // Lemon suele incluir data.attributes.user_email en algunos eventos,
-    // y en otros puede venir en customer_email / order_email según tipo.
-    const email =
-      String(
-        payload?.data?.attributes?.user_email ||
-          payload?.data?.attributes?.customer_email ||
-          payload?.data?.attributes?.order_email ||
-          ""
-      )
-        .trim()
-        .toLowerCase();
-
+    const email = pickEmail(payload);
     if (!email) {
       return res.status(400).json({ error: "missing_email_in_payload" });
     }
 
-    // Tipo de evento (depende del webhook)
-    const eventName = String(payload?.meta?.event_name || "").trim();
+    const eventName = String(payload?.meta?.event_name || "").trim(); // ej: subscription_cancelled :contentReference[oaicite:4]{index=4}
+    const now = admin.firestore.FieldValue.serverTimestamp();
 
     initFirebaseAdmin();
     const db = admin.firestore();
 
-    // Estado por defecto: paid (tú luego eliges reglas por evento)
+    // Status por evento (simple y realista para empezar test mode)
     let status = "paid";
+    if (eventName === "subscription_cancelled") status = "cancelled";
+    if (eventName === "subscription_expired") status = "expired";
+    // OJO: en Lemon, "cancelled" puede estar en gracia hasta que expire. :contentReference[oaicite:5]{index=5}
 
-    // Ejemplos típicos (ajustaremos según lo que actives):
-    if (eventName.includes("cancel") || eventName.includes("expired")) {
-      status = "canceled";
-    }
+    // Guarda también IDs útiles para debug / futuro
+    const attrs = payload?.data?.attributes || {};
+    const lemon = {
+      eventName: eventName || null,
+      testMode: !!payload?.meta?.test_mode,
+      createdAt: payload?.meta?.created_at || null,
+      id: payload?.data?.id || null,
+      subscriptionId: attrs?.subscription_id || null,
+      orderId: attrs?.order_id || null,
+      customerId: attrs?.customer_id || null,
+      variantId: attrs?.variant_id || null,
+      productId: attrs?.product_id || null,
+    };
 
     await db
       .collection("paidEmails")
@@ -95,8 +113,9 @@ export default async function handler(req, res) {
       .set(
         {
           status,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-          lemonEvent: eventName || null,
+          email,
+          updatedAt: now,
+          lemon,
         },
         { merge: true }
       );
