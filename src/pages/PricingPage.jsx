@@ -2,12 +2,14 @@ import React from "react";
 import { useTranslation } from "@/lib/translations";
 import { Gem, CheckCircle } from "lucide-react";
 
+const LEMON_CHECKOUT_URL =
+  "https://euskalia.lemonsqueezy.com/checkout/buy/14a2f3b2-08bd-4b2b-a044-17c880f7cc57";
+
 export default function PricingPage() {
   const { t } = useTranslation();
   const tr = (k, fallback = "") => t(k) || fallback;
 
   const plans = [
-    // PLAN PRO (actual)
     {
       id: "pro",
       titleKey: "pricing.pro_name",
@@ -34,8 +36,6 @@ export default function PricingPage() {
       badgeKey: "pricing.badge_popular",
       disabled: false,
     },
-
-    // PLAN PREMIUM+ (PRÓXIMAMENTE)
     {
       id: "premium",
       titleKey: "pricing.premium_name",
@@ -63,38 +63,32 @@ export default function PricingPage() {
   ];
 
   const handlePlanClick = async (planId) => {
-    if (planId === "pro") {
-      try {
-        const r = await fetch("/api/create-checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
-        });
+    if (planId !== "pro") return;
 
-        const data = await r.json();
+    try {
+      const r = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
 
-        if (!r.ok) {
-          console.error("create-checkout error:", data);
-          return;
-        }
+      const data = await r.json().catch(() => null);
 
-        if (!data?.url) {
-          console.error("No checkout url returned:", data);
-          return;
-        }
-
-        window.location.href = data.url;
-        return;
-      } catch (e) {
-        console.error("create-checkout exception:", e);
+      if (!r.ok || !data?.url) {
+        alert("Checkout API falló. Abro el checkout fijo (fallback).");
+        window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
         return;
       }
+
+      window.location.href = data.url;
+    } catch (e) {
+      alert("No se pudo llamar a /api/create-checkout. Abro el checkout fijo (fallback).");
+      window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
     }
   };
 
   return (
     <main className="min-h-[calc(100vh-4rem)] flex flex-col items-center relative bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100 p-6 pt-12 md:pt-20">
-      {/* Título / subtítulo */}
       <div className="text-center mb-10 md:mb-16">
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 mb-3">
           {tr("pricing.title")}
@@ -104,7 +98,6 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl lg:max-w-5xl">
         {plans.map((p) => (
           <div
@@ -160,7 +153,6 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              {/* CTA */}
               {p.disabled ? (
                 <button
                   type="button"
