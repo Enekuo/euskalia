@@ -2,9 +2,6 @@ import React from "react";
 import { useTranslation } from "@/lib/translations";
 import { Gem, CheckCircle } from "lucide-react";
 
-const LEMON_CHECKOUT_URL =
-  "https://euskalia.lemonsqueezy.com/checkout/buy/14a2f3b2-08bd-4b2b-a044-17c880f7cc57";
-
 export default function PricingPage() {
   const { t } = useTranslation();
   const tr = (k, fallback = "") => t(k) || fallback;
@@ -65,10 +62,33 @@ export default function PricingPage() {
     },
   ];
 
-  const handlePlanClick = (planId) => {
+  const handlePlanClick = async (planId) => {
     if (planId === "pro") {
-      window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
-      return;
+      try {
+        const r = await fetch("/api/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        });
+
+        const data = await r.json();
+
+        if (!r.ok) {
+          console.error("create-checkout error:", data);
+          return;
+        }
+
+        if (!data?.url) {
+          console.error("No checkout url returned:", data);
+          return;
+        }
+
+        window.location.href = data.url;
+        return;
+      } catch (e) {
+        console.error("create-checkout exception:", e);
+        return;
+      }
     }
   };
 
