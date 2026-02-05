@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const NAVBAR_H = 88;
 
@@ -12,13 +11,7 @@ const SupportPage = () => {
   const location = useLocation();
   const isPro = location.pathname.startsWith("/cuenta-pro");
 
-  const tr = (key, fallback = "") => {
-    const val = typeof t === "function" ? t(key) : null;
-    return !val || val === key ? fallback : val;
-  };
-
   const [form, setForm] = useState({
-    name: "",
     email: "",
     subject: "",
     message: "",
@@ -44,7 +37,6 @@ const SupportPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "support",
-          name: form.name,
           email: form.email,
           subject: form.subject,
           message: form.message,
@@ -54,20 +46,13 @@ const SupportPage = () => {
       });
 
       const data = await res.json().catch(() => null);
-
       if (!res.ok || !data?.ok) {
         setStatus("error");
         return;
       }
 
       setStatus("ok");
-      setForm({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-        honey: "",
-      });
+      setForm({ email: "", subject: "", message: "", honey: "" });
     } catch {
       setStatus("error");
     } finally {
@@ -89,46 +74,53 @@ const SupportPage = () => {
       >
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}
-          <div className="relative">
-            {/* HEADER LAGUNTZA */}
+          <div>
+            {/* HEADER */}
             <section className="rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6">
-              {/* Mobile: texto + imagen a la derecha */}
-              <div className="flex items-start gap-4 md:block">
+              <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h2 className="text-4xl font-extrabold text-slate-900">
-                    {t("support_title")}
+                    {t("support_title", "Laguntza")}
                   </h2>
                   <p className="mt-2 text-base text-slate-600">
-                    {t("support_subtitle")}
+                    {t(
+                      "support_subtitle",
+                      "Laguntza behar duzu? Hemen gaude laguntzeko."
+                    )}
                   </p>
                 </div>
 
-                {/* Mascota SOLO móvil, a la derecha */}
-                <div className="shrink-0 md:hidden">
+                {/* Mascota móvil a la derecha */}
+                <div className="md:hidden shrink-0">
                   <img
                     src="/olondo.mascota.png"
                     alt="Soporte Euskalia"
-                    className="h-[96px] w-auto select-none pointer-events-none"
+                    className="h-[96px] w-auto pointer-events-none select-none"
                     draggable={false}
                   />
                 </div>
               </div>
             </section>
 
-            {/* Frases VUELVEN (como antes) */}
-            <p className="mt-6 text-sm font-semibold tracking-wider text-blue-600">
-              {t("support_kicker")}
-            </p>
-            <p className="mt-1 text-base text-slate-600">
-              {t("support_subtitle")}
-            </p>
+            {/* ❌ ESTE BLOQUE NO SALE EN MÓVIL */}
+            <div className="hidden md:block">
+              <p className="mt-6 text-sm font-semibold tracking-wider text-blue-600">
+                {t("support_kicker", "Nola lagun diezazukegu?")}
+              </p>
+              <p className="mt-1 text-base text-slate-600">
+                {t(
+                  "support_subtitle",
+                  "Laguntza behar duzu? Hemen gaude laguntzeko."
+                )}
+              </p>
+            </div>
 
-            {/* Mascota DESKTOP (como antes) */}
+            {/* Mascota desktop */}
             <div className="hidden md:flex mt-6">
               <img
                 src="/olondo.mascota.png"
                 alt="Soporte Euskalia"
-                className="h-[260px] w-auto select-none pointer-events-none"
+                className="h-[260px] w-auto pointer-events-none select-none"
                 draggable={false}
               />
             </div>
@@ -149,9 +141,10 @@ const SupportPage = () => {
                 className="hidden"
               />
 
+              {/* Posta elektronikoa */}
               <div>
                 <label className="text-sm font-medium">
-                  {t("support_form_email_label")}
+                  {t("support_form_email_label", "Posta elektronikoa")}
                 </label>
                 <input
                   type="email"
@@ -159,26 +152,36 @@ const SupportPage = () => {
                   value={form.email}
                   onChange={onChange}
                   required
+                  placeholder={t(
+                    "support_form_email_placeholder",
+                    "Zure posta elektronikoa"
+                  )}
                   className="w-full rounded-xl border px-4 py-3"
                 />
               </div>
 
+              {/* Gaia */}
               <div>
                 <label className="text-sm font-medium">
-                  {t("support_form_subject_label")}
+                  {t("support_form_subject_label", "Gaia")}
                 </label>
                 <input
                   type="text"
                   name="subject"
                   value={form.subject}
                   onChange={onChange}
+                  placeholder={t(
+                    "support_form_subject_placeholder",
+                    "Zerri buruz behar duzu laguntza?"
+                  )}
                   className="w-full rounded-xl border px-4 py-3"
                 />
               </div>
 
+              {/* Mezua */}
               <div>
                 <label className="text-sm font-medium">
-                  {t("support_form_message_label")}
+                  {t("support_form_message_label", "Mezua")}
                 </label>
                 <textarea
                   name="message"
@@ -186,14 +189,16 @@ const SupportPage = () => {
                   onChange={onChange}
                   required
                   rows={5}
+                  placeholder={t(
+                    "support_form_message_placeholder",
+                    "Esaguzu nola lagundu diezazukegun"
+                  )}
                   className="w-full rounded-xl border px-4 py-3 resize-none"
                 />
               </div>
 
               <Button type="submit" disabled={loading}>
-                {loading
-                  ? tr("support_form_sending", "Bidaltzen...")
-                  : t("support_form_submit")}
+                {loading ? "Bidaltzen..." : t("support_form_submit", "Bidali")}
               </Button>
 
               {status === "ok" && (
@@ -204,9 +209,9 @@ const SupportPage = () => {
               )}
 
               <p className="text-xs text-slate-500">
-                {t("support_form_privacy_hint")}{" "}
+                {t("support_form_privacy_hint", "Pribatutasun politika onartzen duzu")}{" "}
                 <Link to="/politica-de-privacidad" className="underline">
-                  {t("support_form_privacy_link")}
+                  {t("support_form_privacy_link", "irakurri")}
                 </Link>
               </p>
             </form>
