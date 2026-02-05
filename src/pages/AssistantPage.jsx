@@ -148,10 +148,12 @@ export default function AssistantPage() {
           >
             <div
               className="
-                flex items-center gap-2
+                flex items-center
                 rounded-full border border-slate-200 bg-white
-                shadow-sm px-4 py-2
-                hover:shadow-md transition
+                shadow-sm hover:shadow-md transition
+                px-3 sm:px-4
+                py-2
+                gap-1 sm:gap-2
               "
             >
               {/* Botón + (reservado para futuro) */}
@@ -175,7 +177,7 @@ export default function AssistantPage() {
                   }
                 }}
                 placeholder={tr("assistant_placeholder")}
-                className="flex-1 bg-transparent outline-none text-[15px] placeholder:text-slate-400 px-1"
+                className="flex-1 min-w-0 bg-transparent outline-none text-[15px] placeholder:text-slate-400 px-1"
               />
 
               {/* Botón Enviar */}
@@ -183,9 +185,11 @@ export default function AssistantPage() {
                 type="submit"
                 disabled={!input.trim()}
                 className="
-                  ml-2 h-9 px-6 rounded-full text-sm font-semibold text-white
+                  h-9 rounded-full font-semibold text-white
                   bg-sky-500 hover:bg-sky-600 disabled:opacity-60 disabled:cursor-not-allowed
                   transition
+                  px-4 sm:px-6
+                  text-xs sm:text-sm
                 "
               >
                 {tr("assistant_send")}
