@@ -57,7 +57,6 @@ const SupportPage = () => {
 
       if (!res.ok || !data?.ok) {
         setStatus("error");
-        setLoading(false);
         return;
       }
 
@@ -91,34 +90,40 @@ const SupportPage = () => {
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}
           <div className="relative">
+            {/* HEADER LAGUNTZA */}
             <section className="rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6">
-              <h2 className="text-4xl font-extrabold text-slate-900">
-                {t("support_title")}
-              </h2>
-              <p className="mt-2 text-base text-slate-600">
-                {t("support_subtitle")}
-              </p>
+              {/* Mobile: texto + imagen a la derecha */}
+              <div className="flex items-start gap-4 md:block">
+                <div className="flex-1">
+                  <h2 className="text-4xl font-extrabold text-slate-900">
+                    {t("support_title")}
+                  </h2>
+                  <p className="mt-2 text-base text-slate-600">
+                    {t("support_subtitle")}
+                  </p>
+                </div>
 
-              {/* ✅ MASCOTA SOLO MÓVIL, ARRIBA */}
-              <div className="mt-4 flex justify-center md:hidden">
-                <img
-                  src="/olondo.mascota.png"
-                  alt="Soporte Euskalia"
-                  className="h-[120px] w-auto select-none pointer-events-none"
-                  draggable={false}
-                />
+                {/* Mascota SOLO móvil, a la derecha */}
+                <div className="shrink-0 md:hidden">
+                  <img
+                    src="/olondo.mascota.png"
+                    alt="Soporte Euskalia"
+                    className="h-[96px] w-auto select-none pointer-events-none"
+                    draggable={false}
+                  />
+                </div>
               </div>
             </section>
 
-            {/* ❌ FRASE ELIMINADA EN MÓVIL */}
-            <p className="hidden md:block mt-6 text-sm font-semibold tracking-wider text-blue-600">
+            {/* Frases VUELVEN (como antes) */}
+            <p className="mt-6 text-sm font-semibold tracking-wider text-blue-600">
               {t("support_kicker")}
             </p>
-            <p className="hidden md:block mt-1 text-base text-slate-600">
+            <p className="mt-1 text-base text-slate-600">
               {t("support_subtitle")}
             </p>
 
-            {/* ✅ MASCOTA DESKTOP (como antes) */}
+            {/* Mascota DESKTOP (como antes) */}
             <div className="hidden md:flex mt-6">
               <img
                 src="/olondo.mascota.png"
