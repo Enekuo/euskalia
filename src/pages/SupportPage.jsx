@@ -130,11 +130,12 @@ const SupportPage = () => {
               {t("support_subtitle")}
             </p>
 
-            <div className="mt-6 inline-block md:mt-6">
+            {/* ✅ Mascota SOLO desktop en la columna izquierda */}
+            <div className="mt-6 hidden md:inline-block">
               <img
                 src="/olondo.mascota.png"
                 alt="Soporte Olondo.AI"
-                className="h-[140px] sm:h-[180px] md:h-[260px] sm:md:h-[320px] w-auto select-none pointer-events-none dark:brightness-95"
+                className="h-[260px] sm:h-[320px] w-auto select-none pointer-events-none dark:brightness-95"
                 draggable={false}
               />
             </div>
@@ -211,7 +212,7 @@ const SupportPage = () => {
                     value={form.subject}
                     onChange={onChange}
                     placeholder={t("support_form_subject_placeholder")}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none ring-0 focus:border-blue-500 text-slate-900 placeholder-slate-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-400"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none ring-0 focus:border-blue-500 text-slate-900 placeholder-slate-400 dark:bg-slate-700700 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-400"
                   />
                 </div>
 
@@ -253,6 +254,16 @@ const SupportPage = () => {
                     {tr("support_form_error", "❌ Error al enviar")}
                   </p>
                 )}
+              </div>
+
+              {/* ✅ Mascota SOLO móvil, abajo del formulario, sin pisar nada */}
+              <div className="pt-4 md:hidden flex justify-center">
+                <img
+                  src="/olondo.mascota.png"
+                  alt="Soporte Olondo.AI"
+                  className="h-[110px] w-auto select-none pointer-events-none dark:brightness-95"
+                  draggable={false}
+                />
               </div>
 
               <p className="text-xs text-slate-500 dark:text-slate-400">
