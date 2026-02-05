@@ -13,36 +13,37 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const REDIRECT_TO = "/cuenta-pro";
 
-  const [checking, setChecking] = useState(true);
+  const [allowedToRender, setAllowedToRender] = useState(false);
 
   const isPaidEmail = async (email) => {
-    if (!email) return false;
-    const ref = doc(db, "paidEmails", email);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) return false;
+    const id = (email || "").trim().toLowerCase();
+    if (!id) return false;
 
-    const data = snap.data() || {};
-    // Si quieres, puedes exigir status === "paid"
-    // return data?.lemon?.status === "paid";
-    return true;
+    const ref = doc(db, "paidEmails", id);
+    const snap = await getDoc(ref);
+    return snap.exists();
   };
 
-  // ✅ Si ya está logeado, comprobamos paidEmails y decidimos
+  // ✅ BLOQUEO: esta página no es pública
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       try {
+        // Si no hay usuario logueado, fuera -> pricing
         if (!user) {
-          setChecking(false);
+          setAllowedToRender(false);
+          navigate("/pricing", { replace: true });
           return;
         }
 
+        // Si hay usuario, comprobamos si es Pro por paidEmails
         const ok = await isPaidEmail(user.email);
+
         if (ok) {
           navigate(REDIRECT_TO, { replace: true });
           return;
         }
 
-        // Si no está pagado, fuera y cerramos sesión
+        // Si no es Pro, cerramos sesión y fuera
         await signOut(auth).catch(() => {});
         navigate("/pricing", { replace: true });
       } catch (e) {
@@ -50,7 +51,8 @@ export default function AuthPage() {
         await signOut(auth).catch(() => {});
         navigate("/pricing", { replace: true });
       } finally {
-        setChecking(false);
+        // Solo renderizamos la pantalla de login si ya hay sesión (pero en realidad aquí casi nunca se verá)
+        setAllowedToRender(true);
       }
     });
 
@@ -73,11 +75,12 @@ export default function AuthPage() {
       navigate(REDIRECT_TO, { replace: true });
     } catch (e) {
       console.error("Google login error:", e);
+      navigate("/pricing", { replace: true });
     }
   };
 
-  // Mientras comprobamos sesión, no renderizamos nada
-  if (checking) return null;
+  // Si no está permitido renderizar, no mostramos nada
+  if (!allowedToRender) return null;
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col">
@@ -107,20 +110,16 @@ export default function AuthPage() {
         </Link>
       </header>
 
-      {/* Fondo con halo suave + tarjeta */}
       <main className="relative flex-1 flex items-center justify-center px-4 pb-16">
-        {/* Halo */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div className="h-[520px] w-[520px] rounded-full bg-blue-500/10 blur-3xl" />
         </div>
 
-        {/* Tarjeta */}
         <div className="relative z-10 w-full max-w-[500px] bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)] px-6 pt-6 pb-12 flex flex-col items-center">
           <h1 className="text-3xl font-semibold tracking-tight mb-6 text-center">
             {tr("authPage.welcome", "ONGI ETORRI")}
           </h1>
 
-          {/* Google */}
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -153,7 +152,6 @@ export default function AuthPage() {
             </span>
           </button>
 
-          {/* Microsoft (visual, no funcional aún) */}
           <button
             type="button"
             disabled
