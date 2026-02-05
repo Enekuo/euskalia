@@ -130,11 +130,11 @@ const SupportPage = () => {
               {t("support_subtitle")}
             </p>
 
-            <div className="mt-6 inline-block">
+            <div className="mt-6 inline-block md:mt-6">
               <img
                 src="/olondo.mascota.png"
                 alt="Soporte Olondo.AI"
-                className="h-[260px] sm:h-[320px] w-auto select-none pointer-events-none dark:brightness-95"
+                className="h-[140px] sm:h-[180px] md:h-[260px] sm:md:h-[320px] w-auto select-none pointer-events-none dark:brightness-95"
                 draggable={false}
               />
             </div>
