@@ -1,53 +1,74 @@
 // Iniciar sesión
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
-import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, googleProvider, db } from "@/lib/firebase";
 
 export default function AuthPage() {
   const { t } = useTranslation?.() || { t: () => null };
   const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
 
   const navigate = useNavigate();
-  const location = useLocation();
   const REDIRECT_TO = "/cuenta-pro";
 
-  const [allowed, setAllowed] = useState(false);
+  const [checking, setChecking] = useState(true);
 
-  // ✅ 1) BLOQUEO ANTES DEL BOTÓN (si no vienes “habilitado”, fuera a /pricing)
+  const isPaidEmail = async (email) => {
+    if (!email) return false;
+    const ref = doc(db, "paidEmails", email);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return false;
+
+    const data = snap.data() || {};
+    // Si quieres, puedes exigir status === "paid"
+    // return data?.lemon?.status === "paid";
+    return true;
+  };
+
+  // ✅ Si ya está logeado, comprobamos paidEmails y decidimos
   useEffect(() => {
-    const qs = new URLSearchParams(location.search);
-    const allowParam = qs.get("allow") === "1";
-    const allowFlag = sessionStorage.getItem("pro_login_allowed") === "1";
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (!user) {
+          setChecking(false);
+          return;
+        }
 
-    if (allowParam || allowFlag) {
-      setAllowed(true);
-      // si venías por ?allow=1, ya dejamos el flag para recargas
-      sessionStorage.setItem("pro_login_allowed", "1");
-      return;
-    }
+        const ok = await isPaidEmail(user.email);
+        if (ok) {
+          navigate(REDIRECT_TO, { replace: true });
+          return;
+        }
 
-    navigate("/pricing", { replace: true });
-  }, [location.search, navigate]);
-
-  // ✅ 2) Si el usuario ya está logeado, fuera de aquí
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigate(REDIRECT_TO, { replace: true });
+        // Si no está pagado, fuera y cerramos sesión
+        await signOut(auth).catch(() => {});
+        navigate("/pricing", { replace: true });
+      } catch (e) {
+        console.error("AuthPage check error:", e);
+        await signOut(auth).catch(() => {});
+        navigate("/pricing", { replace: true });
+      } finally {
+        setChecking(false);
       }
     });
+
     return () => unsub();
   }, [navigate]);
 
-  // ✅ Login con Google + redirect
+  // ✅ Login con Google + comprobar paidEmails + redirect
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const res = await signInWithPopup(auth, googleProvider);
+      const email = res?.user?.email;
 
-      // Mantener el permiso mientras dure esta sesión
-      sessionStorage.setItem("pro_login_allowed", "1");
+      const ok = await isPaidEmail(email);
+      if (!ok) {
+        await signOut(auth).catch(() => {});
+        navigate("/pricing", { replace: true });
+        return;
+      }
 
       navigate(REDIRECT_TO, { replace: true });
     } catch (e) {
@@ -55,8 +76,8 @@ export default function AuthPage() {
     }
   };
 
-  // Si no está allowed, no renderizamos nada (porque ya redirige)
-  if (!allowed) return null;
+  // Mientras comprobamos sesión, no renderizamos nada
+  if (checking) return null;
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col">
