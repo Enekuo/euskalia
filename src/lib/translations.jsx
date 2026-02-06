@@ -148,7 +148,7 @@ translator_limit_reached: {
     },
     // Documentos
     choose_file_title: { ES: "Elige tu archivo o carpeta", EUS: "Aukeratu zure fitxategia edo karpeta", EN: "Choose your file or folder", FR: "Choisis ton fichier ou dossier" },
-    accepted_formats:  { ES: "Formatos admitidos",         EUS: "Onartutako formatuak",                 EN: "Accepted formats",           FR: "Formats acceptés" },
+    accepted_formats:  { ES: "Formatos admitidos: .pdf, .docx, .txt", EUS: "Onartutako formatuak: .pdf, .docx, .txt", EN: "Allowed formats: .pdf, .docx, .txt", FR: "Formats autorisés : .pdf, .docx, .txt"},
     folder_hint:       { ES: "Puedes arrastrar varios archivos.", EUS: "Fitxategi bat baino gehiago arrasta ditzakezu.", EN: "You can drag multiple files.", FR: "Tu peux glisser plusieurs fichiers." },
     remove:            { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
 
