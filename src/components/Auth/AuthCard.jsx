@@ -67,7 +67,7 @@ export default function AuthCard({ variant = "page", onSuccess }) {
           <img
             src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
             alt="Google"
-            className="h-5 w-5"
+            className="h-7 w-7"
           />
           {loading
             ? tr("registerPage_google_loading", "Conectando...")

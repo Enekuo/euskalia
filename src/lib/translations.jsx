@@ -1516,7 +1516,7 @@ registerPage_login: {
   },
   subtitle: {
     ES: "Ahora inicia sesión con el mismo email con el que realizaste el pago para activar tu acceso Pro.",
-    EUS: "Orain hasi saioa ordainketa egin zenuen email berarekin, Pro sarbidea aktibatzeko.",
+    EUS: "Orain hasi saioa ordainketa egin duzun email berarekin Pro sarbidea aktibatzeko.",
     EN: "Now sign in with the same email you used for the payment to activate your Pro access.",
     FR: "Connectez-vous maintenant avec la même adresse e-mail que celle utilisée lors du paiement pour activer votre accès Pro.",
   },
