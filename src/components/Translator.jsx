@@ -35,7 +35,7 @@ export default function Translator() {
     return val;
   };
 
-  const uiLangRaw = (language || "ES").toString().toUpperCase();
+  const uiLangRaw = (language || uiLang || "ES").toString().toUpperCase();
 const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
 
   const LBL_DETECT = tr(
