@@ -261,6 +261,12 @@ translator_daily_limit_reached: {
     EN: "Maximum limit: {{count}} characters.",
     FR: "Limite maximum : {{count}} caractères.",
   },
+summary_daily_limit_reached: {
+  ES: "Has superado el límite diario. 3 solicitudes al día.",
+  EUS: "Eguneko muga gainditu duzu. 3 eskaera eguneko.",
+  EN: "You have exceeded the daily limit. 3 requests per day.",
+  FR: "Vous avez dépassé la limite quotidienne. 3 requêtes par jour.",
+},
 
   
   // =========================
