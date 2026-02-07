@@ -125,10 +125,10 @@ translator_limit_reached: {
   FR: "Limite maximum : {{count}} caractères.",
 },
 translator_daily_limit_reached: {
-  ES: "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO.",
-  EUS: "Eguneko doako muga gainditu duzu. Saiatu bihar berriro edo igo PROra.",
-  EN: "You’ve reached the free daily limit. Try again tomorrow or upgrade to PRO.",
-  FR: "Vous avez atteint la limite quotidienne gratuite. Revenez demain ou passez à PRO.",
+  ES: "Has superado el límite diario. 20 solicitudes al día.",
+  EUS: "Eguneko muga gainditu duzu. 20 eskaera eguneko.",
+  EN: "You have exceeded the daily limit. 20 requests per day.",
+  FR: "Vous avez dépassé la limite quotidienne. 20 requêtes par jour.",
 },
 
 
