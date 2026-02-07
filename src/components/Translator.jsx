@@ -125,7 +125,7 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
 const getDailyLimitMsg = () =>
   t("translator_daily_limit_reached");
 
- 
+  
 
   const isLimitReached =
     dailyLimitReached ||
