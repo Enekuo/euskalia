@@ -113,20 +113,18 @@ const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
   const isLimitTextEUS = (s) => String(s || "").includes("Gehienezko muga");
   const isLimitErr = (s) => isLimitTextES(s) || isLimitTextEUS(s);
 
-  const getLimitMsg = () =>
-    uiLang === "EUS"
-      ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere.`
-      : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`;
+  // ✅ LÍMITE DE CARACTERES (usa idioma global)
+const getLimitMsg = () =>
+  t("translator_limit_reached", {
+    count: MAX_CHARS.toLocaleString(),
+  });
 
-  // ✅ NUEVO: LÍMITE DIARIO (para mostrar el mismo banner)
-  const [dailyLimitReached, setDailyLimitReached] = useState(false);
+// ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
+const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
-  
-  const getDailyLimitMsg = () => 
-  tr(
-    "translator_daily_limit_reached",
-    "Has superado el límite diario. 20 solicitudes al día."
-  );
+const getDailyLimitMsg = () =>
+  t("translator_daily_limit_reached");
+
  
 
   const isLimitReached =
