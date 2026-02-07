@@ -118,7 +118,7 @@ upgradeBanner_cta: {
   EN: "Upgrade now",
   FR: "Passer à Pro",
 },
-translator_limit_reached: {
+limit_reached: {
   ES: "Límite máximo: {{count}} caracteres.",
   EUS: "Gehienezko muga: {{count}} karaktere.",
   EN: "Maximum limit: {{count}} characters.",
