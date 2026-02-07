@@ -404,11 +404,17 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               - La salida debe ser únicamente la traducción del texto de entrada, sin frases nuevas.
             \n\nResponde SOLO con lo que se te pide. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
 
-        const res = await fetch("/api/public", {
+
+
+
+
+
+                const res = await fetch("/api/public", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
+            task: "translate",
             model: "gpt-4o-mini",
             temperature: 0.2,
             mode: "translate_text",
@@ -501,6 +507,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
+            task: "translate",
             mode: "translate_urls",
             src,
             dst,
@@ -711,6 +718,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
+            task: "translate",
             model: "gpt-4o-mini",
             temperature: 0.2,
             mode: "translate_text",
@@ -957,6 +965,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       setSpeaking(false);
     }
   };
+
+
+
+
+
+
 
   const handleClearLeft = () => {
     setLeftText("");
