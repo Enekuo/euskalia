@@ -1535,7 +1535,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
                     {err}
                   </div>
-                )}
+                )} 
 
                 <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                   <button
