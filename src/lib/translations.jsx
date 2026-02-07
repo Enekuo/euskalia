@@ -72,7 +72,12 @@ export const translations = {
     EN: "stop",
     FR: "arrêter",
   },
-
+  limit_reached: {
+  ES: "Límite máximo: {{count}} caracteres.",
+  EUS: "Gehienezko muga: {{count}} karaktere.",
+  EN: "Maximum limit: {{count}} characters.",
+  FR: "Limite maximum : {{count}} caractères.",
+  },
 
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
     listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
@@ -118,12 +123,7 @@ upgradeBanner_cta: {
   EN: "Upgrade now",
   FR: "Passer à Pro",
 },
-limit_reached: {
-  ES: "Límite máximo: {{count}} caracteres.",
-  EUS: "Gehienezko muga: {{count}} karaktere.",
-  EN: "Maximum limit: {{count}} characters.",
-  FR: "Limite maximum : {{count}} caractères.",
-},
+
 translator_daily_limit_reached: {
   ES: "Has superado el límite diario. 20 solicitudes al día.",
   EUS: "Eguneko muga gainditu duzu. 20 eskaera eguneko.",
