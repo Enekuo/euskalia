@@ -121,13 +121,15 @@ export default function Translator() {
   // ✅ NUEVO: LÍMITE DIARIO (para mostrar el mismo banner)
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
-  const getDailyLimitMsg = () =>
-    tr(
-    "translator_daily_limit_reached",
-    uiLang === "EUS"
-      ? "Eguneko doako muga gainditu duzu. Saiatu bihar berriro edo igo PROra."
-      : "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO."
-  );
+  
+  const getDailyLimitMsg = () => {
+  const obj = t("translator_daily_limit_reached");
+  const lang = (language || "ES").toString().toUpperCase();
+  if (obj && typeof obj === "object") return obj[lang] || obj.ES || "";
+  return lang === "EUS"
+    ? "Eguneko muga gainditu duzu. 20 eskaera eguneko."
+    : "Has superado el límite diario. 20 solicitudes al día.";
+  };
 
 
   const isLimitReached =
