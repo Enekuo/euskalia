@@ -124,6 +124,12 @@ translator_limit_reached: {
   EN: "Maximum limit: {{count}} characters.",
   FR: "Limite maximum : {{count}} caractères.",
 },
+translator_daily_limit_reached: {
+  ES: "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO.",
+  EUS: "Eguneko doako muga gainditu duzu. Saiatu bihar berriro edo igo PROra.",
+  EN: "You’ve reached the free daily limit. Try again tomorrow or upgrade to PRO.",
+  FR: "Vous avez atteint la limite quotidienne gratuite. Revenez demain ou passez à PRO.",
+},
 
 
   // =========================
