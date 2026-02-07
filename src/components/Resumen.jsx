@@ -42,6 +42,7 @@ export default function Resumen() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [errorKind, setErrorKind] = useState(null); // null | "limit"
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
   const [showPremiumNote, setShowPremiumNote] = useState(false);
 
   // Longitud del resumen
@@ -234,6 +235,7 @@ export default function Resumen() {
     setResult("");
     setErrorMsg("");
     setErrorKind(null);
+    setDailyLimitReached(false);
     setIsOutdated(false);
     setLoading(false);
   };
@@ -326,6 +328,7 @@ export default function Resumen() {
     if (hasDocError) {
       setErrorMsg(labelDocNotSupported);
       setErrorKind(null);
+      setDailyLimitReached(false);
       setResult("");
       setIsOutdated(false);
     }
@@ -342,6 +345,7 @@ export default function Resumen() {
     if (documents.length >= 1) {
       setErrorMsg(labelOnlyOneDoc);
       setErrorKind(null);
+      setDailyLimitReached(false);
       setResult("");
       setIsOutdated(false);
       return;
@@ -353,6 +357,7 @@ export default function Resumen() {
     if (arr.length > 1) {
       setErrorMsg(labelOnlyOneDoc);
       setErrorKind(null);
+      setDailyLimitReached(false);
     }
 
     const file = arr[0];
@@ -365,6 +370,7 @@ export default function Resumen() {
 
     setResult("");
     setErrorKind(null);
+    setDailyLimitReached(false);
     setIsOutdated(false);
   };
 
@@ -402,6 +408,7 @@ export default function Resumen() {
     setResult("");
     setErrorMsg("");
     setErrorKind(null);
+    setDailyLimitReached(false);
     setIsOutdated(false);
   };
 
@@ -420,6 +427,7 @@ export default function Resumen() {
     setResult("");
     setErrorMsg("");
     setErrorKind(null);
+    setDailyLimitReached(false);
     setIsOutdated(false);
   }, [urlItems]);
 
@@ -498,6 +506,7 @@ export default function Resumen() {
     setLoading(true);
     setErrorMsg("");
     setErrorKind(null);
+    setDailyLimitReached(false);
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
@@ -509,12 +518,14 @@ export default function Resumen() {
 
     if ((textValue || "").length > MAX_CHARS) {
       setErrorKind("limit");
+      setDailyLimitReached(false);
       setLoading(false);
       return;
     }
 
     if (docsChars > MAX_CHARS) {
       setErrorKind("limit");
+      setDailyLimitReached(false);
       setLoading(false);
       return;
     }
@@ -627,7 +638,7 @@ export default function Resumen() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          task: "summary", 
+          task: "summary",
           messages,
           length: summaryLength,
           cacheKey,
@@ -637,11 +648,15 @@ export default function Resumen() {
       if (!res.ok) {
         if (res.status === 413) {
           setErrorKind("limit");
+          setDailyLimitReached(false);
           setLoading(false);
           return;
         }
         if (res.status === 429) {
-          throw new Error(tr("summary.error_rate_limit", "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium."));
+          setErrorKind("limit");
+          setDailyLimitReached(true);
+          setLoading(false);
+          return;
         }
         const txt = await res.text();
         throw new Error(`HTTP ${res.status}: ${txt}`);
@@ -1046,11 +1061,16 @@ export default function Resumen() {
                           <UpgradeBanner />
 
                           <div className="mt-10">
-                          <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
-                              {tr(
-                                "summary_limit_reached",
-                                `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-                              ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+                            <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                              {dailyLimitReached
+                                ? tr(
+                                    "summary_daily_limit_reached",
+                                    "Has superado el límite diario. 20 solicitudes al día."
+                                  )
+                                : tr(
+                                    "summary_limit_reached",
+                                    `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+                                  ).replace("{{count}}", MAX_CHARS.toLocaleString())}
                             </div>
                           </div>
                         </div>
@@ -1127,7 +1147,7 @@ export default function Resumen() {
                       aria-label={labelBottomInputPh}
                     />
                     <Button
-                      type="button" 
+                      type="button"
                       className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
                       style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
                       onClick={() => setShowPremiumNote(true)}
