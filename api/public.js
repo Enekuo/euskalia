@@ -344,6 +344,8 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     const ip  = getClientIp(req);
     const day = todayKey();
 
+    console.log("[DAILY_DEBUG]", { tool, ip, day, FREE_SUMMARY_DAILY_REQUESTS, FREE_TRANSLATOR_DAILY_REQUESTS });
+
     // 1) Máx. caracteres por request
     const totalChars =
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
