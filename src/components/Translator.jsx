@@ -118,7 +118,16 @@ export default function Translator() {
       ? `Gehienezko muga: ${MAX_CHARS.toLocaleString()} karaktere.`
       : `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`;
 
+  // ✅ NUEVO: LÍMITE DIARIO (para mostrar el mismo banner)
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
+
+  const getDailyLimitMsg = () =>
+    uiLang === "EUS"
+      ? "Eguneko doako muga gainditu duzu. Saiatu bihar berriro edo igo PROra."
+      : "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO.";
+
   const isLimitReached =
+    dailyLimitReached ||
     (sourceMode === "text" && leftText.length > MAX_CHARS) ||
     (sourceMode !== "text" && isLimitErr(err));
 
@@ -143,6 +152,15 @@ export default function Translator() {
       setDetectedLangLabel("");
     }
     setErr(getLimitMsg());
+  };
+
+  // ✅ NUEVO: LÍMITE DIARIO (mismo banner, pero mensaje distinto)
+  const setDailyLimitError = (clearResult = true) => {
+    if (clearResult) {
+      setRightText("");
+      setDetectedLangLabel("");
+    }
+    setErr(getDailyLimitMsg());
   };
 
   // ✅ NUEVO: en TEXTO, cuando el contador pasa de 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
@@ -380,6 +398,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       setLimitError(true);
       return;
     }
+    setDailyLimitReached(false);
     setErr("");
     setTranslateTick((v) => v + 1);
     setDirty(false);
@@ -394,6 +413,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     const run = async () => {
       try {
         setLoading(true);
+        setDailyLimitReached(false);
 
         const system = `${directionText(
           src,
@@ -404,12 +424,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               - La salida debe ser únicamente la traducción del texto de entrada, sin frases nuevas.
             \n\nResponde SOLO con lo que se te pide. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
 
-
-
-
-
-
-                const res = await fetch("/api/public", {
+        const res = await fetch("/api/public", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
@@ -429,6 +444,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
+          if (res.status === 429) {
+            setDailyLimitReached(true);
+            setDailyLimitError(true);
+            return;
+          }
           if (res.status === 413) {
             setLimitError(true);
             return;
@@ -493,6 +513,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     const run = async () => {
       try {
         setLoading(true);
+        setDailyLimitReached(false);
         setErr("");
 
         const urls = urlItems.map((u) => u.url);
@@ -519,6 +540,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
+          if (res.status === 429) {
+            setDailyLimitReached(true);
+            setDailyLimitError(true);
+            return;
+          }
           if (res.status === 413) {
             setLimitError(true);
             return;
@@ -667,6 +693,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     const run = async () => {
       try {
         setLoading(true);
+        setDailyLimitReached(false);
         setErr("");
 
         const readable = documents.filter(({ file }) =>
@@ -733,6 +760,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         });
 
         if (!res.ok) {
+          if (res.status === 429) {
+            setDailyLimitReached(true);
+            setDailyLimitError(true);
+            return;
+          }
           if (res.status === 413) {
             setLimitError(true);
             return;
@@ -966,12 +998,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     }
   };
 
-
-
-
-
-
-
   const handleClearLeft = () => {
     setLeftText("");
     setRightText("");
@@ -981,6 +1007,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setErr("");
     setDetectedLangLabel("");
     setDirty(false);
+    setDailyLimitReached(false);
   };
 
   const handleCopy = async () => {
@@ -1092,6 +1119,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlInputOpen(false);
   };
 
+  // ✅ FIX: SOLO UNA VEZ, COMPLETO (sin duplicados)
   const removeUrl = (id) =>
     setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
@@ -1535,7 +1563,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
                     {err}
                   </div>
-                )} 
+                )}
 
                 <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                   <button
@@ -1567,11 +1595,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                     }`}
                   >
-                    {copied ? (
-                      <Check className="w-5 h-5" />
-                    ) : (
-                      <CopyIcon className="w-5 h-5" />
-                    )}
+                    {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                     <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                       {copied ? t("translator.copied") : t("translator.copy")}
                     </span>
