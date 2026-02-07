@@ -127,7 +127,7 @@ const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
     "translator_daily_limit_reached",
     "Has superado el límite diario. 20 solicitudes al día."
   );
-
+ 
 
   const isLimitReached =
     dailyLimitReached ||
