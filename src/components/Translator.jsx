@@ -122,14 +122,11 @@ const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   
-  const getDailyLimitMsg = () => {
-  const obj = t("translator_daily_limit_reached");
-  const lang = (language || "ES").toString().toUpperCase();
-  if (obj && typeof obj === "object") return obj[lang] || obj.ES || "";
-  return lang === "EUS"
-    ? "Eguneko muga gainditu duzu. 20 eskaera eguneko."
-    : "Has superado el límite diario. 20 solicitudes al día.";
-  };
+  const getDailyLimitMsg = () => 
+  tr(
+    "translator_daily_limit_reached",
+    "Has superado el límite diario. 20 solicitudes al día."
+  );
 
 
   const isLimitReached =
