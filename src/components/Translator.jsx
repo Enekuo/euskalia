@@ -122,9 +122,13 @@ export default function Translator() {
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   const getDailyLimitMsg = () =>
+    tr(
+    "translator_daily_limit_reached",
     uiLang === "EUS"
       ? "Eguneko doako muga gainditu duzu. Saiatu bihar berriro edo igo PROra."
-      : "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO.";
+      : "Has alcanzado el límite diario gratuito. Vuelve mañana o mejora a PRO."
+  );
+
 
   const isLimitReached =
     dailyLimitReached ||
