@@ -465,28 +465,37 @@ export default function Resumen() {
   };
 
   const PremiumPromptNote = () => (
-    <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-5 text-indigo-900 shadow-sm">
-      <div className="text-sm font-semibold">{tr("summary.premium_prompt_title", "Función disponible en el plan Premium")}</div>
-      <p className="text-sm text-slate-700 mt-2">
-        {tr(
-          "summary.premium_prompt_body",
-          "El botón «Generar» usa un prompt: una instrucción para ajustar el resumen (tono, puntos clave, idioma, foco…). En el plan Gratis puedes pegar texto y generar el resumen normal. Para usar prompts avanzados, prueba el plan Premium (con prueba gratuita)."
-        )}
-      </p>
-      <div className="mt-4 flex flex-row items-center gap-3">
-        <Link
-          to="/pricing"
-          className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
-          style={{ backgroundColor: "#2563eb" }}
-        >
-          {tr("summary.premium_prompt_cta", "Probar plan Premium")}
-        </Link>
-        <button onClick={() => setShowPremiumNote(false)} className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white">
-          {tr("summary.premium_prompt_close", "Entendido")}
-        </button> 
-      </div>
+  <div className="rounded-xl border border-indigo-200 bg-white px-6 py-5 text-indigo-900 shadow-sm">
+    <div className="text-[16px] sm:text-[17px] font-semibold">
+      {tr("summary.premium_prompt_title", "Función disponible en el plan Premium")}
     </div>
-  );
+
+    <p className="text-sm text-slate-700 mt-2">
+      {tr(
+        "summary.premium_prompt_body",
+        "El botón «Generar» usa un prompt: una instrucción para ajustar el resumen a tu gusto (tono, puntos clave, foco…). En el plan Gratis puedes pegar texto y generar el resumen normal. Para usar prompts avanzados, prueba el plan Premium (con prueba gratuita)."
+      )}
+    </p>
+
+    <div className="mt-4 flex flex-row items-center gap-3">
+      <Link
+        to="/pricing"
+        className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
+        style={{ backgroundColor: "#2563eb" }}
+      >
+        {tr("summary.premium_prompt_cta", "Probar plan Premium")}
+      </Link>
+
+      <button
+        onClick={() => setShowPremiumNote(false)}
+        className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white"
+      >
+        {tr("summary.premium_prompt_close", "Entendido")}
+      </button>
+    </div>
+  </div>
+);
+
 
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
