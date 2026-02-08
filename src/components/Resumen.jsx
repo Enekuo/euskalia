@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
