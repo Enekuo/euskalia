@@ -465,8 +465,6 @@ export default function Resumen() {
     clearRight();
   };
 
-
-
 const PremiumPromptNote = () => (
   <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-none">
     <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
@@ -480,32 +478,36 @@ const PremiumPromptNote = () => (
       )}
     </p>
 
-    <div className="mt-4 flex flex-row items-center gap-3">
+    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
       <Link
-         to="/pricing"
-  className="
-    inline-flex items-center justify-center gap-2
-    rounded-full text-white font-medium shadow-sm
-    hover:brightness-95
-    whitespace-nowrap
-    px-4 h-9 text-sm
-    sm:px-5 sm:h-9 sm:text-sm
-  "
-  style={{ backgroundColor: "#2563eb" }}
->
-  <span className="text-yellow-400">✨</span>
-  <span>Premium plana probatu</span>
+        to="/pricing"
+        className="
+          inline-flex items-center justify-center gap-2
+          rounded-full text-white font-medium shadow-sm
+          hover:brightness-95
+          whitespace-nowrap
+          px-4 h-9 text-sm
+          sm:px-5 sm:h-9 sm:text-sm
+        "
+        style={{ backgroundColor: "#2563eb" }}
+      >
+        <span className="text-yellow-400">✨</span>
+        <span>Premium plana probatu</span>
       </Link>
 
       <button
         onClick={() => setShowPremiumNote(false)}
-        className="h-9 px-4 rounded-full border border-slate-300 text-sm text-slate-700 hover:bg-slate-50"
+        className="
+          h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white
+          w-full sm:w-auto
+        "
       >
         {tr("summary.premium_prompt_close", "Ulertuta")}
       </button>
     </div>
   </div>
 );
+
 
 
 
