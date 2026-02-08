@@ -18,6 +18,7 @@ import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
+import FaqSection from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
@@ -116,11 +117,11 @@ export default function Translator() {
   // ✅ NUEVO: tipo de error para que el texto se actualice al cambiar idioma
   const [errType, setErrType] = useState(""); // "" | "chars" | "daily"
 
-  // ✅ LÍMITE DE CARACTERES (usa idioma global)
+  // ✅ LÍMITE DE CARACTERES (usa idioma global) — FIX: reemplaza {count}/{{count}}
   const getLimitMsg = () =>
-    t("translator_limit_reached", {
-      count: MAX_CHARS.toLocaleString(),
-    });
+    String(t("translator_limit_reached") || "")
+      .replace("{count}", MAX_CHARS.toLocaleString("es-ES"))
+      .replace("{{count}}", MAX_CHARS.toLocaleString("es-ES"));
 
   // ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
@@ -166,7 +167,7 @@ export default function Translator() {
     setErr(getDailyLimitMsg());
   };
 
-  // ✅ Re-traduce el error cuando cambia idioma (evita que se quede “pegado” en EUS)
+  // ✅ Re-traduce el error cuando cambia idioma (evita que se quede “pegado”)
   useEffect(() => {
     if (!errType) return;
 
