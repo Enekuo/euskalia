@@ -1149,7 +1149,7 @@ export default function Resumen() {
                     <Button
                       type="button"
                       className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
-                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                      style={{ backgroundColor: "#93c5fd", color: "#ffffff" }}
                       onClick={() => setShowPremiumNote(true)}
                     >
                       {labelGenerateWithPrompt}
