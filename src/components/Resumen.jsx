@@ -482,12 +482,19 @@ const PremiumPromptNote = () => (
 
     <div className="mt-4 flex flex-row items-center gap-3">
       <Link
-        to="/pricing"
-        className="inline-flex items-center justify-center gap-2 rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
-        style={{ backgroundColor: "#2563eb" }}
-      >
-         <span className="text-yellow-400">✨</span>
-        {tr("summary.premium_prompt_cta", "Premium plana probatu")}
+         to="/pricing"
+  className="
+    inline-flex items-center justify-center gap-2
+    rounded-full text-white font-medium shadow-sm
+    hover:brightness-95
+    whitespace-nowrap
+    px-4 h-9 text-sm
+    sm:px-5 sm:h-9 sm:text-sm
+  "
+  style={{ backgroundColor: "#2563eb" }}
+>
+  <span className="text-yellow-400">✨</span>
+  <span>Premium plana probatu</span>
       </Link>
 
       <button
