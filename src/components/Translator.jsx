@@ -116,11 +116,15 @@ export default function Translator() {
   // ✅ tipo de error para que el mensaje se actualice al cambiar idioma
   const [errType, setErrType] = useState(""); // "" | "chars" | "daily"
 
-  // ✅ LÍMITE DE CARACTERES (FIX: reemplaza {count}/{{count}} porque t() no interpola)
-  const getLimitMsg = () =>
-    String(t("translator_limit_reached") || "")
-      .replace("{count}", MAX_CHARS.toLocaleString("es-ES"))
-      .replace("{{count}}", MAX_CHARS.toLocaleString("es-ES"));
+  // ✅ LÍMITE DE CARACTERES (FIX robusto: quita llaves y soporta {count}, {{count}}, {3000}, etc.)
+  const getLimitMsg = () => {
+    const num = MAX_CHARS.toLocaleString("es-ES");
+
+    return String(t("translator_limit_reached") || "")
+      .replace(/\{\{\s*count\s*\}\}/gi, num)
+      .replace(/\{\s*count\s*\}/gi, num)
+      .replace(/\{\s*\d+\s*\}/g, num);
+  };
 
   // ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
@@ -225,6 +229,9 @@ export default function Translator() {
 
     return { detected, translation };
   };
+
+
+
 
 
   const directionText = (srcVal, dstVal) => {
