@@ -483,7 +483,7 @@ export default function Resumen() {
         </Link>
         <button onClick={() => setShowPremiumNote(false)} className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white">
           {tr("summary.premium_prompt_close", "Entendido")}
-        </button>
+        </button> 
       </div>
     </div>
   );
