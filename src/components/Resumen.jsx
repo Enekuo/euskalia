@@ -1055,26 +1055,26 @@ export default function Resumen() {
                 {(result || errorMsg || loading || errorKind) && (
                   <>
                     {/* ✅ LIMIT centrado */}
-                    {errorKind === "limit" ? (
-                      <div className="h-full w-full flex items-center justify-center px-3 sm:px-6">
-                        <div className="w-full max-w-3xl space-y-3">
-                          <UpgradeBanner />
+{errorKind === "limit" ? (
+  <div className="h-full w-full relative flex items-center justify-center px-3 sm:px-6">
+    <div className="w-full max-w-3xl space-y-3">
+      <UpgradeBanner />
+    </div>
 
-                          <div className="mt-24 sm:mt-28">
-                            <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
-                              {dailyLimitReached
-                                ? tr(
-                                    "summary_daily_limit_reached",
-                                    "Has superado el límite diario. 20 solicitudes al día."
-                                  )
-                                : tr(
-                                    "summary_limit_reached",
-                                    `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-                                  ).replace("{{count}}", MAX_CHARS.toLocaleString())}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+    <div className="absolute left-6 sm:left-8 right-6 sm:right-8 bottom-20 z-10">
+      <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+        {dailyLimitReached
+          ? tr(
+              "summary_daily_limit_reached",
+              "Has superado el límite diario. 20 solicitudes al día."
+            )
+          : tr(
+              "summary_limit_reached",
+              `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+            ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+      </div>
+    </div>
+  </div>
                     ) : (
                       <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto">
                         {errorMsg && !errorKind && (
