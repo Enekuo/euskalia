@@ -486,7 +486,7 @@ const PremiumPromptNote = () => (
         className="inline-flex items-center justify-center gap-2 rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
         style={{ backgroundColor: "#2563eb" }}
       >
-        <Sparkles className="w-4 h-4" />
+         <span className="text-yellow-400">✨</span>
         {tr("summary.premium_prompt_cta", "Premium plana probatu")}
       </Link>
 
