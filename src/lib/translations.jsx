@@ -4812,7 +4812,7 @@ settings_plan_renews_value: {
   EN: "—",
   FR: "—",
 },
-settings_plan_cancel_btn: {
+settings_plan_renews_value: {
   ES: "Gestionar suscripción",
   EUS: "Harpidetza kudeatu",
   EN: "Manage subscription",
