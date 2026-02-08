@@ -370,16 +370,18 @@ export default function ProSettings() {
                   {tr("settings_plan_renews_value", "Mensual")}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => alert(tr("settings_plan_demo_alert", "Demo"))}
-                  className="
-                    rounded-md border border-slate-300 bg-white px-3 py-2
-                    text-sm font-medium text-slate-700 hover:bg-slate-50
-                  "
-                >
-                  {tr("settings_plan_cancel_btn", "Cancelar")}
-                </button>
+                <a
+                href="https://euskalia.lemonsqueezy.com/billing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                rounded-md border border-slate-300 bg-white px-3 py-2
+                text-sm font-medium text-slate-700 hover:bg-slate-50
+                inline-flex items-center
+              "
+              >
+               {tr("settings_plan_manage_btn", "Gestionar suscripción")}
+              </a>
               </div>
             </div>
           </div>

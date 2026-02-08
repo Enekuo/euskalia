@@ -4813,10 +4813,11 @@ settings_plan_renews_value: {
   FR: "—",
 },
 settings_plan_cancel_btn: {
-  ES: "Cancelar suscripción",
-  EUS: "Harpidetza bertan behera utzi",
-  EN: "Cancel subscription",
-  FR: "Annuler l’abonnement",
+  ES: "Gestionar suscripción",
+  EUS: "Harpidetza kudeatu",
+  EN: "Manage subscription",
+  FR: "Gérer l’abonnement",
+
 },
 settings_plan_demo_alert: {
   ES: "Esto es una demo. La cancelación aún no está disponible.",
