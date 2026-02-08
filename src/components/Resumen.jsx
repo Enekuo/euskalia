@@ -464,37 +464,41 @@ export default function Resumen() {
     clearRight();
   };
 
+
+
 const PremiumPromptNote = () => (
-  <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 text-indigo-900 shadow-none">
+  <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-none">
     <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
-      {tr("summary.premium_prompt_title", "Función disponible en el plan Premium")}
+      {tr("summary.premium_prompt_title", "Funtzioa hau Premium planean bakarrik")}
     </div>
 
-    <p className="text-sm text-slate-700 mt-2">
+    <p className="text-sm text-slate-700 mt-2 leading-6">
       {tr(
         "summary.premium_prompt_body",
-        "El botón «Generar» usa un prompt: una instrucción para ajustar el resumen a tu gusto (tono, puntos clave, foco…). En el plan Gratis puedes pegar texto y generar el resumen normal. Para usar prompts avanzados, prueba el plan Premium (con prueba gratuita)."
+        "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana."
       )}
     </p>
 
     <div className="mt-4 flex flex-row items-center gap-3">
       <Link
         to="/pricing"
-        className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
+        className="inline-flex items-center justify-center gap-2 rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
         style={{ backgroundColor: "#2563eb" }}
       >
-        {tr("summary.premium_prompt_cta", "Probar plan Premium")}
+        <Sparkles className="w-4 h-4" />
+        {tr("summary.premium_prompt_cta", "Premium plana probatu")}
       </Link>
 
       <button
         onClick={() => setShowPremiumNote(false)}
-        className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white"
+        className="h-9 px-4 rounded-full border border-slate-300 text-sm text-slate-700 hover:bg-slate-50"
       >
-        {tr("summary.premium_prompt_close", "Entendido")}
+        {tr("summary.premium_prompt_close", "Ulertuta")}
       </button>
     </div>
   </div>
 );
+
 
 
   // ===== Helper: cache key (sha-256) para KV =====
