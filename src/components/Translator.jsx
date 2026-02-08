@@ -18,7 +18,6 @@ import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
@@ -114,10 +113,10 @@ export default function Translator() {
   const isLimitTextEUS = (s) => String(s || "").includes("Gehienezko muga");
   const isLimitErr = (s) => isLimitTextES(s) || isLimitTextEUS(s);
 
-  // ✅ NUEVO: tipo de error para que el texto se actualice al cambiar idioma
+  // ✅ tipo de error para que el mensaje se actualice al cambiar idioma
   const [errType, setErrType] = useState(""); // "" | "chars" | "daily"
 
-  // ✅ LÍMITE DE CARACTERES (usa idioma global) — FIX: reemplaza {count}/{{count}}
+  // ✅ LÍMITE DE CARACTERES (FIX: reemplaza {count}/{{count}} porque t() no interpola)
   const getLimitMsg = () =>
     String(t("translator_limit_reached") || "")
       .replace("{count}", MAX_CHARS.toLocaleString("es-ES"))
@@ -226,6 +225,7 @@ export default function Translator() {
 
     return { detected, translation };
   };
+
 
   const directionText = (srcVal, dstVal) => {
     if (srcVal === "auto") {
