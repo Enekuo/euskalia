@@ -35,8 +35,8 @@ export default function Translator() {
     return val;
   };
 
-  const uiLangRaw = (language || uiLang || "ES").toString().toUpperCase();
-const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
+  const uiLangRaw = (language || "ES").toString().toUpperCase();
+  const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
 
   const LBL_DETECT = tr(
     "translator.detect_language",
@@ -113,19 +113,19 @@ const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
   const isLimitTextEUS = (s) => String(s || "").includes("Gehienezko muga");
   const isLimitErr = (s) => isLimitTextES(s) || isLimitTextEUS(s);
 
+  // ✅ NUEVO: tipo de error para que el texto se actualice al cambiar idioma
+  const [errType, setErrType] = useState(""); // "" | "chars" | "daily"
+
   // ✅ LÍMITE DE CARACTERES (usa idioma global)
-const getLimitMsg = () =>
-  t("translator_limit_reached", {
-    count: MAX_CHARS.toLocaleString(),
-  });
+  const getLimitMsg = () =>
+    t("translator_limit_reached", {
+      count: MAX_CHARS.toLocaleString(),
+    });
 
-// ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
-const [dailyLimitReached, setDailyLimitReached] = useState(false);
+  // ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
-const getDailyLimitMsg = () =>
-  t("translator_daily_limit_reached");
-
-  
+  const getDailyLimitMsg = () => t("translator_daily_limit_reached");
 
   const isLimitReached =
     dailyLimitReached ||
@@ -152,19 +152,37 @@ const getDailyLimitMsg = () =>
       setRightText("");
       setDetectedLangLabel("");
     }
+    setErrType("chars");
     setErr(getLimitMsg());
   };
 
-  // ✅ NUEVO: LÍMITE DIARIO (mismo banner, pero mensaje distinto)
+  // ✅ LÍMITE DIARIO (mismo banner, pero mensaje distinto)
   const setDailyLimitError = (clearResult = true) => {
     if (clearResult) {
       setRightText("");
       setDetectedLangLabel("");
     }
+    setErrType("daily");
     setErr(getDailyLimitMsg());
   };
 
-  // ✅ NUEVO: en TEXTO, cuando el contador pasa de 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
+  // ✅ Re-traduce el error cuando cambia idioma (evita que se quede “pegado” en EUS)
+  useEffect(() => {
+    if (!errType) return;
+
+    if (errType === "chars") {
+      const next = getLimitMsg();
+      if (err !== next) setErr(next);
+      return;
+    }
+
+    if (errType === "daily") {
+      const next = getDailyLimitMsg();
+      if (err !== next) setErr(next);
+    }
+  }, [language, uiLang, errType]);
+
+  // ✅ En TEXTO, cuando pasa de 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
   useEffect(() => {
     if (sourceMode !== "text") return;
 
@@ -177,8 +195,11 @@ const getDailyLimitMsg = () =>
       return;
     }
 
-    // si baja a 3000 o menos, limpiamos SOLO si era el error de límite
-    if (isLimitErr(err)) setErr("");
+    // si baja a 3000 o menos, limpiamos SOLO si era el error de límite (y su tipo)
+    if (isLimitErr(err)) {
+      setErr("");
+      setErrType("");
+    }
   }, [leftText, sourceMode, uiLang]);
 
   const langNameES = (code) => {
