@@ -225,16 +225,16 @@ translator_daily_limit_reached: {
 
     /* === NUEVAS CLAVES: aviso de función premium (prompt) === */
     premium_prompt_title: {
-      ES: "Función disponible en el plan Premium",
-      EUS: "Funtzioa hau Premium planean bakarrik",
-      EN: "Feature available in the Premium plan",
-      FR: "Fonction disponible avec le plan Premium"
+      ES: "Función disponible en el plan Premium!",
+      EUS: "Funtzio hau Premium planean bakarrik!",
+      EN: "Feature available in the Premium plan!",
+      FR: "Fonction disponible avec le plan Premium!"
     },
     premium_prompt_body: {
-      ES: "El botón «Generar» usa un prompt: una instrucción para ajustar el resumen a tu gusto (tono, puntos clave, foco…). En el plan Gratis puedes pegar texto y generar el resumen normal. Para usar prompts avanzados, prueba el plan Premium.",
-      EUS: "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana.",
-      EN: "The “Generate” button uses a prompt: an instruction to tailor the summary to your needs (tone, key points, focus…). On the Free plan you can paste text and generate a standard summary. To use advanced prompts, try the Premium plan.",
-      FR: "Le bouton « Générer » utilise un prompt : une instruction pour adapter le résumé à tes besoins (ton, points clés, focus…). Avec le plan gratuit, tu peux coller du texte et générer un résumé standard. Pour utiliser des prompts avancés, essaie le plan Premium."
+      ES: "El botón «Generar» permite personalizar el resumen según tus preferencias mediante un prompt.",
+      EUS: "«Sortu» botoiak laburpena zure lehentasunen arabera pertsonalizatzeko aukera ematen du prompt baten bidez.",
+      EN: "The “Generate” button lets you personalize the summary according to your preferences using a prompt.",
+      FR: "Le bouton « Générer » permet de personnaliser le résumé selon vos préférences à l’aide d’un prompt."
     },
     premium_prompt_cta: {
       ES: "Probar plan Premium",
