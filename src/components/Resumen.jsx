@@ -464,9 +464,9 @@ export default function Resumen() {
     clearRight();
   };
 
-  const PremiumPromptNote = () => (
-  <div className="rounded-xl border border-indigo-200 bg-white px-6 py-5 text-indigo-900 shadow-sm">
-    <div className="text-[16px] sm:text-[17px] font-semibold">
+const PremiumPromptNote = () => (
+  <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 text-indigo-900 shadow-none">
+    <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
       {tr("summary.premium_prompt_title", "Función disponible en el plan Premium")}
     </div>
 
