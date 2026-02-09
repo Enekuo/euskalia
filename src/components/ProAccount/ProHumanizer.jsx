@@ -724,16 +724,25 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           throw new Error(tr("proHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Pro."));
         }
 
-        // ✅✅✅ límites PRO (2 banners)
+        // ✅✅✅ límites PRO: mostrar banner + debajo mensaje rojo
         if (res.status === 413) {
-          setErrorMsg("");
-          setCharsLimit(errJson?.message || errJson?.error || "");
-          throw new Error("");
+          const msg =
+            errJson?.message ||
+            tr("proHumanizer_errorMaxChars", "Has superado el límite de caracteres permitido.");
+          setCharsLimit(msg);
+          setErrorMsg(msg);
+          setLoading(false);
+          return;
         }
+
         if (res.status === 429) {
-          setErrorMsg("");
-          setDailyLimit(errJson?.message || errJson?.error || "");
-          throw new Error("");
+          const msg =
+            errJson?.message ||
+            tr("proHumanizer_errorRateLimit", "Has alcanzado el límite de peticiones. Inténtalo más tarde.");
+          setDailyLimit(msg);
+          setErrorMsg(msg);
+          setLoading(false);
+          return;
         }
 
         const txt = errJson ? JSON.stringify(errJson) : await res.text();
@@ -769,9 +778,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         setResult(cleaned);
       }
     } catch (err) {
-      if (err?.message) {
-        setErrorMsg(err.message || tr("proHumanizer_errorGeneric", "Error humanizando el texto."));
-      }
+      setErrorMsg(err.message || tr("proHumanizer_errorGeneric", "Error humanizando el texto."));
     } finally {
       setLoading(false);
     }
@@ -875,10 +882,28 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                   className={`h-full w-full flex flex-col relative min-h-0 ${
                     dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
                   }`}
-                  onDragEnter={onDragEnter}
-                  onDragOver={onDragOver}
-                  onDragLeave={onDragLeave}
-                  onDrop={onDrop}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActive(true);
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActive(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActive(false);
+                  }}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActive(false);
+                    const dt = e.dataTransfer;
+                    if (dt?.files?.length) await addFiles(dt.files);
+                  }}
                 >
                   <input
                     ref={fileInputRef}
@@ -1177,6 +1202,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     </div>
                   )}
 
+                  {/* ✅ debajo: mensaje rojo */}
                   {errorMsg && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
