@@ -7,16 +7,52 @@ import admin from "firebase-admin";
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
 // LÍMITES PLAN PRO (puedes sobreescribir en Vercel → Env Vars)
-const PRO_MAX_CHARS    = Number(process.env.PRO_MAX_CHARS || 12000);     // máx. caracteres por request (Pro)
+const PRO_MAX_CHARS    = Number(process.env.PRO_MAX_CHARS || 12000);     // máx. caracteres por request (Pro) (legacy fallback)
 const PRO_DAILY_TOKENS = Number(process.env.PRO_DAILY_TOKENS || 150000); // cuota diaria aprox por UID
 const PRO_RPM          = Number(process.env.PRO_RPM || 30);              // rate limit: peticiones/min por UID
 
-// ✅ LÍMITES PRO POR HERRAMIENTA (defaults según lo decidido)
-const PRO_TRANSLATOR_MAX_CHARS      = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 2000);
-const PRO_TRANSLATOR_DAILY_REQUESTS = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 2);
+// ✅✅✅ LÍMITES PRO POR HERRAMIENTA (6 herramientas)
+// (defaults bajos para ir creando; luego los subes a tus valores finales)
+const PRO_TRANSLATOR_MAX_CHARS       = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 2000);
+const PRO_TRANSLATOR_DAILY_REQUESTS  = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 2);
 
-const PRO_SUMMARY_MAX_CHARS         = Number(process.env.PRO_SUMMARY_MAX_CHARS || 2000);
-const PRO_SUMMARY_DAILY_REQUESTS    = Number(process.env.PRO_SUMMARY_DAILY_REQUESTS || 2);
+const PRO_SUMMARY_MAX_CHARS          = Number(process.env.PRO_SUMMARY_MAX_CHARS || 2000);
+const PRO_SUMMARY_DAILY_REQUESTS     = Number(process.env.PRO_SUMMARY_DAILY_REQUESTS || 2);
+
+const PRO_CORRECTOR_MAX_CHARS        = Number(process.env.PRO_CORRECTOR_MAX_CHARS || 2000);
+const PRO_CORRECTOR_DAILY_REQUESTS   = Number(process.env.PRO_CORRECTOR_DAILY_REQUESTS || 2);
+
+const PRO_PARAPHRASER_MAX_CHARS      = Number(process.env.PRO_PARAPHRASER_MAX_CHARS || 2000);
+const PRO_PARAPHRASER_DAILY_REQUESTS = Number(process.env.PRO_PARAPHRASER_DAILY_REQUESTS || 2);
+
+const PRO_HUMANIZER_MAX_CHARS        = Number(process.env.PRO_HUMANIZER_MAX_CHARS || 2000);
+const PRO_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PRO_HUMANIZER_DAILY_REQUESTS || 2);
+
+const PRO_AI_DETECTOR_MAX_CHARS      = Number(process.env.PRO_AI_DETECTOR_MAX_CHARS || 2000);
+const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_REQUESTS || 2);
+
+function getProLimits(tool) {
+  if (tool === "translator") {
+    return { maxChars: PRO_TRANSLATOR_MAX_CHARS, dailyReqs: PRO_TRANSLATOR_DAILY_REQUESTS };
+  }
+  if (tool === "summary") {
+    return { maxChars: PRO_SUMMARY_MAX_CHARS, dailyReqs: PRO_SUMMARY_DAILY_REQUESTS };
+  }
+  if (tool === "corrector") {
+    return { maxChars: PRO_CORRECTOR_MAX_CHARS, dailyReqs: PRO_CORRECTOR_DAILY_REQUESTS };
+  }
+  if (tool === "paraphraser") {
+    return { maxChars: PRO_PARAPHRASER_MAX_CHARS, dailyReqs: PRO_PARAPHRASER_DAILY_REQUESTS };
+  }
+  if (tool === "humanizer") {
+    return { maxChars: PRO_HUMANIZER_MAX_CHARS, dailyReqs: PRO_HUMANIZER_DAILY_REQUESTS };
+  }
+  if (tool === "ai_detector") {
+    return { maxChars: PRO_AI_DETECTOR_MAX_CHARS, dailyReqs: PRO_AI_DETECTOR_DAILY_REQUESTS };
+  }
+  // fallback legacy
+  return { maxChars: PRO_MAX_CHARS, dailyReqs: PRO_TRANSLATOR_DAILY_REQUESTS };
+}
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -114,6 +150,88 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
+// ✅ detectar herramienta en PRO (6)
+function detectProTool(body, system, messages, hasTranslate) {
+  const rawTask = String(body?.task || "").toLowerCase();
+  const rawMode = String(body?.mode || "").toLowerCase();
+
+  // 1) detector explícito
+  if (rawMode === "ai_detector" || rawTask === "ai_detector") return "ai_detector";
+
+  // 2) traductor
+  const isTranslator =
+    hasTranslate || rawMode === "translate_urls" ||
+    rawTask.includes("translate") || rawMode.includes("translate") ||
+    rawTask.includes("traduc") || rawMode.includes("traduc") ||
+    rawMode.includes("translate_text") || rawMode.includes("translate_urls");
+
+  // 3) resumidor
+  const isSummary =
+    rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
+    rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
+
+  // 4) corrector
+  const isCorrector =
+    rawTask.includes("correct") || rawMode.includes("correct") ||
+    rawTask.includes("correg") || rawMode.includes("correg") ||
+    rawTask.includes("grammar") || rawMode.includes("grammar") ||
+    rawTask.includes("ortograf") || rawMode.includes("ortograf");
+
+  // 5) paraphraser
+  const isParaphraser =
+    rawTask.includes("paraphr") || rawMode.includes("paraphr") ||
+    rawTask.includes("rephrase") || rawMode.includes("rephrase") ||
+    rawTask.includes("reformular") || rawMode.includes("reformular");
+
+  // 6) humanizer
+  const isHumanizer =
+    rawTask.includes("humaniz") || rawMode.includes("humaniz") ||
+    rawTask.includes("humanizer") || rawMode.includes("humanizer");
+
+  let tool =
+    isTranslator ? "translator" :
+    isSummary ? "summary" :
+    isCorrector ? "corrector" :
+    isParaphraser ? "paraphraser" :
+    isHumanizer ? "humanizer" :
+    "other";
+
+  // fallback por contenido si llega “other”
+  if (tool === "other") {
+    const sys = canonicalize(system || "");
+    const user0 = canonicalize(
+      (messages || [])
+        .map(m => (m?.role === "user" ? (m?.content || "") : ""))
+        .join(" ")
+        .slice(0, 2000)
+    );
+    const hint = `${sys} ${user0}`;
+
+    const looksSummary =
+      hint.includes("resumen") || hint.includes("resumir") || hint.includes("resume") || hint.includes("summarize") || hint.includes("summary");
+
+    const looksTranslate =
+      hint.includes("traduc") || hint.includes("traduce") || hint.includes("translate") || hint.includes("itzul") || hint.includes("translation");
+
+    const looksCorrect =
+      hint.includes("corrige") || hint.includes("correg") || hint.includes("grammar") || hint.includes("ortograf");
+
+    const looksParaphrase =
+      hint.includes("paraf") || hint.includes("reformula") || hint.includes("rephrase") || hint.includes("paraphrase");
+
+    const looksHumanize =
+      hint.includes("humaniza") || hint.includes("humanize") || hint.includes("humanizer");
+
+    if (looksTranslate && !looksSummary && !looksCorrect && !looksParaphrase && !looksHumanize) tool = "translator";
+    else if (looksSummary && !looksTranslate && !looksCorrect && !looksParaphrase && !looksHumanize) tool = "summary";
+    else if (looksCorrect && !looksTranslate && !looksSummary && !looksParaphrase && !looksHumanize) tool = "corrector";
+    else if (looksParaphrase && !looksTranslate && !looksSummary && !looksCorrect && !looksHumanize) tool = "paraphraser";
+    else if (looksHumanize && !looksTranslate && !looksSummary && !looksCorrect && !looksParaphrase) tool = "humanizer";
+  }
+
+  return tool;
+}
+
 // ====== Handler ======
 export default async function handler(req, res) {
   // CORS / Preflight
@@ -190,6 +308,30 @@ export default async function handler(req, res) {
       // ====== LÍMITES PLAN PRO (por UID) también para detector ======
       const day = todayKey();
 
+      // ✅ límites por herramienta (ai_detector)
+      const toolLimits = getProLimits("ai_detector");
+      const PRO_MAX_CHARS_TOOL = toolLimits.maxChars;
+      const PRO_DAILY_REQS_TOOL = toolLimits.dailyReqs;
+
+      // ✅ límite diario por peticiones (ai_detector)
+      try {
+        const dailyReqKey = `quota:pro:ai_detector:reqs:${day}:${uid}`;
+        const usedReqs = await kv.incr(dailyReqKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyReqKey, 60 * 60 * 26);
+        }
+        if (usedReqs > PRO_DAILY_REQS_TOOL) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily requests exceeded",
+            limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool: "ai_detector" },
+            message:
+              `Has alcanzado el límite diario del detector IA en Pro (${PRO_DAILY_REQS_TOOL} al día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch {}
+
       const detectorSystem =
         "Eres un detector de probabilidad de texto generado por IA. Devuelve SOLO JSON válido sin texto adicional.";
 
@@ -212,13 +354,13 @@ Texto:
       const totalChars =
         detectorMessagesForLimits.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-      if (totalChars > PRO_MAX_CHARS) {
+      if (totalChars > PRO_MAX_CHARS_TOOL) {
         return res.status(413).json({
           ok: false,
           error: "Input too long",
-          limit: { max_chars: PRO_MAX_CHARS },
+          limit: { max_chars: PRO_MAX_CHARS_TOOL, tool: "ai_detector" },
           message:
-            `El texto es demasiado largo para el plan Pro. Máximo ${PRO_MAX_CHARS.toLocaleString()} caracteres por petición. ` +
+            `El texto es demasiado largo para el plan Pro. Máximo ${PRO_MAX_CHARS_TOOL.toLocaleString()} caracteres por petición. ` +
             `Divide el texto y vuelve a intentarlo.`
         });
       }
@@ -478,47 +620,56 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    // ====== Identificar herramienta (Traductor vs Resumidor) ======
-    const rawTask = String(body?.task || "").toLowerCase();
-    const rawMode = String(body?.mode || "").toLowerCase();
-
-    const isSummary =
-      rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
-      rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
-
-    const isTranslator =
-      hasTranslate || body?.mode === "translate_urls" ||
-      rawTask.includes("translate") || rawMode.includes("translate") ||
-      rawTask.includes("traduc") || rawMode.includes("traduc") ||
-      rawMode.includes("translate_text") || rawMode.includes("translate_urls");
-
-    let tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
-
     const finalMessages = [
       ...(system ? [{ role: "system", content: system }] : []),
       ...messages,
     ];
 
+    // ====== ✅ Detectar herramienta PRO (6) ======
+    const tool = detectProTool(body, system, messages, hasTranslate);
+    const toolLimits = getProLimits(tool);
+    const PRO_MAX_CHARS_TOOL = toolLimits.maxChars;
+    const PRO_DAILY_REQS_TOOL = toolLimits.dailyReqs;
+
     // ====== LÍMITES PLAN PRO (por UID) ======
     const day = todayKey();
 
-    // 1) Máx. caracteres por request (según herramienta)
-    const MAX_CHARS =
-      tool === "summary" ? PRO_SUMMARY_MAX_CHARS :
-      tool === "translator" ? PRO_TRANSLATOR_MAX_CHARS :
-      PRO_MAX_CHARS;
+    // ✅✅✅ (NUEVO) límite diario por peticiones / herramienta (por UID)
+    try {
+      const dailyReqKey = `quota:pro:${tool}:reqs:${day}:${uid}`;
+      const usedReqs = await kv.incr(dailyReqKey);
+      if (usedReqs === 1) {
+        await kv.expire(dailyReqKey, 60 * 60 * 26);
+      }
+      if (usedReqs > PRO_DAILY_REQS_TOOL) {
+        return res.status(429).json({
+          ok: false,
+          error: "Daily requests exceeded",
+          limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
+          message:
+            `Has alcanzado el límite diario de ${tool} en Pro (${PRO_DAILY_REQS_TOOL} al día). ` +
+            `Vuelve mañana.`
+        });
+      }
+    } catch {
+      // si KV falla, no bloqueamos
+    }
 
+    // 1) Máx. caracteres por request
     const totalChars =
       (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-    if (totalChars > MAX_CHARS) {
+    // ✅ usa límites por herramienta (y si falta, cae a PRO_MAX_CHARS legacy)
+    const effectiveMaxChars = Number(PRO_MAX_CHARS_TOOL || PRO_MAX_CHARS);
+
+    if (totalChars > effectiveMaxChars) {
       return res.status(413).json({
         ok: false,
         error: "Input too long",
-        limit: { max_chars: MAX_CHARS, tool },
+        limit: { max_chars: effectiveMaxChars, tool },
         message:
-          `El texto es demasiado largo para tu plan Pro. Máximo ${MAX_CHARS.toLocaleString()} caracteres por petición. ` +
+          `El texto es demasiado largo para tu plan Pro. Máximo ${effectiveMaxChars.toLocaleString()} caracteres por petición. ` +
           `Divide el texto y vuelve a intentarlo.`
       });
     }
@@ -540,39 +691,6 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {
       // si KV falla, continuamos sin romper UX
-    }
-
-    // 2b) ✅ LÍMITE DIARIO POR PETICIONES (PRO) por UID y herramienta
-    try {
-      if (tool === "translator") {
-        const key = `quota:pro:translator:reqs:${day}:${uid}`;
-        const used = await kv.incr(key);
-        if (used === 1) await kv.expire(key, 60 * 60 * 26);
-        if (used > PRO_TRANSLATOR_DAILY_REQUESTS) {
-          return res.status(429).json({
-            ok: false,
-            error: "Daily translator requests exceeded",
-            limit: { daily_translator_requests: PRO_TRANSLATOR_DAILY_REQUESTS, used },
-            message: `Has alcanzado el límite diario del traductor en Pro (${PRO_TRANSLATOR_DAILY_REQUESTS}/día). Vuelve mañana.`
-          });
-        }
-      }
-
-      if (tool === "summary") {
-        const key = `quota:pro:summary:reqs:${day}:${uid}`;
-        const used = await kv.incr(key);
-        if (used === 1) await kv.expire(key, 60 * 60 * 26);
-        if (used > PRO_SUMMARY_DAILY_REQUESTS) {
-          return res.status(429).json({
-            ok: false,
-            error: "Daily summary requests exceeded",
-            limit: { daily_summary_requests: PRO_SUMMARY_DAILY_REQUESTS, used },
-            message: `Has alcanzado el límite diario del resumidor en Pro (${PRO_SUMMARY_DAILY_REQUESTS}/día). Vuelve mañana.`
-          });
-        }
-      }
-    } catch {
-      // si KV falla, seguimos (mismo estilo que el archivo)
     }
 
     // 3) Cuota diaria aproximada de tokens por UID
