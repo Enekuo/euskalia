@@ -106,10 +106,10 @@ upgradeBanner_title: {
 },
 
 upgradeBanner_subtitle: {
-  ES: "Más capacidad y límites mucho más amplios.",
-  EUS: "Edukiera handiagoa eta muga askoz zabalagoak.",
-  EN: "More capacity and much higher limits.",
-  FR: "Plus de capacité et des limites beaucoup plus élevées.",
+  ES: "Más capacidad y límites más amplios",
+  EUS: "Edukiera handiagoa eta muga zabalagoak",
+  EN: "More capacity and higher limits",
+  FR: "Plus de capacité et des limites plus élevées",
 },
 
 upgradeBanner_cta: {
