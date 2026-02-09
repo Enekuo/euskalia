@@ -3906,7 +3906,7 @@ proHumanizer_errorNeedInput: {
 },
 proHumanizer_errorRateLimit: {
   ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde.",
-  EUS: "Eskaera-muga lortu duzu. Saiatu berriro geroago.",
+  EUS: "Eskaera-muga gainditu duzu. Saiatu berriro geroago.",
   EN: "You’ve reached the request limit. Try again later.",
   FR: "Vous avez atteint la limite de requêtes. Réessayez plus tard.",
 },
