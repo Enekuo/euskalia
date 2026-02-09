@@ -25,11 +25,13 @@ const PRO_CORRECTOR_DAILY_REQUESTS   = Number(process.env.PRO_CORRECTOR_DAILY_RE
 const PRO_PARAPHRASER_MAX_CHARS      = Number(process.env.PRO_PARAPHRASER_MAX_CHARS || 2000);
 const PRO_PARAPHRASER_DAILY_REQUESTS = Number(process.env.PRO_PARAPHRASER_DAILY_REQUESTS || 2);
 
+const PRO_AI_DETECTOR_MAX_CHARS      = Number(process.env.PRO_AI_DETECTOR_MAX_CHARS || 2000);
+const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_REQUESTS || 2);
+
 const PRO_HUMANIZER_MAX_CHARS        = Number(process.env.PRO_HUMANIZER_MAX_CHARS || 2000);
 const PRO_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PRO_HUMANIZER_DAILY_REQUESTS || 2);
 
-const PRO_AI_DETECTOR_MAX_CHARS      = Number(process.env.PRO_AI_DETECTOR_MAX_CHARS || 2000);
-const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_REQUESTS || 2);
+
 
 function getProLimits(tool) {
   if (tool === "translator") {
