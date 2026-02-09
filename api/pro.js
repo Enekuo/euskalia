@@ -12,10 +12,10 @@ const PRO_DAILY_TOKENS = Number(process.env.PRO_DAILY_TOKENS || 150000); // cuot
 const PRO_RPM          = Number(process.env.PRO_RPM || 30);              // rate limit: peticiones/min por UID
 
 // ✅ LÍMITES PRO POR HERRAMIENTA (defaults según lo decidido)
-const PRO_TRANSLATOR_MAX_CHARS      = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 200);
+const PRO_TRANSLATOR_MAX_CHARS      = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 2000);
 const PRO_TRANSLATOR_DAILY_REQUESTS = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 2);
 
-const PRO_SUMMARY_MAX_CHARS         = Number(process.env.PRO_SUMMARY_MAX_CHARS || 200);
+const PRO_SUMMARY_MAX_CHARS         = Number(process.env.PRO_SUMMARY_MAX_CHARS || 2000);
 const PRO_SUMMARY_DAILY_REQUESTS    = Number(process.env.PRO_SUMMARY_DAILY_REQUESTS || 2);
 
 // Conversión aproximada chars→tokens (prudente)
