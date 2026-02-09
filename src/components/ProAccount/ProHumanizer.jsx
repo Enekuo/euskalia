@@ -23,6 +23,7 @@ import { addLibraryDoc } from "@/proLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProHumanizer() {
   const location = useLocation();
@@ -45,6 +46,37 @@ export default function ProHumanizer() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // ✅✅✅ PRO LIMIT BANNER (2 tipos: chars | daily)
+  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
+  const [limitMsg, setLimitMsg] = useState("");
+
+  const setCharsLimit = (msg) => {
+    setLimitType("chars");
+    setLimitMsg(
+      msg ||
+        tr(
+          "pro_limit_chars",
+          "Has superado el límite máximo de caracteres para tu plan Pro."
+        )
+    );
+  };
+
+  const setDailyLimit = (msg) => {
+    setLimitType("daily");
+    setLimitMsg(
+      msg ||
+        tr(
+          "pro_limit_daily",
+          "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+        )
+    );
+  };
+
+  const clearLimit = () => {
+    setLimitType("");
+    setLimitMsg("");
+  };
 
   // Niveles (3)
   const [mode, setMode] = useState("standard"); // basic | standard | advanced
@@ -81,6 +113,7 @@ export default function ProHumanizer() {
       setLoading(false);
       setCopiedFlash(false);
       setSavedToLibrary(false);
+      clearLimit();
     }
   }, [location?.state?.text]);
 
@@ -253,6 +286,7 @@ export default function ProHumanizer() {
     setLoading(false);
     setCopiedFlash(false);
     setSavedToLibrary(false);
+    clearLimit();
   };
 
   // ===== Atajos teclado =====
@@ -509,6 +543,7 @@ export default function ProHumanizer() {
     setErrorMsg("");
     setResult("");
     setSavedToLibrary(false);
+    clearLimit();
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
@@ -678,13 +713,30 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
       });
 
       if (!res.ok) {
+        let errJson = null;
+        try {
+          errJson = await res.json();
+        } catch {
+          errJson = null;
+        }
+
         if (res.status === 401) {
           throw new Error(tr("proHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Pro."));
         }
-        if (res.status === 429) {
-          throw new Error(tr("proHumanizer_errorRateLimit", "Has alcanzado el límite de peticiones. Inténtalo más tarde."));
+
+        // ✅✅✅ límites PRO (2 banners)
+        if (res.status === 413) {
+          setErrorMsg("");
+          setCharsLimit(errJson?.message || errJson?.error || "");
+          throw new Error("");
         }
-        const txt = await res.text();
+        if (res.status === 429) {
+          setErrorMsg("");
+          setDailyLimit(errJson?.message || errJson?.error || "");
+          throw new Error("");
+        }
+
+        const txt = errJson ? JSON.stringify(errJson) : await res.text();
         throw new Error(`HTTP ${res.status}: ${txt}`);
       }
 
@@ -717,7 +769,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         setResult(cleaned);
       }
     } catch (err) {
-      setErrorMsg(err.message || tr("proHumanizer_errorGeneric", "Error humanizando el texto."));
+      if (err?.message) {
+        setErrorMsg(err.message || tr("proHumanizer_errorGeneric", "Error humanizando el texto."));
+      }
     } finally {
       setLoading(false);
     }
@@ -1090,7 +1144,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
             {/* ===== CONTENIDO SCROLLEABLE (cuando sea necesario) ===== */}
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              {!loading && !hasRealResult && !errorMsg && (
+              {!loading && !hasRealResult && !errorMsg && !limitType && (
                 <>
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                     <Button
@@ -1110,8 +1164,19 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                 </>
               )}
 
-              {(hasRealResult || errorMsg || loading) && (
+              {(hasRealResult || errorMsg || loading || limitType) && (
                 <div className="px-6 pt-20 pb-28 max-w-3xl mx-auto">
+                  {/* ✅✅✅ Banner Pro (chars / daily) */}
+                  {limitType && (
+                    <div className="mb-3">
+                      <ProLimitBanner
+                        type={limitType}
+                        message={limitMsg}
+                        onClose={() => clearLimit()}
+                      />
+                    </div>
+                  )}
+
                   {errorMsg && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}

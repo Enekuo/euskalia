@@ -315,7 +315,7 @@ export default async function handler(req, res) {
       const PRO_MAX_CHARS_TOOL = toolLimits.maxChars;
       const PRO_DAILY_REQS_TOOL = toolLimits.dailyReqs;
 
-      // ✅ límite diario por peticiones (ai_detector)
+      // ✅ límite diario por peticiones (ai_detector) - SOLO aquí (evita doble conteo)
       try {
         const dailyReqKey = `quota:pro:ai_detector:reqs:${day}:${uid}`;
         const usedReqs = await kv.incr(dailyReqKey);
@@ -637,24 +637,27 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     const day = todayKey();
 
     // ✅✅✅ (NUEVO) límite diario por peticiones / herramienta (por UID)
-    try {
-      const dailyReqKey = `quota:pro:${tool}:reqs:${day}:${uid}`;
-      const usedReqs = await kv.incr(dailyReqKey);
-      if (usedReqs === 1) {
-        await kv.expire(dailyReqKey, 60 * 60 * 26);
+    // ⚠️ EXCEPTO ai_detector, porque ya se cuenta en su bloque específico
+    if (tool !== "ai_detector") {
+      try {
+        const dailyReqKey = `quota:pro:${tool}:reqs:${day}:${uid}`;
+        const usedReqs = await kv.incr(dailyReqKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyReqKey, 60 * 60 * 26);
+        }
+        if (usedReqs > PRO_DAILY_REQS_TOOL) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily requests exceeded",
+            limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
+            message:
+              `Has alcanzado el límite diario de ${tool} en Pro (${PRO_DAILY_REQS_TOOL} al día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch {
+        // si KV falla, no bloqueamos
       }
-      if (usedReqs > PRO_DAILY_REQS_TOOL) {
-        return res.status(429).json({
-          ok: false,
-          error: "Daily requests exceeded",
-          limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
-          message:
-            `Has alcanzado el límite diario de ${tool} en Pro (${PRO_DAILY_REQS_TOOL} al día). ` +
-            `Vuelve mañana.`
-        });
-      }
-    } catch {
-      // si KV falla, no bloqueamos
     }
 
     // 1) Máx. caracteres por request
