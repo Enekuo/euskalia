@@ -11,6 +11,13 @@ const PRO_MAX_CHARS    = Number(process.env.PRO_MAX_CHARS || 12000);     // máx
 const PRO_DAILY_TOKENS = Number(process.env.PRO_DAILY_TOKENS || 150000); // cuota diaria aprox por UID
 const PRO_RPM          = Number(process.env.PRO_RPM || 30);              // rate limit: peticiones/min por UID
 
+// ✅ LÍMITES PRO POR HERRAMIENTA (defaults según lo decidido)
+const PRO_TRANSLATOR_MAX_CHARS      = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 6000);
+const PRO_TRANSLATOR_DAILY_REQUESTS = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 50);
+
+const PRO_SUMMARY_MAX_CHARS         = Number(process.env.PRO_SUMMARY_MAX_CHARS || 30000);
+const PRO_SUMMARY_DAILY_REQUESTS    = Number(process.env.PRO_SUMMARY_DAILY_REQUESTS || 10);
+
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
 
@@ -471,6 +478,22 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
+    // ====== Identificar herramienta (Traductor vs Resumidor) ======
+    const rawTask = String(body?.task || "").toLowerCase();
+    const rawMode = String(body?.mode || "").toLowerCase();
+
+    const isSummary =
+      rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
+      rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
+
+    const isTranslator =
+      hasTranslate || body?.mode === "translate_urls" ||
+      rawTask.includes("translate") || rawMode.includes("translate") ||
+      rawTask.includes("traduc") || rawMode.includes("traduc") ||
+      rawMode.includes("translate_text") || rawMode.includes("translate_urls");
+
+    let tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
+
     const finalMessages = [
       ...(system ? [{ role: "system", content: system }] : []),
       ...messages,
@@ -479,18 +502,23 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     // ====== LÍMITES PLAN PRO (por UID) ======
     const day = todayKey();
 
-    // 1) Máx. caracteres por request
+    // 1) Máx. caracteres por request (según herramienta)
+    const MAX_CHARS =
+      tool === "summary" ? PRO_SUMMARY_MAX_CHARS :
+      tool === "translator" ? PRO_TRANSLATOR_MAX_CHARS :
+      PRO_MAX_CHARS;
+
     const totalChars =
       (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-    if (totalChars > PRO_MAX_CHARS) {
+    if (totalChars > MAX_CHARS) {
       return res.status(413).json({
         ok: false,
         error: "Input too long",
-        limit: { max_chars: PRO_MAX_CHARS },
+        limit: { max_chars: MAX_CHARS, tool },
         message:
-          `El texto es demasiado largo para el plan Pro. Máximo ${PRO_MAX_CHARS.toLocaleString()} caracteres por petición. ` +
+          `El texto es demasiado largo para tu plan Pro. Máximo ${MAX_CHARS.toLocaleString()} caracteres por petición. ` +
           `Divide el texto y vuelve a intentarlo.`
       });
     }
@@ -512,6 +540,39 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {
       // si KV falla, continuamos sin romper UX
+    }
+
+    // 2b) ✅ LÍMITE DIARIO POR PETICIONES (PRO) por UID y herramienta
+    try {
+      if (tool === "translator") {
+        const key = `quota:pro:translator:reqs:${day}:${uid}`;
+        const used = await kv.incr(key);
+        if (used === 1) await kv.expire(key, 60 * 60 * 26);
+        if (used > PRO_TRANSLATOR_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily translator requests exceeded",
+            limit: { daily_translator_requests: PRO_TRANSLATOR_DAILY_REQUESTS, used },
+            message: `Has alcanzado el límite diario del traductor en Pro (${PRO_TRANSLATOR_DAILY_REQUESTS}/día). Vuelve mañana.`
+          });
+        }
+      }
+
+      if (tool === "summary") {
+        const key = `quota:pro:summary:reqs:${day}:${uid}`;
+        const used = await kv.incr(key);
+        if (used === 1) await kv.expire(key, 60 * 60 * 26);
+        if (used > PRO_SUMMARY_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily summary requests exceeded",
+            limit: { daily_summary_requests: PRO_SUMMARY_DAILY_REQUESTS, used },
+            message: `Has alcanzado el límite diario del resumidor en Pro (${PRO_SUMMARY_DAILY_REQUESTS}/día). Vuelve mañana.`
+          });
+        }
+      }
+    } catch {
+      // si KV falla, seguimos (mismo estilo que el archivo)
     }
 
     // 3) Cuota diaria aproximada de tokens por UID
