@@ -23,7 +23,6 @@ import { addLibraryDoc } from "@/proLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProHumanizer() {
   const location = useLocation();
@@ -396,29 +395,6 @@ export default function ProHumanizer() {
     e.target.value = "";
   };
 
-  const onDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-  const onDrop = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const dt = e.dataTransfer;
-    if (dt?.files?.length) await addFiles(dt.files);
-  };
-
   const removeDocument = (id) => {
     setDocuments((prev) => prev.filter((d) => d.id !== id));
     setDocumentsText((prev) => prev.filter((d) => d.id !== id));
@@ -724,7 +700,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           throw new Error(tr("proHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Pro."));
         }
 
-        // ✅✅✅ límites PRO: mostrar banner + debajo mensaje rojo
+        // ✅✅✅ límites PRO: banner + debajo mensaje rojo
         if (res.status === 413) {
           const msg =
             errJson?.message ||
@@ -1169,36 +1145,31 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
             {/* ===== CONTENIDO SCROLLEABLE (cuando sea necesario) ===== */}
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              {!loading && !hasRealResult && !errorMsg && !limitType && (
-                <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
-                    <Button
-                      type="button"
-                      onClick={handleGenerate}
-                      disabled={loading || !hasValidInput}
-                      className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: BLUE, color: "#ffffff" }}
-                    >
-                      {labelGenerateFromSources}
-                    </Button>
-                  </div>
-
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
-                  </div>
-                </>
-              )}
-
               {(hasRealResult || errorMsg || loading || limitType) && (
                 <div className="px-6 pt-20 pb-28 max-w-3xl mx-auto">
-                  {/* ✅✅✅ Banner Pro (chars / daily) */}
+                  {/* ✅✅✅ BANNER (SIEMPRE visible si hay límite) */}
                   {limitType && (
-                    <div className="mb-3">
-                      <ProLimitBanner
-                        type={limitType}
-                        message={limitMsg}
-                        onClose={() => clearLimit()}
-                      />
+                    <div className="mb-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-none flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[15px] font-semibold text-slate-900">
+                          {limitType === "daily"
+                            ? tr("pro_limit_banner_daily_title", "Límite diario alcanzado")
+                            : tr("pro_limit_banner_chars_title", "Texto demasiado largo")}
+                        </div>
+                        <div className="mt-1 text-[13px] leading-6 text-slate-600">
+                          {limitMsg}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={clearLimit}
+                        className="shrink-0 h-9 w-9 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center"
+                        aria-label={tr("pro_limit_banner_close", "Cerrar")}
+                        title={tr("pro_limit_banner_close", "Cerrar")}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   )}
 
@@ -1225,6 +1196,26 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     </div>
                   )}
                 </div>
+              )}
+
+              {!loading && !hasRealResult && !errorMsg && !limitType && (
+                <>
+                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                    <Button
+                      type="button"
+                      onClick={handleGenerate}
+                      disabled={loading || !hasValidInput}
+                      className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                      style={{ backgroundColor: BLUE, color: "#ffffff" }}
+                    >
+                      {labelGenerateFromSources}
+                    </Button>
+                  </div>
+
+                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
+                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                  </div>
+                </>
               )}
             </div>
 
