@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "@/lib/translations";
 
 function ButtonSparklesIcon({ className = "" }) {
   return (
@@ -39,54 +41,56 @@ function ButtonSparklesIcon({ className = "" }) {
 export default function ProLimitBanner({
   visible,
   message,
-  onClose,
+  to = "/pricing",
   className = "",
-  title = "Límite alcanzado",
-  ctaText = "Mejorar ahora",
-  onCta,
+  titleKey = "upgradeBanner_title",
+  subtitleKey = "upgradeBanner_subtitle",
+  ctaKey = "upgradeBanner_cta",
 }) {
+  const { t } = useTranslation();
+
+  const tr = (k, fallback = "") => {
+    const val = typeof t === "function" ? t(k) : null;
+    if (!val || val === k) return fallback;
+    return val;
+  };
+
   if (!visible) return null;
 
   return (
-    <div
-      className={
-        "w-full rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden " +
-        className
-      }
-    >
-      <div className="relative px-5 py-4 sm:px-6 sm:py-5">
-        <div className="relative flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-[16px] sm:text-[18px] font-semibold text-slate-900">
-              {title}
-            </div>
-            <div className="mt-1 text-[13px] sm:text-[14px] text-slate-600">
-              {message}
-            </div>
-          </div>
+    <>
+      {/* Banner centrado (como antes) */}
+      <div className={"absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10 " + className}>
+        <div className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="relative px-5 py-4 sm:px-6 sm:py-5">
+            <div className="relative flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-[16px] sm:text-[18px] font-semibold text-slate-900">
+                  {tr(titleKey, "¡Desbloquea Euskalia PRO!")}
+                </div>
+                <div className="mt-1 text-[13px] sm:text-[14px] text-slate-600">
+                  {tr(subtitleKey, "Más capacidad y límites mucho más amplios.")}
+                </div>
+              </div>
 
-          <div className="shrink-0 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onCta}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#1e78ff] px-4 py-2 text-white font-semibold text-[14px] shadow-sm hover:opacity-95 active:opacity-90"
-            >
-              <ButtonSparklesIcon className="w-[22px] h-[22px]" />
-              {ctaText}
-            </button>
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-10 w-10 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center"
-              aria-label="Cerrar"
-              title="Cerrar"
-            >
-              <span className="text-slate-500 text-[18px] leading-none">×</span>
-            </button>
+              <Link
+                to={to}
+                className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#1e78ff] px-4 py-2 text-white font-semibold text-[14px] shadow-sm hover:opacity-95 active:opacity-90"
+              >
+                <ButtonSparklesIcon className="w-[22px] h-[22px]" />
+                {tr(ctaKey, "Mejorar ahora")}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Mensaje rojo debajo (como antes) */}
+      {!!message && (
+        <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-16 z-10 text-sm text-red-500 text-center">
+          {message}
+        </div>
+      )}
+    </>
   );
 }
