@@ -28,7 +28,7 @@ import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 export default function ProHumanizer() {
   const location = useLocation();
 
-  const { t } = useTranslation?.() || { t: () => null };
+  const { t, language } = useTranslation?.() || { t: () => null, language: "ES" };
 
   // ✅ FIX: si t devuelve la propia clave (cuando falta traducción), usamos fallback
   const tr = (k, f) => {
@@ -687,7 +687,8 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           cacheKey,
           documentsText,
           documentsFiles,
-          language: outputLang,
+          language: outputLang, 
+          uiLanguage: language, 
         }),
       });
 
