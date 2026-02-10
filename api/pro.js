@@ -646,15 +646,37 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
           await kv.expire(dailyReqKey, 60 * 60 * 26);
         }
         if (usedReqs > PRO_DAILY_REQS_TOOL) {
-          return res.status(429).json({
-            ok: false,
-            error: "Daily requests exceeded",
-            limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
-            message:
-              `Has alcanzado el límite diario de ${tool} en Pro (${PRO_DAILY_REQS_TOOL} al día). ` +
-              `Vuelve mañana.`
-          });
-        }
+  const lang = (req.body?.language || "ES").toString().toUpperCase();
+
+  const TOOL_LABEL = {
+    humanizer: { ES: "Humanizador", EUS: "Humanizatzailea", EN: "Humanizer", FR: "Humaniseur" },
+    translator: { ES: "Traductor", EUS: "Itzultzailea", EN: "Translator", FR: "Traducteur" },
+    summary: { ES: "Resumidor", EUS: "Laburtzailea", EN: "Summarizer", FR: "Résumeur" },
+    paraphraser: { ES: "Parafraseador", EUS: "Parafraseatzailea", EN: "Paraphraser", FR: "Paraphraseur" },
+    corrector: { ES: "Corrector", EUS: "Zuzentzailea", EN: "Corrector", FR: "Correcteur" },
+    ai_detector: { ES: "Detector IA", EUS: "IA detektagailua", EN: "AI Detector", FR: "Détecteur IA" },
+  };
+
+  const toolLabel =
+    TOOL_LABEL?.[tool]?.[lang] ||
+    TOOL_LABEL?.[tool]?.ES ||
+    tool;
+
+  const MSG = {
+    ES: `Has alcanzado el límite diario de ${toolLabel} en Pro (${PRO_DAILY_REQS_TOOL} al día). Vuelve mañana.`,
+    EUS: `${toolLabel} tresnaren eguneroko muga Pro-n lortu duzu (${PRO_DAILY_REQS_TOOL} egunean). Bihar saiatu berriro.`,
+    EN: `You’ve reached the daily limit for ${toolLabel} in Pro (${PRO_DAILY_REQS_TOOL} per day). Try again tomorrow.`,
+    FR: `Vous avez atteint la limite quotidienne de ${toolLabel} en Pro (${PRO_DAILY_REQS_TOOL} par jour). Réessayez demain.`,
+  };
+
+  return res.status(429).json({
+    ok: false,
+    error: "Daily requests exceeded",
+    limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
+    message: MSG[lang] || MSG.ES,
+  });
+}
+
       } catch {
         // si KV falla, no bloqueamos
       }
