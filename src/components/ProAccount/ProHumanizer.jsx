@@ -23,6 +23,7 @@ import { addLibraryDoc } from "@/proLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProHumanizer() {
   const location = useLocation();
@@ -75,6 +76,7 @@ export default function ProHumanizer() {
   const clearLimit = () => {
     setLimitType("");
     setLimitMsg("");
+    setErrorMsg("");
   };
 
   // Niveles (3)
@@ -1145,36 +1147,13 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
             {/* ===== CONTENIDO SCROLLEABLE (cuando sea necesario) ===== */}
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              {(hasRealResult || errorMsg || loading || limitType) && (
+              {/* ✅✅✅ BANNER PRO “como el de public” (usa UpgradeBanner por dentro) */}
+              <ProLimitBanner visible={!!limitType} message={errorMsg || limitMsg} />
+
+              {/* Contenido normal (sin duplicar mensaje rojo cuando hay limitType) */}
+              {(hasRealResult || loading || (errorMsg && !limitType)) && (
                 <div className="px-6 pt-20 pb-28 max-w-3xl mx-auto">
-                  {/* ✅✅✅ BANNER (SIEMPRE visible si hay límite) */}
-                  {limitType && (
-                    <div className="mb-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-none flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="text-[15px] font-semibold text-slate-900">
-                          {limitType === "daily"
-                            ? tr("pro_limit_banner_daily_title", "Límite diario alcanzado")
-                            : tr("pro_limit_banner_chars_title", "Texto demasiado largo")}
-                        </div>
-                        <div className="mt-1 text-[13px] leading-6 text-slate-600">
-                          {limitMsg}
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={clearLimit}
-                        className="shrink-0 h-9 w-9 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center"
-                        aria-label={tr("pro_limit_banner_close", "Cerrar")}
-                        title={tr("pro_limit_banner_close", "Cerrar")}
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* ✅ debajo: mensaje rojo */}
-                  {errorMsg && (
+                  {errorMsg && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
                     </div>
