@@ -421,7 +421,17 @@ export default function ProTranslator() {
           if (isChars) setCharsLimit();
           else setDailyLimit();
 
-          if (data?.message) setLimitMsg(data.message);
+          setLimitMsg(
+            isChars
+              ? tr(
+                  "pro_limit_chars",
+                  "Has superado el límite máximo de caracteres para tu plan Pro."
+                )
+              : tr(
+                  "pro_limit_daily",
+                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+                )
+          );
 
           setResultStatus("error");
           return;
@@ -519,7 +529,17 @@ export default function ProTranslator() {
           if (isChars) setCharsLimit();
           else setDailyLimit();
 
-          if (data?.message) setLimitMsg(data.message);
+          setLimitMsg(
+            isChars
+              ? tr(
+                  "pro_limit_chars",
+                  "Has superado el límite máximo de caracteres para tu plan Pro."
+                )
+              : tr(
+                  "pro_limit_daily",
+                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+                )
+          );
 
           setResultStatus("error");
           return;
@@ -645,7 +665,17 @@ export default function ProTranslator() {
           if (isChars) setCharsLimit();
           else setDailyLimit();
 
-          if (data?.message) setLimitMsg(data.message);
+          setLimitMsg(
+            isChars
+              ? tr(
+                  "pro_limit_chars",
+                  "Has superado el límite máximo de caracteres para tu plan Pro."
+                )
+              : tr(
+                  "pro_limit_daily",
+                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+                )
+          );
 
           setResultStatus("error");
           return;
@@ -683,6 +713,7 @@ export default function ProTranslator() {
         setLoading(false);
       }
     };
+
 
     run();
 
