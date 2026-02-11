@@ -1258,9 +1258,12 @@ export default function ProTranslator() {
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
   // ✅ Mostrar botón cuando: modo texto y (no hay resultado o se ha modificado desde la última traducción)
-  const showTranslateButton =
-    sourceMode === "text" && !loading && (!hasRealResult || dirty || !!err);
-
+const showTranslateButton =
+  sourceMode === "text" &&
+  !loading &&
+  !limitType &&
+  (!hasRealResult || dirty || !!err);
+  
   return (
     <>
       <section className="w-full bg-[#F4F8FF] pt-2 pb-20 md:pb-32">

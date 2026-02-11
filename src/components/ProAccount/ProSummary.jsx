@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,7 +41,21 @@ export default function ProSummary() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [errorKind, setErrorKind] = useState(null); // null | "limit"
+
+  // ✅ Límite Pro (banner + mensaje rojo)
+  const [limitMsg, setLimitMsg] = useState("");
+
+  const setCharsLimit = () => {
+    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
+  };
+
+  const setDailyLimit = () => {
+    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
+  };
+
+  const clearLimit = () => {
+    setLimitMsg("");
+  };
 
   // Longitud del resumen
   const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "detallado"
@@ -117,7 +132,7 @@ export default function ProSummary() {
   const LBL_EUS = tr("proSummary.output_language_eus", "Euskara");
   const LBL_ES = tr("proSummary.output_language_es", "Gaztelania");
   const LBL_EN = tr("proSummary.output_language_en", "Ingelesa");
-  const LBL_FR = tr("proSummary.output_language_fr", "Français"); 
+  const LBL_FR = tr("proSummary.output_language_fr", "Français");
 
   // ✅ Botón guardar + toast (verde)
   const labelSaveSummary = tr("proSummary.save_button_label", "Gorde");
@@ -237,7 +252,7 @@ export default function ProSummary() {
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
-    setErrorKind(null);
+    clearLimit();
     setIsOutdated(false);
     setIsTooShortResult(false);
     setLoading(false);
@@ -288,7 +303,7 @@ export default function ProSummary() {
   useEffect(() => {
     setResult("");
     setErrorMsg("");
-    setErrorKind(null);
+    clearLimit();
     setIsOutdated(false);
     setIsTooShortResult(false);
     setSavedToLibrary(false);
@@ -465,31 +480,6 @@ export default function ProSummary() {
     }, 2000);
   };
 
-  // ===== Tarjetas =====
-  const LimitCard = () => (
-    <div className="rounded-xl border border-sky-200 bg-sky-50 px-6 py-5 text-sky-900 text-center">
-      <div className="text-sm font-semibold">{tr("proSummary.limit_title", "Has alcanzado el límite del plan Gratis")}</div>
-      <p className="text-xs text-slate-600 mt-1">
-        {tr("proSummary.limit_note", "Límite actual: 12.000 caracteres por petición.")}
-      </p>
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <a
-          href="/pricing"
-          className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
-          style={{ backgroundColor: "#2563eb" }}
-        >
-          {tr("proSummary.limit_cta", "Probar plan Premium")}
-        </a>
-        <button
-          onClick={() => setErrorKind(null)}
-          className="h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white"
-        >
-          {tr("proSummary.limit_dismiss", "Seguir con plan Gratis")}
-        </button>
-      </div>
-    </div>
-  );
-
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
     try {
@@ -507,7 +497,7 @@ export default function ProSummary() {
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
-    setErrorKind(null);
+    clearLimit();
     setIsTooShortResult(false);
     setSavedToLibrary(false);
 
@@ -517,7 +507,7 @@ export default function ProSummary() {
     const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorKind("limit");
+      setCharsLimit();
       setLoading(false);
       return;
     }
@@ -622,7 +612,7 @@ export default function ProSummary() {
 
       const res = await fetch("/api/pro", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
@@ -636,7 +626,7 @@ export default function ProSummary() {
 
       if (!res.ok) {
         if (res.status === 413) {
-          setErrorKind("limit");
+          setCharsLimit();
           setLoading(false);
           return;
         }
@@ -644,12 +634,9 @@ export default function ProSummary() {
           throw new Error(tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
         if (res.status === 429) {
-          throw new Error(
-            tr(
-              "proSummary.error_rate_limit",
-              "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium."
-            )
-          );
+          setDailyLimit();
+          setLoading(false);
+          return;
         }
         const txt = await res.text();
         throw new Error(`HTTP ${res.status}: ${txt}`);
@@ -1033,8 +1020,16 @@ export default function ProSummary() {
                 </div>
               </div>
 
+              {/* ✅ Banner Pro (dentro del panel derecho, arriba) */}
+              {limitMsg && (
+                <div className="px-6 pt-4">
+                  <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
+                  <div className="mt-3 text-sm text-red-600">{limitMsg}</div>
+                </div>
+              )}
+
               {/* Estado inicial */}
-              {!loading && !result && !errorKind && (
+              {!loading && !result && !errorMsg && (
                 <>
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                     <Button
@@ -1054,13 +1049,11 @@ export default function ProSummary() {
                 </>
               )}
 
-              {/* Resultado / errores / loader / límite */}
+              {/* Resultado / errores / loader */}
               <div className="w-full">
-                {(result || errorMsg || loading || errorKind) && (
+                {(result || errorMsg || loading) && (
                   <div className="px-6 pt-24 pb-[110px] max-w-3xl mx-auto">
-                    {errorKind === "limit" && <LimitCard />}
-
-                    {errorMsg && !errorKind && (
+                    {errorMsg && (
                       <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                         {errorMsg}
                       </div>
@@ -1108,7 +1101,7 @@ export default function ProSummary() {
                                   </button>
 
                                   {/* PDF con tooltip ARRIBA */}
-                                  <button 
+                                  <button
                                     type="button"
                                     onClick={handleDownloadPdf}
                                     aria-label={tooltipPdf}
