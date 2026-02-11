@@ -1176,12 +1176,7 @@ export default function ProGrammarCorrector() {
                 <div className="px-6 pt-24 pb-32 max-w-3xl mx-auto">
                   {errorKind === "limit" && <LimitCard />}
 
-                  {/* ✅ SOLO el de abajo: mensaje de límite Pro centrado (no caja arriba) */}
-                  {limitType && (
-                    <div className="mt-10 text-center text-sm text-red-500">
-                      {limitMsg}
-                    </div>
-                  )}
+                
 
                   {errorMsg && !errorKind && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
