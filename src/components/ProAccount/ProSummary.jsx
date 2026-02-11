@@ -1022,14 +1022,12 @@ export default function ProSummary() {
 
               {/* ✅ Banner Pro (dentro del panel derecho, arriba) */}
               {limitMsg && (
-                <div className="px-6 pt-4">
-                  <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
-                  <div className="mt-3 text-sm text-red-600">{limitMsg}</div>
+              <div className="px-6 pt-4">
+               <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
                 </div>
-              )}
-
+                )}
               {/* Estado inicial */}
-              {!loading && !result && !errorMsg && (
+              {!loading && !result && !errorMsg && !limitMsg && (
                 <>
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                     <Button
