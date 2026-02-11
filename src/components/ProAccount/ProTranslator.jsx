@@ -83,26 +83,28 @@ No añadas explicaciones ni comentarios.
 
 export default function ProTranslator() {
   const { t, language } = useTranslation();
-  const tr = (k, f) => t(k) || f;
+
+  const tr = (k, f = "") => {
+    const v = typeof t === "function" ? t(k) : "";
+    if (!v) return f;
+    if (v === k) return f;
+    return v;
+  };
+
+  const UI = (language || "ES").toString().toUpperCase(); // "ES" | "EUS" | "EN" | "FR"
+  const uiIsEUS = UI === "EUS";
 
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
   const setCharsLimit = () => {
     setLimitType("chars");
-    setLimitMsg(
-      tr(
-        "pro_limit_chars",
-        "Has superado el límite máximo de caracteres para tu plan Pro."
-      )
-    );
+    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
   };
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(
-      tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
-    );
+    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
   };
 
   const clearLimit = () => {
