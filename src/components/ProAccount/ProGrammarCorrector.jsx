@@ -1147,7 +1147,7 @@ export default function ProGrammarCorrector() {
             </div>
 
             {/* ✅✅✅ BANNER PRO (y SOLO un mensaje debajo, NO duplicados) */}
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+            <ProLimitBanner visible={!!limitType} message={""} />
 
             {/* Estado inicial (OCULTO si hay límite Pro) */}
             {!loading && !result && !errorKind && !limitType && (
