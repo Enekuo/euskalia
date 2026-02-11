@@ -2908,9 +2908,19 @@ proTranslator_errorGeneric: {
   EN: "Couldn’t translate right now.",
   FR: "Impossible de traduire pour le moment.",
 },
+pro_limit_chars: {
+  ES: "Has superado el límite máximo de caracteres para tu plan Pro.",
+  EUS: "Zure Pro planeko gehienezko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the maximum character limit for your Pro plan.",
+  FR: "Vous avez dépassé la limite maximale de caractères de votre plan Pro."
+},
 
-
-
+pro_limit_daily: {
+  ES: "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.",
+  EUS: "Zure Pro planeko eguneroko muga lortu duzu. Bihar saiatu berriro.",
+  EN: "You have reached your Pro plan daily limit. Try again tomorrow.",
+  FR: "Vous avez atteint la limite quotidienne de votre plan Pro. Réessayez demain."
+},
 
 
 
