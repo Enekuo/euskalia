@@ -352,7 +352,8 @@ export default function ProTranslator() {
 
     // por si acaso, aunque ya cortas a MAX_CHARS
     if (leftText.length > MAX_CHARS) {
-      setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
+      setErr("");
+      setCharsLimit();
       setResultStatus("error");
       return;
     }
@@ -1183,6 +1184,7 @@ export default function ProTranslator() {
   const onFiles = async (e) => {
     await addFiles(e.target.files);
     e.target.value = "";
+    clearLimit();
   };
 
   const onDragEnter = (e) => {
@@ -1206,10 +1208,12 @@ export default function ProTranslator() {
     setDragActive(false);
     const dt = e.dataTransfer;
     if (dt?.files?.length) await addFiles(dt.files);
+    clearLimit();
   };
 
   const removeDocument = (id) => {
     setDocuments((prev) => prev.filter((d) => d.id !== id));
+    clearLimit();
   };
 
   const parseUrlsFromText = (text) => {
@@ -1246,8 +1250,10 @@ export default function ProTranslator() {
     clearLimit();
   };
 
-  const removeUrl = (id) =>
+  const removeUrl = (id) => {
     setUrlItems((prev) => prev.filter((u) => u.id !== id));
+    clearLimit();
+  };
 
   const canSave = resultStatus === "success" && !!rightText?.trim() && !loading;
 
@@ -1455,17 +1461,6 @@ export default function ProTranslator() {
               </button>
             </div>
 
-            {limitType ? (
-              <div className="px-6 pt-5">
-                <ProLimitBanner type={limitType} />
-                {limitMsg ? (
-                  <div className="mt-3 text-[14px] font-medium text-red-600">
-                    {limitMsg}
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-
             {/* paneles */}
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
               {/* IZQUIERDA */}
@@ -1512,7 +1507,10 @@ export default function ProTranslator() {
 
                     <button
                       type="button"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => {
+                        fileInputRef.current?.click();
+                        clearLimit();
+                      }}
                       className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-8 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] flex-none"
                       aria-label={labelChooseFileTitle}
                       title={labelChooseFileTitle}
@@ -1668,6 +1666,9 @@ export default function ProTranslator() {
 
               {/* DERECHA */}
               <div className="p-8 md:p-10 relative">
+                {/* ✅✅✅ BANNER PRO “como el de public” (usa UpgradeBanner por dentro) */}
+                <ProLimitBanner visible={!!limitType} message={err || limitMsg} />
+
                 <textarea
                   ref={rightTA}
                   value={
@@ -1700,7 +1701,7 @@ export default function ProTranslator() {
                   </div>
                 )}
 
-                {err && (
+                {err && !limitType && (
                   <div className="absolute bottom-4 left-8 text-sm text-red-500">
                     {err}
                   </div>
