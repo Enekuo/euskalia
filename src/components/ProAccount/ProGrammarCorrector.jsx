@@ -11,8 +11,8 @@ import {
   Trash,
   Check,
 } from "lucide-react";
-import { useTranslation } from "@/lib/translations";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,16 +27,9 @@ import { auth } from "@/lib/firebase";
 
 export default function ProGrammarCorrector() {
   const { t } = useTranslation();
+  const tr = (key, fallback = "") => t(key) || fallback;
 
-  // ✅ evita que se muestre la CLAVE literal (ej: "pro_limit_daily")
-  const tr = (key, fallback = "") => {
-    const val = typeof t === "function" ? t(key) : "";
-    if (!val) return fallback;
-    if (val === key) return fallback;
-    return val;
-  };
-
-  // ✅ Límites Pro (chars / daily)
+  // ✅✅✅ PRO LIMITS (patrón único)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
@@ -70,7 +63,6 @@ export default function ProGrammarCorrector() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [errorKind, setErrorKind] = useState(null); // null | "limit"
 
   // Modo de corrección fijo (ya no hay pestañas)
   const CORRECTION_MODE = "standard"; // "light" | "standard" | "deep"
@@ -109,6 +101,8 @@ export default function ProGrammarCorrector() {
   const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 12000;
 
+  const hasRealResult = !!(result && result.trim().length > 0);
+
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
     in: { opacity: 1, y: 0 },
@@ -146,11 +140,12 @@ export default function ProGrammarCorrector() {
   const labelViewChanges = tr("grammar.view_changes", "Ver cambios");
   const labelHideChanges = tr("grammar.hide_changes", "Ocultar cambios");
 
-  // Idiomas (para selector)
+  // ✅ Idiomas (UI) — usa las mismas keys “summary.output_language_*” (como tu código)
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
+
   // Guardar (mismo sistema que Translator)
   const labelSaveTranslation = tr("save_button_label", "Guardar");
   const librarySavedMessage = tr("library_saved_toast", "Guardado en biblioteca");
@@ -249,7 +244,6 @@ export default function ProGrammarCorrector() {
       .map((l) => l.trim())
       .filter(Boolean);
 
-    // 1) Lista numerada: "1.", "2)", "3-" ...
     const numbered = lines
       .map((l) => {
         const m = l.match(/^(\d+)([.\)\-])\s+(.+)$/);
@@ -257,11 +251,8 @@ export default function ProGrammarCorrector() {
       })
       .filter(Boolean);
 
-    if (numbered.length >= 2) {
-      return { type: "ol", items: numbered };
-    }
+    if (numbered.length >= 2) return { type: "ol", items: numbered };
 
-    // 2) Lista con bullets: "- ", "• ", "* "
     const bulleted = lines
       .map((l) => {
         const m = l.match(/^[-•*]\s+(.+)$/);
@@ -269,9 +260,7 @@ export default function ProGrammarCorrector() {
       })
       .filter(Boolean);
 
-    if (bulleted.length >= 2) {
-      return { type: "ul", items: bulleted };
-    }
+    if (bulleted.length >= 2) return { type: "ul", items: bulleted };
 
     return null;
   };
@@ -279,7 +268,6 @@ export default function ProGrammarCorrector() {
   const renderResult = () => {
     if (!result) return null;
 
-    // Si no se ha activado la vista de cambios o no hay diff, mostrar normal (pero si es lista, renderizar lista)
     if (!showDiff || !textValue || !hasDiff) {
       const parsed = parseList(result);
 
@@ -329,7 +317,6 @@ export default function ProGrammarCorrector() {
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
-    setErrorKind(null);
     setIsOutdated(false);
     setLoading(false);
     setShowDiff(false);
@@ -344,11 +331,8 @@ export default function ProGrammarCorrector() {
       setIsOutdated(false);
       return;
     }
-    if (lastSig && sig !== lastSig) {
-      setIsOutdated(true);
-    } else {
-      setIsOutdated(false);
-    }
+    if (lastSig && sig !== lastSig) setIsOutdated(true);
+    else setIsOutdated(false);
   }, [textValue, lastSig]);
 
   // Atajos de teclado
@@ -511,7 +495,7 @@ export default function ProGrammarCorrector() {
 
   const handleSaveToLibrary = () => {
     if (!result) return;
-    if (!hasDiff) return; // ✅ SOLO guardar si hay corrección real
+    if (!hasDiff) return;
 
     const now = new Date();
     const createdAt = now.toISOString();
@@ -534,36 +518,8 @@ export default function ProGrammarCorrector() {
   };
 
   useEffect(() => {
-    // Cada vez que cambia el resultado, reseteamos el estado de “guardado”
     setSavedToLibrary(false);
   }, [result]);
-
-  // ===== Tarjetas =====
-  const LimitCard = () => (
-    <div className="rounded-xl border border-sky-200 bg-sky-50 px-6 py-5 text-sky-900 text-center">
-      <div className="text-sm font-semibold">
-        {tr("grammar.limit_title", "Has alcanzado el límite del plan Gratis")}
-      </div>
-      <p className="text-xs text-slate-600 mt-1">
-        {tr("grammar.limit_note", "Límite actual: 12.000 caracteres por petición.")}
-      </p>
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <a
-          href="/pricing"
-          className="inline-flex items-center justify-center rounded-full px-5 h-9 text-white text-sm font-medium shadow-sm hover:brightness-95"
-          style={{ backgroundColor: "#2563eb" }}
-        >
-          {tr("grammar.limit_cta", "Probar plan Premium")}
-        </a>
-        <button
-          onClick={() => setErrorKind(null)}
-          className="h-9 px-4 rounded-full border border-slate-300 bg-white text-sm hover:bg-white"
-        >
-          {tr("grammar.limit_dismiss", "Seguir con plan Gratis")}
-        </button>
-      </div>
-    </div>
-  );
 
   // ===== Helper: cache key (sha-256) =====
   const sha256Hex = async (input) => {
@@ -582,7 +538,6 @@ export default function ProGrammarCorrector() {
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
-    setErrorKind(null);
     setShowDiff(false);
     setSavedToLibrary(false);
     clearLimit();
@@ -593,10 +548,12 @@ export default function ProGrammarCorrector() {
     const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorKind("limit");
+      setErrorMsg("");
+      setCharsLimit();
       setLoading(false);
       return;
     }
+
     if (!validNow) {
       setErrorMsg(
         tr("grammar.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección.")
@@ -687,7 +644,7 @@ export default function ProGrammarCorrector() {
         }),
       });
 
-      // ✅ LÍMITE PRO (429) → banner + SOLO mensaje de abajo (NO errorMsg)
+      // ✅✅✅ PRO LIMITS 429
       if (res.status === 429) {
         let data = null;
         try {
@@ -712,22 +669,15 @@ export default function ProGrammarCorrector() {
 
       if (!res.ok) {
         if (res.status === 413) {
-          setErrorKind("limit");
+          setErrorMsg("");
+          setCharsLimit();
           setLoading(false);
           return;
         }
         if (res.status === 401) {
           throw new Error(tr("grammar.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
-        if (res.status === 429) {
-          throw new Error(
-            tr(
-              "grammar.error_rate_limit",
-              "Has alcanzado el límite de peticiones. Inténtalo más tarde o prueba el plan Premium."
-            )
-          );
-        }
-        const txt = await res.text();
+        const txt = await res.text().catch(() => "");
         throw new Error(`HTTP ${res.status}: ${txt}`);
       }
 
@@ -742,7 +692,6 @@ export default function ProGrammarCorrector() {
 
       if (!rawText) throw new Error(tr("grammar.error_no_text", "No se recibió texto de la API."));
 
-      // ✅ NO borrar números/viñetas: así una lista pegada se puede mostrar como lista
       const cleaned = rawText.replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
 
       setResult(cleaned);
@@ -750,7 +699,7 @@ export default function ProGrammarCorrector() {
       setIsOutdated(false);
       setShowDiff(false);
     } catch (err) {
-      setErrorMsg(err.message || tr("grammar.error_generic", "Error realizando la corrección."));
+      setErrorMsg(err?.message || tr("grammar.error_generic", "Error realizando la corrección."));
     } finally {
       setLoading(false);
     }
@@ -777,7 +726,6 @@ export default function ProGrammarCorrector() {
           transition={{ duration: 0.3 }}
         >
           {/* ===== Panel Fuentes (izquierda) ===== */}
-          {/* ✅ ALTURA FIJA para que NO crezca al añadir documentos */}
           <aside className="h-[540px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
             {/* Título */}
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
@@ -790,21 +738,30 @@ export default function ProGrammarCorrector() {
                 active={sourceMode === "text"}
                 icon={FileText}
                 label={labelTabText}
-                onClick={() => setSourceMode("text")}
+                onClick={() => {
+                  setSourceMode("text");
+                  clearRight();
+                }}
                 showDivider
               />
               <TabBtn
                 active={sourceMode === "document"}
                 icon={FileIcon}
                 label={labelTabDocument}
-                onClick={() => setSourceMode("document")}
+                onClick={() => {
+                  setSourceMode("document");
+                  clearRight();
+                }}
                 showDivider
               />
               <TabBtn
                 active={sourceMode === "url"}
                 icon={UrlIcon}
                 label={labelTabUrl}
-                onClick={() => setSourceMode("url")}
+                onClick={() => {
+                  setSourceMode("url");
+                  clearRight();
+                }}
                 showDivider={false}
               />
             </div>
@@ -830,6 +787,8 @@ export default function ProGrammarCorrector() {
                     onChange={(e) => {
                       setTextValue(e.target.value);
                       setShowDiff(false);
+                      if (errorMsg) setErrorMsg("");
+                      if (limitType) clearLimit();
                     }}
                     placeholder={labelEnterText}
                     className="w-full flex-1 min-h-[280px] resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
@@ -853,9 +812,7 @@ export default function ProGrammarCorrector() {
 
               {sourceMode === "document" && (
                 <div
-                  className={`h-full w-full flex flex-col relative ${
-                    dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
-                  }`}
+                  className={`h-full w-full flex flex-col relative ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
                   onDragEnter={onDragEnter}
                   onDragOver={onDragOver}
                   onDragLeave={onDragLeave}
@@ -870,7 +827,6 @@ export default function ProGrammarCorrector() {
                     onChange={onFiles}
                   />
 
-                  {/* ✅ El botón no encoge */}
                   <button
                     type="button"
                     onClick={triggerPick}
@@ -886,7 +842,6 @@ export default function ProGrammarCorrector() {
                     <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                   </button>
 
-                  {/* ✅ Lista con SCROLL para que la tabla NO crezca */}
                   {documents.length > 0 && (
                     <div className="mt-4 flex-1 overflow-y-auto overflow-x-hidden rounded-xl border border-slate-200">
                       <ul className="divide-y divide-slate-200">
@@ -898,9 +853,7 @@ export default function ProGrammarCorrector() {
                               </div>
                               <div className="min-w-0 flex-1">
                                 <span className="text-sm font-medium block truncate">{file.name}</span>
-                                <span className="text-xs text-slate-500">
-                                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                                </span>
+                                <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
                               </div>
                             </div>
                             <button
@@ -943,10 +896,7 @@ export default function ProGrammarCorrector() {
                       <textarea
                         value={urlsTextarea}
                         onChange={(e) => setUrlsTextarea(e.target.value)}
-                        placeholder={tr(
-                          "grammar.paste_urls_placeholder",
-                          "Introduce aquí una o más URLs (separadas por línea)"
-                        )}
+                        placeholder={tr("grammar.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
                         className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                         aria-label={labelPasteUrls}
                         spellCheck={false}
@@ -1012,9 +962,8 @@ export default function ProGrammarCorrector() {
 
           {/* ===== Panel Derecho ===== */}
           <section className="relative min-h-[540px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-            {/* Barra superior con selector idioma + acciones (sin modos) */}
+            {/* Barra superior con selector idioma + acciones */}
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-              {/* Botón lupa a la izquierda */}
               <div className="flex items-center">
                 {hasDiff && (
                   <button
@@ -1034,7 +983,6 @@ export default function ProGrammarCorrector() {
               </div>
 
               <div className="flex items-center gap-1">
-                {/* Selector de idioma de referencia */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -1051,21 +999,13 @@ export default function ProGrammarCorrector() {
                           ? LBL_FR
                           : LBL_EUS}
                       </span>
-                      <svg
-                        className="w-4 h-4 text-slate-500"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
+                      <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
                       </svg>
                     </button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent
-                    align="end"
-                    className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
-                  >
+                  <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
                     <DropdownMenuItem
                       onClick={() => {
                         if (outputLang !== "EUS") {
@@ -1114,7 +1054,6 @@ export default function ProGrammarCorrector() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Copiar resultado rápido en la barra superior */}
                 <button
                   type="button"
                   onClick={() => handleCopy(true)}
@@ -1128,15 +1067,12 @@ export default function ProGrammarCorrector() {
                   {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
                 </button>
 
-                {/* Eliminar texto de la izquierda */}
                 <button
                   type="button"
                   onClick={handleClearLeft}
                   title={tr("grammar.clear_input", "Eliminar")}
                   className={`h-8 w-8 flex items-center justify-center ${
-                    sourceMode === "text" && textValue
-                      ? "text-slate-600 hover:text-slate-800"
-                      : "text-slate-300 cursor-not-allowed"
+                    sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                   }`}
                   aria-label={tr("grammar.clear_input", "Eliminar")}
                   disabled={!(sourceMode === "text" && textValue)}
@@ -1146,11 +1082,11 @@ export default function ProGrammarCorrector() {
               </div>
             </div>
 
-            {/* ✅✅✅ BANNER PRO (y SOLO un mensaje debajo, NO duplicados) */}
-            <ProLimitBanner visible={!!limitType} message={""} />
+            {/* ✅✅✅ BANNER PRO */}
+            <ProLimitBanner visible={!!limitType} message={limitMsg} />
 
-            {/* Estado inicial (OCULTO si hay límite Pro) */}
-            {!loading && !result && !errorKind && !limitType && (
+            {/* Estado inicial (BOTÓN + AYUDA) — solo si NO hay limitType */}
+            {!loading && !hasRealResult && !errorMsg && !limitType && (
               <>
                 <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                   <Button
@@ -1170,23 +1106,20 @@ export default function ProGrammarCorrector() {
               </>
             )}
 
-            {/* Resultado / errores / loader / límite */}
+            {/* Contenido normal (y mensaje rojo del límite debajo del banner) */}
             <div className="w-full">
-              {(result || errorMsg || loading || errorKind || limitType) && (
-                <div className="px-6 pt-24 pb-32 max-w-3xl mx-auto">
-                  {errorKind === "limit" && <LimitCard />}
+              {(hasRealResult || loading || (errorMsg && !limitType) || limitType) && (
+                <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
+                 
 
-                
-
-                  {errorMsg && !errorKind && !limitType && (
+                  {errorMsg && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
                     </div>
                   )}
 
-                  {result && (
+                  {hasRealResult && (
                     <>
-                      {/* Caso sin diferencias → solo tic + frase */}
                       {!hasDiff ? (
                         <div className="mt-6 flex flex-col items-center text-center gap-2">
                           <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -1202,7 +1135,7 @@ export default function ProGrammarCorrector() {
                     </>
                   )}
 
-                  {loading && !result && (
+                  {loading && !hasRealResult && (
                     <div className="space-y-3 animate-pulse">
                       <div className="h-4 bg-slate-200 rounded" />
                       <div className="h-4 bg-slate-200 rounded w-11/12" />
@@ -1213,13 +1146,12 @@ export default function ProGrammarCorrector() {
               )}
             </div>
 
-            {/* ✅ Barra inferior: SOLO si hay corrección (hasDiff) */}
-            {result && hasDiff && (
+            {/* Barra inferior: SOLO si hay corrección (hasDiff) */}
+            {hasRealResult && hasDiff && (
               <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
                 {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
 
                 <div className="flex items-center gap-4">
-                  {/* Copiar */}
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}
@@ -1232,7 +1164,6 @@ export default function ProGrammarCorrector() {
                     </span>
                   </button>
 
-                  {/* Descargar */}
                   <button
                     type="button"
                     onClick={handleDownload}
@@ -1245,7 +1176,6 @@ export default function ProGrammarCorrector() {
                     </span>
                   </button>
 
-                  {/* Botón verde Guardar */}
                   <motion.button
                     type="button"
                     onClick={handleSaveToLibrary}
