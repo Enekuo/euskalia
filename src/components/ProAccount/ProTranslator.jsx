@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import {
   Volume2,
   Copy as CopyIcon,
@@ -83,6 +84,31 @@ No añadas explicaciones ni comentarios.
 export default function ProTranslator() {
   const { t, language } = useTranslation();
   const tr = (k, f) => t(k) || f;
+
+  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
+  const [limitMsg, setLimitMsg] = useState("");
+
+  const setCharsLimit = () => {
+    setLimitType("chars");
+    setLimitMsg(
+      tr(
+        "pro_limit_chars",
+        "Has superado el límite máximo de caracteres para tu plan Pro."
+      )
+    );
+  };
+
+  const setDailyLimit = () => {
+    setLimitType("daily");
+    setLimitMsg(
+      tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
+    );
+  };
+
+  const clearLimit = () => {
+    setLimitType("");
+    setLimitMsg("");
+  };
 
   // ✅ NUEVAS claves para detectar idioma
   const LBL_AUTO = tr("proTranslator.detect_language", "Hizkuntza detektatu");
@@ -322,6 +348,8 @@ export default function ProTranslator() {
     if (sourceMode !== "text") return;
     if (!leftText.trim()) return;
 
+    clearLimit();
+
     // por si acaso, aunque ya cortas a MAX_CHARS
     if (leftText.length > MAX_CHARS) {
       setErr(`Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`);
@@ -347,6 +375,7 @@ export default function ProTranslator() {
         setLoading(true);
         setResultStatus("loading");
         setErr("");
+        clearLimit();
 
         const system = `${directionText(
           src,
@@ -375,6 +404,27 @@ export default function ProTranslator() {
             ],
           }),
         });
+
+        if (res.status === 429) {
+          let data = null;
+          try {
+            data = await res.json();
+          } catch (e) {
+            data = null;
+          }
+
+          const limit = data?.limit || {};
+          const isChars = typeof limit?.max_chars === "number";
+          const isDaily = typeof limit?.daily_requests === "number";
+
+          if (isChars) setCharsLimit();
+          else setDailyLimit();
+
+          if (data?.message) setLimitMsg(data.message);
+
+          setResultStatus("error");
+          return;
+        }
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
@@ -430,6 +480,7 @@ export default function ProTranslator() {
         setLoading(true);
         setErr("");
         setResultStatus("loading");
+        clearLimit();
 
         const urls = urlItems.map((u) => u.url);
 
@@ -451,6 +502,27 @@ export default function ProTranslator() {
             temperature: 0.2,
           }),
         });
+
+        if (res.status === 429) {
+          let data = null;
+          try {
+            data = await res.json();
+          } catch (e) {
+            data = null;
+          }
+
+          const limit = data?.limit || {};
+          const isChars = typeof limit?.max_chars === "number";
+          const isDaily = typeof limit?.daily_requests === "number";
+
+          if (isChars) setCharsLimit();
+          else setDailyLimit();
+
+          if (data?.message) setLimitMsg(data.message);
+
+          setResultStatus("error");
+          return;
+        }
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
@@ -518,6 +590,7 @@ export default function ProTranslator() {
         setLoading(true);
         setErr("");
         setResultStatus("loading");
+        clearLimit();
 
         const contents = await Promise.all(
           documents.map(({ file }) => readFileAsText(file))
@@ -555,6 +628,27 @@ export default function ProTranslator() {
             ],
           }),
         });
+
+        if (res.status === 429) {
+          let data = null;
+          try {
+            data = await res.json();
+          } catch (e) {
+            data = null;
+          }
+
+          const limit = data?.limit || {};
+          const isChars = typeof limit?.max_chars === "number";
+          const isDaily = typeof limit?.daily_requests === "number";
+
+          if (isChars) setCharsLimit();
+          else setDailyLimit();
+
+          if (data?.message) setLimitMsg(data.message);
+
+          setResultStatus("error");
+          return;
+        }
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
@@ -987,6 +1081,7 @@ export default function ProTranslator() {
                 (prev ? prev + "\n" + txt : txt).slice(0, MAX_CHARS)
               );
               setDirty(true);
+              clearLimit();
             }
           }
         } catch (e) {
@@ -1017,6 +1112,7 @@ export default function ProTranslator() {
     setDetectedLang("");
     setDirty(false);
     setTranslateTick(0);
+    clearLimit();
   };
 
   const handleCopy = async () => {
@@ -1147,6 +1243,7 @@ export default function ProTranslator() {
     setUrlItems((prev) => [...prev, ...newItems]);
     setUrlsTextarea("");
     setUrlInputOpen(false);
+    clearLimit();
   };
 
   const removeUrl = (id) =>
@@ -1169,7 +1266,10 @@ export default function ProTranslator() {
                 <div className="flex items-center text-sm font-medium text-slate-600">
                   <button
                     type="button"
-                    onClick={() => setSourceMode("text")}
+                    onClick={() => {
+                      setSourceMode("text");
+                      clearLimit();
+                    }}
                     className={`inline-flex items-center gap-2 ${
                       sourceMode === "text"
                         ? "text-blue-600"
@@ -1190,7 +1290,10 @@ export default function ProTranslator() {
 
                   <button
                     type="button"
-                    onClick={() => setSourceMode("document")}
+                    onClick={() => {
+                      setSourceMode("document");
+                      clearLimit();
+                    }}
                     className={`inline-flex items-center gap-2 ${
                       sourceMode === "document"
                         ? "text-blue-600"
@@ -1211,7 +1314,10 @@ export default function ProTranslator() {
 
                   <button
                     type="button"
-                    onClick={() => setSourceMode("url")}
+                    onClick={() => {
+                      setSourceMode("url");
+                      clearLimit();
+                    }}
                     className={`inline-flex items-center gap-2 ${
                       sourceMode === "url"
                         ? "text-blue-600"
@@ -1264,6 +1370,7 @@ export default function ProTranslator() {
                           setOpenLeft(false);
                           if (val !== "auto") setDetectedLang("");
                           setDirty(true);
+                          clearLimit();
                         }}
                         align="left"
                         options={OPTIONS_SRC}
@@ -1275,6 +1382,7 @@ export default function ProTranslator() {
                       onClick={() => {
                         swap();
                         setDirty(true);
+                        clearLimit();
                       }}
                       aria-label="Intercambiar idiomas"
                       className="absolute left-1/2 -translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition"
@@ -1324,6 +1432,7 @@ export default function ProTranslator() {
                           setDst(val);
                           setOpenRight(false);
                           setDirty(true);
+                          clearLimit();
                         }}
                         align="right"
                         options={OPTIONS_DST}
@@ -1346,6 +1455,17 @@ export default function ProTranslator() {
               </button>
             </div>
 
+            {limitType ? (
+              <div className="px-6 pt-5">
+                <ProLimitBanner type={limitType} />
+                {limitMsg ? (
+                  <div className="mt-3 text-[14px] font-medium text-red-600">
+                    {limitMsg}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
             {/* paneles */}
             <div className="grid grid-cols-1 md:grid-cols-2 w-full">
               {/* IZQUIERDA */}
@@ -1359,6 +1479,7 @@ export default function ProTranslator() {
                         setLeftText(e.target.value.slice(0, MAX_CHARS));
                         setDirty(true);
                         if (err) setErr("");
+                        if (limitType) clearLimit();
                       }}
                       placeholder={t("translator.left_placeholder")}
                       className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${HIDE_SCROLLBAR}`}
@@ -1456,7 +1577,10 @@ export default function ProTranslator() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setUrlInputOpen(true)}
+                        onClick={() => {
+                          setUrlInputOpen(true);
+                          clearLimit();
+                        }}
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 transition-colors"
                         aria-label={labelAddUrl}
                         title={labelAddUrl}
@@ -1470,7 +1594,10 @@ export default function ProTranslator() {
                       <div className="mb-4 rounded-xl border border-slate-300 p-3 bg-white flex-none">
                         <textarea
                           value={urlsTextarea}
-                          onChange={(e) => setUrlsTextarea(e.target.value)}
+                          onChange={(e) => {
+                            setUrlsTextarea(e.target.value);
+                            if (limitType) clearLimit();
+                          }}
                           placeholder={tr(
                             "proTranslator.paste_urls_placeholder",
                             "Introduce URLs separadas por línea"
