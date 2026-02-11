@@ -1022,13 +1022,6 @@ MODO CREATIVO:
               </div>
             </div>
 
-            {/* ✅ Banner Pro (dentro del panel derecho, arriba) + mensaje rojo debajo (SIN DUPLICAR) */}
-            {limitMsg && (
-              <div className="px-6 pt-4">
-                <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
-                <div className="mt-3 text-sm text-red-600">{limitMsg}</div>
-              </div>
-            )}
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitMsg && (
