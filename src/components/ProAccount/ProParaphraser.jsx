@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,25 @@ export default function ProParaphraser() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // ✅ Límite Pro (banner + mensaje rojo)
+  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
+  const [limitMsg, setLimitMsg] = useState("");
+
+  const setCharsLimit = () => {
+    setLimitType("chars");
+    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
+  };
+
+  const setDailyLimit = () => {
+    setLimitType("daily");
+    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
+  };
+
+  const clearLimit = () => {
+    setLimitType("");
+    setLimitMsg("");
+  };
 
   // Modos (7)
   const [mode, setMode] = useState("neutral"); // neutral | informal | professional | academic | fluent | simplified | creative
@@ -217,6 +237,7 @@ export default function ProParaphraser() {
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
+    clearLimit();
     setLoading(false);
     setCopiedFlash(false);
     setSavedToLibrary(false);
@@ -427,6 +448,7 @@ export default function ProParaphraser() {
     setLoading(true);
     setErrorMsg("");
     setResult("");
+    clearLimit();
     setSavedToLibrary(false);
 
     const trimmed = (textValue || "").trim();
@@ -435,7 +457,7 @@ export default function ProParaphraser() {
     const validNow = textOk || urlItems.length > 0 || documentsText.length > 0;
 
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorMsg(tr("proParaphraser_error_max_chars", "Has superado el límite de caracteres permitido."));
+      setCharsLimit();
       setLoading(false);
       return;
     }
@@ -594,9 +616,9 @@ MODO CREATIVO:
           throw new Error(tr("proParaphraser_error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
         if (res.status === 429) {
-          throw new Error(
-            tr("proParaphraser_error_rate_limit", "Has alcanzado el límite de peticiones. Inténtalo más tarde.")
-          );
+          setDailyLimit();
+          setLoading(false);
+          return;
         }
         const txt = await res.text();
         throw new Error(`HTTP ${res.status}: ${txt}`);
@@ -1000,8 +1022,16 @@ MODO CREATIVO:
               </div>
             </div>
 
+            {/* ✅ Banner Pro (dentro del panel derecho, arriba) + mensaje rojo debajo (SIN DUPLICAR) */}
+            {limitMsg && (
+              <div className="px-6 pt-4">
+                <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
+                <div className="mt-3 text-sm text-red-600">{limitMsg}</div>
+              </div>
+            )}
+
             {/* Estado inicial */}
-            {!loading && !result && !errorMsg && (
+            {!loading && !result && !errorMsg && !limitMsg && (
               <>
                 <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                   <Button
