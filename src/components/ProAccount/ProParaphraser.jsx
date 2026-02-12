@@ -905,18 +905,8 @@ MODO CREATIVO:
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
               {/* 7 MODOS */}
               <div className="flex items-center gap-0 -ml-2">
-                <ModeTab
-                  active={mode === "neutral"}
-                  label={modeLabels.neutral}
-                  onClick={() => setMode("neutral")}
-                  showDivider
-                />
-                <ModeTab
-                  active={mode === "informal"}
-                  label={modeLabels.informal}
-                  onClick={() => setMode("informal")}
-                  showDivider
-                />
+                <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
+                <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
                 <ModeTab
                   active={mode === "professional"}
                   label={modeLabels.professional}
@@ -929,12 +919,7 @@ MODO CREATIVO:
                   onClick={() => setMode("academic")}
                   showDivider
                 />
-                <ModeTab
-                  active={mode === "fluent"}
-                  label={modeLabels.fluent}
-                  onClick={() => setMode("fluent")}
-                  showDivider
-                />
+                <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => setMode("fluent")} showDivider />
                 <ModeTab
                   active={mode === "simplified"}
                   label={modeLabels.simplified}
@@ -1041,14 +1026,17 @@ MODO CREATIVO:
               </div>
             </div>
 
-            {/* ✅ Banner + (único) mensaje debajo */}
-            {limitMsg && (
-              <div className="px-6 pt-4">
-                <ProLimitBanner type={limitType} />
-                <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                  {limitMsg}
+            {/* ✅ Límite Pro (igual que Traductor): banner centrado + mensaje abajo */}
+            {limitMsg && !loading && !result && !errorMsg && (
+              <>
+                <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "32%" }}>
+                  <ProLimitBanner type={limitType} />
                 </div>
-              </div>
+
+                <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ bottom: 26 }}>
+                  <p className="text-sm text-red-600">{limitMsg}</p>
+                </div>
+              </>
             )}
 
             {/* Estado inicial */}
