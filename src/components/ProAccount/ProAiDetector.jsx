@@ -180,7 +180,7 @@ export default function ProAiDetector() {
       {/* ✅ AQUÍ el cambio: bajarlo desde arriba */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
-        <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
+        <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[640px]">
           <textarea
             value={text}
             onChange={(e) => {
