@@ -196,7 +196,11 @@ export default function ProAiDetector() {
               "Escribe o pega aquí el texto que quieres analizar..."
             )}
           />
-
+          
+          {/* ✅✅✅ BANNER AQUÍ (zona roja) */}
+           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
+           <ProLimitBanner visible={!!limitType} message={limitMsg} />
+           </div>
 
           {text.length === 0 && (
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center gap-8">
