@@ -26,18 +26,9 @@ import { auth } from "@/lib/firebase";
 
 export default function ProParaphraser() {
   const { t } = useTranslation();
-  const tr = (key, fallback) => t(key) || fallback;
+  const tr = (key, fallback = "") => t(key) || fallback;
 
-  // ===== Estado =====
-  const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
-  const [textValue, setTextValue] = useState("");
-
-  // Resultado / carga / error
-  const [result, setResult] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-
-  // ✅ Límite Pro (banner + mensaje rojo)
+  // ✅✅✅ PRO LIMITS (patrón único)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
@@ -55,6 +46,15 @@ export default function ProParaphraser() {
     setLimitType("");
     setLimitMsg("");
   };
+
+  // ===== Estado =====
+  const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
+  const [textValue, setTextValue] = useState("");
+
+  // Resultado / carga / error
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Modos (7)
   const [mode, setMode] = useState("neutral"); // neutral | informal | professional | academic | fluent | simplified | creative
@@ -611,12 +611,35 @@ MODO CREATIVO:
         }),
       });
 
+      // ✅✅✅ PRO LIMITS 429 (patrón único)
+      if (res.status === 429) {
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (e) {
+          data = null;
+        }
+
+        const limit = data?.limit || {};
+        const isChars = typeof limit?.max_chars === "number";
+        const isDaily = typeof limit?.daily_requests === "number";
+
+        if (isChars) setCharsLimit();
+        else if (isDaily) setDailyLimit();
+        else setDailyLimit();
+
+        if (data?.message) setLimitMsg(data.message);
+
+        setLoading(false);
+        return;
+      }
+
       if (!res.ok) {
         if (res.status === 401) {
           throw new Error(tr("proParaphraser_error_auth_required", "Necesitas iniciar sesión para usar Pro."));
         }
-        if (res.status === 429) {
-          setDailyLimit();
+        if (res.status === 413) {
+          setCharsLimit();
           setLoading(false);
           return;
         }
@@ -675,21 +698,30 @@ MODO CREATIVO:
                 active={sourceMode === "text"}
                 icon={FileText}
                 label={labelTabText}
-                onClick={() => setSourceMode("text")}
+                onClick={() => {
+                  setSourceMode("text");
+                  clearRight();
+                }}
                 showDivider
               />
               <TabBtn
                 active={sourceMode === "document"}
                 icon={FileIcon}
                 label={labelTabDocument}
-                onClick={() => setSourceMode("document")}
+                onClick={() => {
+                  setSourceMode("document");
+                  clearRight();
+                }}
                 showDivider
               />
               <TabBtn
                 active={sourceMode === "url"}
                 icon={UrlIcon}
                 label={labelTabUrl}
-                onClick={() => setSourceMode("url")}
+                onClick={() => {
+                  setSourceMode("url");
+                  clearRight();
+                }}
                 showDivider={false}
               />
             </div>
@@ -712,7 +744,11 @@ MODO CREATIVO:
                 <div className="flex flex-col h-full">
                   <textarea
                     value={textValue}
-                    onChange={(e) => setTextValue(e.target.value)}
+                    onChange={(e) => {
+                      setTextValue(e.target.value);
+                      if (errorMsg) setErrorMsg("");
+                      if (limitType) clearLimit();
+                    }}
                     placeholder={labelEnterText}
                     className="w-full flex-1 resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
                     aria-label={labelTabText}
@@ -1022,10 +1058,11 @@ MODO CREATIVO:
               </div>
             </div>
 
-          
+            {/* ✅✅✅ BANNER PRO */}
+            <ProLimitBanner visible={!!limitType} message={limitMsg} />
 
             {/* Estado inicial */}
-            {!loading && !result && !errorMsg && !limitMsg && (
+            {!loading && !result && !errorMsg && !limitType && (
               <>
                 <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                   <Button
@@ -1045,11 +1082,18 @@ MODO CREATIVO:
               </>
             )}
 
-            {/* Resultado / errores / loader */}
+            {/* Resultado / errores / loader / límite */}
             <div className="w-full">
-              {(result || errorMsg || loading) && (
+              {(result || errorMsg || loading || limitType) && (
                 <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
-                  {errorMsg && (
+                  {/* ✅ Mensaje único debajo del banner */}
+                  {limitType && (
+                    <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                      {limitMsg}
+                    </div>
+                  )}
+
+                  {errorMsg && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
                     </div>
