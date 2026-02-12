@@ -1058,9 +1058,8 @@ MODO CREATIVO:
               </div>
             </div>
 
-            {/* ✅✅✅ BANNER PRO */}
-        
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+            {/* ✅✅✅ BANNER PRO (SIN MENSAJE ARRIBA) */}
+            <ProLimitBanner visible={!!limitType} message={""} />
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitType && (
@@ -1083,18 +1082,25 @@ MODO CREATIVO:
               </>
             )}
 
-            {/* Resultado / errores / loader / límite */}
+            {/* ✅ Mensaje único debajo del banner */}
+            {!!limitType && (
+              <div className="px-6 pt-4">
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                  {limitMsg}
+                </div>
+              </div>
+            )}
+
+            {/* Resultado / errores / loader */}
             <div className="w-full">
-              {(result || errorMsg || loading || limitType) && (
+              {(result || errorMsg || loading) && (
                 <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
-                  {/* ✅ Mensaje único debajo del banner */}
-                  {limitType && (
+                  {errorMsg && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                      {limitMsg}
+                      {errorMsg}
                     </div>
                   )}
 
-                
                   {result && (
                     <div className="flex flex-col gap-4">
                       <article className="prose prose-slate max-w-none">
