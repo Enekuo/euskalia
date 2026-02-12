@@ -1060,6 +1060,7 @@ MODO CREATIVO:
 
             {/* ✅✅✅ BANNER PRO */}
         
+            <ProLimitBanner visible={!!limitType} message={limitMsg} />
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitType && (
@@ -1093,12 +1094,7 @@ MODO CREATIVO:
                     </div>
                   )}
 
-                  {errorMsg && !limitType && (
-                    <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                      {errorMsg}
-                    </div>
-                  )}
-
+                
                   {result && (
                     <div className="flex flex-col gap-4">
                       <article className="prose prose-slate max-w-none">
