@@ -180,7 +180,7 @@ export default function ProAiDetector() {
       {/* ✅ AQUÍ el cambio: bajarlo desde arriba */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
-        <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[640px]">
+        <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
           <textarea
             value={text}
             onChange={(e) => {
@@ -190,7 +190,7 @@ export default function ProAiDetector() {
               clearLimit();
             }}
             disabled={loading}
-            className="w-full h-52 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
+            className="w-full h-80 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
             placeholder={tr(
               "aiDetector_placeholder",
               "Escribe o pega aquí el texto que quieres analizar..."
