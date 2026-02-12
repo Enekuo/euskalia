@@ -26,7 +26,7 @@ import { auth } from "@/lib/firebase";
 
 export default function ProParaphraser() {
   const { t } = useTranslation();
-  const tr = (key, fallback = "") => t(key) || fallback;
+  const tr = (key, fallback) => t(key) || fallback;
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -43,16 +43,12 @@ export default function ProParaphraser() {
 
   const setCharsLimit = () => {
     setLimitType("chars");
-    setLimitMsg(
-      tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro.")
-    );
+    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
   };
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(
-      tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
-    );
+    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
   };
 
   const clearLimit = () => {
@@ -1026,18 +1022,7 @@ MODO CREATIVO:
               </div>
             </div>
 
-            {/* ✅ Límite Pro (igual que Traductor): banner centrado + mensaje abajo */}
-            {limitMsg && !loading && !result && !errorMsg && (
-              <>
-                <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "32%" }}>
-                  <ProLimitBanner type={limitType} />
-                </div>
-
-                <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ bottom: 26 }}>
-                  <p className="text-sm text-red-600">{limitMsg}</p>
-                </div>
-              </>
-            )}
+          
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitMsg && (
