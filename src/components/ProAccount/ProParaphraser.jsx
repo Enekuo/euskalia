@@ -26,7 +26,7 @@ import { auth } from "@/lib/firebase";
 
 export default function ProParaphraser() {
   const { t } = useTranslation();
-  const tr = (key, fallback) => t(key) || fallback;
+  const tr = (key, fallback = "") => t(key) || fallback;
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -43,12 +43,16 @@ export default function ProParaphraser() {
 
   const setCharsLimit = () => {
     setLimitType("chars");
-    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
+    setLimitMsg(
+      tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro.")
+    );
   };
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
+    setLimitMsg(
+      tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
+    );
   };
 
   const clearLimit = () => {
@@ -901,8 +905,18 @@ MODO CREATIVO:
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
               {/* 7 MODOS */}
               <div className="flex items-center gap-0 -ml-2">
-                <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
-                <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
+                <ModeTab
+                  active={mode === "neutral"}
+                  label={modeLabels.neutral}
+                  onClick={() => setMode("neutral")}
+                  showDivider
+                />
+                <ModeTab
+                  active={mode === "informal"}
+                  label={modeLabels.informal}
+                  onClick={() => setMode("informal")}
+                  showDivider
+                />
                 <ModeTab
                   active={mode === "professional"}
                   label={modeLabels.professional}
@@ -915,7 +929,12 @@ MODO CREATIVO:
                   onClick={() => setMode("academic")}
                   showDivider
                 />
-                <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => setMode("fluent")} showDivider />
+                <ModeTab
+                  active={mode === "fluent"}
+                  label={modeLabels.fluent}
+                  onClick={() => setMode("fluent")}
+                  showDivider
+                />
                 <ModeTab
                   active={mode === "simplified"}
                   label={modeLabels.simplified}
@@ -1022,6 +1041,15 @@ MODO CREATIVO:
               </div>
             </div>
 
+            {/* ✅ Banner + (único) mensaje debajo */}
+            {limitMsg && (
+              <div className="px-6 pt-4">
+                <ProLimitBanner type={limitType} />
+                <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                  {limitMsg}
+                </div>
+              </div>
+            )}
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitMsg && (
@@ -1058,7 +1086,7 @@ MODO CREATIVO:
                     <div className="flex flex-col gap-4">
                       <article className="prose prose-slate max-w-none">
                         <p className="whitespace-pre-wrap">{result}</p>
-                      </article> 
+                      </article>
                     </div>
                   )}
 
