@@ -2815,7 +2815,7 @@ proHome: {
   },
   cardAiDetector_title: {
     ES: "Detector de IA",
-    EUS: "IA-detektorea",
+    EUS: "IA-detektagailua",
     EN: "AI detector",
     FR: "Détecteur IA",
   },
