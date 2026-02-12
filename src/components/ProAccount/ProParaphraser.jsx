@@ -1082,12 +1082,10 @@ MODO CREATIVO:
               </>
             )}
 
-            {/* ✅ Mensaje único debajo del banner */}
-            {!!limitType && (
-              <div className="px-6 pt-4">
-                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                  {limitMsg}
-                </div>
+            {/* ✅ MENSAJE SOLO ABAJO (como en tu captura) */}
+            {!!limitType && !loading && !result && !errorMsg && (
+              <div className="absolute bottom-10 left-0 right-0 px-6">
+                <p className="text-sm text-red-600 text-center">{limitMsg}</p>
               </div>
             )}
 
