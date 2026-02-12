@@ -1059,7 +1059,7 @@ MODO CREATIVO:
             </div>
 
             {/* ✅✅✅ BANNER PRO */}
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+        
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitType && (
