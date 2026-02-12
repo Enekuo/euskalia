@@ -190,7 +190,7 @@ export default function ProAiDetector() {
               clearLimit();
             }}
             disabled={loading}
-            className="w-full h-92 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
+            className="w-full h-88 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
             placeholder={tr(
               "aiDetector_placeholder",
               "Escribe o pega aquí el texto que quieres analizar..."
