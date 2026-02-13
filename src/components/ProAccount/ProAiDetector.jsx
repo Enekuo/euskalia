@@ -3,6 +3,7 @@ import { Clipboard, UploadCloud, Trash2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
   const { t } = useTranslation();
@@ -17,6 +18,20 @@ export default function ProAiDetector() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // ✅✅✅ PRO LIMITS (banner)
+  const [limitType, setLimitType] = useState(""); // "" | "daily"
+  const [limitMsg, setLimitMsg] = useState("");
+
+  const setDailyLimit = () => {
+    setLimitType("daily");
+    setLimitMsg(""); // ✅ IMPORTANTE: vacío para NO mostrar el texto rojo arriba del banner
+  };
+
+  const clearLimit = () => {
+    setLimitType("");
+    setLimitMsg("");
+  };
+
   const handlePasteFromClipboard = async () => {
     try {
       if (navigator.clipboard && navigator.clipboard.readText) {
@@ -25,6 +40,7 @@ export default function ProAiDetector() {
           setText(clip.slice(0, 5000));
           setResult(null);
           setErrorMsg("");
+          clearLimit();
         }
       }
     } catch (e) {
@@ -43,6 +59,7 @@ export default function ProAiDetector() {
         setText(content.slice(0, 5000));
         setResult(null);
         setErrorMsg("");
+        clearLimit();
       }
     };
     reader.readAsText(file);
@@ -55,6 +72,7 @@ export default function ProAiDetector() {
     setLoading(true);
     setErrorMsg("");
     setResult(null);
+    clearLimit();
 
     try {
       // ✅ PRO: necesitamos idToken para /api/pro
@@ -84,7 +102,9 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅✅✅ LÍMITE PRO -> SOLO mensaje en la derecha (eliminado el banner de la izquierda)
+        // ✅✅✅ LÍMITE PRO:
+        // - Banner en la izquierda (sin texto rojo arriba)
+        // - Mensaje rojo SOLO en la derecha (tal como estaba antes)
         if (r.status === 429) {
           const msg =
             data?.message ||
@@ -93,7 +113,8 @@ export default function ProAiDetector() {
               "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
             );
 
-          setErrorMsg(msg);
+          setDailyLimit();     // ✅ muestra banner (sin mensaje arriba)
+          setErrorMsg(msg);    // ✅ mantiene el mensaje de la derecha
           setLoading(false);
           return;
         }
@@ -152,7 +173,6 @@ export default function ProAiDetector() {
     <div className="max-w-6xl mx-auto">
       {/* ✅ ELIMINADO: título + subtítulo */}
 
-      {/* ✅ AQUÍ el cambio: bajarlo desde arriba */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
         <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
@@ -162,6 +182,7 @@ export default function ProAiDetector() {
               setText(e.target.value.slice(0, 5000));
               setResult(null);
               setErrorMsg("");
+              clearLimit();
             }}
             disabled={loading}
             className="w-full h-80 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
@@ -170,6 +191,11 @@ export default function ProAiDetector() {
               "Escribe o pega aquí el texto que quieres analizar..."
             )}
           />
+
+          {/* ✅✅✅ BANNER (izquierda) - vuelto a poner */}
+          <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
+            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+          </div>
 
           {text.length === 0 && (
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center gap-8">
@@ -213,6 +239,7 @@ export default function ProAiDetector() {
                 setText("");
                 setResult(null);
                 setErrorMsg("");
+                clearLimit();
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
               title={tr("aiDetector_clear_title", "Borrar")}
