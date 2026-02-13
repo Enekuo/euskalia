@@ -303,7 +303,7 @@ export default async function handler(req, res) {
         return res.status(400).json({
           ok: false,
           error: "Text too short",
-          message: "Necesito un texto un poco más largo para analizar (mínimo ~40 caracteres).",
+          message: "El texto es demasiado corto para analizar (mín. ~40 caracteres).",
         });
       }
 
