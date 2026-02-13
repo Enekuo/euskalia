@@ -74,6 +74,20 @@ export default function ProAiDetector() {
     const payload = text.trim();
     if (!payload) return;
 
+    // ✅✅✅ VALIDACIÓN FRONT: si < 40, NO backend y mensaje en IZQUIERDA
+    if (payload.length < 40) {
+      setResult(null);
+      setErrorMsg(""); // ✅ no aparece en la derecha
+      setLeftMsg(
+        tr(
+          "aiDetector_error_too_short",
+          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
+        )
+      );
+      clearLimit();
+      return;
+    }
+
     setLoading(true);
     setErrorMsg("");
     setLeftMsg("");
@@ -108,24 +122,24 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅ Texto demasiado corto -> mensaje en la IZQUIERDA (zona marcada)
-        if (r.status === 400 && data?.error === "Text too short") {
+        // ✅✅✅ Si por lo que sea el backend también devuelve "Text too short",
+        // lo mandamos igualmente a la IZQUIERDA (por seguridad).
+        if (r.status === 400 && (data?.error === "Text too short" || /too short/i.test(String(data?.error || "")))) {
           const msg =
             data?.message ||
             tr(
               "aiDetector_error_too_short",
               "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
             );
-
-          setLeftMsg(msg);   // ✅ izquierda
-          setErrorMsg("");   // ✅ no sale en la derecha
+          setLeftMsg(msg);
+          setErrorMsg("");
           setLoading(false);
           return;
         }
 
         // ✅✅✅ LÍMITE PRO:
         // - Banner en la izquierda (sin texto rojo arriba)
-        // - Mensaje rojo SOLO en la derecha (tal como estaba antes)
+        // - Mensaje rojo SOLO en la derecha (tal como estaba)
         if (r.status === 429) {
           const msg =
             data?.message ||
