@@ -3610,7 +3610,7 @@ aiDetector_right_loading_subtitle: {
 
 aiDetector_right_percent_subtitle: {
   ES: "del texto podría estar generado por IA",
-  EUS: "testuaren zati bat IA bidez sortua izan liteke",
+  EUS: "testuaren ehuneko hau IA bidez sortua izan liteke",
   EN: "of the text could be AI-generated",
   FR: "du texte pourrait être généré par IA",
 },
