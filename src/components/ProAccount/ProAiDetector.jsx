@@ -6,8 +6,34 @@ import { auth } from "@/lib/firebase";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
-  const { t } = useTranslation();
-  const tr = (key, fallback) => t(key) || fallback;
+  const { t, language } = useTranslation();
+
+  // ✅ idioma UI -> key interna (ES/EUS/EN/FR)
+  const uiLangKey = () => {
+    const x = String(language || "").toUpperCase();
+    if (x === "ES" || x === "EUS" || x === "EN" || x === "FR") return x;
+
+    const low = String(language || "").toLowerCase();
+    if (low === "es") return "ES";
+    if (low === "en") return "EN";
+    if (low === "fr") return "FR";
+    return "EUS";
+  };
+
+  // ✅ tr compatible con translations plano {ES,EUS,EN,FR}
+  const tr = (key, fallback = "") => {
+    const v = typeof t === "function" ? t(key) : null;
+
+    // objeto multidioma
+    if (v && typeof v === "object") {
+      const k = uiLangKey();
+      return v[k] || v.EUS || v.ES || v.EN || v.FR || fallback;
+    }
+
+    // string normal
+    if (!v || v === key) return fallback;
+    return v;
+  };
 
   const navigate = useNavigate();
 
@@ -21,10 +47,8 @@ export default function ProAiDetector() {
   const [limitType, setLimitType] = useState(""); // "" | "daily"
   const [limitMsg, setLimitMsg] = useState(""); // SIEMPRE vacío (no texto arriba del banner)
 
-  // ✅ En vez de guardar string traducido, guardamos "tipo de error"
-  // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network"
-  const [errorKind, setErrorKind] = useState("");
-  const [errorOverride, setErrorOverride] = useState(""); // solo si backend manda un message que quieres respetar
+  // ✅ no guardamos textos traducidos en state, solo tipo
+  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network"
 
   const setDailyLimit = () => {
     setLimitType("daily");
@@ -38,13 +62,11 @@ export default function ProAiDetector() {
 
   const clearErrors = () => {
     setErrorKind("");
-    setErrorOverride("");
   };
 
-  // ✅ Mensaje derivado -> cambia SOLO con el idioma (porque usa tr() en render)
+  // ✅ mensaje calculado desde translations (cambia al cambiar idioma UI)
   const errorMsg =
-    errorOverride ||
-    (errorKind === "limit_daily"
+    errorKind === "limit_daily"
       ? tr(
           "aiDetector_limit_daily",
           "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
@@ -63,7 +85,7 @@ export default function ProAiDetector() {
       ? tr("aiDetector_error_generic", "No se pudo analizar el texto.")
       : errorKind === "network"
       ? tr("aiDetector_error_network", "Error de red. Intenta de nuevo.")
-      : "");
+      : "";
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -108,7 +130,6 @@ export default function ProAiDetector() {
     clearLimit();
 
     try {
-      // ✅ PRO: necesitamos idToken para /api/pro
       const user = auth?.currentUser;
       const token = user ? await user.getIdToken() : null;
 
@@ -130,27 +151,20 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅✅✅ LÍMITE PRO: banner + mensaje derecha
         if (r.status === 429) {
-          setDailyLimit(); // ✅ muestra banner
-          setErrorKind("limit_daily"); // ✅ mensaje derecho traducible (se actualiza al cambiar idioma)
-
-          // si backend manda message y quieres mostrarlo, respétalo:
-          if (data?.message) setErrorOverride(String(data.message));
-
+          setDailyLimit();          // banner izquierda
+          setErrorKind("limit_daily"); // mensaje derecha (translations)
           setLoading(false);
           return;
         }
 
         if (r.status === 401) {
           setErrorKind("unauthorized");
-          if (data?.message) setErrorOverride(String(data.message));
           setLoading(false);
           return;
         }
 
         setErrorKind("generic");
-        if (data?.message || data?.error) setErrorOverride(String(data?.message || data?.error));
         setLoading(false);
         return;
       }
@@ -185,8 +199,6 @@ export default function ProAiDetector() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* ✅ ELIMINADO: título + subtítulo */}
-
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
         <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
@@ -309,7 +321,10 @@ export default function ProAiDetector() {
 
           <div className="mt-6">
             <div className="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: result ? `${aiValue}%` : "0%" }} />
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: result ? `${aiValue}%` : "0%" }}
+              />
             </div>
           </div>
 
@@ -317,7 +332,9 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-orange-500" />
-                <span className="text-sm text-slate-700">{tr("aiDetector_label_ai", "AI-generated")}</span>
+                <span className="text-sm text-slate-700">
+                  {tr("aiDetector_label_ai", "AI-generated")}
+                </span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${aiValue}%` : "--%"}</span>
             </div>
@@ -327,7 +344,9 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-slate-300" />
-                <span className="text-sm text-slate-700">{tr("aiDetector_label_human", "Human-written")}</span>
+                <span className="text-sm text-slate-700">
+                  {tr("aiDetector_label_human", "Human-written")}
+                </span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${humanValue}%` : "--%"}</span>
             </div>
