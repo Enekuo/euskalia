@@ -611,7 +611,7 @@ MODO CREATIVO:
         }),
       });
 
-      // ✅✅✅ PRO LIMITS 429 (patrón único)
+      // ✅✅✅ PRO LIMITS 429 (patrón único) — MULTIIDIOMA FIX
       if (res.status === 429) {
         let data = null;
         try {
@@ -628,7 +628,8 @@ MODO CREATIVO:
         else if (isDaily) setDailyLimit();
         else setDailyLimit();
 
-        if (data?.message) setLimitMsg(data.message);
+        // ❌ NO guardar data.message (viene en un idioma fijo) — esto rompía el selector
+        // if (data?.message) setLimitMsg(data.message);
 
         setLoading(false);
         return;
