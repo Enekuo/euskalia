@@ -610,37 +610,59 @@ export default function ProSummary() {
 
       const idToken = await user.getIdToken();
 
-      const res = await fetch("/api/pro", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          messages,
-          length: summaryLength,
-          cacheKey,
-          documentsText,
-        }),
-      });
+     
 
-      if (!res.ok) {
-        if (res.status === 413) {
-          setCharsLimit();
-          setLoading(false);
-          return;
-        }
-        if (res.status === 401) {
-          throw new Error(tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro."));
-        }
-        if (res.status === 429) {
-          setDailyLimit();
-          setLoading(false);
-          return;
-        }
-        const txt = await res.text();
-        throw new Error(`HTTP ${res.status}: ${txt}`);
-      }
+  const res = await fetch("/api/pro", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${idToken}`,
+  },
+  body: JSON.stringify({
+    messages,
+    length: summaryLength,
+    cacheKey,
+    documentsText,
+  }),
+});
+
+if (!res.ok) {
+  if (res.status === 413) {
+    setCharsLimit();
+    setLoading(false);
+    return;
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    setLoading(false);
+    throw new Error(
+      tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro.")
+    );
+  }
+
+  if (res.status === 429) {
+    let data = null;
+    try {
+      data = await res.json();
+    } catch {
+      data = null;
+    }
+
+    const limit = data?.limit || {};
+    const isChars = typeof limit?.max_chars === "number";
+
+    if (isChars) setCharsLimit();
+    else setDailyLimit();
+
+    setLoading(false);
+    return;
+  }
+
+  const txt = await res.text().catch(() => "");
+  setLoading(false);
+  throw new Error(`HTTP ${res.status}: ${txt}`);
+}
+
 
       const data = await res.json();
 
