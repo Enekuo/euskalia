@@ -99,18 +99,37 @@ export default function ProTranslator() {
 
   const setCharsLimit = () => {
     setLimitType("chars");
-    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
   };
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
   };
 
   const clearLimit = () => {
     setLimitType("");
     setLimitMsg("");
   };
+
+  // ✅✅✅ FIX: el mensaje de límite SIEMPRE sigue el idioma del header
+  useEffect(() => {
+    if (limitType === "daily") {
+      setLimitMsg(
+        tr(
+          "pro_limit_daily",
+          "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+        )
+      );
+    } else if (limitType === "chars") {
+      setLimitMsg(
+        tr(
+          "pro_limit_chars",
+          "Has superado el límite máximo de caracteres para tu plan Pro."
+        )
+      );
+    } else {
+      setLimitMsg("");
+    }
+  }, [language, limitType]);
 
   // ✅ NUEVAS claves para detectar idioma
   const LBL_AUTO = tr("proTranslator.detect_language", "Hizkuntza detektatu");
@@ -423,18 +442,6 @@ export default function ProTranslator() {
           if (isChars) setCharsLimit();
           else setDailyLimit();
 
-          setLimitMsg(
-            isChars
-              ? tr(
-                  "pro_limit_chars",
-                  "Has superado el límite máximo de caracteres para tu plan Pro."
-                )
-              : tr(
-                  "pro_limit_daily",
-                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
-                )
-          );
-
           setResultStatus("error");
           return;
         }
@@ -530,18 +537,6 @@ export default function ProTranslator() {
 
           if (isChars) setCharsLimit();
           else setDailyLimit();
-
-          setLimitMsg(
-            isChars
-              ? tr(
-                  "pro_limit_chars",
-                  "Has superado el límite máximo de caracteres para tu plan Pro."
-                )
-              : tr(
-                  "pro_limit_daily",
-                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
-                )
-          );
 
           setResultStatus("error");
           return;
@@ -667,18 +662,6 @@ export default function ProTranslator() {
           if (isChars) setCharsLimit();
           else setDailyLimit();
 
-          setLimitMsg(
-            isChars
-              ? tr(
-                  "pro_limit_chars",
-                  "Has superado el límite máximo de caracteres para tu plan Pro."
-                )
-              : tr(
-                  "pro_limit_daily",
-                  "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
-                )
-          );
-
           setResultStatus("error");
           return;
         }
@@ -715,7 +698,6 @@ export default function ProTranslator() {
         setLoading(false);
       }
     };
-
 
     run();
 
@@ -763,6 +745,9 @@ export default function ProTranslator() {
       </div>
     );
   };
+
+
+
 
   // ✅ NUEVAS claves proTranslator.sources_tab_* (en vez de summary.*)
   const labelTabText = tr("proTranslator.sources_tab_text", "Testua");
