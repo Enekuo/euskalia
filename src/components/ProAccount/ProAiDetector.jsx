@@ -154,7 +154,7 @@ export default function ProAiDetector() {
           const msg =
             data?.message ||
             tr(
-              "pro_limit_dail",
+              "pro_limit_daily",
               "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
             );
 
