@@ -6,32 +6,8 @@ import { auth } from "@/lib/firebase";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
-  const { t, language } = useTranslation();
-
-  // ✅ idioma UI -> key interna (ES/EUS/EN/FR)
-  const uiLangKey = () => {
-    const x = String(language || "").toUpperCase();
-    if (x === "ES" || x === "EUS" || x === "EN" || x === "FR") return x;
-
-    const low = String(language || "").toLowerCase();
-    if (low === "es") return "ES";
-    if (low === "en") return "EN";
-    if (low === "fr") return "FR";
-    return "EUS";
-  };
-
-  // ✅ tr compatible con translations plano {ES,EUS,EN,FR}
-  const tr = (key, fallback = "") => {
-    const v = typeof t === "function" ? t(key) : null;
-
-    if (v && typeof v === "object") {
-      const k = uiLangKey();
-      return v[k] || v.EUS || v.ES || v.EN || v.FR || fallback;
-    }
-
-    if (!v || v === key) return fallback;
-    return v;
-  };
+  const { t } = useTranslation();
+  const tr = (key, fallback = "") => t(key) || fallback;
 
   const navigate = useNavigate();
 
@@ -40,44 +16,18 @@ export default function ProAiDetector() {
 
   const [result, setResult] = useState(null); // { ai: number, human: number, note?: string }
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
-  const [limitMsg, setLimitMsg] = useState(""); // siempre vacío para NO texto arriba
 
-  // ✅ errores por "tipo" + mensaje del servidor (para 400 short text, etc.)
-  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network"
-  const [serverMsg, setServerMsg] = useState(""); // ✅ mensaje exacto del backend (400, etc.)
-
-  const setDailyLimit = () => {
+  const setLimitDaily = () => {
     setLimitType("daily");
-    setLimitMsg("");
   };
 
   const clearLimit = () => {
     setLimitType("");
-    setLimitMsg("");
   };
-
-  const clearErrors = () => {
-    setErrorKind("");
-    setServerMsg("");
-  };
-
-  // ✅ mensaje final (prioridad: serverMsg si existe)
-  const errorMsg =
-    serverMsg ||
-    (errorKind === "limit_daily"
-      ? tr("pro_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
-      : errorKind === "not_logged"
-      ? tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
-      : errorKind === "unauthorized"
-      ? tr("aiDetector_error_unauthorized", "Necesitas iniciar sesión para usar esta herramienta.")
-      : errorKind === "generic"
-      ? tr("aiDetector_error_generic", "No se pudo analizar el texto.")
-      : errorKind === "network"
-      ? tr("aiDetector_error_network", "Error de red. Intenta de nuevo.")
-      : "");
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -86,7 +36,7 @@ export default function ProAiDetector() {
         if (clip) {
           setText(clip.slice(0, 5000));
           setResult(null);
-          clearErrors();
+          setErrorMsg("");
           clearLimit();
         }
       }
@@ -105,7 +55,7 @@ export default function ProAiDetector() {
       if (typeof content === "string") {
         setText(content.slice(0, 5000));
         setResult(null);
-        clearErrors();
+        setErrorMsg("");
         clearLimit();
       }
     };
@@ -117,16 +67,22 @@ export default function ProAiDetector() {
     if (!payload) return;
 
     setLoading(true);
+    setErrorMsg("");
     setResult(null);
-    clearErrors();
     clearLimit();
 
     try {
+      // ✅ PRO: necesitamos idToken para /api/pro
       const user = auth?.currentUser;
       const token = user ? await user.getIdToken() : null;
 
       if (!token) {
-        setErrorKind("not_logged");
+        setErrorMsg(
+          tr(
+            "aiDetector_error_not_logged",
+            "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
+          )
+        );
         setLoading(false);
         return;
       }
@@ -143,33 +99,47 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅ 429 => límite diario (banner izquierda + mensaje derecha)
-        if (r.status === 429) {
-          setDailyLimit();
-          setErrorKind("limit_daily");
-          setLoading(false);
-          return;
-        }
-
-        // ✅ 400 => VALIDACIÓN (texto demasiado corto, etc.)
-        // aquí mostramos EXACTO data.message del backend
+        // ✅ 400: texto demasiado corto -> SIEMPRE desde translations (4 idiomas)
         if (r.status === 400) {
-          const msg = data?.message || "";
-          if (msg) setServerMsg(msg);
-          else setErrorKind("generic");
+          setErrorMsg(
+            tr(
+              "aiDetector_error_too_short",
+              "El texto es demasiado corto para analizar (mín. ~40 caracteres)."
+            )
+          );
           setLoading(false);
           return;
         }
 
-        // ✅ 401
+        // ✅ 429: límite diario -> banner + mensaje (desde translations)
+        if (r.status === 429) {
+          setLimitDaily();
+          setErrorMsg(
+            tr(
+              "aiDetector_limit_daily",
+              "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
+            )
+          );
+          setLoading(false);
+          return;
+        }
+
+        // 401: token inválido / expirado / no logeado
         if (r.status === 401) {
-          setErrorKind("unauthorized");
+          setErrorMsg(
+            tr(
+              "aiDetector_error_unauthorized",
+              "Necesitas iniciar sesión para usar esta herramienta."
+            )
+          );
           setLoading(false);
           return;
         }
 
-        // otros
-        setErrorKind("generic");
+        setErrorMsg(
+          data?.error ||
+            tr("aiDetector_error_generic", "No se pudo analizar el texto.")
+        );
         setLoading(false);
         return;
       }
@@ -181,7 +151,7 @@ export default function ProAiDetector() {
       });
     } catch (e) {
       console.error(e);
-      setErrorKind("network");
+      setErrorMsg(tr("aiDetector_error_network", "Error de red. Intenta de nuevo."));
     } finally {
       setLoading(false);
     }
@@ -212,17 +182,20 @@ export default function ProAiDetector() {
             onChange={(e) => {
               setText(e.target.value.slice(0, 5000));
               setResult(null);
-              clearErrors();
+              setErrorMsg("");
               clearLimit();
             }}
             disabled={loading}
             className="w-full h-80 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
-            placeholder={tr("aiDetector_placeholder", "Escribe o pega aquí el texto que quieres analizar...")}
+            placeholder={tr(
+              "aiDetector_placeholder",
+              "Escribe o pega aquí el texto que quieres analizar..."
+            )}
           />
 
           {/* ✅✅✅ BANNER (izquierda) */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+            <ProLimitBanner visible={limitType === "daily"} message={""} />
           </div>
 
           {text.length === 0 && (
@@ -245,7 +218,13 @@ export default function ProAiDetector() {
                 <span>{tr("aiDetector_upload_button", "Subir archivo")}</span>
               </button>
 
-              <input type="file" accept=".txt" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+              <input
+                type="file"
+                accept=".txt"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </div>
           )}
 
@@ -260,7 +239,7 @@ export default function ProAiDetector() {
               onClick={() => {
                 setText("");
                 setResult(null);
-                clearErrors();
+                setErrorMsg("");
                 clearLimit();
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
@@ -326,7 +305,10 @@ export default function ProAiDetector() {
 
           <div className="mt-6">
             <div className="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: result ? `${aiValue}%` : "0%" }} />
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: result ? `${aiValue}%` : "0%" }}
+              />
             </div>
           </div>
 
@@ -334,7 +316,9 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-orange-500" />
-                <span className="text-sm text-slate-700">{tr("aiDetector_label_ai", "AI-generated")}</span>
+                <span className="text-sm text-slate-700">
+                  {tr("aiDetector_label_ai", "AI-generated")}
+                </span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${aiValue}%` : "--%"}</span>
             </div>
@@ -344,7 +328,9 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-slate-300" />
-                <span className="text-sm text-slate-700">{tr("aiDetector_label_human", "Human-written")}</span>
+                <span className="text-sm text-slate-700">
+                  {tr("aiDetector_label_human", "Human-written")}
+                </span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${humanValue}%` : "--%"}</span>
             </div>
