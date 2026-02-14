@@ -7,12 +7,7 @@ import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
   const { t } = useTranslation();
-  const tr = (key, fallback = "") => {
-    const val = typeof t === "function" ? t(key) : null;
-    if (!val) return fallback;
-    if (val === key) return fallback;
-    return val;
-  };
+  const tr = (key, fallback) => t(key) || fallback;
 
   const navigate = useNavigate();
 
@@ -23,13 +18,21 @@ export default function ProAiDetector() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // ✅ mensaje SOLO para la izquierda (texto corto)
+  const [leftMsg, setLeftMsg] = useState("");
+  // ✅ FIX idioma: no guardar traducción en state
+  const [leftKind, setLeftKind] = useState(""); // "" | "too_short"
+
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
+  // ✅ FIX idioma (derecha): no guardar traducción en state
+  const [errorKind, setErrorKind] = useState(""); // "" | "too_short"
+
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(""); // ✅ vacío para NO mostrar texto arriba del banner
+    setLimitMsg(""); // ✅ vacío para NO mostrar texto rojo arriba del banner
   };
 
   const clearLimit = () => {
@@ -45,6 +48,9 @@ export default function ProAiDetector() {
           setText(clip.slice(0, 5000));
           setResult(null);
           setErrorMsg("");
+          setErrorKind("");
+          setLeftMsg("");
+          setLeftKind("");
           clearLimit();
         }
       }
@@ -64,6 +70,9 @@ export default function ProAiDetector() {
         setText(content.slice(0, 5000));
         setResult(null);
         setErrorMsg("");
+        setErrorKind("");
+        setLeftMsg("");
+        setLeftKind("");
         clearLimit();
       }
     };
@@ -74,8 +83,22 @@ export default function ProAiDetector() {
     const payload = text.trim();
     if (!payload) return;
 
+    // ✅✅✅ VALIDACIÓN FRONT: si < 40, NO backend y mensaje en IZQUIERDA
+    if (payload.length < 40) {
+      setResult(null);
+      setErrorMsg(""); // ✅ no aparece en la derecha
+      setErrorKind("");
+      setLeftKind("too_short");
+      setLeftMsg("");
+      clearLimit();
+      return;
+    }
+
     setLoading(true);
     setErrorMsg("");
+    setErrorKind("");
+    setLeftMsg("");
+    setLeftKind("");
     setResult(null);
     clearLimit();
 
@@ -86,7 +109,10 @@ export default function ProAiDetector() {
 
       if (!token) {
         setErrorMsg(
-          tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
+          tr(
+            "aiDetector_error_not_logged",
+            "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
+          )
         );
         setLoading(false);
         return;
@@ -104,32 +130,52 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅ 429: límite diario -> banner izquierda + mensaje derecho traducido
-        if (r.status === 429) {
-          setDailyLimit();
-          setErrorMsg(tr("aiDetector_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."));
-          setLoading(false);
-          return;
-        }
-
-        // ✅ 400: texto demasiado corto -> mostrar frase traducida (NO la del backend)
+        // ✅✅✅ Texto demasiado corto (backend): NO guardar traducción en state
         if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
-          setErrorMsg(tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
+          setErrorKind("too_short"); // ✅ se renderiza traducido y cambia con el selector
+          setErrorMsg("");
           setLoading(false);
           return;
         }
 
-        // ✅ 401: token inválido / expirado / no logeado
+        // ✅✅✅ LÍMITE PRO:
+        // - Banner en la izquierda (sin texto rojo arriba)
+        // - Mensaje rojo SOLO en la derecha (tal como estaba)
+        if (r.status === 429) {
+          const msg =
+            data?.message ||
+            tr(
+              "aiDetector_limit_daily",
+              "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
+            );
+
+          setDailyLimit();   // ✅ muestra banner (sin mensaje arriba)
+          setErrorMsg(msg);  // ✅ mantiene el mensaje de la derecha
+          setErrorKind("");
+          setLoading(false);
+          return;
+        }
+
+        // 401: token inválido / expirado / no logeado
         if (r.status === 401) {
           setErrorMsg(
-            tr("aiDetector_error_unauthorized", "Necesitas iniciar sesión para usar esta herramienta.")
+            data?.message ||
+              tr(
+                "aiDetector_error_unauthorized",
+                "Necesitas iniciar sesión para usar esta herramienta."
+              )
           );
+          setErrorKind("");
           setLoading(false);
           return;
         }
 
-        // ✅ 500 u otros: NO mostrar errores internos tipo “Cannot access 'r'...”
-        setErrorMsg(tr("aiDetector_error_generic", "No se pudo analizar el texto."));
+        setErrorMsg(
+          data?.message ||
+            data?.error ||
+            tr("aiDetector_error_generic", "No se pudo analizar el texto.")
+        );
+        setErrorKind("");
         setLoading(false);
         return;
       }
@@ -142,6 +188,7 @@ export default function ProAiDetector() {
     } catch (e) {
       console.error(e);
       setErrorMsg(tr("aiDetector_error_network", "Error de red. Intenta de nuevo."));
+      setErrorKind("");
     } finally {
       setLoading(false);
     }
@@ -162,8 +209,28 @@ export default function ProAiDetector() {
     });
   };
 
+  const displayRightError =
+    errorMsg ||
+    (errorKind === "too_short"
+      ? tr(
+          "aiDetector_error_too_short",
+          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
+        )
+      : "");
+
+  const displayLeftMsg =
+    leftMsg ||
+    (leftKind === "too_short"
+      ? tr(
+          "aiDetector_error_too_short",
+          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
+        )
+      : "");
+
   return (
     <div className="max-w-6xl mx-auto">
+      {/* ✅ ELIMINADO: título + subtítulo */}
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
         <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
@@ -173,12 +240,25 @@ export default function ProAiDetector() {
               setText(e.target.value.slice(0, 5000));
               setResult(null);
               setErrorMsg("");
+              setErrorKind("");
+              setLeftMsg("");
+              setLeftKind("");
               clearLimit();
             }}
             disabled={loading}
             className="w-full h-80 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
-            placeholder={tr("aiDetector_placeholder", "Escribe o pega aquí el texto que quieres analizar...")}
+            placeholder={tr(
+              "aiDetector_placeholder",
+              "Escribe o pega aquí el texto que quieres analizar..."
+            )}
           />
+
+          {/* ✅ mensaje de texto corto en la IZQUIERDA (zona marcada) */}
+          {!!displayLeftMsg && (
+            <div className="absolute left-7 right-7 top-[44%] -translate-y-1/2 text-center text-sm text-red-600">
+              {displayLeftMsg}
+            </div>
+          )}
 
           {/* ✅✅✅ BANNER (izquierda) */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
@@ -227,6 +307,9 @@ export default function ProAiDetector() {
                 setText("");
                 setResult(null);
                 setErrorMsg("");
+                setErrorKind("");
+                setLeftMsg("");
+                setLeftKind("");
                 clearLimit();
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
@@ -285,7 +368,7 @@ export default function ProAiDetector() {
                 </div>
 
                 {!!result?.note && <div className="mt-3 text-xs text-slate-500">{result.note}</div>}
-                {!!errorMsg && <div className="mt-3 text-xs text-red-600">{errorMsg}</div>}
+                {!!displayRightError && <div className="mt-3 text-xs text-red-600">{displayRightError}</div>}
               </>
             )}
           </div>
