@@ -27,33 +27,26 @@ import { auth } from "@/lib/firebase";
 
 export default function ProGrammarCorrector() {
   const { t } = useTranslation();
-  const tr = (key, fallback = "") => t(key) || fallback;
 
-  // ✅✅✅ PRO LIMITS (patrón único)
+  // ✅ evita que se muestre la clave literal si falta traducción
+  const tr = (key, fallback = "") => {
+    const val = typeof t === "function" ? t(key) : null;
+    return !val || val === key ? fallback : val;
+  };
+
+  // ✅✅✅ PRO LIMITS (patrón único) -> FIX: guardar SOLO tipo, no el texto
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-  const [limitMsg, setLimitMsg] = useState("");
 
-  const setCharsLimit = () => {
-    setLimitType("chars");
-    setLimitMsg(
-      tr(
-        "pro_limit_chars",
-        "Has superado el límite máximo de caracteres para tu plan Pro."
-      )
-    );
-  };
+  const setCharsLimit = () => setLimitType("chars");
+  const setDailyLimit = () => setLimitType("daily");
+  const clearLimit = () => setLimitType("");
 
-  const setDailyLimit = () => {
-    setLimitType("daily");
-    setLimitMsg(
-      tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
-    );
-  };
-
-  const clearLimit = () => {
-    setLimitType("");
-    setLimitMsg("");
-  };
+  const limitMsg =
+    limitType === "chars"
+      ? tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro.")
+      : limitType === "daily"
+      ? tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
+      : "";
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -140,7 +133,7 @@ export default function ProGrammarCorrector() {
   const labelViewChanges = tr("grammar.view_changes", "Ver cambios");
   const labelHideChanges = tr("grammar.hide_changes", "Ocultar cambios");
 
-  // ✅ Idiomas (UI) — usa las mismas keys “summary.output_language_*” (como tu código)
+  // ✅ Idiomas (UI)
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
@@ -218,7 +211,7 @@ export default function ProGrammarCorrector() {
       .replace(/\s+/g, " ")
       .trim();
 
-  // ✅ Diff REAL (solo verde lo que la API “ha cambiado/añadido” en el resultado)
+  // ✅ Diff REAL
   const diffSegments = (original, corrected) => {
     const dmp = new diff_match_patch();
     const diffs = dmp.diff_main(original || "", corrected || "");
@@ -226,7 +219,7 @@ export default function ProGrammarCorrector() {
 
     return diffs.map(([op, text]) => ({
       text,
-      changed: op === 1, // ✅ SOLO lo que se añade en el resultado
+      changed: op === 1,
     }));
   };
 
@@ -235,7 +228,6 @@ export default function ProGrammarCorrector() {
     return canonicalize(textValue) !== canonicalize(result);
   }, [textValue, result]);
 
-  // ✅ Detectar listas pegadas (numeradas o con viñetas)
   const parseList = (text) => {
     if (!text) return null;
 
@@ -644,7 +636,7 @@ export default function ProGrammarCorrector() {
         }),
       });
 
-      // ✅✅✅ PRO LIMITS 429
+      // ✅✅✅ PRO LIMITS 429 (NO usar data.message del backend para no quedar “fijo” en un idioma)
       if (res.status === 429) {
         let data = null;
         try {
@@ -660,8 +652,6 @@ export default function ProGrammarCorrector() {
         if (isChars) setCharsLimit();
         else if (isDaily) setDailyLimit();
         else setDailyLimit();
-
-        if (data?.message) setLimitMsg(data.message);
 
         setLoading(false);
         return;
@@ -881,7 +871,10 @@ export default function ProGrammarCorrector() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => setUrlInputOpen(true)}
+                      onClick={() => {
+                        setUrlInputOpen(true);
+                        clearLimit();
+                      }}
                       className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
                       aria-label={labelAddUrl}
                       title={labelAddUrl}
@@ -1082,8 +1075,12 @@ export default function ProGrammarCorrector() {
               </div>
             </div>
 
-            {/* ✅✅✅ BANNER PRO */}
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+            {/* ✅✅✅ BANNER PRO (ahora se traduce según el selector de idioma de la web) */}
+            {limitType && (
+              <div className="px-6 pt-4">
+                <ProLimitBanner visible={!!limitType} message={limitMsg} />
+              </div>
+            )}
 
             {/* Estado inicial (BOTÓN + AYUDA) — solo si NO hay limitType */}
             {!loading && !hasRealResult && !errorMsg && !limitType && (
@@ -1106,12 +1103,10 @@ export default function ProGrammarCorrector() {
               </>
             )}
 
-            {/* Contenido normal (y mensaje rojo del límite debajo del banner) */}
+            {/* Contenido normal */}
             <div className="w-full">
               {(hasRealResult || loading || (errorMsg && !limitType) || limitType) && (
                 <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
-                 
-
                   {errorMsg && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
