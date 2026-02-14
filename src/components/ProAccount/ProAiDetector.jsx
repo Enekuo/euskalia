@@ -25,12 +25,12 @@ export default function ProAiDetector() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ FIX idioma (derecha): no guardar traducción en state
+  // ✅ reactivo a idioma
   const [errorKind, setErrorKind] = useState(""); // "" | "too_short"
 
-  // ✅ mensaje SOLO para la izquierda (NO usado para too_short)
+  // ✅ izquierda NO para too_short
   const [leftMsg, setLeftMsg] = useState("");
-  const [leftKind, setLeftKind] = useState(""); // se deja por compatibilidad
+  const [leftKind, setLeftKind] = useState("");
 
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
@@ -89,7 +89,7 @@ export default function ProAiDetector() {
     const payload = text.trim();
     if (!payload) return;
 
-    // ✅✅✅ VALIDACIÓN FRONT: si < 40, NO backend y mensaje en DERECHA (como antes)
+    // ✅ < 40 => mensaje en DERECHA (reactivo a idioma)
     if (payload.length < 40) {
       setResult(null);
       setErrorKind("too_short");
@@ -109,7 +109,6 @@ export default function ProAiDetector() {
     clearLimit();
 
     try {
-      // ✅ PRO: necesitamos idToken para /api/pro
       const user = auth?.currentUser;
       const token = user ? await user.getIdToken() : null;
 
@@ -137,7 +136,7 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅✅✅ Texto demasiado corto (backend): mensaje en DERECHA (como antes) y reactivo a idioma
+        // ✅ 400 too short (backend) => DERECHA y reactivo
         if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
           setErrorKind("too_short");
           setErrorMsg("");
@@ -147,25 +146,20 @@ export default function ProAiDetector() {
           return;
         }
 
-        // ✅✅✅ LÍMITE PRO:
-        // - Banner en la izquierda (sin texto rojo arriba)
-        // - Mensaje rojo SOLO en la derecha (tal como estaba)
+        // ✅✅✅ 429 límite diario => SIEMPRE usar pro_limit_daily (NO data.message)
         if (r.status === 429) {
-          const msg =
-            data?.message ||
-            tr(
-              "pro_limit_daily",
-              "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
-            );
+          const msg = tr(
+            "pro_limit_daily",
+            "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."
+          );
 
-          setDailyLimit();   // ✅ muestra banner (sin mensaje arriba)
-          setErrorMsg(msg);  // ✅ mantiene el mensaje de la derecha
+          setDailyLimit();   // banner izquierda
+          setErrorMsg(msg);  // mensaje rojo derecha
           setErrorKind("");
           setLoading(false);
           return;
         }
 
-        // 401: token inválido / expirado / no logeado
         if (r.status === 401) {
           setErrorMsg(
             data?.message ||
@@ -218,20 +212,17 @@ export default function ProAiDetector() {
     });
   };
 
-  // ✅ Mensaje rojo derecha: reactivo al idioma incluso si ya estaba mostrado
   const displayRightError =
     errorMsg ||
     (errorKind === "too_short"
       ? tr(
-          "aiDetector_text_too_short",
+          "aiDetector_error_too_short",
           "El texto es demasiado corto para analizar (mín. ~40 caracteres)."
         )
       : "");
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* ✅ ELIMINADO: título + subtítulo */}
-
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
         {/* IZQUIERDA */}
         <div className="relative bg-white rounded-2xl border border-slate-200 px-7 py-7 min-h-[500px]">
