@@ -42,20 +42,19 @@ export default function ProSummary() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Límite Pro (banner + mensaje rojo)
-  const [limitMsg, setLimitMsg] = useState("");
+  // ✅ Límite Pro (banner + mensaje rojo) -> FIX: guardar TIPO, no el texto
+  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
 
-  const setCharsLimit = () => {
-    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
-  };
+  const setCharsLimit = () => setLimitType("chars");
+  const setDailyLimit = () => setLimitType("daily");
+  const clearLimit = () => setLimitType("");
 
-  const setDailyLimit = () => {
-    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
-  };
-
-  const clearLimit = () => {
-    setLimitMsg("");
-  };
+  const limitMsg =
+    limitType === "chars"
+      ? tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro.")
+      : limitType === "daily"
+      ? tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana.")
+      : "";
 
   // Longitud del resumen
   const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "detallado"
@@ -610,59 +609,60 @@ export default function ProSummary() {
 
       const idToken = await user.getIdToken();
 
-     
+      const res = await fetch("/api/pro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          messages,
+          length: summaryLength,
+          cacheKey,
+          documentsText,
+        }),
+      });
 
-  const res = await fetch("/api/pro", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${idToken}`,
-  },
-  body: JSON.stringify({
-    messages,
-    length: summaryLength,
-    cacheKey,
-    documentsText,
-  }),
-});
+      if (!res.ok) {
+        // ✅ 413 = chars limit duro (payload demasiado grande)
+        if (res.status === 413) {
+          setCharsLimit();
+          setLoading(false);
+          return;
+        }
 
-if (!res.ok) {
-  if (res.status === 413) {
-    setCharsLimit();
-    setLoading(false);
-    return;
-  }
+        // ✅ 401/403 = auth
+        if (res.status === 401 || res.status === 403) {
+          setLoading(false);
+          throw new Error(
+            tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro.")
+          );
+        }
 
-  if (res.status === 401 || res.status === 403) {
-    setLoading(false);
-    throw new Error(
-      tr("proSummary.error_auth_required", "Necesitas iniciar sesión para usar Pro.")
-    );
-  }
+        // ✅ 429 = límite (daily o chars)
+        if (res.status === 429) {
+          let data = null;
+          try {
+            data = await res.json();
+          } catch {
+            data = null;
+          }
 
-  if (res.status === 429) {
-    let data = null;
-    try {
-      data = await res.json();
-    } catch {
-      data = null;
-    }
+          const limit = data?.limit || {};
+          const isChars = typeof limit?.max_chars === "number";
+          const isDaily = typeof limit?.daily_requests === "number";
 
-    const limit = data?.limit || {};
-    const isChars = typeof limit?.max_chars === "number";
+          if (isChars) setCharsLimit();
+          else setDailyLimit(); // fallback seguro
 
-    if (isChars) setCharsLimit();
-    else setDailyLimit();
+          setLoading(false);
+          return;
+        }
 
-    setLoading(false);
-    return;
-  }
-
-  const txt = await res.text().catch(() => "");
-  setLoading(false);
-  throw new Error(`HTTP ${res.status}: ${txt}`);
-}
-
+        const txt = await res.text().catch(() => "");
+        setLoading(false);
+        throw new Error(`HTTP ${res.status}: ${txt}`);
+      }
 
       const data = await res.json();
 
@@ -851,7 +851,10 @@ if (!res.ok) {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setUrlInputOpen(true)}
+                        onClick={() => {
+                          setUrlInputOpen(true);
+                          clearLimit();
+                        }}
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
                         aria-label={labelAddUrl}
                         title={labelAddUrl}
@@ -1043,13 +1046,14 @@ if (!res.ok) {
               </div>
 
               {/* ✅ Banner Pro (dentro del panel derecho, arriba) */}
-              {limitMsg && (
-              <div className="px-6 pt-4">
-               <ProLimitBanner visible={!!limitMsg} message={limitMsg} />
+              {limitType && (
+                <div className="px-6 pt-4">
+                  <ProLimitBanner visible={!!limitType} message={limitMsg} />
                 </div>
-                )}
+              )}
+
               {/* Estado inicial */}
-              {!loading && !result && !errorMsg && !limitMsg && (
+              {!loading && !result && !errorMsg && !limitType && (
                 <>
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                     <Button
