@@ -32,6 +32,9 @@ export default function ProParaphraser() {
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
+  // Idioma de salida
+  const [outputLang, setOutputLang] = useState("eus");
+
   // ✅ selector -> key interna (ES/EUS/EN/FR) para mensajes de límite
   const outLangKey = (l) => {
     const x = String(l || "").toLowerCase();
@@ -71,6 +74,14 @@ export default function ProParaphraser() {
     setLimitMsg("");
   };
 
+  // ✅✅✅ FIX: si el mensaje ya está mostrado y cambias selector, debe cambiar
+  useEffect(() => {
+    if (!limitType) return;
+    if (limitType === "daily") setDailyLimit();
+    if (limitType === "chars") setCharsLimit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [outputLang]);
+
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
@@ -82,9 +93,6 @@ export default function ProParaphraser() {
 
   // Modos (7)
   const [mode, setMode] = useState("neutral"); // neutral | informal | professional | academic | fluent | simplified | creative
-
-  // Idioma de salida
-  const [outputLang, setOutputLang] = useState("eus");
 
   // Documentos
   const [documents, setDocuments] = useState([]); // [{id,file}]
@@ -189,10 +197,7 @@ export default function ProParaphraser() {
         <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
         <span className="truncate">{label}</span>
         {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
+          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
         )}
       </button>
 
@@ -219,15 +224,10 @@ export default function ProParaphraser() {
       >
         <span className="truncate">{label}</span>
         {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
+          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
         )}
       </button>
-      {showDivider && (
-        <span aria-hidden className="self-center" style={{ width: 1, height: 18, backgroundColor: DIVIDER }} />
-      )}
+      {showDivider && <span aria-hidden className="self-center" style={{ width: 1, height: 18, backgroundColor: DIVIDER }} />}
     </div>
   );
 
@@ -287,11 +287,11 @@ export default function ProParaphraser() {
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, result, urlInputOpen]);
 
-  // URLs / docs / modo / idioma cambian => limpia derecha
+  // URLs / docs / modo cambian => limpia derecha
   useEffect(() => {
     clearRight();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlItems.length, documents.length, mode, outputLang]);
+  }, [urlItems.length, documents.length, mode]);
 
   // ===== Documentos =====
   const readTextFromFiles = async (items) => {
@@ -488,10 +488,7 @@ export default function ProParaphraser() {
 
     if (!validNow) {
       setErrorMsg(
-        tr(
-          "proParaphraser_error_need_input",
-          "Añade texto suficiente, URLs o documentos antes de crear el parafraseo."
-        )
+        tr("proParaphraser_error_need_input", "Añade texto suficiente, URLs o documentos antes de crear el parafraseo.")
       );
       setLoading(false);
       return;
@@ -967,12 +964,7 @@ MODO CREATIVO:
                   onClick={() => setMode("professional")}
                   showDivider
                 />
-                <ModeTab
-                  active={mode === "academic"}
-                  label={modeLabels.academic}
-                  onClick={() => setMode("academic")}
-                  showDivider
-                />
+                <ModeTab active={mode === "academic"} label={modeLabels.academic} onClick={() => setMode("academic")} showDivider />
                 <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => setMode("fluent")} showDivider />
                 <ModeTab
                   active={mode === "simplified"}
