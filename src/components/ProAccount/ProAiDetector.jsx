@@ -114,7 +114,7 @@ export default function ProAiDetector() {
 
         // ✅ 400: texto demasiado corto -> mostrar frase traducida (NO la del backend)
         if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
-          setErrorMsg(tr("aiDetector_error_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
+          setErrorMsg(tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
           setLoading(false);
           return;
         }
