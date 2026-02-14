@@ -223,7 +223,7 @@ export default function ProAiDetector() {
     errorMsg ||
     (errorKind === "too_short"
       ? tr(
-          "aiDetector_error_too_short",
+          "aiDetector_text_too_short",
           "El texto es demasiado corto para analizar (mín. ~40 caracteres)."
         )
       : "");
