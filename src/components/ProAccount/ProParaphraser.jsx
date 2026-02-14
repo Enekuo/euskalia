@@ -32,14 +32,38 @@ export default function ProParaphraser() {
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
+  // ✅ selector -> key interna (ES/EUS/EN/FR) para mensajes de límite
+  const outLangKey = (l) => {
+    const x = String(l || "").toLowerCase();
+    if (x === "es") return "ES";
+    if (x === "en") return "EN";
+    if (x === "fr") return "FR";
+    return "EUS"; // "eus" o default
+  };
+
+  // ✅ traducción orientada al selector (no al idioma UI)
+  const trOut = (key, fallback = "") => {
+    const v = t(key);
+
+    // si translations devuelve objeto {ES,EUS,EN,FR}
+    if (v && typeof v === "object") {
+      const k = outLangKey(outputLang);
+      return v[k] || v.EUS || v.ES || v.EN || v.FR || fallback;
+    }
+
+    // si devuelve string
+    if (!v || v === key) return fallback;
+    return v;
+  };
+
   const setCharsLimit = () => {
     setLimitType("chars");
-    setLimitMsg(tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
+    setLimitMsg(trOut("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro."));
   };
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(tr("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
+    setLimitMsg(trOut("pro_limit_daily", "Has alcanzado tu límite diario del plan Pro. Vuelve mañana."));
   };
 
   const clearLimit = () => {
@@ -611,7 +635,7 @@ MODO CREATIVO:
         }),
       });
 
-      // ✅✅✅ PRO LIMITS 429 (patrón único) — MULTIIDIOMA FIX
+      // ✅✅✅ PRO LIMITS 429 (patrón único)
       if (res.status === 429) {
         let data = null;
         try {
@@ -627,9 +651,6 @@ MODO CREATIVO:
         if (isChars) setCharsLimit();
         else if (isDaily) setDailyLimit();
         else setDailyLimit();
-
-        // ❌ NO guardar data.message (viene en un idioma fijo) — esto rompía el selector
-        // if (data?.message) setLimitMsg(data.message);
 
         setLoading(false);
         return;
