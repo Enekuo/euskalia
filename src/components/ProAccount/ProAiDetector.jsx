@@ -68,7 +68,7 @@ export default function ProAiDetector() {
   const errorMsg =
     errorKind === "limit_daily"
       ? tr(
-          "aiDetector_limit_daily",
+          "pro_limit_daily",
           "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
         )
       : errorKind === "not_logged"
