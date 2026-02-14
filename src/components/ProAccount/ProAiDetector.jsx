@@ -68,7 +68,7 @@ export default function ProAiDetector() {
   const errorMsg =
     serverMsg ||
     (errorKind === "limit_daily"
-      ? tr("aiDetector_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
+      ? tr("pro_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
       : errorKind === "not_logged"
       ? tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
       : errorKind === "unauthorized"
