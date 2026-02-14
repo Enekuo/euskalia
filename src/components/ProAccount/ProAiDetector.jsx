@@ -46,7 +46,7 @@ export default function ProAiDetector() {
   const [limitMsg, setLimitMsg] = useState(""); // siempre vacío para NO texto arriba
 
   // ✅ errores por "tipo" + mensaje del servidor (para 400 short text, etc.)
-  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network"
+  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network" | "text_too_short"
   const [serverMsg, setServerMsg] = useState(""); // ✅ mensaje exacto del backend (400, etc.)
 
   const setDailyLimit = () => {
@@ -67,7 +67,12 @@ export default function ProAiDetector() {
   // ✅ mensaje final (prioridad: serverMsg si existe)
   const errorMsg =
     serverMsg ||
-    (errorKind === "limit_daily"
+    (errorKind === "text_too_short"
+      ? tr(
+          "aiDetector_text_too_short",
+          "El texto es demasiado corto para analizar (min. ~40 caracteres)."
+        )
+      : errorKind === "limit_daily"
       ? tr("pro_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
       : errorKind === "not_logged"
       ? tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
@@ -152,11 +157,29 @@ export default function ProAiDetector() {
         }
 
         // ✅ 400 => VALIDACIÓN (texto demasiado corto, etc.)
-        // aquí mostramos EXACTO data.message del backend
         if (r.status === 400) {
-          const msg = data?.message || "";
+          const msg = String(data?.message || "");
+          const low = msg.toLowerCase();
+
+          // ✅✅✅ Detectar "texto demasiado corto" y mostrar CLAVE (multilingüe)
+          const looksTooShort =
+            low.includes("too short") ||
+            low.includes("demasiado corto") ||
+            low.includes("trop court") ||
+            low.includes("laburregia") ||
+            (low.includes("min") && (low.includes("40") || low.includes("~40")));
+
+          if (looksTooShort) {
+            setServerMsg(""); // importante: NO guardamos string fijo
+            setErrorKind("text_too_short");
+            setLoading(false);
+            return;
+          }
+
+          // si no es "too short", mostramos mensaje exacto del backend si existe
           if (msg) setServerMsg(msg);
           else setErrorKind("generic");
+
           setLoading(false);
           return;
         }
