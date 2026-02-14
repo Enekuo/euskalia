@@ -299,17 +299,22 @@ export default async function handler(req, res) {
       }
 
       const trimmed = text.trim();
-      if (r.status === 400) {
-  if (data?.error === "TEXT_TOO_SHORT") {
-    setServerMsg(tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
+      if (data?.error === "TEXT_TOO_SHORT") {
+  setErrorKind("text_too_short");
+  setServerMsg("");
+} else {
+  const msg = data?.message || "";
+  if (msg) {
+    setServerMsg(msg);
+    setErrorKind("");
   } else {
-    const msg = data?.message || "";
-    if (msg) setServerMsg(msg);
-    else setErrorKind("generic");
+    setErrorKind("generic");
+    setServerMsg("");
   }
-  setLoading(false);
-  return;
 }
+setLoading(false);
+return;
+
 
       // ====== LÍMITES PLAN PRO (por UID) también para detector ======
       const day = todayKey();
