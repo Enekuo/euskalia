@@ -3656,6 +3656,12 @@ aiDetector_error_network: {
   EN: "Network error. Try again.",
   FR: "Erreur réseau. Réessayez.",
 },
+aiDetector_text_too_short: {
+  ES: "El texto es demasiado corto para analizar (mín. ~40 caracteres).",
+  EUS: "Testua laburregia da aztertzeko (gutx. ~40 karaktere).",
+  EN: "The text is too short to analyze (min. ~40 characters).",
+  FR: "Le texte est trop court pour être analysé (min. ~40 caractères)."
+},
 
 
 // =========================

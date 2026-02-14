@@ -299,13 +299,17 @@ export default async function handler(req, res) {
       }
 
       const trimmed = text.trim();
-      if (trimmed.length < 40) {
-        return res.status(400).json({
-          ok: false,
-          error: "Text too short",
-          message: "El texto es demasiado corto para analizar (mín. ~40 caracteres).",
-        });
-      }
+      if (r.status === 400) {
+  if (data?.error === "TEXT_TOO_SHORT") {
+    setServerMsg(tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
+  } else {
+    const msg = data?.message || "";
+    if (msg) setServerMsg(msg);
+    else setErrorKind("generic");
+  }
+  setLoading(false);
+  return;
+}
 
       // ====== LÍMITES PLAN PRO (por UID) también para detector ======
       const day = todayKey();
