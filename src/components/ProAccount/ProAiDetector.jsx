@@ -7,7 +7,12 @@ import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
   const { t } = useTranslation();
-  const tr = (key, fallback = "") => t(key) || fallback;
+  const tr = (key, fallback = "") => {
+    const val = typeof t === "function" ? t(key) : null;
+    if (!val) return fallback;
+    if (val === key) return fallback;
+    return val;
+  };
 
   const navigate = useNavigate();
 
@@ -20,13 +25,16 @@ export default function ProAiDetector() {
 
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
+  const [limitMsg, setLimitMsg] = useState("");
 
-  const setLimitDaily = () => {
+  const setDailyLimit = () => {
     setLimitType("daily");
+    setLimitMsg(""); // ✅ vacío para NO mostrar texto arriba del banner
   };
 
   const clearLimit = () => {
     setLimitType("");
+    setLimitMsg("");
   };
 
   const handlePasteFromClipboard = async () => {
@@ -78,10 +86,7 @@ export default function ProAiDetector() {
 
       if (!token) {
         setErrorMsg(
-          tr(
-            "aiDetector_error_not_logged",
-            "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
-          )
+          tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
         );
         setLoading(false);
         return;
@@ -99,47 +104,32 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅ 400: texto demasiado corto -> SIEMPRE desde translations (4 idiomas)
-        if (r.status === 400) {
-          setErrorMsg(
-            tr(
-              "aiDetector_error_too_short",
-              "El texto es demasiado corto para analizar (mín. ~40 caracteres)."
-            )
-          );
-          setLoading(false);
-          return;
-        }
-
-        // ✅ 429: límite diario -> banner + mensaje (desde translations)
+        // ✅ 429: límite diario -> banner izquierda + mensaje derecho traducido
         if (r.status === 429) {
-          setLimitDaily();
-          setErrorMsg(
-            tr(
-              "aiDetector_limit_daily",
-              "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
-            )
-          );
+          setDailyLimit();
+          setErrorMsg(tr("aiDetector_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."));
           setLoading(false);
           return;
         }
 
-        // 401: token inválido / expirado / no logeado
+        // ✅ 400: texto demasiado corto -> mostrar frase traducida (NO la del backend)
+        if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
+          setErrorMsg(tr("aiDetector_error_too_short", "El texto es demasiado corto para analizar (mín. ~40 caracteres)."));
+          setLoading(false);
+          return;
+        }
+
+        // ✅ 401: token inválido / expirado / no logeado
         if (r.status === 401) {
           setErrorMsg(
-            tr(
-              "aiDetector_error_unauthorized",
-              "Necesitas iniciar sesión para usar esta herramienta."
-            )
+            tr("aiDetector_error_unauthorized", "Necesitas iniciar sesión para usar esta herramienta.")
           );
           setLoading(false);
           return;
         }
 
-        setErrorMsg(
-          data?.error ||
-            tr("aiDetector_error_generic", "No se pudo analizar el texto.")
-        );
+        // ✅ 500 u otros: NO mostrar errores internos tipo “Cannot access 'r'...”
+        setErrorMsg(tr("aiDetector_error_generic", "No se pudo analizar el texto."));
         setLoading(false);
         return;
       }
@@ -187,15 +177,12 @@ export default function ProAiDetector() {
             }}
             disabled={loading}
             className="w-full h-80 resize-none border-none outline-none bg-transparent px-1 text-sm text-slate-700 placeholder:text-slate-500 focus:ring-0 overflow-y-auto mb-24 disabled:opacity-60"
-            placeholder={tr(
-              "aiDetector_placeholder",
-              "Escribe o pega aquí el texto que quieres analizar..."
-            )}
+            placeholder={tr("aiDetector_placeholder", "Escribe o pega aquí el texto que quieres analizar...")}
           />
 
           {/* ✅✅✅ BANNER (izquierda) */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
-            <ProLimitBanner visible={limitType === "daily"} message={""} />
+            <ProLimitBanner visible={!!limitType} message={limitMsg} />
           </div>
 
           {text.length === 0 && (
