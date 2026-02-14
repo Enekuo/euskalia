@@ -24,13 +24,11 @@ export default function ProAiDetector() {
   const tr = (key, fallback = "") => {
     const v = typeof t === "function" ? t(key) : null;
 
-    // objeto multidioma
     if (v && typeof v === "object") {
       const k = uiLangKey();
       return v[k] || v.EUS || v.ES || v.EN || v.FR || fallback;
     }
 
-    // string normal
     if (!v || v === key) return fallback;
     return v;
   };
@@ -45,14 +43,15 @@ export default function ProAiDetector() {
 
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
-  const [limitMsg, setLimitMsg] = useState(""); // SIEMPRE vacío (no texto arriba del banner)
+  const [limitMsg, setLimitMsg] = useState(""); // siempre vacío para NO texto arriba
 
-  // ✅ no guardamos textos traducidos en state, solo tipo
+  // ✅ errores por "tipo" + mensaje del servidor (para 400 short text, etc.)
   const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network"
+  const [serverMsg, setServerMsg] = useState(""); // ✅ mensaje exacto del backend (400, etc.)
 
   const setDailyLimit = () => {
     setLimitType("daily");
-    setLimitMsg(""); // ✅ NO mostrar texto arriba del banner
+    setLimitMsg("");
   };
 
   const clearLimit = () => {
@@ -62,30 +61,23 @@ export default function ProAiDetector() {
 
   const clearErrors = () => {
     setErrorKind("");
+    setServerMsg("");
   };
 
-  // ✅ mensaje calculado desde translations (cambia al cambiar idioma UI)
+  // ✅ mensaje final (prioridad: serverMsg si existe)
   const errorMsg =
-    errorKind === "limit_daily"
-      ? tr(
-          "pro_limit_daily",
-          "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana."
-        )
+    serverMsg ||
+    (errorKind === "limit_daily"
+      ? tr("aiDetector_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
       : errorKind === "not_logged"
-      ? tr(
-          "aiDetector_error_not_logged",
-          "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
-        )
+      ? tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
       : errorKind === "unauthorized"
-      ? tr(
-          "aiDetector_error_unauthorized",
-          "Necesitas iniciar sesión para usar esta herramienta."
-        )
+      ? tr("aiDetector_error_unauthorized", "Necesitas iniciar sesión para usar esta herramienta.")
       : errorKind === "generic"
       ? tr("aiDetector_error_generic", "No se pudo analizar el texto.")
       : errorKind === "network"
       ? tr("aiDetector_error_network", "Error de red. Intenta de nuevo.")
-      : "";
+      : "");
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -151,19 +143,32 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
+        // ✅ 429 => límite diario (banner izquierda + mensaje derecha)
         if (r.status === 429) {
-          setDailyLimit();          // banner izquierda
-          setErrorKind("limit_daily"); // mensaje derecha (translations)
+          setDailyLimit();
+          setErrorKind("limit_daily");
           setLoading(false);
           return;
         }
 
+        // ✅ 400 => VALIDACIÓN (texto demasiado corto, etc.)
+        // aquí mostramos EXACTO data.message del backend
+        if (r.status === 400) {
+          const msg = data?.message || "";
+          if (msg) setServerMsg(msg);
+          else setErrorKind("generic");
+          setLoading(false);
+          return;
+        }
+
+        // ✅ 401
         if (r.status === 401) {
           setErrorKind("unauthorized");
           setLoading(false);
           return;
         }
 
+        // otros
         setErrorKind("generic");
         setLoading(false);
         return;
@@ -321,10 +326,7 @@ export default function ProAiDetector() {
 
           <div className="mt-6">
             <div className="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-emerald-500 transition-all"
-                style={{ width: result ? `${aiValue}%` : "0%" }}
-              />
+              <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: result ? `${aiValue}%` : "0%" }} />
             </div>
           </div>
 
@@ -332,9 +334,7 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-orange-500" />
-                <span className="text-sm text-slate-700">
-                  {tr("aiDetector_label_ai", "AI-generated")}
-                </span>
+                <span className="text-sm text-slate-700">{tr("aiDetector_label_ai", "AI-generated")}</span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${aiValue}%` : "--%"}</span>
             </div>
@@ -344,9 +344,7 @@ export default function ProAiDetector() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-slate-300" />
-                <span className="text-sm text-slate-700">
-                  {tr("aiDetector_label_human", "Human-written")}
-                </span>
+                <span className="text-sm text-slate-700">{tr("aiDetector_label_human", "Human-written")}</span>
               </div>
               <span className="text-sm text-slate-700">{result ? `${humanValue}%` : "--%"}</span>
             </div>
