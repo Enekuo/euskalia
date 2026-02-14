@@ -132,7 +132,9 @@ export default function ProAiDetector() {
       if (!r.ok) {
         // ✅✅✅ Texto demasiado corto (backend): NO guardar traducción en state
         if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
-          setErrorKind("too_short"); // ✅ se renderiza traducido y cambia con el selector
+          setLeftKind("too_short");
+          setLeftMsg("");
+          setErrorKind("");
           setErrorMsg("");
           setLoading(false);
           return;
