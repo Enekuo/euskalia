@@ -7,7 +7,14 @@ import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 
 export default function ProAiDetector() {
   const { t } = useTranslation();
-  const tr = (key, fallback) => t(key) || fallback;
+
+  // ✅ FIX: si t devuelve la propia clave (cuando falta traducción), usamos fallback
+  const tr = (key, fallback) => {
+    const v = typeof t === "function" ? t(key) : null;
+    if (!v) return fallback;
+    if (typeof v === "string" && v.trim() === key) return fallback;
+    return v;
+  };
 
   const navigate = useNavigate();
 
@@ -18,17 +25,16 @@ export default function ProAiDetector() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ mensaje SOLO para la izquierda (texto corto)
+  // ✅ FIX idioma (derecha): no guardar traducción en state
+  const [errorKind, setErrorKind] = useState(""); // "" | "too_short"
+
+  // ✅ mensaje SOLO para la izquierda (NO usado para too_short)
   const [leftMsg, setLeftMsg] = useState("");
-  // ✅ FIX idioma: no guardar traducción en state
-  const [leftKind, setLeftKind] = useState(""); // "" | "too_short"
+  const [leftKind, setLeftKind] = useState(""); // se deja por compatibilidad
 
   // ✅✅✅ PRO LIMITS (banner)
   const [limitType, setLimitType] = useState(""); // "" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
-
-  // ✅ FIX idioma (derecha): no guardar traducción en state
-  const [errorKind, setErrorKind] = useState(""); // "" | "too_short"
 
   const setDailyLimit = () => {
     setLimitType("daily");
@@ -83,13 +89,13 @@ export default function ProAiDetector() {
     const payload = text.trim();
     if (!payload) return;
 
-    // ✅✅✅ VALIDACIÓN FRONT: si < 40, NO backend y mensaje en IZQUIERDA
+    // ✅✅✅ VALIDACIÓN FRONT: si < 40, NO backend y mensaje en DERECHA (como antes)
     if (payload.length < 40) {
       setResult(null);
-      setErrorMsg(""); // ✅ no aparece en la derecha
-      setErrorKind("");
-      setLeftKind("too_short");
+      setErrorKind("too_short");
+      setErrorMsg("");
       setLeftMsg("");
+      setLeftKind("");
       clearLimit();
       return;
     }
@@ -114,6 +120,7 @@ export default function ProAiDetector() {
             "Necesitas iniciar sesión para usar el Detector de IA (Pro)."
           )
         );
+        setErrorKind("");
         setLoading(false);
         return;
       }
@@ -130,12 +137,12 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅✅✅ Texto demasiado corto (backend): NO guardar traducción en state
+        // ✅✅✅ Texto demasiado corto (backend): mensaje en DERECHA (como antes) y reactivo a idioma
         if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
-          setLeftKind("too_short");
-          setLeftMsg("");
-          setErrorKind("");
+          setErrorKind("too_short");
           setErrorMsg("");
+          setLeftMsg("");
+          setLeftKind("");
           setLoading(false);
           return;
         }
@@ -211,21 +218,13 @@ export default function ProAiDetector() {
     });
   };
 
+  // ✅ Mensaje rojo derecha: reactivo al idioma incluso si ya estaba mostrado
   const displayRightError =
     errorMsg ||
     (errorKind === "too_short"
       ? tr(
           "aiDetector_error_too_short",
-          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
-        )
-      : "");
-
-  const displayLeftMsg =
-    leftMsg ||
-    (leftKind === "too_short"
-      ? tr(
-          "aiDetector_error_too_short",
-          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
+          "El texto es demasiado corto para analizar (mín. ~40 caracteres)."
         )
       : "");
 
@@ -254,13 +253,6 @@ export default function ProAiDetector() {
               "Escribe o pega aquí el texto que quieres analizar..."
             )}
           />
-
-          {/* ✅ mensaje de texto corto en la IZQUIERDA (zona marcada) */}
-          {!!displayLeftMsg && (
-            <div className="absolute left-7 right-7 top-[44%] -translate-y-1/2 text-center text-sm text-red-600">
-              {displayLeftMsg}
-            </div>
-          )}
 
           {/* ✅✅✅ BANNER (izquierda) */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
