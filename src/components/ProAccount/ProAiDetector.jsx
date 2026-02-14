@@ -68,10 +68,7 @@ export default function ProAiDetector() {
   const errorMsg =
     serverMsg ||
     (errorKind === "text_too_short"
-      ? tr(
-          "aiDetector_text_too_short",
-          "El texto es demasiado corto para analizar (min. ~40 caracteres)."
-        )
+      ? tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (min. ~40 caracteres).")
       : errorKind === "limit_daily"
       ? tr("pro_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
       : errorKind === "not_logged"
@@ -158,10 +155,19 @@ export default function ProAiDetector() {
 
         // ✅ 400 => VALIDACIÓN (texto demasiado corto, etc.)
         if (r.status === 400) {
+          // ✅✅✅ TU BACKEND DEVUELVE { error: "TEXT_TOO_SHORT" } (SIN message)
+          const errCode = String(data?.error || "");
+          if (errCode === "TEXT_TOO_SHORT") {
+            setServerMsg("");
+            setErrorKind("text_too_short");
+            setLoading(false);
+            return;
+          }
+
+          // fallback por si algún día viene message
           const msg = String(data?.message || "");
           const low = msg.toLowerCase();
 
-          // ✅✅✅ Detectar "texto demasiado corto" y mostrar CLAVE (multilingüe)
           const looksTooShort =
             low.includes("too short") ||
             low.includes("demasiado corto") ||
@@ -170,13 +176,12 @@ export default function ProAiDetector() {
             (low.includes("min") && (low.includes("40") || low.includes("~40")));
 
           if (looksTooShort) {
-            setServerMsg(""); // importante: NO guardamos string fijo
+            setServerMsg("");
             setErrorKind("text_too_short");
             setLoading(false);
             return;
           }
 
-          // si no es "too short", mostramos mensaje exacto del backend si existe
           if (msg) setServerMsg(msg);
           else setErrorKind("generic");
 
