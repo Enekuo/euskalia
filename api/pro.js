@@ -298,22 +298,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: "Missing text" });
       }
 
+    
       const trimmed = text.trim();
-      if (data?.error === "TEXT_TOO_SHORT") {
-  setErrorKind("text_too_short");
-  setServerMsg("");
-} else {
-  const msg = data?.message || "";
-  if (msg) {
-    setServerMsg(msg);
-    setErrorKind("");
-  } else {
-    setErrorKind("generic");
-    setServerMsg("");
-  }
-}
-setLoading(false);
-return;
+         if (trimmed.length < 40) {
+           return res.status(400).json({
+             ok: false,
+             error: "TEXT_TOO_SHORT"
+          });
+        }
 
 
       // ====== LÍMITES PLAN PRO (por UID) también para detector ======

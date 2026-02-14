@@ -25,6 +25,9 @@ export default function ProAiDetector() {
   const [limitType, setLimitType] = useState(""); // "" | "daily"
   const [limitMsg, setLimitMsg] = useState("");
 
+  // ✅ FIX idioma: no guardar traducción en state
+  const [errorKind, setErrorKind] = useState(""); // "" | "too_short"
+
   const setDailyLimit = () => {
     setLimitType("daily");
     setLimitMsg(""); // ✅ vacío para NO mostrar texto rojo arriba del banner
@@ -43,6 +46,7 @@ export default function ProAiDetector() {
           setText(clip.slice(0, 5000));
           setResult(null);
           setErrorMsg("");
+          setErrorKind("");
           setLeftMsg("");
           clearLimit();
         }
@@ -63,6 +67,7 @@ export default function ProAiDetector() {
         setText(content.slice(0, 5000));
         setResult(null);
         setErrorMsg("");
+        setErrorKind("");
         setLeftMsg("");
         clearLimit();
       }
@@ -78,6 +83,7 @@ export default function ProAiDetector() {
     if (payload.length < 40) {
       setResult(null);
       setErrorMsg(""); // ✅ no aparece en la derecha
+      setErrorKind("");
       setLeftMsg(
         tr(
           "aiDetector_error_too_short",
@@ -90,6 +96,7 @@ export default function ProAiDetector() {
 
     setLoading(true);
     setErrorMsg("");
+    setErrorKind("");
     setLeftMsg("");
     setResult(null);
     clearLimit();
@@ -122,16 +129,9 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        // ✅✅✅ Si por lo que sea el backend también devuelve "Text too short",
-        // lo mandamos igualmente a la IZQUIERDA (por seguridad).
-        if (r.status === 400 && (data?.error === "Text too short" || /too short/i.test(String(data?.error || "")))) {
-          const msg =
-            data?.message ||
-            tr(
-              "aiDetector_error_too_short",
-              "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
-            );
-          setLeftMsg(msg);
+        // ✅✅✅ Texto demasiado corto (backend): NO guardar traducción en state
+        if (r.status === 400 && (data?.error === "Text too short" || data?.error === "TEXT_TOO_SHORT")) {
+          setErrorKind("too_short");
           setErrorMsg("");
           setLoading(false);
           return;
@@ -150,6 +150,7 @@ export default function ProAiDetector() {
 
           setDailyLimit();   // ✅ muestra banner (sin mensaje arriba)
           setErrorMsg(msg);  // ✅ mantiene el mensaje de la derecha
+          setErrorKind("");
           setLoading(false);
           return;
         }
@@ -163,6 +164,7 @@ export default function ProAiDetector() {
                 "Necesitas iniciar sesión para usar esta herramienta."
               )
           );
+          setErrorKind("");
           setLoading(false);
           return;
         }
@@ -172,6 +174,7 @@ export default function ProAiDetector() {
             data?.error ||
             tr("aiDetector_error_generic", "No se pudo analizar el texto.")
         );
+        setErrorKind("");
         setLoading(false);
         return;
       }
@@ -184,6 +187,7 @@ export default function ProAiDetector() {
     } catch (e) {
       console.error(e);
       setErrorMsg(tr("aiDetector_error_network", "Error de red. Intenta de nuevo."));
+      setErrorKind("");
     } finally {
       setLoading(false);
     }
@@ -204,6 +208,15 @@ export default function ProAiDetector() {
     });
   };
 
+  const displayErrorMsg =
+    errorMsg ||
+    (errorKind === "too_short"
+      ? tr(
+          "aiDetector_error_too_short",
+          "Introduce un texto un poco más largo para analizar (mín. ~40 caracteres)."
+        )
+      : "");
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* ✅ ELIMINADO: título + subtítulo */}
@@ -217,6 +230,7 @@ export default function ProAiDetector() {
               setText(e.target.value.slice(0, 5000));
               setResult(null);
               setErrorMsg("");
+              setErrorKind("");
               setLeftMsg("");
               clearLimit();
             }}
@@ -282,6 +296,7 @@ export default function ProAiDetector() {
                 setText("");
                 setResult(null);
                 setErrorMsg("");
+                setErrorKind("");
                 setLeftMsg("");
                 clearLimit();
                 if (fileInputRef.current) fileInputRef.current.value = "";
@@ -341,7 +356,7 @@ export default function ProAiDetector() {
                 </div>
 
                 {!!result?.note && <div className="mt-3 text-xs text-slate-500">{result.note}</div>}
-                {!!errorMsg && <div className="mt-3 text-xs text-red-600">{errorMsg}</div>}
+                {!!displayErrorMsg && <div className="mt-3 text-xs text-red-600">{displayErrorMsg}</div>}
               </>
             )}
           </div>
