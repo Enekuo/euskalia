@@ -905,26 +905,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
       {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
     </span>
   </div>
-
-  <div className="mt-2 flex justify-end">
-    <button
-      type="button"
-      onClick={handleClearLeft}
-      className={`h-10 w-10 rounded-xl border flex items-center justify-center transition ${
-        textValue
-          ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-          : "border-slate-200 text-slate-300 cursor-not-allowed"
-      }`}
-      aria-label={ariaClearLeft}
-      title={titleClearLeft}
-      disabled={!textValue}
-    >
-      <Trash className="w-4 h-4" />
-    </button>
   </div>
-</div>
-</div>
-)}
+  </div>
+ )}
 
               {sourceMode === "document" && (
                 <div
