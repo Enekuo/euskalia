@@ -42,15 +42,20 @@ export default function ProAiDetector() {
   const [loading, setLoading] = useState(false);
 
   // ✅✅✅ PRO LIMITS (banner)
-  const [limitType, setLimitType] = useState(""); // "" | "daily"
+  const [limitType, setLimitType] = useState(""); // "" | "daily" | "chars"
   const [limitMsg, setLimitMsg] = useState(""); // siempre vacío para NO texto arriba
 
   // ✅ errores por "tipo" + mensaje del servidor (para 400 short text, etc.)
-  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "not_logged" | "unauthorized" | "generic" | "network" | "text_too_short"
+  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "limit_chars" | "not_logged" | "unauthorized" | "generic" | "network" | "text_too_short"
   const [serverMsg, setServerMsg] = useState(""); // ✅ mensaje exacto del backend (400, etc.)
 
   const setDailyLimit = () => {
     setLimitType("daily");
+    setLimitMsg("");
+  };
+
+  const setCharsLimit = () => {
+    setLimitType("chars");
     setLimitMsg("");
   };
 
@@ -71,6 +76,8 @@ export default function ProAiDetector() {
       ? tr("aiDetector_text_too_short", "El texto es demasiado corto para analizar (min. ~40 caracteres).")
       : errorKind === "limit_daily"
       ? tr("pro_limit_daily", "Has alcanzado el límite diario del detector IA en Pro. Vuelve mañana.")
+      : errorKind === "limit_chars"
+      ? tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan Pro.")
       : errorKind === "not_logged"
       ? tr("aiDetector_error_not_logged", "Necesitas iniciar sesión para usar el Detector de IA (Pro).")
       : errorKind === "unauthorized"
@@ -145,6 +152,15 @@ export default function ProAiDetector() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
+        // ✅ 413 => límite de caracteres (banner + frase de límite, NO "error genérico")
+        if (r.status === 413) {
+          setCharsLimit();
+          setServerMsg("");
+          setErrorKind("limit_chars");
+          setLoading(false);
+          return;
+        }
+
         // ✅ 429 => límite diario (banner izquierda + mensaje derecha)
         if (r.status === 429) {
           setDailyLimit();
@@ -235,7 +251,7 @@ export default function ProAiDetector() {
   const charCount = (text || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount >= MAX_CHARS;
+  const overLimit = charCount >= MAX_CHARS; // ✅ rojo al llegar a 5000
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
   return (
