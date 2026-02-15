@@ -821,7 +821,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount > MAX_CHARS;
+  const overLimit = charCount >= MAX_CHARS;
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
@@ -885,12 +885,28 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
               {sourceMode === "text" && (
                 <div className="flex flex-col h-full">
                   <textarea
-                    value={textValue}
-                    onChange={(e) => setTextValue(e.target.value)}
-                    placeholder={labelEnterText}
-                    className="w-full flex-1 resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
-                    aria-label={labelTabText}
-                  />
+  value={textValue}
+  onChange={(e) => {
+    const v = e.target.value;
+    setTextValue(v);
+
+    // ✅ banner + mensaje (modo chars) al llegar/superar el máximo
+    if (v.length >= MAX_CHARS) {
+      setCharsLimit(""); // usa pro_limit_chars (traducible)
+      setErrorMsg("");
+      setErrorKey("proHumanizer_errorMaxChars");
+      setErrorFallback("Has superado el límite de caracteres permitido.");
+    } else {
+      // ✅ si vuelve a estar por debajo, limpiamos el límite
+      if (limitType === "chars") {
+        clearLimit();
+      }
+    }
+  }}
+  placeholder={labelEnterText}
+  className="w-full flex-1 resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
+  aria-label={labelTabText}
+/>
 
            
               <div className="mt-2">
