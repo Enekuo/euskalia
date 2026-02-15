@@ -1492,18 +1492,32 @@ const showTranslateButton =
                       ref={leftTA}
                       value={leftText}
                       onChange={(e) => {
-                        setLeftText(e.target.value.slice(0, MAX_CHARS));
-                        setDirty(true);
-                        if (err) setErr("");
-                        if (limitType) clearLimit();
-                      }}
+  const v = e.target.value;
+  setLeftText(v);
+  setDirty(true);
+  if (err) setErr("");
+
+  // ✅ al llegar/superar 5000: banner de límite
+  if (v.length >= MAX_CHARS) {
+    setErr("");
+    setCharsLimit();
+  } else {
+    // ✅ si bajas de 5000, quitamos el banner de chars
+    if (limitType === "chars") clearLimit();
+  }
+}}
+
                       placeholder={t("translator.left_placeholder")}
                       className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${HIDE_SCROLLBAR}`}
                     />
-                    <div className="absolute bottom-4 right-6 text-[13px] text-slate-400">
-                      {leftText.length.toLocaleString()} /{" "}
-                      {MAX_CHARS.toLocaleString()}
-                    </div>
+                    <div
+  className={`absolute bottom-4 right-6 text-[13px] ${
+    leftText.length >= MAX_CHARS ? "text-red-500" : "text-slate-400"
+  }`}
+>
+  {leftText.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+</div>
+
                   </>
                 )}
 
