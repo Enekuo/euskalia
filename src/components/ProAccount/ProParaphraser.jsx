@@ -675,6 +675,11 @@ MODO CREATIVO:
 
   // ===== Contador =====
   const charCount = (textValue || "").length;
+  const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
+  const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
+  const overLimit = charCount > MAX_CHARS;
+
+  const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
   return (
     <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
@@ -755,28 +760,21 @@ MODO CREATIVO:
                     className="w-full flex-1 resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
                     aria-label={labelTabText}
                   />
+                <div className="mt-2">
+  <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+    <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
+  </div>
 
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="text-xs text-slate-500">
-                      {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
-                    </div>
+  <div className="mt-1 flex items-center justify-between">
+    <div className="text-xs" />
 
-                    <button
-                      type="button"
-                      onClick={handleClearLeft}
-                      className={`h-10 w-10 rounded-xl border flex items-center justify-center transition ${
-                        textValue
-                          ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          : "border-slate-200 text-slate-300 cursor-not-allowed"
-                      }`}
-                      aria-label={ariaClearLeft}
-                      title={titleClearLeft}
-                      disabled={!textValue}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+    <span className={`text-xs ${overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}`}>
+      {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+    </span>
+  </div>
+
+</div>
+</div>
               )}
 
               {sourceMode === "document" && (
