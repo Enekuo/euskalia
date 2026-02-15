@@ -230,6 +230,14 @@ export default function ProAiDetector() {
     });
   };
 
+  // ✅✅✅ CONTADOR / BARRA (IGUAL QUE RESUMIDOR)
+  const MAX_CHARS = 5000;
+  const charCount = (text || "").length;
+  const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
+  const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
+  const overLimit = charCount > MAX_CHARS;
+  const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 mt-6">
@@ -277,32 +285,43 @@ export default function ProAiDetector() {
             </div>
           )}
 
-          <div className="absolute left-6 bottom-5 flex items-center gap-8">
-            <span className="text-xs text-slate-400">
-              {text.length} / {tr("aiDetector_max_chars", "5000")}
-            </span>
+          {/* ✅✅✅ BARRA + CONTADOR (IGUAL QUE RESUMIDOR) + BOTÓN BORRAR */}
+          <div className="absolute left-6 right-6 bottom-5">
+            <div className="flex items-end justify-between gap-6">
+              <div className="flex-1">
+                <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
+                </div>
 
-            <button
-              type="button"
-              disabled={!canClear}
-              onClick={() => {
-                setText("");
-                setResult(null);
-                clearErrors();
-                clearLimit();
-                if (fileInputRef.current) fileInputRef.current.value = "";
-              }}
-              title={tr("aiDetector_clear_title", "Borrar")}
-              aria-label={tr("aiDetector_clear_title", "Borrar")}
-              className={
-                "h-9 w-9 rounded-xl border flex items-center justify-center transition " +
-                (canClear
-                  ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                  : "border-slate-200 bg-slate-100 text-slate-300 cursor-not-allowed")
-              }
-            >
-              <Trash2 size={16} />
-            </button>
+                <div className="mt-1 text-right text-xs">
+                  <span className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
+                    {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                disabled={!canClear}
+                onClick={() => {
+                  setText("");
+                  setResult(null);
+                  clearErrors();
+                  clearLimit();
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                title={tr("aiDetector_clear_title", "Borrar")}
+                aria-label={tr("aiDetector_clear_title", "Borrar")}
+                className={
+                  "h-9 w-9 rounded-xl border flex items-center justify-center transition " +
+                  (canClear
+                    ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    : "border-slate-200 bg-slate-100 text-slate-300 cursor-not-allowed")
+                }
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
 
           <div className="absolute right-6 bottom-4">
