@@ -286,7 +286,7 @@ export default function ProAiDetector() {
           )}
 
           {/* ✅✅✅ BARRA + CONTADOR (IGUAL QUE RESUMIDOR) + BOTÓN BORRAR */}
-          <div className="absolute left-6 bottom-5 w-[calc(100%-260px)]">
+          <div className="absolute left-6 bottom-5 w-[calc(100%-220px)]">
             <div className="flex items-end justify-between gap-6">
               <div className="flex-1">
                 <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
