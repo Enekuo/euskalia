@@ -2917,7 +2917,7 @@ pro_limit_chars: {
 
 pro_limit_daily: {
    ES: "Has alcanzado tu límite diario del plan Pro. Vuelve mañana para seguir usando esta herramienta.",
-   EUS: "Zure Pro planeko eguneroko muga gainditu duzu. Bihar itzuli tresna hau erabiltzen jarraitzeko.",
+   EUS: "Zure Pro planeko eguneroko muga gainditu duzu. Itzuli bihar tresna hau erabiltzen jarraitzeko.",
    EN: "You have reached your daily limit for the Pro plan. Come back tomorrow to continue using this tool.",
    FR: "Vous avez atteint votre limite quotidienne du plan Pro. Revenez demain pour continuer à utiliser cet outil."
 },
