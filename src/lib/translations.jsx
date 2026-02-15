@@ -3947,20 +3947,20 @@ proHumanizer_errorAuthRequired: {
   // =========================
   //        Pro BANNER LIMIT
   // =========================   
-upgradeBanner_title: {
+ProLimitBanner_title: {
   ES: "Desbloquea el Plan Premium",
   EUS: "Desblokeatu Premium plana",
   EN: "Unlock the Premium Plan",
   FR: "Débloquez le plan Premium",
 },
 
-upgradeBanner_subtitle: {
+ProLimitBanner_subtitle: {
   ES: "Más usos diarios y límites ampliados para trabajar sin interrupciones.",
   EUS:"Muga zabalagoak eta eguneko erabilera handiagoak etenik gabe lan egiteko.",
   EN: "More daily uses and higher limits to work without interruptions.",
   FR: "Plus d’utilisations quotidiennes et des limites étendues pour travailler sans interruptions.",
 },
-upgradeBanner_cta: {
+ProLimitBanner_cta: {
   ES: "Mejorar ahora",
   EUS: "Hobetu orain",
   EN: "Upgrade now",

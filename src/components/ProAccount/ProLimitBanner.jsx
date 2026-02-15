@@ -43,9 +43,9 @@ export default function ProLimitBanner({
   message,
   to = "/pricing",
   className = "",
-  titleKey = "upgradeBanner_title",
-  subtitleKey = "upgradeBanner_subtitle",
-  ctaKey = "upgradeBanner_cta",
+  titleKey = "ProLimitBanner_title",
+  subtitleKey = "ProLimitBanner_subtitle",
+  ctaKey = "ProLimitBanner_cta",
 }) {
   const { t } = useTranslation();
 
