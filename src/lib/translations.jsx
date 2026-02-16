@@ -1433,7 +1433,7 @@ registerPage_login: {
     // ===== PLAN PRO – TUS FRASES =====
 
     pro1: {
-      ES: "Límites más amplios: 5.000 caracteres por petición para el traductor.",
+      ES: "Límites más amplios para traductor: 5.000 caracteres y 30 peticiones diarias.",
       EUS: "Muga zabalagoak: 5.000 karaktere eskaera bakoitzeko itzultzailearentzat.",
       EN: "Higher limits: 5,000 characters per request for the translator.",
       FR: "Limites plus élevés : 5 000 caractères par requête pour le traducteur.",
@@ -1451,10 +1451,10 @@ registerPage_login: {
       FR: "Limite quotidienne : 150 000 caractères par jour.",
     },
     pro4: {
-      ES: "Acceso a las 6 herramientas (hasta 12.000 caracteres por petición).",
-      EUS: "6 tresnetarako sarbidea (gehienez 12.000 karaktere eskaera bakoitzeko).",
-      EN: "Access to the 6 tools (up to 12,000 characters per request).",
-      FR: "Accès aux 6 outils (jusqu’à 12 000 caractères par requête).",
+      ES: "Acceso a las 6 herramientas: Corrector, Parafraseador, Detector de IA y Humanizador.",
+      EUS: "6 tresnetarako sarbidea: Zuzentzailea, Parafraseatzailea, IA Detektagailua eta Humanizatzailea.",
+      EN: "Access to all 6 tools: Grammar Corrector, Paraphraser, AI Detector and Humanizer.",
+      FR: "Accès aux 6 outils : Correcteur, Paraphraseur, Détecteur d’IA et Humaniseur."
     },
     pro5: {
     ES: "Experiencia sin anuncios, para trabajar sin distracciones.",

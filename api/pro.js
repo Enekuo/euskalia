@@ -13,23 +13,23 @@ const PRO_RPM          = Number(process.env.PRO_RPM || 30);              // rate
 
 // ✅✅✅ LÍMITES PRO POR HERRAMIENTA (6 herramientas)
 // (defaults bajos para ir creando; luego los subes a tus valores finales)
-const PRO_TRANSLATOR_MAX_CHARS       = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 2000);
-const PRO_TRANSLATOR_DAILY_REQUESTS  = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 20);
+const PRO_TRANSLATOR_MAX_CHARS       = Number(process.env.PRO_TRANSLATOR_MAX_CHARS || 10000);
+const PRO_TRANSLATOR_DAILY_REQUESTS  = Number(process.env.PRO_TRANSLATOR_DAILY_REQUESTS || 30);
 
 const PRO_SUMMARY_MAX_CHARS          = Number(process.env.PRO_SUMMARY_MAX_CHARS || 22000);
 const PRO_SUMMARY_DAILY_REQUESTS     = Number(process.env.PRO_SUMMARY_DAILY_REQUESTS || 6);
 
-const PRO_CORRECTOR_MAX_CHARS        = Number(process.env.PRO_CORRECTOR_MAX_CHARS || 2000);
-const PRO_CORRECTOR_DAILY_REQUESTS   = Number(process.env.PRO_CORRECTOR_DAILY_REQUESTS || 2);
+const PRO_CORRECTOR_MAX_CHARS        = Number(process.env.PRO_CORRECTOR_MAX_CHARS || 20000);
+const PRO_CORRECTOR_DAILY_REQUESTS   = Number(process.env.PRO_CORRECTOR_DAILY_REQUESTS || 6);
 
-const PRO_PARAPHRASER_MAX_CHARS      = Number(process.env.PRO_PARAPHRASER_MAX_CHARS || 2000);
-const PRO_PARAPHRASER_DAILY_REQUESTS = Number(process.env.PRO_PARAPHRASER_DAILY_REQUESTS || 2);
+const PRO_PARAPHRASER_MAX_CHARS      = Number(process.env.PRO_PARAPHRASER_MAX_CHARS || 20000);
+const PRO_PARAPHRASER_DAILY_REQUESTS = Number(process.env.PRO_PARAPHRASER_DAILY_REQUESTS || 6);
 
-const PRO_AI_DETECTOR_MAX_CHARS      = Number(process.env.PRO_AI_DETECTOR_MAX_CHARS || 2000);
-const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_REQUESTS || 10);
+const PRO_AI_DETECTOR_MAX_CHARS      = Number(process.env.PRO_AI_DETECTOR_MAX_CHARS || 20000);
+const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_REQUESTS || 6);
 
 const PRO_HUMANIZER_MAX_CHARS        = Number(process.env.PRO_HUMANIZER_MAX_CHARS || 20000);
-const PRO_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PRO_HUMANIZER_DAILY_REQUESTS || 2);
+const PRO_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PRO_HUMANIZER_DAILY_REQUESTS || 6);
 
 
 
