@@ -1433,16 +1433,16 @@ registerPage_login: {
     // ===== PLAN PRO – TUS FRASES =====
 
     pro1: {
-      ES: "Límites más amplios para traductor: 5.000 caracteres y 30 peticiones diarias.",
-      EUS: "Muga zabalagoak: 5.000 karaktere eskaera bakoitzeko itzultzailearentzat.",
-      EN: "Higher limits: 5,000 characters per request for the translator.",
-      FR: "Limites plus élevés : 5 000 caractères par requête pour le traducteur.",
-    },
+      ES: "Límites más amplios para el traductor: 5.000 caracteres por peticion y 30 peticiones diarias.",
+      EUS: "Muga zabalagoak itzultzailearentzat: 5.000 karaktere eskaerako eta 30 eskaera eguneko.",
+      EN: "Higher limits for the translator: 5,000 characters per request and 30 daily requests.",
+      FR: "Limites plus élevées pour le traducteur : 5 000 caractères par demande et 30 demandes par jour.",
+      },
     pro2: {
-      ES: "Límites más amplios: 18.000 caracteres por petición para el resumidor.",
-      EUS: "Muga zabalagoak: 18.000 karaktere eskaera bakoitzeko laburtzailearentzat.",
-      EN: "Higher limits: 18,000 characters per request for the summarizer.",
-      FR: "Limites plus élevés : 18 000 caractères par requête pour le résumeur.",
+      ES: "Límites más amplios para resumidor: 18.000 caracteres por peticion y 6 peticiones diarias.",
+      EUS: "Muga zabalagoak laburtzailearentzat: 18.000 karaktere eskaerako eta 6 eskaera eguneko.",
+      EN: "Higher limits for the summarizer: 18,000 characters per request and 6 daily requests.",
+      FR: "Limites plus élevées pour le résumeur : 18 000 caractères par demande et 6 demandes par jour."
     },
     pro3: {
       ES: "Límite diario: 150.000 caracteres al día.",
