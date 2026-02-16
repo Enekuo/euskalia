@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
@@ -57,6 +57,8 @@ function HelpBulbIcon({ size = 16, className = "" }) {
 }
 
 export default function Header() {
+  const location = useLocation();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
@@ -87,6 +89,15 @@ export default function Header() {
     });
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
+
+  // ✅ Título dinámico en el header (solo para herramientas públicas)
+  const pathname = location?.pathname || "/";
+  const headerToolTitle =
+    pathname === "/" || pathname.startsWith("/traductor")
+      ? t("toolsMenu.translatorTitle")
+      : pathname.startsWith("/resumen")
+      ? t("toolsMenu.summaryTitle")
+      : "";
 
   // ✅ AHORA CON CLAVES
   const tools = [
@@ -264,6 +275,15 @@ export default function Header() {
               {t("header.pricing")}
             </Link>
           </nav>
+        </div>
+
+        {/* ✅ TÍTULO EN EL CENTRO (desktop) */}
+        <div className="hidden lg:flex flex-1 items-center justify-center">
+          {headerToolTitle ? (
+            <div className="text-sm font-semibold text-slate-500">
+              {headerToolTitle}
+            </div>
+          ) : null}
         </div>
 
         {/* DERECHA (desktop) */}

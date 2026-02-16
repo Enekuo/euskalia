@@ -1146,7 +1146,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
       
       
-                            {/* ✅ Layout con columna izquierda para los 2 botones */}
+          {/* ✅ Layout con columna izquierda para los 2 botones */}
           <div className="relative">
             {/* ✅ BOTONES IZQUIERDA DEL TODO */}
             <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
@@ -1154,28 +1154,28 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               <button
                 type="button"
                 aria-current="page"
-                title={labelToolTranslator}
+                title={tr("toolsMenu.translatorTitle", labelToolTranslator)}
                 className="w-12 h-12 mt-8 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
               >
                 <Globe className="w-6 h-6 text-blue-600" />
               </button>
 
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {labelToolTranslator}
+                {tr("toolsMenu.translatorTitle", labelToolTranslator)}
               </div>
 
               {/* Resumidor (inactivo) */}
               <button
                 type="button"
                 onClick={() => navigate("/resumen")}
-                title={labelToolSummarizer}
+                title={tr("toolsMenu.summaryTitle", labelToolSummarizer)}
                 className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
               >
                 <FileText className="w-6 h-6 text-slate-700" />
               </button>
 
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {labelToolSummarizer}
+                {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
             </div>
 
