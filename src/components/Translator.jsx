@@ -1147,9 +1147,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       
       
           {/* ✅ Layout con columna izquierda para los 2 botones */}
-          <div className="flex items-stretch gap-4">
+          <div className="relative">
             {/* ✅ BOTONES IZQUIERDA DEL TODO */}
-            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16">
+            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute left-0 top-0">
               {/* Traductor (activo) */}
               <button
                 type="button"
