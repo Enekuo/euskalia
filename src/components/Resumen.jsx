@@ -745,7 +745,7 @@ const PremiumPromptNote = () => (
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
             {/* ✅ BOTONES IZQUIERDA DEL TODO */}
-            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-12">
+            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-8">
               {/* Traductor (inactivo) */}
               <button
                 type="button"
