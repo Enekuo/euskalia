@@ -709,7 +709,7 @@ export default function ProSummary() {
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount > MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount > MAX_CHARS;
+  const overLimit = charCount >= MAX_CHARS;
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
