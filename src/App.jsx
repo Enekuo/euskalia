@@ -40,11 +40,17 @@ import ProHumanizer from "@/components/ProAccount/ProHumanizer";
 
 
 
+// Premium-Account //
+import PremiumLayout from "@/components/PremiumAccount/PremiumLayout";
+import PremiumHome from "@/components/PremiumAccount/PremiumHome";
+
 
 function App() {
   const location = useLocation();
 
-  const isProRoute = location.pathname.startsWith("/cuenta-pro");
+  const isProRoute =
+  location.pathname.startsWith("/cuenta-pro") ||
+  location.pathname.startsWith("/cuenta-premium");
 
   const showHeader =
     !isProRoute &&
@@ -136,6 +142,12 @@ const seo =
             <Route path="/cuenta-pro/humanizador" element={<ProLayout><ProHumanizer /></ProLayout>} />
             <Route path="/cuenta-pro/soporte" element={<ProLayout><SupportPage /></ProLayout>} />
          
+
+            {/* Pro-Account */}
+            <Route path="/cuenta-premium" element={<PremiumLayout><PremiumHome /></PremiumLayout>} />
+
+
+
           </Routes>
         </main>
 

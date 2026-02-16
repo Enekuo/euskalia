@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { Send, CheckCircle2, Sparkles } from "lucide-react";
+import { Send, CheckCircle2, Sparkles, Gem } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const MAX_CHARS = 1000;
 
 export default function Suggestions() {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const tr = (key, fallback = "") => {
     const val = typeof t === "function" ? t(key) : null;
@@ -85,7 +86,17 @@ export default function Suggestions() {
     <section className="w-full h-full bg-gradient-to-b from-[#F4F8FF] via-white to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10 space-y-6">
         {/* CABECERA */}
-        <div className="space-y-4 text-center">
+        <div className="relative space-y-4 text-center">
+          {/* BOTÓN CUENTA PREMIUM (arriba derecha) */}
+          <button
+            type="button"
+            onClick={() => navigate("/cuenta-premium")}
+            className="absolute right-0 top-0 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm hover:bg-white hover:border-slate-300 transition"
+          >
+            <Gem className="w-4 h-4 text-blue-600" />
+            {tr("suggestions.premium_account_button", "Cuenta Premium")}
+          </button>
+
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1 text-[11px] font-medium text-blue-700 shadow-sm mx-auto">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{tr("suggestions.zone_badge", "")}</span>
