@@ -1439,10 +1439,10 @@ registerPage_login: {
       FR: "Limites plus élevés : 5 000 caractères par requête pour le traducteur.",
     },
     pro2: {
-      ES: "Límites más amplios: 12.000 caracteres por petición para el resumidor.",
-      EUS: "Muga zabalagoak: 12.000 karaktere eskaera bakoitzeko laburtzailearentzat.",
-      EN: "Higher limits: 12,000 characters per request for the summarizer.",
-      FR: "Limites plus élevés : 12 000 caractères par requête pour le résumeur.",
+      ES: "Límites más amplios: 18.000 caracteres por petición para el resumidor.",
+      EUS: "Muga zabalagoak: 18.000 karaktere eskaera bakoitzeko laburtzailearentzat.",
+      EN: "Higher limits: 18,000 characters per request for the summarizer.",
+      FR: "Limites plus élevés : 18 000 caractères par requête pour le résumeur.",
     },
     pro3: {
       ES: "Límite diario: 150.000 caracteres al día.",

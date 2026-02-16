@@ -92,7 +92,7 @@ export default function ProSummary() {
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 12000;
+  const MAX_CHARS = 18000;
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -560,7 +560,7 @@ export default function ProSummary() {
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
         documentsText
-          .map((d) => `--- ${d.name} ---\n${(d.text || "").slice(0, 12000)}`)
+          .map((d) => `--- ${d.name} ---\n${(d.text || "").slice(0, 18000)}`)
           .join("\n\n")
       : "";
 
