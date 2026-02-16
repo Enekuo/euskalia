@@ -12,6 +12,7 @@ import {
   Link2 as UrlIcon,
   Plus,
   X,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -22,11 +23,13 @@ import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import { useNavigate } from "react-router-dom";
 
 const MAX_CHARS = 3000;
 
 export default function Translator() {
   const { t, language } = useTranslation();
+  const navigate = useNavigate();
 
   const tr = (k, f = "") => {
     const val = typeof t === "function" ? t(k) : null;
@@ -229,10 +232,6 @@ export default function Translator() {
 
     return { detected, translation };
   };
-
-
-
-
 
   const directionText = (srcVal, dstVal) => {
     if (srcVal === "auto") {
@@ -911,30 +910,15 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const labelTabDocument = tr("summary.sources_tab_document", "Dokumentua");
   const labelTabUrl = tr("summary.sources_tab_url", "URLa");
 
-  const labelChooseFileTitle = tr(
-    "summary.choose_file_title",
-    "Elige tu archivo o carpeta"
-  );
-  const labelAcceptedFormats = tr(
-    "summary.accepted_formats",
-    "Formatos admitidos: PDF, DOCX, TXT, MD, imágenes…"
-  );
-  const labelFolderHint = tr(
-    "summary.folder_hint",
-    "Puedes arrastrar varios archivos a la vez."
-  );
+  const labelChooseFileTitle = tr("summary.choose_file_title", "Elige tu archivo o carpeta");
+  const labelAcceptedFormats = tr("summary.accepted_formats", "Formatos admitidos: PDF, DOCX, TXT, MD, imágenes…");
+  const labelFolderHint = tr("summary.folder_hint", "Puedes arrastrar varios archivos a la vez.");
   const labelPasteUrls = tr("summary.paste_urls_label", "Pegar URLs*");
   const labelAddUrl = tr("summary.add_url", "Añadir URLs");
   const labelSaveUrls = tr("summary.save_urls", "Guardar");
   const labelCancel = tr("summary.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "summary.urls_note_visible",
-    "Solo se importará el texto visible del sitio web."
-  );
-  const labelUrlsNotePaywalled = tr(
-    "summary.urls_note_paywalled",
-    "No se admiten artículos de pago."
-  );
+  const labelUrlsNoteVisible = tr("summary.urls_note_visible", "Solo se importará el texto visible del sitio web.");
+  const labelUrlsNotePaywalled = tr("summary.urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("summary.remove", "Quitar");
 
   const stopPlayback = () => {
@@ -1131,9 +1115,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       } catch {}
     }
     const seen = new Set();
-    return valid.filter((v) =>
-      seen.has(v.href) ? false : (seen.add(v.href), true)
-    );
+    return valid.filter((v) => (seen.has(v.href) ? false : (seen.add(v.href), true)));
   };
 
   const addUrlsFromTextarea = () => {
@@ -1150,292 +1132,427 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   };
 
   // ✅ FIX: SOLO UNA VEZ, COMPLETO (sin duplicados)
-  const removeUrl = (id) =>
-    setUrlItems((prev) => prev.filter((u) => u.id !== id));
+  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
+
+  // ✅ Labels para los dos botones (izquierda)
+  const labelToolTranslator = tr("public_tools_translator", uiLang === "EUS" ? "Itzultzailea" : "Traductor");
+  const labelToolSummarizer = tr("public_tools_summarizer", uiLang === "EUS" ? "Laburtzailea" : "Resumidor");
 
   return (
     <>
       <h1 className="sr-only">Traductor de euskera online y gratis</h1>
+
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
-            <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
-              <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
-                <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
-                  <button
-                    type="button"
-                    onClick={() => setSourceMode("text")}
-                    className={`inline-flex items-center gap-2 ${
-                      sourceMode === "text"
-                        ? "text-blue-600"
-                        : "text-slate-700 hover:text-slate-900"
-                    }`}
-                  >
-                    <FileText
-                      className={`w-4 h-4 ${
-                        sourceMode === "text" ? "text-blue-600" : "text-slate-500"
-                      }`}
-                    />
-                    <span>{labelTabText}</span>
-                  </button>
-
-                  <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
-
-                  <button
-                    type="button"
-                    onClick={() => setSourceMode("document")}
-                    className={`inline-flex items-center gap-2 ${
-                      sourceMode === "document"
-                        ? "text-blue-600"
-                        : "text-slate-700 hover:text-slate-900"
-                    }`}
-                  >
-                    <FileIcon
-                      className={`w-4 h-4 ${
-                        sourceMode === "document"
-                          ? "text-blue-600"
-                          : "text-slate-500"
-                      }`}
-                    />
-                    <span>{labelTabDocument}</span>
-                  </button>
-
-                  <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
-
-                  <button
-                    type="button"
-                    onClick={() => setSourceMode("url")}
-                    className={`inline-flex items-center gap-2 ${
-                      sourceMode === "url"
-                        ? "text-blue-600"
-                        : "text-slate-700 hover:text-slate-900"
-                    }`}
-                  >
-                    <UrlIcon
-                      className={`w-4 h-4 ${
-                        sourceMode === "url" ? "text-blue-600" : "text-slate-500"
-                      }`}
-                    />
-                    <span>{labelTabUrl}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleClearLeft}
-                    aria-label={t("translator.clear_left")}
-                    className="sm:hidden ml-3 p-2 rounded-md hover:bg-slate-100"
-                  >
-                    <Trash2 className="w-5 h-5 text-slate-500" />
-                  </button>
-
-                  <span className="ml-4 h-5 w-px bg-slate-200" />
-                </div>
-
-                <div className="w-full flex items-center justify-center pointer-events-auto sm:pointer-events-none sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
-                  <div className="relative pointer-events-auto w-full sm:w-auto grid grid-cols-[1fr_auto_1fr] items-center sm:flex sm:items-center">
-                    <div className="relative justify-self-end sm:mr-16" ref={leftRef}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpenLeft((v) => !v);
-                          setOpenRight(false);
-                        }}
-                        className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
-                      >
-                        <span className="max-w-[150px] sm:max-w-none truncate">
-                          {srcButtonLabel}
-                        </span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M6 9l6 6 6-6"
-                            stroke="#334155"
-                            strokeWidth="1.7"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-
-                      <Dropdown
-                        open={openLeft}
-                        selected={src}
-                        onSelect={(val) => {
-                          setSrc(val);
-                          setDetectedLangLabel("");
-                          setOpenLeft(false);
-                        }}
-                        align="left"
-                        options={OPTIONS_SRC}
-                      />
-                    </div>
-
-                    <button
-                      type="button"
-                      aria-label="Intercambiar idiomas"
-                      onClick={swap}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M7 7h11M7 7l3-3M7 7l3 3"
-                          stroke="#475569"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M17 17H6M17 17l-3-3M17 17l-3 3"
-                          stroke="#475569"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-
-                    <div className="relative justify-self-start sm:ml-16" ref={rightRef}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpenRight((v) => !v);
-                          setOpenLeft(false);
-                        }}
-                        className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
-                      >
-                        <span className="max-w-[150px] sm:max-w-none truncate">
-                          {OPTIONS_DST.find((o) => o.value === dst)?.label}
-                        </span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M6 9l6 6 6-6"
-                            stroke="#334155"
-                            strokeWidth="1.7"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-
-                      <Dropdown
-                        open={openRight}
-                        selected={dst}
-                        onSelect={(val) => {
-                          setDst(val);
-                          setOpenRight(false);
-                        }}
-                        align="right"
-                        options={OPTIONS_DST}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+          {/* ✅ Layout con columna izquierda para los 2 botones */}
+          <div className="flex items-stretch gap-4">
+            {/* ✅ BOTONES IZQUIERDA DEL TODO */}
+            <div className="hidden md:flex flex-col gap-4 pt-2">
+              {/* Traductor (activo) */}
               <button
                 type="button"
-                onClick={handleClearLeft}
-                aria-label={t("translator.clear_left")}
-                className="group hidden sm:block absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-md hover:bg-slate-100"
+                aria-current="page"
+                className="
+                  w-[140px] rounded-2xl border border-blue-200 bg-blue-50
+                  px-5 py-6 text-left shadow-sm
+                "
               >
-                <Trash2 className="w-5 h-5 text-slate-500" />
-                <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                  {t("translator.clear_left")}
-                </span>
+                <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="mt-4 text-[18px] font-semibold text-slate-900">
+                  {labelToolTranslator}
+                </div>
+              </button>
+
+              {/* Resumidor (inactivo) */}
+              <button
+                type="button"
+                onClick={() => navigate("/resumen")}
+                className="
+                  w-[140px] rounded-2xl border border-slate-200 bg-white
+                  px-5 py-6 text-left hover:bg-slate-50 transition shadow-sm
+                "
+              >
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-slate-700" />
+                </div>
+                <div className="mt-4 text-[18px] font-semibold text-slate-900">
+                  {labelToolSummarizer}
+                </div>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-              <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
-                {sourceMode === "text" && (
-                  <>
-                    <div className="flex-1 min-h-0">
-                      <textarea
-                        ref={leftTA}
-                        value={leftText}
-                        onChange={(e) => {
-                          const next = e.target.value;
-                          setLeftText(next);
-                          setDirty(true);
-
-                          if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
-                        }}
-                        placeholder={t("translator.left_placeholder")}
-                        className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
-                      />
-                    </div>
-
-                    <div
-                      className={`absolute bottom-4 right-6 text-[13px] ${
-                        leftText.length > MAX_CHARS ? "text-red-500" : "text-slate-400"
+            {/* ✅ TU CARD ORIGINAL (igual) */}
+            <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
+              <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
+                <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
+                  <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
+                    <button
+                      type="button"
+                      onClick={() => setSourceMode("text")}
+                      className={`inline-flex items-center gap-2 ${
+                        sourceMode === "text"
+                          ? "text-blue-600"
+                          : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      {leftText.length.toLocaleString("es-ES")} /{" "}
-                      {MAX_CHARS.toLocaleString("es-ES")}
-                    </div>
-                  </>
-                )}
+                      <FileText
+                        className={`w-4 h-4 ${
+                          sourceMode === "text" ? "text-blue-600" : "text-slate-500"
+                        }`}
+                      />
+                      <span>{labelTabText}</span>
+                    </button>
 
-                {sourceMode === "document" && (
-                  <div
-                    className={`h-full w-full flex flex-col relative min-h-0 ${
-                      dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
-                    }`}
-                    onDragEnter={onDragEnter}
-                    onDragOver={onDragOver}
-                    onDragLeave={onDragLeave}
-                    onDrop={onDrop}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="hidden"
-                      accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={onFiles}
-                    />
+                    <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
 
                     <button
                       type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-10 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label={labelChooseFileTitle}
-                      title={labelChooseFileTitle}
+                      onClick={() => setSourceMode("document")}
+                      className={`inline-flex items-center gap-2 ${
+                        sourceMode === "document"
+                          ? "text-blue-600"
+                          : "text-slate-700 hover:text-slate-900"
+                      }`}
                     >
-                      <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
-                        <Plus className="w-10 h-10 text-sky-600" />
-                      </div>
-                      <div className="text-xl font-semibold text-slate-800">
-                        {labelChooseFileTitle}
-                      </div>
-                      <div className="mt-4 text-sm text-slate-500">
-                        {labelAcceptedFormats}
-                      </div>
-                      <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
+                      <FileIcon
+                        className={`w-4 h-4 ${
+                          sourceMode === "document"
+                            ? "text-blue-600"
+                            : "text-slate-500"
+                        }`}
+                      />
+                      <span>{labelTabDocument}</span>
                     </button>
 
-                    {documents.length > 0 && (
-                      <div className="mt-4 flex-1 min-h-0">
-                        <ul className="h-full overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-x-hidden">
-                          {documents.map(({ id, file }) => (
-                            <li
-                              key={id}
-                              className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
+                    <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
+
+                    <button
+                      type="button"
+                      onClick={() => setSourceMode("url")}
+                      className={`inline-flex items-center gap-2 ${
+                        sourceMode === "url"
+                          ? "text-blue-600"
+                          : "text-slate-700 hover:text-slate-900"
+                      }`}
+                    >
+                      <UrlIcon
+                        className={`w-4 h-4 ${
+                          sourceMode === "url" ? "text-blue-600" : "text-slate-500"
+                        }`}
+                      />
+                      <span>{labelTabUrl}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleClearLeft}
+                      aria-label={t("translator.clear_left")}
+                      className="sm:hidden ml-3 p-2 rounded-md hover:bg-slate-100"
+                    >
+                      <Trash2 className="w-5 h-5 text-slate-500" />
+                    </button>
+
+                    <span className="ml-4 h-5 w-px bg-slate-200" />
+                  </div>
+
+                  <div className="w-full flex items-center justify-center pointer-events-auto sm:pointer-events-none sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
+                    <div className="relative pointer-events-auto w-full sm:w-auto grid grid-cols-[1fr_auto_1fr] items-center sm:flex sm:items-center">
+                      <div className="relative justify-self-end sm:mr-16" ref={leftRef}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenLeft((v) => !v);
+                            setOpenRight(false);
+                          }}
+                          className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        >
+                          <span className="max-w-[150px] sm:max-w-none truncate">
+                            {srcButtonLabel}
+                          </span>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M6 9l6 6 6-6"
+                              stroke="#334155"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+
+                        <Dropdown
+                          open={openLeft}
+                          selected={src}
+                          onSelect={(val) => {
+                            setSrc(val);
+                            setDetectedLangLabel("");
+                            setOpenLeft(false);
+                          }}
+                          align="left"
+                          options={OPTIONS_SRC}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        aria-label="Intercambiar idiomas"
+                        onClick={swap}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M7 7h11M7 7l3-3M7 7l3 3"
+                            stroke="#475569"
+                            strokeWidth="1.7"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M17 17H6M17 17l-3-3M17 17l-3 3"
+                            stroke="#475569"
+                            strokeWidth="1.7"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+
+                      <div className="relative justify-self-start sm:ml-16" ref={rightRef}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenRight((v) => !v);
+                            setOpenLeft(false);
+                          }}
+                          className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
+                        >
+                          <span className="max-w-[150px] sm:max-w-none truncate">
+                            {OPTIONS_DST.find((o) => o.value === dst)?.label}
+                          </span>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M6 9l6 6 6-6"
+                              stroke="#334155"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+
+                        <Dropdown
+                          open={openRight}
+                          selected={dst}
+                          onSelect={(val) => {
+                            setDst(val);
+                            setOpenRight(false);
+                          }}
+                          align="right"
+                          options={OPTIONS_DST}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleClearLeft}
+                  aria-label={t("translator.clear_left")}
+                  className="group hidden sm:block absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-md hover:bg-slate-100"
+                >
+                  <Trash2 className="w-5 h-5 text-slate-500" />
+                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                    {t("translator.clear_left")}
+                  </span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+                <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
+                  {sourceMode === "text" && (
+                    <>
+                      <div className="flex-1 min-h-0">
+                        <textarea
+                          ref={leftTA}
+                          value={leftText}
+                          onChange={(e) => {
+                            const next = e.target.value;
+                            setLeftText(next);
+                            setDirty(true);
+
+                            if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
+                          }}
+                          placeholder={t("translator.left_placeholder")}
+                          className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
+                        />
+                      </div>
+
+                      <div
+                        className={`absolute bottom-4 right-6 text-[13px] ${
+                          leftText.length > MAX_CHARS ? "text-red-500" : "text-slate-400"
+                        }`}
+                      >
+                        {leftText.length.toLocaleString("es-ES")} /{" "}
+                        {MAX_CHARS.toLocaleString("es-ES")}
+                      </div>
+                    </>
+                  )}
+
+                  {sourceMode === "document" && (
+                    <div
+                      className={`h-full w-full flex flex-col relative min-h-0 ${
+                        dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
+                      }`}
+                      onDragEnter={onDragEnter}
+                      onDragOver={onDragOver}
+                      onDragLeave={onDragLeave}
+                      onDrop={onDrop}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.json,.xml,.epub,.txt,.vtt,.srt,.md,.rtf,.html,.htm,.jpg,.jpeg,.png"
+                        onChange={onFiles}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-10 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                        aria-label={labelChooseFileTitle}
+                        title={labelChooseFileTitle}
+                      >
+                        <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
+                          <Plus className="w-10 h-10 text-sky-600" />
+                        </div>
+                        <div className="text-xl font-semibold text-slate-800">
+                          {labelChooseFileTitle}
+                        </div>
+                        <div className="mt-4 text-sm text-slate-500">
+                          {labelAcceptedFormats}
+                        </div>
+                        <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
+                      </button>
+
+                      {documents.length > 0 && (
+                        <div className="mt-4 flex-1 min-h-0">
+                          <ul className="h-full overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-x-hidden">
+                            {documents.map(({ id, file }) => (
+                              <li
+                                key={id}
+                                className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
+                              >
+                                <div className="min-w-0 flex items-center gap-3 flex-1">
+                                  <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
+                                    <FileIcon className="w-4 h-4" />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <span className="text-sm font-medium block truncate">
+                                      {file.name}
+                                    </span>
+                                    <span className="text-xs text-slate-500">
+                                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <button
+                                  onClick={() => removeDocument(id)}
+                                  className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
+                                  title={labelRemove}
+                                  aria-label={labelRemove}
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {sourceMode === "url" && (
+                    <div className="h-full w-full flex flex-col min-h-0">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-600">
+                          <UrlIcon className="w-4 h-4" />
+                          {labelPasteUrls}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setUrlInputOpen(true)}
+                          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
+                          aria-label={labelAddUrl}
+                          title={labelAddUrl}
+                        >
+                          <Plus className="w-4 h-4 text-sky-500" />
+                          {labelAddUrl}
+                        </button>
+                      </div>
+
+                      {urlInputOpen && (
+                        <div className="mb-4 rounded-xl border border-slate-300 p-2 sm:p-3 bg-white">
+                          <textarea
+                            value={urlsTextarea}
+                            onChange={(e) => setUrlsTextarea(e.target.value)}
+                            placeholder={tr(
+                              "summary.paste_urls_placeholder",
+                              "Introduce aquí una o más URLs (separadas por línea)"
+                            )}
+                            rows={2}
+                            className="w-full min-h-[56px] sm:min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
+                            aria-label={labelPasteUrls}
+                          />
+                          <div className="mt-2 flex items-center gap-2">
+                            <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
+                              {labelSaveUrls}
+                            </Button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUrlsTextarea("");
+                                setUrlInputOpen(false);
+                              }}
+                              className="h-9 px-3 rounded-md border border-slate-300 hover:bg-slate-50 text-sm"
                             >
+                              {labelCancel}
+                            </button>
+                          </div>
+                          <div className="mt-3 sm:mt-6 text-[11px] sm:text-xs text-slate-500">
+                            • {labelUrlsNoteVisible}
+                            <br />• {labelUrlsNotePaywalled}
+                          </div>
+                        </div>
+                      )}
+
+                      {urlItems.length > 0 && (
+                        <ul className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
+                          {urlItems.map(({ id, url, host }) => (
+                            <li key={id} className="flex items-center justify-between gap-3 px-3 py-2">
                               <div className="min-w-0 flex items-center gap-3 flex-1">
                                 <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                  <FileIcon className="w-4 h-4" />
+                                  <UrlIcon className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-sm font-medium block truncate">
-                                    {file.name}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                  </span>
+                                  <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-sm font-medium block truncate text-sky-600 hover:underline"
+                                    title={url}
+                                  >
+                                    {host} — {url}
+                                  </a>
                                 </div>
                               </div>
 
                               <button
-                                onClick={() => removeDocument(id)}
+                                onClick={() => removeUrl(id)}
                                 className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                                 title={labelRemove}
                                 aria-label={labelRemove}
@@ -1445,206 +1562,116 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                             </li>
                           ))}
                         </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {sourceMode === "url" && (
-                  <div className="h-full w-full flex flex-col min-h-0">
-                    <div className="mb-3 flex items-center justify-between">
-                      <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <UrlIcon className="w-4 h-4" />
-                        {labelPasteUrls}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setUrlInputOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
-                        aria-label={labelAddUrl}
-                        title={labelAddUrl}
-                      >
-                        <Plus className="w-4 h-4 text-sky-500" />
-                        {labelAddUrl}
-                      </button>
+                      )}
                     </div>
-
-                    {urlInputOpen && (
-                      <div className="mb-4 rounded-xl border border-slate-300 p-2 sm:p-3 bg-white">
-                        <textarea
-                          value={urlsTextarea}
-                          onChange={(e) => setUrlsTextarea(e.target.value)}
-                          placeholder={tr(
-                            "summary.paste_urls_placeholder",
-                            "Introduce aquí una o más URLs (separadas por línea)"
-                          )}
-                          rows={2}
-                          className="w-full min-h-[56px] sm:min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
-                          aria-label={labelPasteUrls}
-                        />
-                        <div className="mt-2 flex items-center gap-2">
-                          <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
-                            {labelSaveUrls}
-                          </Button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setUrlsTextarea("");
-                              setUrlInputOpen(false);
-                            }}
-                            className="h-9 px-3 rounded-md border border-slate-300 hover:bg-slate-50 text-sm"
-                          >
-                            {labelCancel}
-                          </button>
-                        </div>
-                        <div className="mt-3 sm:mt-6 text-[11px] sm:text-xs text-slate-500">
-                          • {labelUrlsNoteVisible}
-                          <br />• {labelUrlsNotePaywalled}
-                        </div>
-                      </div>
-                    )}
-
-                    {urlItems.length > 0 && (
-                      <ul className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
-                        {urlItems.map(({ id, url, host }) => (
-                          <li key={id} className="flex items-center justify-between gap-3 px-3 py-2">
-                            <div className="min-w-0 flex items-center gap-3 flex-1">
-                              <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                <UrlIcon className="w-4 h-4" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-sm font-medium block truncate text-sky-600 hover:underline"
-                                  title={url}
-                                >
-                                  {host} — {url}
-                                </a>
-                              </div>
-                            </div>
-
-                            <button
-                              onClick={() => removeUrl(id)}
-                              className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
-                              title={labelRemove}
-                              aria-label={labelRemove}
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
-                <div className="flex-1 min-h-0 pb-8">
-                  <textarea
-                    ref={rightTA}
-                    value={
-                      loading && document.activeElement !== rightTA.current
-                        ? t("translator.loading")
-                        : rightText
-                    }
-                    placeholder={t("translator.right_placeholder")}
-                    readOnly
-                    className={`w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto ${
-                      loading ? "italic text-slate-500" : ""
-                    }`}
-                  />
+                  )}
                 </div>
 
-                {sourceMode === "text" && !loading && !err && (!hasRealResult || dirty) && (
-                  <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
+                <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
+                  <div className="flex-1 min-h-0 pb-8">
+                    <textarea
+                      ref={rightTA}
+                      value={
+                        loading && document.activeElement !== rightTA.current
+                          ? t("translator.loading")
+                          : rightText
+                      }
+                      placeholder={t("translator.right_placeholder")}
+                      readOnly
+                      className={`w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto ${
+                        loading ? "italic text-slate-500" : ""
+                      }`}
+                    />
+                  </div>
+
+                  {sourceMode === "text" && !loading && !err && (!hasRealResult || dirty) && (
+                    <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={handleTranslateClick}
+                        disabled={!leftText.trim() || leftText.length > MAX_CHARS}
+                        className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
+                          !leftText.trim() || leftText.length > MAX_CHARS
+                            ? "bg-blue-600 opacity-50 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        {labelTranslateBtn}
+                      </button>
+                    </div>
+                  )}
+
+                  {isLimitReached && (
+                    <>
+                      <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
+                        <UpgradeBanner />
+                      </div>
+
+                      {!!err && (
+                        <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-16 z-10 text-sm text-red-500 text-center">
+                          {err}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {!!err && !isLimitReached && (
+                    <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
+                      {err}
+                    </div>
+                  )}
+
+                  <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                     <button
                       type="button"
-                      onClick={handleTranslateClick}
-                      disabled={!leftText.trim() || leftText.length > MAX_CHARS}
-                      className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
-                        !leftText.trim() || leftText.length > MAX_CHARS
-                          ? "bg-blue-600 opacity-50 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
+                      onClick={handleSpeakToggle}
+                      aria-label={speaking ? t("translator.stop") : t("translator.listen")}
+                      aria-pressed={speaking}
+                      disabled={!hasRealResult}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                        speaking ? "text-slate-900" : ""
+                      } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                    >
+                      {speaking ? (
+                        <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
+                      ) : (
+                        <Volume2 className="w-5 h-5" />
+                      )}
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {speaking ? t("translator.stop") : t("translator.listen")}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      aria-label={t("translator.copy")}
+                      disabled={!hasRealResult}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                       }`}
                     >
-                      {labelTranslateBtn}
+                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {copied ? t("translator.copied") : t("translator.copy")}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadPdf}
+                      aria-label={t("translator.pdf")}
+                      disabled={!hasRealResult}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                      }`}
+                    >
+                      <FileDown className="w-5 h-5" />
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {t("translator.pdf")}
+                      </span>
                     </button>
                   </div>
-                )}
-
-                {isLimitReached && (
-                  <>
-                    <div className="absolute left-6 md:left-8 right-6 md:right-8 top-1/2 -translate-y-1/2 z-10">
-                      <UpgradeBanner />
-                    </div>
-
-                    {!!err && (
-                      <div className="absolute left-6 md:left-8 right-6 md:right-8 bottom-16 z-10 text-sm text-red-500 text-center">
-                        {err}
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {!!err && !isLimitReached && (
-                  <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
-                    {err}
-                  </div>
-                )}
-
-                <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
-                  <button
-                    type="button"
-                    onClick={handleSpeakToggle}
-                    aria-label={speaking ? t("translator.stop") : t("translator.listen")}
-                    aria-pressed={speaking}
-                    disabled={!hasRealResult}
-                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                      speaking ? "text-slate-900" : ""
-                    } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
-                  >
-                    {speaking ? (
-                      <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
-                    ) : (
-                      <Volume2 className="w-5 h-5" />
-                    )}
-                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                      {speaking ? t("translator.stop") : t("translator.listen")}
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    aria-label={t("translator.copy")}
-                    disabled={!hasRealResult}
-                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                      hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                    }`}
-                  >
-                    {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
-                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                      {copied ? t("translator.copied") : t("translator.copy")}
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDownloadPdf}
-                    aria-label={t("translator.pdf")}
-                    disabled={!hasRealResult}
-                    className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                      hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                    }`}
-                  >
-                    <FileDown className="w-5 h-5" />
-                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                      {t("translator.pdf")}
-                    </span>
-                  </button>
                 </div>
               </div>
             </div>
@@ -1662,3 +1689,4 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     </>
   );
 }
+
