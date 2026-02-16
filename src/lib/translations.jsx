@@ -1445,10 +1445,10 @@ registerPage_login: {
       FR: "Limites plus élevées pour le résumeur : 18 000 caractères par demande et 6 demandes par jour."
     },
     pro3: {
-      ES: "Límite diario: 150.000 caracteres al día.",
-      EUS: "Eguneko muga: 150.000 karaktere eguneko.",
-      EN: "Daily limit: 150,000 characters per day.",
-      FR: "Limite quotidienne : 150 000 caractères par jour.",
+      ES: "Cualquier idioma admitidocomo texto de origen en todas las herramientas.",
+      EUS: "Edozein hizkuntza onartzen da jatorrizko testu gisa tresna guztietan.",
+      EN: "Supports any language as the source text across all tools.",
+      FR: "Prend en charge n’importe quelle langue comme texte source dans tous les outils."
     },
     pro4: {
       ES: "Acceso a las 6 herramientas: Corrector, Parafraseador, Detector de IA y Humanizador.",
