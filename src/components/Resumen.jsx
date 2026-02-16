@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -32,6 +32,11 @@ export default function Resumen() {
     if (typeof v === "string" && v.trim() === k) return f;
     return v;
   };
+
+  const navigate = useNavigate();
+
+  const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
+  const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -508,9 +513,6 @@ const PremiumPromptNote = () => (
   </div>
 );
 
-
-
-
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
     try {
@@ -741,6 +743,38 @@ const PremiumPromptNote = () => (
     <h1 className="sr-only">Resumidor de euskera online</h1>
       <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
+          <div className="relative">
+            {/* ✅ BOTONES IZQUIERDA DEL TODO */}
+            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
+              {/* Traductor (inactivo) */}
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                title={tr("toolsMenu.translatorTitle", labelToolTranslator)}
+                className="w-12 h-12 mt-8 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              >
+                <Globe className="w-6 h-6 text-slate-700" />
+              </button>
+
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.translatorTitle", labelToolTranslator)}
+              </div>
+
+              {/* Resumidor (activo) */}
+              <button
+                type="button"
+                aria-current="page"
+                title={tr("toolsMenu.summaryTitle", labelToolSummarizer)}
+                className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+              >
+                <FileText className="w-6 h-6 text-blue-600" />
+              </button>
+
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
+              </div>
+            </div>
+
           <motion.section
             className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
             initial="initial"
@@ -1182,6 +1216,7 @@ const PremiumPromptNote = () => (
               </div>
             </section>
           </motion.section>
+          </div>
         </div>
       </section>
 
