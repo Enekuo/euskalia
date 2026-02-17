@@ -50,7 +50,7 @@ import PremiumParaphraser from "@/components/PremiumAccount/PremiumParaphraser";
 import PremiumAiDetector from "@/components/PremiumAccount/PremiumAiDetector";
 import PremiumHumanizer from "@/components/PremiumAccount/PremiumHumanizer";
 import PremiumSettings from "@/components/PremiumAccount/PremiumSettings";
-
+import PremiumAiAssistant from "@/components/PremiumAccount/PremiumAiAssistant";
 
 
 function App() {
@@ -162,7 +162,7 @@ const seo =
             <Route path="/cuenta-premium/soporte" element={<PremiumLayout><SupportPage /></PremiumLayout>} />
             <Route path="/cuenta-premium/sugerencias" element={<PremiumLayout><Suggestions /></PremiumLayout>} />
             <Route path="/cuenta-premium/ajustes" element={<PremiumLayout><PremiumSettings /></PremiumLayout>} />
-
+            <Route path="/cuenta-premium/assistant" element={<PremiumLayout><PremiumAiAssistant /></PremiumLayout>} />
 
 
 

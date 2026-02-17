@@ -316,14 +316,14 @@ export default function PremiumLayout({ children }) {
               )}
             </button>
 
-            {/* Chat IA */}
+            {/* Assistente de IA */}
             <button
-              onClick={() => navigate("/cuenta-premium/chat-ia")}
+              onClick={() => navigate("/cuenta-premium/assistant")}
               className={`
                 w-full flex items-center gap-2 px-3 h-11 rounded-lg
                 ${collapsed ? "justify-center" : ""}
                 ${
-                  isActive("/cuenta-premium/chat-ia")
+                  isActive("/cuenta-premium/assistant")
                     ? "bg-slate-900 text-white font-medium"
                     : "hover:bg-slate-100 text-slate-700"
                 }
