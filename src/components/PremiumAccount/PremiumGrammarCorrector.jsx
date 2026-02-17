@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
-import { addLibraryDoc } from "@/premiumLibraryStore";
+import { addLibraryDoc } from "@/proLibraryStore";
 import { diff_match_patch } from "diff-match-patch";
 import { auth } from "@/lib/firebase";
 

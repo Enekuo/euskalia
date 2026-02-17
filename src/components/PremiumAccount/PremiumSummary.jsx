@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
-import { addLibraryDoc } from "@/premiumLibraryStore";
+import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
 export default function PremiumSummary() {

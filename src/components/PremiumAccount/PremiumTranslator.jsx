@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { addLibraryDoc } from "@/premiumLibraryStore";
+import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
 const OPTIONS = ["eus", "es", "en", "fr"]; // EUS, ES, EN, FR
