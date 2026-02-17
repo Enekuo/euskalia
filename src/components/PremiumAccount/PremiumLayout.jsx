@@ -7,7 +7,7 @@ import {
   Gem,
   Globe,
   ChevronDown,
-  MessageSquare,
+  Bot,
   Lightbulb,
   LifeBuoy,
   ChevronsLeft,
@@ -329,9 +329,9 @@ export default function PremiumLayout({ children }) {
                 }
               `}
             >
-              <MessageSquare size={18} />
+              <Bot size={18}  />
               {showText && (
-                <span>{tr("premiumSidebar_chat", "Chat con IA")}</span>
+                <span>{tr("premiumSidebar_chat", "Asistente de IA")}</span>
               )}
             </button>
           </nav>
