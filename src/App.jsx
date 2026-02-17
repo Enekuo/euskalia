@@ -48,7 +48,7 @@ import PremiumSummary from "@/components/PremiumAccount/PremiumSummary";
 import PremiumGrammarCorrector from "@/components/PremiumAccount/PremiumGrammarCorrector";
 import PremiumParaphraser from "@/components/PremiumAccount/PremiumParaphraser";
 
-
+import PremiumHumanizer from "@/components/PremiumAccount/PremiumHumanizer";
 
 
 
@@ -157,7 +157,8 @@ const seo =
             <Route path="/cuenta-premium/resumen" element={<PremiumLayout><PremiumSummary /></PremiumLayout>} />
             <Route path="/cuenta-premium/corrector" element={<PremiumLayout><PremiumGrammarCorrector /></PremiumLayout>} />
             <Route path="/cuenta-premium/parafraseador" element={<PremiumLayout><PremiumParaphraser /></PremiumLayout>} />
-
+            
+            <Route path="/cuenta-premium/humanizador" element={<PremiumLayout><PremiumHumanizer /></PremiumLayout>} />
 
 
           </Routes>
