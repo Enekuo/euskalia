@@ -47,57 +47,32 @@ export default function PremiumHumanizer() {
   const [loading, setLoading] = useState(false);
 
   // ✅ error "raw" (backend) + error por clave (para que cambie con idioma)
-  const [errorMsg, setErrorMsg] = useState(""); // SOLO backend/raw
+  const [errorRaw, setErrorRaw] = useState(""); // SOLO backend/raw
   const [errorKey, setErrorKey] = useState(""); // clave translations
   const [errorFallback, setErrorFallback] = useState(""); // fallback
 
-  // ✅✅✅ PRO LIMIT BANNER (2 tipos: chars | daily)
+  // ✅✅✅ LIMITES (NO guardar traducción en state)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-  const [limitMsg, setLimitMsg] = useState(""); // SOLO backend/raw
-  const [limitKey, setLimitKey] = useState(""); // clave translations
-  const [limitFallback, setLimitFallback] = useState(""); // fallback
+  const [limitRaw, setLimitRaw] = useState(""); // SOLO backend/raw (opcional)
 
-  const setCharsLimit = (msg) => {
-    setLimitType("chars");
-
-    if (msg) {
-      setLimitMsg(msg);
-      setLimitKey("");
-      setLimitFallback("");
-    } else {
-      setLimitMsg("");
-      setLimitKey("pro_limit_chars");
-      setLimitFallback("Has superado el límite máximo de caracteres para tu plan Pro.");
-    }
-  };
-
-  const setDailyLimit = (msg) => {
-    setLimitType("daily");
-
-    if (msg) {
-      setLimitMsg(msg);
-      setLimitKey("");
-      setLimitFallback("");
-    } else {
-      setLimitMsg("");
-      setLimitKey("pro_limit_daily");
-      setLimitFallback("Has alcanzado tu límite diario del plan Pro. Vuelve mañana.");
-    }
-  };
-
-  const clearLimit = () => {
+  const clearAllMessages = () => {
     setLimitType("");
-    setLimitMsg("");
-    setLimitKey("");
-    setLimitFallback("");
-    setErrorMsg("");
+    setLimitRaw("");
+    setErrorRaw("");
     setErrorKey("");
     setErrorFallback("");
   };
 
-  // ✅ Mensajes "display" que SI cambian al cambiar idioma
-  const displayErrorMsg = errorMsg || (errorKey ? tr(errorKey, errorFallback) : "");
-  const displayLimitMsg = limitMsg || (limitKey ? tr(limitKey, limitFallback) : "");
+  // ✅ Mensajes "display" derivados (se traducen al vuelo)
+  const displayErrorMsg = errorRaw || (errorKey ? tr(errorKey, errorFallback) : "");
+
+  const displayLimitMsg =
+    limitRaw ||
+    (limitType === "chars"
+      ? tr("premium_limit_chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
+      : limitType === "daily"
+      ? tr("premium_limit_daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
+      : "");
 
   // Niveles (3)
   const [mode, setMode] = useState("standard"); // basic | standard | advanced
@@ -133,7 +108,7 @@ export default function PremiumHumanizer() {
       setLoading(false);
       setCopiedFlash(false);
       setSavedToLibrary(false);
-      clearLimit();
+      clearAllMessages();
     }
   }, [location?.state?.text]);
 
@@ -152,9 +127,7 @@ export default function PremiumHumanizer() {
   };
 
   // ===== Helpers =====
-  const hasAnyText = (s) => {
-    return String(s || "").trim().length > 0;
-  };
+  const hasAnyText = (s) => String(s || "").trim().length > 0;
 
   const isRefusal = (s) => {
     const x = String(s || "").trim().toLowerCase();
@@ -173,59 +146,63 @@ export default function PremiumHumanizer() {
   // ✅ Resultado real = texto no vacío
   const hasRealResult = useMemo(() => hasAnyText(result), [result]);
 
-  // ===== Textos (CON claves) =====
-  const labelSources = tr("proHumanizer_sources", "Fuentes");
-  const labelTabText = tr("proHumanizer_tabText", "Texto");
-  const labelTabDocument = tr("proHumanizer_tabDocument", "Documento");
-  const labelTabUrl = tr("proHumanizer_tabUrl", "URL");
-  const labelEnterText = tr("proHumanizer_enterText", "Escribe o pega tu texto aquí…");
+  // ===== Textos (CLAVES NUEVAS PREMIUM) =====
+  const labelSources = tr("premiumHumanizer_sources", "Fuentes");
+  const labelTabText = tr("premiumHumanizer_tabText", "Texto");
+  const labelTabDocument = tr("premiumHumanizer_tabDocument", "Documento");
+  const labelTabUrl = tr("premiumHumanizer_tabUrl", "URL");
+  const labelEnterText = tr("premiumHumanizer_enterText", "Escribe o pega tu texto aquí…");
 
-  const labelChooseFileTitle = tr("proHumanizer_chooseFileTitle", "Elige tu archivo o carpeta");
-  const labelAcceptedFormats = tr("proHumanizer_acceptedFormats", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
-  const labelFolderHint = tr("proHumanizer_folderHint", "Aquí aparecerán tus textos o documentos subidos.");
+  const labelChooseFileTitle = tr("premiumHumanizer_chooseFileTitle", "Elige tu archivo o carpeta");
+  const labelAcceptedFormats = tr(
+    "premiumHumanizer_acceptedFormats",
+    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
+  );
+  const labelFolderHint = tr("premiumHumanizer_folderHint", "Aquí aparecerán tus textos o documentos subidos.");
 
-  const labelPasteUrls = tr("proHumanizer_pasteUrls", "Pegar URLs*");
-  const labelAddUrl = tr("proHumanizer_addUrls", "Añadir URLs");
-  const labelSaveUrls = tr("proHumanizer_save", "Guardar");
-  const labelCancel = tr("proHumanizer_cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("proHumanizer_urlsNoteVisible", "Solo se importará el texto visible del sitio web.");
-  const labelUrlsNotePaywalled = tr("proHumanizer_urlsNotePaywalled", "No se admiten artículos de pago.");
-  const labelRemove = tr("proHumanizer_remove", "Quitar");
+  const labelPasteUrls = tr("premiumHumanizer_pasteUrls", "Pegar URLs*");
+  const labelAddUrl = tr("premiumHumanizer_addUrls", "Añadir URLs");
+  const labelSaveUrls = tr("premiumHumanizer_save", "Guardar");
+  const labelCancel = tr("premiumHumanizer_cancel", "Cancelar");
+  const labelUrlsNoteVisible = tr(
+    "premiumHumanizer_urlsNoteVisible",
+    "Solo se importará el texto visible del sitio web."
+  );
+  const labelUrlsNotePaywalled = tr("premiumHumanizer_urlsNotePaywalled", "No se admiten artículos de pago.");
+  const labelRemove = tr("premiumHumanizer_remove", "Quitar");
 
-  // ✅ Idiomas (CLAVES COMUNES para TODAS las herramientas)
+  // ✅ Idiomas (CLAVES COMUNES ya existentes)
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
-  const labelGenerateFromSources = tr("proHumanizer_generate", "Humanizar texto");
+  const labelGenerateFromSources = tr("premiumHumanizer_generate", "Humanizar texto");
   const labelHelpRight = tr(
-    "proHumanizer_helpRight",
+    "premiumHumanizer_helpRight",
     'Selecciona una fuente (texto, documentos o URLs) y pulsa "Humanizar texto".'
   );
 
-  const labelSaveButton = tr("proHumanizer_saveButton", "Guardar");
-  const librarySavedMessage = tr("proHumanizer_savedToLibrary", "Guardado en biblioteca");
+  const labelSaveButton = tr("premiumHumanizer_saveButton", "Guardar");
+  const librarySavedMessage = tr("premiumHumanizer_savedToLibrary", "Guardado en biblioteca");
 
-  const ariaCopyResult = tr("proHumanizer_copyResultAria", "Copiar resultado");
-  const ariaDeleteInput = tr("proHumanizer_deleteInputAria", "Eliminar texto de entrada y resultado");
-  const titleCopyResult = tr("proHumanizer_copyResultTitle", "Copiar resultado");
-  const titleDeleteInput = tr("proHumanizer_deleteInputTitle", "Eliminar texto de entrada y resultado");
-  const titleClearLeft = tr("proHumanizer_clearLeftTitle", "Borrar texto");
-  const ariaClearLeft = tr("proHumanizer_clearLeftAria", "Borrar texto");
+  const ariaCopyResult = tr("premiumHumanizer_copyResultAria", "Copiar resultado");
+  const ariaDeleteInput = tr("premiumHumanizer_deleteInputAria", "Eliminar texto de entrada y resultado");
+  const titleCopyResult = tr("premiumHumanizer_copyResultTitle", "Copiar resultado");
+  const titleDeleteInput = tr("premiumHumanizer_deleteInputTitle", "Eliminar texto de entrada y resultado");
 
   const labelUrlTextareaPlaceholder = tr(
-    "proHumanizer_urlTextareaPlaceholder",
+    "premiumHumanizer_urlTextareaPlaceholder",
     "Introduce aquí una o más URLs (separadas por línea)"
   );
 
-  const labelDownload = tr("proHumanizer_download", "Descargar");
-  const labelCopy = tr("proHumanizer_copy", "Copiar");
-  const labelCopied = tr("proHumanizer_copied", "Copiado");
+  const labelDownload = tr("premiumHumanizer_download", "Descargar");
+  const labelCopy = tr("premiumHumanizer_copy", "Copiar");
+  const labelCopied = tr("premiumHumanizer_copied", "Copiado");
 
   // Ayuda izquierda
-  const leftTitle = tr("proHumanizer_leftTitle", "Aquí aparecerán tus textos o documentos subidos.");
-  const leftBody = tr("proHumanizer_leftBody", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
+  const leftTitle = tr("premiumHumanizer_leftTitle", "Aquí aparecerán tus textos o documentos subidos.");
+  const leftBody = tr("premiumHumanizer_leftBody", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
 
   // ===== Tabs Fuentes (izquierda) =====
   const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
@@ -278,9 +255,9 @@ export default function PremiumHumanizer() {
   );
 
   const modeLabels = {
-    basic: tr("proHumanizer_modeBasic", "Básico"),
-    standard: tr("proHumanizer_modeStandard", "Estándar"),
-    advanced: tr("proHumanizer_modeAdvanced", "Avanzado"),
+    basic: tr("premiumHumanizer_modeBasic", "Básico"),
+    standard: tr("premiumHumanizer_modeStandard", "Estándar"),
+    advanced: tr("premiumHumanizer_modeAdvanced", "Avanzado"),
   };
 
   // ===== Utils =====
@@ -305,7 +282,7 @@ export default function PremiumHumanizer() {
     setLoading(false);
     setCopiedFlash(false);
     setSavedToLibrary(false);
-    clearLimit();
+    clearAllMessages();
   };
 
   // ===== Atajos teclado =====
@@ -478,21 +455,6 @@ export default function PremiumHumanizer() {
     clearRight();
   };
 
-  const handleDownload = () => {
-    if (!hasRealResult) return;
-    try {
-      const blob = new Blob([(result || "").trim()], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "euskalia-humanizado.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch {}
-  };
-
   const handleSaveToLibrary = () => {
     if (!hasRealResult) return;
 
@@ -506,7 +468,7 @@ export default function PremiumHumanizer() {
 
     addLibraryDoc({
       kind: "humanizer",
-      title: titleFromText || "Humanizado",
+      title: titleFromText || tr("premiumHumanizer_defaultTitle", "Humanizado"),
       content: (result || "").trim(),
       createdAt,
       createdAtLabel,
@@ -538,15 +500,15 @@ export default function PremiumHumanizer() {
     setLoading(true);
     setResult("");
     setSavedToLibrary(false);
-    clearLimit();
+    clearAllMessages();
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     const textOk = trimmed.length >= 20 && words.length >= 5;
 
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorMsg("");
-      setErrorKey("proHumanizer_errorMaxChars");
+      setErrorRaw("");
+      setErrorKey("premiumHumanizer_errorMaxChars");
       setErrorFallback("Has superado el límite de caracteres permitido.");
       setLoading(false);
       return;
@@ -554,8 +516,8 @@ export default function PremiumHumanizer() {
 
     const tooLargeCount = (documentsFiles || []).filter((d) => d?.tooLarge).length;
     if (tooLargeCount > 0) {
-      setErrorMsg("");
-      setErrorKey("proHumanizer_errorFileTooLarge");
+      setErrorRaw("");
+      setErrorKey("premiumHumanizer_errorFileTooLarge");
       setErrorFallback("Uno o más archivos son demasiado grandes para procesarlos aquí. Prueba con un archivo más pequeño.");
       setLoading(false);
       return;
@@ -566,8 +528,8 @@ export default function PremiumHumanizer() {
     const canReadDocs = docsTextHasAny || docsFilesIsValid;
 
     if (userHasDocs && !canReadDocs && !textOk && urlItems.length === 0) {
-      setErrorMsg("");
-      setErrorKey("proHumanizer_errorDocUnreadable");
+      setErrorRaw("");
+      setErrorKey("premiumHumanizer_errorDocUnreadable");
       setErrorFallback("No se ha podido leer el documento. Prueba con otro archivo o pega el texto directamente.");
       setLoading(false);
       return;
@@ -576,8 +538,8 @@ export default function PremiumHumanizer() {
     const validNow = textOk || urlItems.length > 0 || docsTextHasAny || docsFilesIsValid;
 
     if (!validNow) {
-      setErrorMsg("");
-      setErrorKey("proHumanizer_errorNeedInput");
+      setErrorRaw("");
+      setErrorKey("premiumHumanizer_errorNeedInput");
       setErrorFallback("Añade texto suficiente, URLs o documentos antes de humanizar.");
       setLoading(false);
       return;
@@ -683,9 +645,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     try {
       const user = auth.currentUser;
       if (!user) {
-        setErrorMsg("");
-        setErrorKey("proHumanizer_errorAuthRequired");
-        setErrorFallback("Necesitas iniciar sesión para usar Pro.");
+        setErrorRaw("");
+        setErrorKey("premiumHumanizer_errorAuthRequired");
+        setErrorFallback("Necesitas iniciar sesión para usar Premium.");
         setLoading(false);
         return;
       }
@@ -720,25 +682,25 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         }
 
         if (res.status === 401) {
-          setErrorMsg("");
-          setErrorKey("proHumanizer_errorAuthRequired");
-          setErrorFallback("Necesitas iniciar sesión para usar Pro.");
+          setErrorRaw("");
+          setErrorKey("premiumHumanizer_errorAuthRequired");
+          setErrorFallback("Necesitas iniciar sesión para usar Premium.");
           setLoading(false);
           return;
         }
 
-        // ✅✅✅ límites PRO: banner + debajo mensaje rojo
+        // ✅✅✅ límites: banner + debajo mensaje rojo (pero sin guardar traducción)
         if (res.status === 413) {
           const backendMsg = errJson?.message || "";
+          setLimitType("chars");
+          setLimitRaw(backendMsg || "");
           if (backendMsg) {
-            setCharsLimit(backendMsg);
-            setErrorMsg(backendMsg);
+            setErrorRaw(backendMsg);
             setErrorKey("");
             setErrorFallback("");
           } else {
-            setCharsLimit("");
-            setErrorMsg("");
-            setErrorKey("proHumanizer_errorMaxChars");
+            setErrorRaw("");
+            setErrorKey("premiumHumanizer_errorMaxChars");
             setErrorFallback("Has superado el límite de caracteres permitido.");
           }
           setLoading(false);
@@ -747,15 +709,15 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
         if (res.status === 429) {
           const backendMsg = errJson?.message || "";
+          setLimitType("daily");
+          setLimitRaw(backendMsg || "");
           if (backendMsg) {
-            setDailyLimit(backendMsg);
-            setErrorMsg(backendMsg);
+            setErrorRaw(backendMsg);
             setErrorKey("");
             setErrorFallback("");
           } else {
-            setDailyLimit(""); // ✅ usa clave pro_limit_daily y se traduce al vuelo
-            setErrorMsg("");
-            setErrorKey("proHumanizer_errorRateLimit");
+            setErrorRaw("");
+            setErrorKey("premiumHumanizer_errorRateLimit");
             setErrorFallback("Has alcanzado el límite de peticiones. Inténtalo más tarde.");
           }
           setLoading(false);
@@ -763,7 +725,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         }
 
         const txt = errJson ? JSON.stringify(errJson) : await res.text();
-        setErrorMsg(`HTTP ${res.status}: ${txt}`);
+        setErrorRaw(`HTTP ${res.status}: ${txt}`);
         setErrorKey("");
         setErrorFallback("");
         setLoading(false);
@@ -780,8 +742,8 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         "";
 
       if (!rawText) {
-        setErrorMsg("");
-        setErrorKey("proHumanizer_errorNoApiText");
+        setErrorRaw("");
+        setErrorKey("premiumHumanizer_errorNoApiText");
         setErrorFallback("No se recibió texto de la API.");
         setLoading(false);
         return;
@@ -795,8 +757,8 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
       // ✅ Si el modelo rechaza, lo tratamos como error y NO como resultado
       if (isRefusal(cleaned)) {
         setResult("");
-        setErrorMsg("");
-        setErrorKey("proHumanizer_errorRefusal");
+        setErrorRaw("");
+        setErrorKey("premiumHumanizer_errorRefusal");
         setErrorFallback("No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente.");
       } else {
         setResult(cleaned);
@@ -804,12 +766,12 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     } catch (err) {
       const raw = err?.message || "";
       if (raw) {
-        setErrorMsg(raw);
+        setErrorRaw(raw);
         setErrorKey("");
         setErrorFallback("");
       } else {
-        setErrorMsg("");
-        setErrorKey("proHumanizer_errorGeneric");
+        setErrorRaw("");
+        setErrorKey("premiumHumanizer_errorGeneric");
         setErrorFallback("Error humanizando el texto.");
       }
     } finally {
@@ -890,16 +852,15 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                       const v = e.target.value;
                       setTextValue(v);
 
-                      // ✅ banner + mensaje (modo chars) al llegar/superar el máximo
                       if (v.length >= MAX_CHARS) {
-                        setCharsLimit(""); // usa pro_limit_chars (traducible)
-                        setErrorMsg("");
-                        setErrorKey("proHumanizer_errorMaxChars");
+                        setLimitType("chars");
+                        setLimitRaw("");
+                        setErrorRaw("");
+                        setErrorKey("premiumHumanizer_errorMaxChars");
                         setErrorFallback("Has superado el límite de caracteres permitido.");
                       } else {
-                        // ✅ si vuelve a estar por debajo, limpiamos el límite
                         if (limitType === "chars") {
-                          clearLimit();
+                          clearAllMessages();
                         }
                       }
                     }}
@@ -915,7 +876,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
                     <div className="mt-1 flex items-center justify-between">
                       <div className="text-xs" />
-
                       <span
                         className={`text-xs ${
                           overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"
@@ -978,7 +938,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                   </button>
 
-                  {/* ✅ LISTA CON SCROLL INTERNO */}
                   {documents.length > 0 && (
                     <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1">
                       <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-hidden bg-white">
@@ -1117,7 +1076,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     <button
                       type="button"
                       className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label={tr("proHumanizer_outputLanguageAria", "Idioma de salida")}
+                      aria-label={tr("premiumHumanizer_outputLanguageAria", "Idioma de salida")}
                     >
                       <span className="truncate">
                         {outputLang === "es"
@@ -1168,8 +1127,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     >
                       {LBL_EN}
                     </DropdownMenuItem>
-
-                    {/* ✅ FR */}
                     <DropdownMenuItem
                       onClick={() => {
                         if (outputLang !== "fr") {
@@ -1216,9 +1173,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
               </div>
             </div>
 
-            {/* ===== CONTENIDO SCROLLEABLE (cuando sea necesario) ===== */}
+            {/* ===== CONTENIDO SCROLLEABLE ===== */}
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              {/* ✅✅✅ BANNER PRO */}
+              {/* ✅✅✅ BANNER reutilizado */}
               <ProLimitBanner visible={!!limitType} message={displayErrorMsg || displayLimitMsg} />
 
               {/* Contenido normal (sin duplicar mensaje rojo cuando hay limitType) */}
