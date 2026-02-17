@@ -12,7 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProLimitBanner from "@/components/PremiumAccount/ProLimitBanner";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
