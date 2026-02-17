@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
-import { addLibraryDoc } from "@/ProLibraryStore";
+import { addLibraryDoc } from "@/proLibraryStore";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
 
