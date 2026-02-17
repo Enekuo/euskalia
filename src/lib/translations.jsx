@@ -5331,6 +5331,282 @@ premiumGrammar: {
   },
 },
 
+// =========================
+//      PREMIUM HUMANIZER
+// =========================
+premiumHumanizer_sources: {
+  ES: "Fuentes",
+  EUS: "Iturriak",
+  EN: "Sources",
+  FR: "Sources",
+},
+premiumHumanizer_tabText: {
+  ES: "Texto",
+  EUS: "Testua",
+  EN: "Text",
+  FR: "Texte",
+},
+premiumHumanizer_tabDocument: {
+  ES: "Documento",
+  EUS: "Dokumentua",
+  EN: "Document",
+  FR: "Document",
+},
+premiumHumanizer_tabUrl: {
+  ES: "URL",
+  EUS: "URL",
+  EN: "URL",
+  FR: "URL",
+},
+premiumHumanizer_enterText: {
+  ES: "Escribe o pega tu texto aquí…",
+  EUS: "Idatzi edo itsatsi testua hemen…",
+  EN: "Write or paste your text here…",
+  FR: "Écris ou colle ton texte ici…",
+},
+premiumHumanizer_chooseFileTitle: {
+  ES: "Elige tu archivo o carpeta",
+  EUS: "Aukeratu fitxategia edo karpeta",
+  EN: "Choose your file or folder",
+  FR: "Choisis ton fichier ou dossier",
+},
+premiumHumanizer_acceptedFormats: {
+  ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…",
+  EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu",
+  EN: "You can add PDF files, pasted text, web links…",
+  FR: "Tu peux ajouter des fichiers PDF, du texte copié, des liens web…",
+},
+premiumHumanizer_folderHint: {
+  ES: "Aquí aparecerán tus textos o documentos subidos.",
+  EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Your uploaded texts or documents will appear here.",
+  FR: "Tes textes ou documents importés apparaîtront ici.",
+},
+premiumHumanizer_pasteUrls: {
+  ES: "Pegar URLs*",
+  EUS: "URLak itsatsi*",
+  EN: "Paste URLs*",
+  FR: "Coller des URL*",
+},
+premiumHumanizer_addUrls: {
+  ES: "Añadir URLs",
+  EUS: "URLak gehitu",
+  EN: "Add URLs",
+  FR: "Ajouter des URL",
+},
+premiumHumanizer_save: {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+premiumHumanizer_cancel: {
+  ES: "Cancelar",
+  EUS: "Utzi",
+  EN: "Cancel",
+  FR: "Annuler",
+},
+premiumHumanizer_urlsNoteVisible: {
+  ES: "Solo se importará el texto visible del sitio web.",
+  EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
+  EN: "Only the visible text of the website will be imported.",
+  FR: "Seul le texte visible du site sera importé.",
+},
+premiumHumanizer_urlsNotePaywalled: {
+  ES: "No se admiten artículos de pago.",
+  EUS: "Ordainpeko artikuluak ez dira onartzen.",
+  EN: "Paywalled articles are not supported.",
+  FR: "Les articles payants ne sont pas pris en charge.",
+},
+premiumHumanizer_remove: {
+  ES: "Quitar",
+  EUS: "Kendu",
+  EN: "Remove",
+  FR: "Retirer",
+},
+premiumHumanizer_generate: {
+  ES: "Humanizar texto",
+  EUS: "Testua humanizatu",
+  EN: "Humanize text",
+  FR: "Humaniser le texte",
+},
+premiumHumanizer_helpRight: {
+  ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa \"Humanizar texto\".",
+  EUS: "Aukeratu iturri bat (testua, dokumentuak edo URLak) eta sakatu \"Testua humanizatu\".",
+  EN: "Select a source (text, documents or URLs) and click \"Humanize text\".",
+  FR: "Choisis une source (texte, documents ou URL) puis clique sur « Humaniser le texte ».",
+},
+premiumHumanizer_saveButton: {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+premiumHumanizer_savedToLibrary: {
+  ES: "Guardado en biblioteca",
+  EUS: "Liburutegian gordeta",
+  EN: "Saved to library",
+  FR: "Enregistré dans la bibliothèque",
+},
+premiumHumanizer_copyResultAria: {
+  ES: "Copiar resultado",
+  EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
+},
+premiumHumanizer_deleteInputAria: {
+  ES: "Eliminar texto de entrada y resultado",
+  EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
+},
+premiumHumanizer_copyResultTitle: {
+  ES: "Copiar resultado",
+  EUS: "Emaitza kopiatu",
+  EN: "Copy result",
+  FR: "Copier le résultat",
+},
+premiumHumanizer_deleteInputTitle: {
+  ES: "Eliminar texto de entrada y resultado",
+  EUS: "Sarrerako testua eta emaitza ezabatu",
+  EN: "Delete input text and result",
+  FR: "Supprimer le texte d’entrée et le résultat",
+},
+premiumHumanizer_urlTextareaPlaceholder: {
+  ES: "Introduce aquí una o más URLs (separadas por línea)",
+  EUS: "Sartu hemen URL bat edo gehiago (lerroz banatuta)",
+  EN: "Enter one or more URLs here (one per line)",
+  FR: "Saisis une ou plusieurs URL ici (une par ligne)",
+},
+premiumHumanizer_download: {
+  ES: "Descargar",
+  EUS: "Deskargatu",
+  EN: "Download",
+  FR: "Télécharger",
+},
+premiumHumanizer_copy: {
+  ES: "Copiar",
+  EUS: "Kopiatu",
+  EN: "Copy",
+  FR: "Copier",
+},
+premiumHumanizer_copied: {
+  ES: "Copiado",
+  EUS: "Kopiatuta",
+  EN: "Copied",
+  FR: "Copié",
+},
+premiumHumanizer_leftTitle: {
+  ES: "Aquí aparecerán tus textos o documentos subidos.",
+  EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.",
+  EN: "Your uploaded texts or documents will appear here.",
+  FR: "Tes textes ou documents importés apparaîtront ici.",
+},
+premiumHumanizer_leftBody: {
+  ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…",
+  EUS: "PDF fitxategiak, kopiatutako testua, web estekak… gehi ditzakezu",
+  EN: "You can add PDF files, pasted text, web links…",
+  FR: "Tu peux ajouter des fichiers PDF, du texte copié, des liens web…",
+},
+premiumHumanizer_modeBasic: {
+  ES: "Básico",
+  EUS: "Oinarrizkoa",
+  EN: "Basic",
+  FR: "Basique",
+},
+premiumHumanizer_modeStandard: {
+  ES: "Estándar",
+  EUS: "Estandarra",
+  EN: "Standard",
+  FR: "Standard",
+},
+premiumHumanizer_modeAdvanced: {
+  ES: "Avanzado",
+  EUS: "Aurreratua",
+  EN: "Advanced",
+  FR: "Avancé",
+},
+premiumHumanizer_outputLanguageAria: {
+  ES: "Idioma de salida",
+  EUS: "Irteerako hizkuntza",
+  EN: "Output language",
+  FR: "Langue de sortie",
+},
+premiumHumanizer_defaultTitle: {
+  ES: "Humanizado",
+  EUS: "Humanizatua",
+  EN: "Humanized",
+  FR: "Humanisé",
+},
+
+premiumHumanizer_errorMaxChars: {
+  ES: "Has superado el límite de caracteres permitido.",
+  EUS: "Gehienezko karaktere muga gainditu duzu.",
+  EN: "You have exceeded the allowed character limit.",
+  FR: "Tu as dépassé la limite de caractères autorisée.",
+},
+premiumHumanizer_errorFileTooLarge: {
+  ES: "Uno o más archivos son demasiado grandes para procesarlos aquí. Prueba con un archivo más pequeño.",
+  EUS: "Fitxategi bat edo gehiago handiegiak dira hemen prozesatzeko. Saiatu txikiago batekin.",
+  EN: "One or more files are too large to process here. Try a smaller file.",
+  FR: "Un ou plusieurs fichiers sont trop volumineux pour être traités ici. Essaie un fichier plus petit.",
+},
+premiumHumanizer_errorDocUnreadable: {
+  ES: "No se ha podido leer el documento. Prueba con otro archivo o pega el texto directamente.",
+  EUS: "Ezin izan da dokumentua irakurri. Saiatu beste fitxategi batekin edo itsatsi testua zuzenean.",
+  EN: "The document could not be read. Try another file or paste the text directly.",
+  FR: "Impossible de lire le document. Essaie un autre fichier ou colle le texte directement.",
+},
+premiumHumanizer_errorNeedInput: {
+  ES: "Añade texto suficiente, URLs o documentos antes de humanizar.",
+  EUS: "Gehitu nahikoa testu, URL edo dokumentu humanizatu aurretik.",
+  EN: "Add enough text, URLs or documents before humanizing.",
+  FR: "Ajoute suffisamment de texte, d’URL ou de documents avant d’humaniser.",
+},
+premiumHumanizer_errorAuthRequired: {
+  ES: "Necesitas iniciar sesión para usar Premium.",
+  EUS: "Premium erabiltzeko saioa hasi behar duzu.",
+  EN: "You need to sign in to use Premium.",
+  FR: "Tu dois te connecter pour utiliser Premium.",
+},
+premiumHumanizer_errorRateLimit: {
+  ES: "Has alcanzado el límite de peticiones. Inténtalo más tarde.",
+  EUS: "Eskaeren muga lortu duzu. Saiatu geroago.",
+  EN: "You have reached the request limit. Try again later.",
+  FR: "Tu as atteint la limite de requêtes. Réessaie plus tard.",
+},
+premiumHumanizer_errorNoApiText: {
+  ES: "No se recibió texto de la API.",
+  EUS: "Ez da testurik jaso API-tik.",
+  EN: "No text was received from the API.",
+  FR: "Aucun texte n’a été reçu de l’API.",
+},
+premiumHumanizer_errorRefusal: {
+  ES: "No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente.",
+  EUS: "Ezin izan da edukia prozesatu. Saiatu beste fitxategi batekin edo itsatsi testua zuzenean.",
+  EN: "The content could not be processed. Try another file or paste the text directly.",
+  FR: "Impossible de traiter le contenu. Essaie un autre fichier ou colle le texte directement.",
+},
+premiumHumanizer_errorGeneric: {
+  ES: "Error humanizando el texto.",
+  EUS: "Errorea testua humanizatzean.",
+  EN: "Error while humanizing the text.",
+  FR: "Erreur lors de l’humanisation du texte.",
+},
+
+premium_limit_chars: {
+  ES: "Has superado el límite máximo de caracteres para tu plan Premium.",
+  EUS: "Premium planaren gehienezko karaktere muga gainditu duzu.",
+  EN: "You have exceeded the maximum character limit for your Premium plan.",
+  FR: "Tu as dépassé la limite maximale de caractères de ton offre Premium.",
+},
+premium_limit_daily: {
+  ES: "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.",
+  EUS: "Premium planaren eguneroko muga lortu duzu. Itzuli bihar.",
+  EN: "You have reached your daily Premium limit. Come back tomorrow.",
+  FR: "Tu as atteint ta limite quotidienne Premium. Reviens demain.",
+},
+
 
 
 }
