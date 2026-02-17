@@ -5595,6 +5595,145 @@ premiumGrammar: {
 },
 
 // =========================
+//    PREMIUM AI-DETECTOR
+// =========================
+premiumAiDetector: {
+  placeholder: {
+    ES: "Escribe o pega aquí el texto que quieres analizar...",
+    EUS: "Idatzi edo itsatsi hemen aztertu nahi duzun testua...",
+    EN: "Write or paste the text you want to analyze here...",
+    FR: "Écris ou colle ici le texte que tu veux analyser..."
+  },
+
+  paste_button: {
+    ES: "Pegar texto",
+    EUS: "Itsatsi testua",
+    EN: "Paste text",
+    FR: "Coller le texte"
+  },
+
+  upload_button: {
+    ES: "Subir archivo",
+    EUS: "Igo fitxategia",
+    EN: "Upload file",
+    FR: "Téléverser un fichier"
+  },
+
+  clear_title: {
+    ES: "Borrar",
+    EUS: "Garbitu",
+    EN: "Clear",
+    FR: "Effacer"
+  },
+
+  button_analyze: {
+    ES: "Revisar si hay contenido de IA",
+    EUS: "Egiaztatu ea IA edukia dagoen",
+    EN: "Check for AI content",
+    FR: "Vérifier le contenu IA"
+  },
+
+  button_reanalyze: {
+    ES: "Volver a analizar",
+    EUS: "Berriro aztertu",
+    EN: "Reanalyze",
+    FR: "Réanalyser"
+  },
+
+  button_analyzing: {
+    ES: "Analizando...",
+    EUS: "Aztertzen...",
+    EN: "Analyzing...",
+    FR: "Analyse en cours..."
+  },
+
+  right_loading_title: {
+    ES: "Analizando el texto…",
+    EUS: "Testua aztertzen…",
+    EN: "Analyzing the text…",
+    FR: "Analyse du texte…"
+  },
+
+  right_loading_subtitle: {
+    ES: "Esto puede tardar unos segundos",
+    EUS: "Honek segundo batzuk har ditzake",
+    EN: "This may take a few seconds",
+    FR: "Cela peut prendre quelques secondes"
+  },
+
+  right_percent_subtitle: {
+    ES: "del texto podría estar generado por IA",
+    EUS: "testuaren ehunekoa IA bidez sortua izan daiteke",
+    EN: "of the text may be AI-generated",
+    FR: "du texte pourrait être généré par IA"
+  },
+
+  label_ai: {
+    ES: "Generado por IA",
+    EUS: "IA bidez sortua",
+    EN: "AI-generated",
+    FR: "Généré par IA"
+  },
+
+  label_human: {
+    ES: "Escrito por humano",
+    EUS: "Gizakiak idatzia",
+    EN: "Human-written",
+    FR: "Rédigé par un humain"
+  },
+
+  disclaimer: {
+    ES: "Estimación orientativa. Puede no ser 100% precisa.",
+    EUS: "Kalkulu orientagarria. Baliteke %100 zehatza ez izatea.",
+    EN: "Estimated result. It may not be 100% accurate.",
+    FR: "Estimation indicative. Elle peut ne pas être précise à 100%."
+  },
+
+  humanize_button: {
+    ES: "Humanizar texto IA",
+    EUS: "IA testua humanizatu",
+    EN: "Humanize AI text",
+    FR: "Humaniser le texte IA"
+  },
+
+  error_not_logged: {
+    ES: "Necesitas iniciar sesión para usar el Detector de IA (Premium).",
+    EUS: "Saioa hasi behar duzu IA Detektagailua erabiltzeko (Premium).",
+    EN: "You need to log in to use the AI Detector (Premium).",
+    FR: "Vous devez vous connecter pour utiliser le détecteur IA (Premium)."
+  },
+
+  error_unauthorized: {
+    ES: "Necesitas iniciar sesión para usar esta herramienta.",
+    EUS: "Tresna hau erabiltzeko saioa hasi behar duzu.",
+    EN: "You need to log in to use this tool.",
+    FR: "Vous devez vous connecter pour utiliser cet outil."
+  },
+
+  error_generic: {
+    ES: "No se pudo analizar el texto.",
+    EUS: "Ezin izan da testua aztertu.",
+    EN: "The text could not be analyzed.",
+    FR: "Le texte n’a pas pu être analysé."
+  },
+
+  error_network: {
+    ES: "Error de red. Intenta de nuevo.",
+    EUS: "Sareko errorea. Saiatu berriro.",
+    EN: "Network error. Try again.",
+    FR: "Erreur réseau. Réessayez."
+  },
+
+  text_too_short: {
+    ES: "El texto es demasiado corto para analizar (min. ~40 caracteres).",
+    EUS: "Testua laburregia da aztertzeko (gutxienez ~40 karaktere).",
+    EN: "The text is too short to analyze (min. ~40 characters).",
+    FR: "Le texte est trop court pour être analysé (min. ~40 caractères)."
+  }
+},
+
+
+// =========================
 //      PREMIUM HUMANIZER
 // =========================
 premiumHumanizer_sources: {
