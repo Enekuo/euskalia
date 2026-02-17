@@ -7,9 +7,19 @@ import { useLocation, Link } from "react-router-dom";
 const NAVBAR_H = 88;
 
 const SupportPage = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const location = useLocation();
-  const isPro = location.pathname.startsWith("/cuenta-pro");
+
+  const isPremium = location.pathname.startsWith("/cuenta-premium");
+
+  const langForApi = () => {
+    const x = String(language || "").toUpperCase();
+    if (x === "EUS") return "eus";
+    if (x === "ES") return "es";
+    if (x === "EN") return "en";
+    if (x === "FR") return "fr";
+    return location.pathname.includes("/eus") ? "eus" : "es";
+  };
 
   const [form, setForm] = useState({
     email: "",
@@ -21,8 +31,7 @@ const SupportPage = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle");
 
-  const onChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +49,9 @@ const SupportPage = () => {
           email: form.email,
           subject: form.subject,
           message: form.message,
-          lang: location.pathname.includes("/eus") ? "eus" : "es",
+          lang: langForApi(),
           page: location.pathname,
+          source: isPremium ? "premium" : "free",
         }),
       });
 
@@ -63,14 +73,14 @@ const SupportPage = () => {
   return (
     <div
       className={
-        isPro
+        isPremium
           ? "w-full bg-gradient-to-b from-[#F6FAFF] to-white"
           : "min-h-screen w-full bg-gradient-to-b from-[#F6FAFF] to-white"
       }
     >
       <div
         className="mx-auto max-w-7xl px-5 lg:px-8"
-        style={isPro ? undefined : { minHeight: `calc(100vh - ${NAVBAR_H}px)` }}
+        style={isPremium ? undefined : { minHeight: `calc(100vh - ${NAVBAR_H}px)` }}
       >
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}
@@ -83,10 +93,7 @@ const SupportPage = () => {
                     {t("support_title", "Laguntza")}
                   </h2>
                   <p className="mt-2 text-base text-slate-600">
-                    {t(
-                      "support_subtitle",
-                      "Laguntza behar duzu? Hemen gaude laguntzeko."
-                    )}
+                    {t("support_subtitle", "Laguntza behar duzu? Hemen gaude laguntzeko.")}
                   </p>
                 </div>
 
@@ -108,10 +115,7 @@ const SupportPage = () => {
                 {t("support_kicker", "Nola lagun diezazukegu?")}
               </p>
               <p className="mt-1 text-base text-slate-600">
-                {t(
-                  "support_subtitle",
-                  "Laguntza behar duzu? Hemen gaude laguntzeko."
-                )}
+                {t("support_subtitle", "Laguntza behar duzu? Hemen gaude laguntzeko.")}
               </p>
             </div>
 
@@ -152,10 +156,7 @@ const SupportPage = () => {
                   value={form.email}
                   onChange={onChange}
                   required
-                  placeholder={t(
-                    "support_form_email_placeholder",
-                    "Zure posta elektronikoa"
-                  )}
+                  placeholder={t("support_form_email_placeholder", "Zure posta elektronikoa")}
                   className="w-full rounded-xl border px-4 py-3"
                 />
               </div>
@@ -170,10 +171,7 @@ const SupportPage = () => {
                   name="subject"
                   value={form.subject}
                   onChange={onChange}
-                  placeholder={t(
-                    "support_form_subject_placeholder",
-                    "Zerri buruz behar duzu laguntza?"
-                  )}
+                  placeholder={t("support_form_subject_placeholder", "Zerri buruz behar duzu laguntza?")}
                   className="w-full rounded-xl border px-4 py-3"
                 />
               </div>
@@ -189,23 +187,20 @@ const SupportPage = () => {
                   onChange={onChange}
                   required
                   rows={5}
-                  placeholder={t(
-                    "support_form_message_placeholder",
-                    "Esaguzu nola lagundu diezazukegun"
-                  )}
+                  placeholder={t("support_form_message_placeholder", "Esaguzu nola lagundu diezazukegun")}
                   className="w-full rounded-xl border px-4 py-3 resize-none"
                 />
               </div>
 
               <Button type="submit" disabled={loading}>
-                {loading ? "Bidaltzen..." : t("support_form_submit", "Bidali")}
+                {loading ? t("support_form_sending", "Bidaltzen...") : t("support_form_submit", "Bidali")}
               </Button>
 
               {status === "ok" && (
-                <p className="text-sm text-emerald-600">✅ Enviado</p>
+                <p className="text-sm text-emerald-600">{t("support_status_ok", "✅ Enviado")}</p>
               )}
               {status === "error" && (
-                <p className="text-sm text-red-600">❌ Error</p>
+                <p className="text-sm text-red-600">{t("support_status_error", "❌ Error")}</p>
               )}
 
               <p className="text-xs text-slate-500">

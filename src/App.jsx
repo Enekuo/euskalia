@@ -159,7 +159,8 @@ const seo =
             <Route path="/cuenta-premium/parafraseador" element={<PremiumLayout><PremiumParaphraser /></PremiumLayout>} />
             <Route path="/cuenta-premium/detector-ia" element={<PremiumLayout><PremiumAiDetector /></PremiumLayout>} />
             <Route path="/cuenta-premium/humanizador" element={<PremiumLayout><PremiumHumanizer /></PremiumLayout>} />
-
+            <Route path="/cuenta-premium/soporte" element={<PremiumLayout><SupportPage /></PremiumLayout>} />
+            <Route path="/cuenta-premium/sugerencias" element={<PremiumLayout><Suggestions /></PremiumLayout>} />
 
           </Routes>
         </main>

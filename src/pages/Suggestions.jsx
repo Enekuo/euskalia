@@ -6,13 +6,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 const MAX_CHARS = 1000;
 
 export default function Suggestions() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
   const tr = (key, fallback = "") => {
     const val = typeof t === "function" ? t(key) : null;
     return !val || val === key ? fallback : val;
+  };
+
+  const isPremiumPath = location.pathname.startsWith("/cuenta-premium");
+
+  const langForApi = () => {
+    const x = String(language || "").toUpperCase();
+    if (x === "EUS") return "eus";
+    if (x === "ES") return "es";
+    if (x === "EN") return "en";
+    if (x === "FR") return "fr";
+    return location.pathname.includes("/eus") ? "eus" : "es";
   };
 
   const [message, setMessage] = useState("");
@@ -49,9 +60,9 @@ export default function Suggestions() {
           type: "suggestion",
           message: msg,
           email: email.trim() || null,
-          lang: location.pathname.includes("/eus") ? "eus" : "es",
+          lang: langForApi(),
           page: location.pathname,
-          source: "free",
+          source: isPremiumPath ? "premium" : "free",
         }),
       });
 
@@ -87,15 +98,17 @@ export default function Suggestions() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10 space-y-6">
         {/* CABECERA */}
         <div className="relative space-y-4 text-center">
-          {/* BOTÓN CUENTA PREMIUM (arriba derecha) */}
-          <button
-            type="button"
-            onClick={() => navigate("/cuenta-premium")}
-            className="absolute right-0 top-0 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm hover:bg-white hover:border-slate-300 transition"
-          >
-            <Gem className="w-4 h-4 text-blue-600" />
-            {tr("suggestions.premium_account_button", "Cuenta Premium")}
-          </button>
+          {/* BOTÓN CUENTA PREMIUM (solo en PUBLIC) */}
+          {!isPremiumPath && (
+            <button
+              type="button"
+              onClick={() => navigate("/cuenta-premium")}
+              className="absolute right-0 top-0 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm hover:bg-white hover:border-slate-300 transition"
+            >
+              <Gem className="w-4 h-4 text-blue-600" />
+              {tr("suggestions.premium_account_button", "Cuenta Premium")}
+            </button>
+          )}
 
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1 text-[11px] font-medium text-blue-700 shadow-sm mx-auto">
             <Sparkles className="w-3.5 h-3.5" />

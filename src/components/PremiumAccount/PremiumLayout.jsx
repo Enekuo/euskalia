@@ -359,12 +359,12 @@ export default function PremiumLayout({ children }) {
             </button>
 
             <button
-              onClick={() => navigate("/cuenta-premium/ayuda")}
+              onClick={() => navigate("/cuenta-premium/soporte")}
               className={`
                 w-full flex items-center gap-2 px-3 h-10 rounded-lg
                 ${collapsed ? "justify-center" : ""}
                 ${
-                  isActive("/cuenta-premium/ayuda")
+                  isActive("/cuenta-premium/soporte")
                     ? "bg-slate-900 text-white font-medium"
                     : "hover:bg-slate-100 text-slate-700"
                 }

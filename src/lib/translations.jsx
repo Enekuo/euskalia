@@ -429,7 +429,7 @@ summary_daily_limit_reached: {
 
     email_placeholder: {
       ES: "Solo lo usaremos si necesitamos contactar contigo.",
-      EUS: "Zurekin harremanetan jartzeko bakarrik erabiliko dugu.",
+      EUS: "Zurekin harremanetan jarriko gara behar izanez gero.",
       EN: "We’ll only use it if we need to contact you.",
       FR: "Nous l’utiliserons uniquement si nous devons vous contacter.",
     },
