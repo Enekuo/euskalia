@@ -11,7 +11,7 @@ import {
   Trash,
   Check,
 } from "lucide-react";
-import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
+import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import {
@@ -1086,7 +1086,7 @@ export default function PremiumGrammarCorrector() {
             {/* ✅ Banner Premium */}
             {limitType && (
               <div className="px-6 pt-4">
-                <PremiumLimitBanner visible={!!limitType} message={limitMsg} />
+                <ProLimitBanner visible={!!limitType} message={limitMsg} />
               </div>
             )}
 
