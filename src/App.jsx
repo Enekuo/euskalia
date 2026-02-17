@@ -51,6 +51,10 @@ import PremiumAiDetector from "@/components/PremiumAccount/PremiumAiDetector";
 import PremiumHumanizer from "@/components/PremiumAccount/PremiumHumanizer";
 import PremiumSettings from "@/components/PremiumAccount/PremiumSettings";
 import PremiumAiAssistant from "@/components/PremiumAccount/PremiumAiAssistant";
+import PremiumLibrary from "@/components/PremiumAccount/PremiumLibrary";
+import PremiumLibraryDetail from "@/components/PremiumAccount/PremiumLibraryDetail";
+
+
 
 
 function App() {
@@ -163,6 +167,10 @@ const seo =
             <Route path="/cuenta-premium/sugerencias" element={<PremiumLayout><Suggestions /></PremiumLayout>} />
             <Route path="/cuenta-premium/ajustes" element={<PremiumLayout><PremiumSettings /></PremiumLayout>} />
             <Route path="/cuenta-premium/assistant" element={<PremiumLayout><PremiumAiAssistant /></PremiumLayout>} />
+            <Route path="/cuenta-premium/biblioteca" element={<PremiumLayout><PremiumLibrary /></PremiumLayout>} />
+            <Route path="/cuenta-premium/biblioteca/:id" element={<PremiumLibraryDetail />} />
+
+
 
 
 

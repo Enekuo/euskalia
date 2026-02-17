@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
-import { addLibraryDoc } from "@/proLibraryStore";
+import { addLibraryDoc } from "@/PremiumLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
