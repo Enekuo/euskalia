@@ -44,6 +44,14 @@ import ProHumanizer from "@/components/ProAccount/ProHumanizer";
 import PremiumLayout from "@/components/PremiumAccount/PremiumLayout";
 import PremiumHome from "@/components/PremiumAccount/PremiumHome";
 
+import PremiumSummary from "@/components/PremiumAccount/PremiumSummary";
+import PremiumGrammarCorrector from "@/components/PremiumAccount/PremiumGrammarCorrector";
+import PremiumParaphraser from "@/components/PremiumAccount/PremiumParaphraser";
+
+
+
+
+
 
 function App() {
   const location = useLocation();
@@ -143,8 +151,12 @@ const seo =
             <Route path="/cuenta-pro/soporte" element={<ProLayout><SupportPage /></ProLayout>} />
          
 
-            {/* Pro-Account */}
+            {/* Premium-Account */}
             <Route path="/cuenta-premium" element={<PremiumLayout><PremiumHome /></PremiumLayout>} />
+            
+            <Route path="/cuenta-premium/resumen" element={<PremiumLayout><PremiumSummary /></PremiumLayout>} />
+            <Route path="/cuenta-premium/corrector" element={<PremiumLayout><PremiumGrammarCorrector /></PremiumLayout>} />
+            <Route path="/cuenta-premium/parafraseador" element={<PremiumLayout><PremiumParaphraser /></PremiumLayout>} />
 
 
 
