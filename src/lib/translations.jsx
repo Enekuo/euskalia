@@ -4993,6 +4993,267 @@ premiumHome: {
 },
 
 // =========================
+//     PREMIUM TRANSLATOR
+// =========================
+
+premium_limit_chars: {
+  ES: "Has superado el límite máximo de caracteres para tu plan Premium.",
+  EUS: "Premium planeko karaktere-muga gainditu duzu.",
+  EN: "You’ve exceeded the maximum character limit for your Premium plan.",
+  FR: "Vous avez dépassé la limite maximale de caractères de votre plan Premium.",
+},
+premium_limit_daily: {
+  ES: "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.",
+  EUS: "Premium planeko eguneroko muga lortu duzu. Itzuli bihar.",
+  EN: "You’ve reached your Premium daily limit. Come back tomorrow.",
+  FR: "Vous avez atteint votre limite quotidienne Premium. Revenez demain.",
+},
+
+// ===== PREMIUM TRANSLATOR =====
+"premiumTranslator.detect_language": {
+  ES: "Detectar idioma",
+  EUS: "Hizkuntza detektatu",
+  EN: "Detect language",
+  FR: "Détecter la langue",
+},
+"premiumTranslator.detected": {
+  ES: "detectado",
+  EUS: "detektatua",
+  EN: "detected",
+  FR: "détectée",
+},
+"premiumTranslator.output_language_eus": {
+  ES: "Euskera",
+  EUS: "Euskara",
+  EN: "Basque",
+  FR: "Basque",
+},
+"premiumTranslator.output_language_es": {
+  ES: "Español",
+  EUS: "Gaztelania",
+  EN: "Spanish",
+  FR: "Espagnol",
+},
+"premiumTranslator.output_language_en": {
+  ES: "Inglés",
+  EUS: "Ingelesa",
+  EN: "English",
+  FR: "Anglais",
+},
+"premiumTranslator.output_language_fr": {
+  ES: "Francés",
+  EUS: "Frantsesa",
+  EN: "French",
+  FR: "Français",
+},
+"premiumTranslator.translate_button": {
+  ES: "Traducir",
+  EUS: "Itzuli",
+  EN: "Translate",
+  FR: "Traduire",
+},
+
+"premiumTranslator.sources_tab_text": {
+  ES: "Texto",
+  EUS: "Testua",
+  EN: "Text",
+  FR: "Texte",
+},
+"premiumTranslator.sources_tab_document": {
+  ES: "Documento",
+  EUS: "Dokumentua",
+  EN: "Document",
+  FR: "Document",
+},
+"premiumTranslator.sources_tab_url": {
+  ES: "URL",
+  EUS: "URL",
+  EN: "URL",
+  FR: "URL",
+},
+
+"premiumTranslator.choose_file_title": {
+  ES: "Elige tu archivo o carpeta",
+  EUS: "Aukeratu zure fitxategia edo karpeta",
+  EN: "Choose your file or folder",
+  FR: "Choisissez votre fichier ou dossier",
+},
+"premiumTranslator.accepted_formats": {
+  ES: "Formatos admitidos",
+  EUS: "Onartutako formatuak",
+  EN: "Supported formats",
+  FR: "Formats pris en charge",
+},
+"premiumTranslator.folder_hint": {
+  ES: "Puedes arrastrar varios archivos.",
+  EUS: "Hainbat fitxategi arrastatu ditzakezu.",
+  EN: "You can drag multiple files.",
+  FR: "Vous pouvez glisser plusieurs fichiers.",
+},
+
+"premiumTranslator.paste_urls_label": {
+  ES: "Pegar URLs*",
+  EUS: "Itsatsi URLak*",
+  EN: "Paste URLs*",
+  FR: "Coller des URLs*",
+},
+"premiumTranslator.add_url": {
+  ES: "Añadir URLs",
+  EUS: "Gehitu URLak",
+  EN: "Add URLs",
+  FR: "Ajouter des URLs",
+},
+"premiumTranslator.save_urls": {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+"premiumTranslator.cancel": {
+  ES: "Cancelar",
+  EUS: "Utzi",
+  EN: "Cancel",
+  FR: "Annuler",
+},
+"premiumTranslator.urls_note_visible": {
+  ES: "Solo se importará el texto visible.",
+  EUS: "Webgunean ikus daitekeen testua bakarrik inportatuko da.",
+  EN: "Only visible text will be imported.",
+  FR: "Seul le texte visible sera importé.",
+},
+"premiumTranslator.urls_note_paywalled": {
+  ES: "No se admiten artículos de pago.",
+  EUS: "Ordainpeko artikuluak ez dira onartzen.",
+  EN: "Paywalled articles are not supported.",
+  FR: "Les articles payants ne sont pas pris en charge.",
+},
+"premiumTranslator.remove": {
+  ES: "Quitar",
+  EUS: "Kendu",
+  EN: "Remove",
+  FR: "Retirer",
+},
+"premiumTranslator.paste_urls_placeholder": {
+  ES: "Introduce URLs separadas por línea",
+  EUS: "Sartu URLak lerroz lerro",
+  EN: "Enter URLs separated by lines",
+  FR: "Entrez des URLs, une par ligne",
+},
+
+"premiumTranslator.save_button_label": {
+  ES: "Guardar",
+  EUS: "Gorde",
+  EN: "Save",
+  FR: "Enregistrer",
+},
+"premiumTranslator.library_saved_toast": {
+  ES: "Guardado en biblioteca",
+  EUS: "Liburutegian gorde da",
+  EN: "Saved to library",
+  FR: "Enregistré dans la bibliothèque",
+},
+
+"premiumTranslator.clear_left": {
+  ES: "Borrar",
+  EUS: "Ezabatu",
+  EN: "Clear",
+  FR: "Effacer",
+},
+"premiumTranslator.left_placeholder": {
+  ES: "Escribe o pega el texto aquí…",
+  EUS: "Idatzi edo itsatsi testua hemen…",
+  EN: "Type or paste your text here…",
+  FR: "Écrivez ou collez votre texte ici…",
+},
+"premiumTranslator.right_placeholder": {
+  ES: "Aquí aparecerá la traducción…",
+  EUS: "Hemen agertuko da itzulpena…",
+  EN: "The translation will appear here…",
+  FR: "La traduction apparaîtra ici…",
+},
+"premiumTranslator.loading": {
+  ES: "Traduciendo…",
+  EUS: "Itzultzen…",
+  EN: "Translating…",
+  FR: "Traduction…",
+},
+
+"premiumTranslator.listen": {
+  ES: "Escuchar",
+  EUS: "Entzun",
+  EN: "Listen",
+  FR: "Écouter",
+},
+"premiumTranslator.stop": {
+  ES: "Detener",
+  EUS: "Gelditu",
+  EN: "Stop",
+  FR: "Arrêter",
+},
+"premiumTranslator.copy": {
+  ES: "Copiar",
+  EUS: "Kopiatu",
+  EN: "Copy",
+  FR: "Copier",
+},
+"premiumTranslator.copied": {
+  ES: "Copiado",
+  EUS: "Kopiatuta",
+  EN: "Copied",
+  FR: "Copié",
+},
+"premiumTranslator.pdf": {
+  ES: "PDF",
+  EUS: "PDF",
+  EN: "PDF",
+  FR: "PDF",
+},
+"premiumTranslator.swap_languages_aria": {
+  ES: "Intercambiar idiomas",
+  EUS: "Hizkuntzak trukatu",
+  EN: "Swap languages",
+  FR: "Inverser les langues",
+},
+
+// ===== ERRORES (Premium) =====
+"premiumTranslator_errorAuthRequired": {
+  ES: "Debes iniciar sesión para usar Premium.",
+  EUS: "Premium erabiltzeko saioa hasi behar duzu.",
+  EN: "You must sign in to use Premium.",
+  FR: "Vous devez vous connecter pour utiliser Premium.",
+},
+"premiumTranslator_errorGeneric": {
+  ES: "Error traduciendo el texto.",
+  EUS: "Errorea testua itzultzean.",
+  EN: "Error translating the text.",
+  FR: "Erreur lors de la traduction du texte.",
+},
+"premiumTranslator_errorMaxChars": {
+  ES: "Has superado el límite de caracteres permitido.",
+  EUS: "Onartutako karaktere-muga gainditu duzu.",
+  EN: "You’ve exceeded the allowed character limit.",
+  FR: "Vous avez dépassé la limite de caractères autorisée.",
+},
+"premiumTranslator_errorUrls": {
+  ES: "No se pudieron procesar las URLs ahora mismo.",
+  EUS: "Ezin izan dira URLak une honetan prozesatu.",
+  EN: "URLs couldn’t be processed right now.",
+  FR: "Impossible de traiter les URLs pour le moment.",
+},
+"premiumTranslator_errorDocuments": {
+  ES: "No se han podido procesar los documentos ahora mismo.",
+  EUS: "Ezin izan dira dokumentuak une honetan prozesatu.",
+  EN: "Documents couldn’t be processed right now.",
+  FR: "Impossible de traiter les documents pour le moment.",
+},
+"premiumTranslator_errorDocUnreadable": {
+  ES: "No se ha podido leer el documento.",
+  EUS: "Ezin izan da dokumentua irakurri.",
+  EN: "The document couldn’t be read.",
+  FR: "Impossible de lire le document.",
+},
+
+// =========================
 //        PREMIUM SUMMERY
 // =========================
 premium_limit_chars: {

@@ -43,7 +43,7 @@ import ProHumanizer from "@/components/ProAccount/ProHumanizer";
 // Premium-Account //
 import PremiumLayout from "@/components/PremiumAccount/PremiumLayout";
 import PremiumHome from "@/components/PremiumAccount/PremiumHome";
-
+import PremiumTranslator from "@/components/PremiumAccount/PremiumTranslator";
 import PremiumSummary from "@/components/PremiumAccount/PremiumSummary";
 import PremiumGrammarCorrector from "@/components/PremiumAccount/PremiumGrammarCorrector";
 import PremiumParaphraser from "@/components/PremiumAccount/PremiumParaphraser";
@@ -153,7 +153,7 @@ const seo =
 
             {/* Premium-Account */}
             <Route path="/cuenta-premium" element={<PremiumLayout><PremiumHome /></PremiumLayout>} />
-            
+            <Route path="/cuenta-premium/traductor" element={<PremiumLayout><PremiumTranslator /></PremiumLayout>} />
             <Route path="/cuenta-premium/resumen" element={<PremiumLayout><PremiumSummary /></PremiumLayout>} />
             <Route path="/cuenta-premium/corrector" element={<PremiumLayout><PremiumGrammarCorrector /></PremiumLayout>} />
             <Route path="/cuenta-premium/parafraseador" element={<PremiumLayout><PremiumParaphraser /></PremiumLayout>} />
