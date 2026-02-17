@@ -329,7 +329,7 @@ export default function PremiumLayout({ children }) {
                 }
               `}
             >
-              <Bot size={18}  />
+              <Bot size={20}  />
               {showText && (
                 <span>{tr("premiumSidebar_chat", "Asistente de IA")}</span>
               )}
