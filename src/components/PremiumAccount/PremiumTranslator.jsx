@@ -1,3 +1,5 @@
+// ✅ PremiumTranslator.jsx (mismo componente, solo cambiadas TODAS las keys a formato con puntos)
+
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
@@ -5,7 +7,6 @@ import {
   Volume2,
   Copy as CopyIcon,
   FileDown,
-  Mic,
   Trash2,
   Check,
   FileText,
@@ -101,9 +102,9 @@ export default function PremiumTranslator() {
 
   const limitMsg =
     limitType === "daily"
-      ? tr("premium_limit_daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
+      ? tr("premiumTranslator.limit.daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
       : limitType === "chars"
-      ? tr("premium_limit_chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
+      ? tr("premiumTranslator.limit.chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
       : "";
 
   // ===== ERROR (derivado, no fijo) =====
@@ -124,10 +125,10 @@ export default function PremiumTranslator() {
   const LBL_DETECTED = tr("premiumTranslator.detected", "detectado");
 
   // Etiquetas idiomas (claves nuevas)
-  const LBL_EUS = tr("premiumTranslator.output_language_eus", "Euskara");
-  const LBL_ES = tr("premiumTranslator.output_language_es", "Español");
-  const LBL_EN = tr("premiumTranslator.output_language_en", "English");
-  const LBL_FR = tr("premiumTranslator.output_language_fr", "Français");
+  const LBL_EUS = tr("premiumTranslator.output_language.eus", "Euskara");
+  const LBL_ES = tr("premiumTranslator.output_language.es", "Español");
+  const LBL_EN = tr("premiumTranslator.output_language.en", "English");
+  const LBL_FR = tr("premiumTranslator.output_language.fr", "Français");
 
   const langLabel = (val) => {
     if (val === "auto") return LBL_AUTO;
@@ -354,7 +355,7 @@ export default function PremiumTranslator() {
 
     if (leftText.length > MAX_CHARS) {
       setCharsLimit();
-      setErrorKey("premiumTranslator_errorMaxChars");
+      setErrorKey("premiumTranslator.error.maxChars");
       setErrorFallback("Has superado el límite de caracteres permitido.");
       setResultStatus("error");
       return;
@@ -440,12 +441,12 @@ export default function PremiumTranslator() {
 
           if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
             if (!hasPrev) {
-              setErrorKey("premiumTranslator_errorAuthRequired");
+              setErrorKey("premiumTranslator.error.authRequired");
               setErrorFallback("Debes iniciar sesión para usar Premium.");
             }
           } else {
             if (!hasPrev) {
-              setErrorKey("premiumTranslator_errorGeneric");
+              setErrorKey("premiumTranslator.error.generic");
               setErrorFallback("Error traduciendo el texto.");
             }
           }
@@ -527,10 +528,10 @@ export default function PremiumTranslator() {
           console.error("API /api/pro (urls) error:", res.status, raw);
 
           if (res.status === 401 || res.status === 403) {
-            setErrorKey("premiumTranslator_errorAuthRequired");
+            setErrorKey("premiumTranslator.error.authRequired");
             setErrorFallback("Debes iniciar sesión para usar Premium.");
           } else {
-            setErrorKey("premiumTranslator_errorUrls");
+            setErrorKey("premiumTranslator.error.urls");
             setErrorFallback("No se pudieron procesar las URLs ahora mismo.");
           }
 
@@ -545,10 +546,10 @@ export default function PremiumTranslator() {
           console.error("translate urls error:", e);
 
           if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
-            setErrorKey("premiumTranslator_errorAuthRequired");
+            setErrorKey("premiumTranslator.error.authRequired");
             setErrorFallback("Debes iniciar sesión para usar Premium.");
           } else {
-            setErrorKey("premiumTranslator_errorUrls");
+            setErrorKey("premiumTranslator.error.urls");
             setErrorFallback("No se pudieron procesar las URLs ahora mismo.");
           }
 
@@ -596,7 +597,7 @@ export default function PremiumTranslator() {
         const combined = contents.join("\n\n---\n\n").slice(0, MAX_CHARS);
 
         if (!combined.trim()) {
-          setErrorKey("premiumTranslator_errorDocUnreadable");
+          setErrorKey("premiumTranslator.error.docUnreadable");
           setErrorFallback("No se ha podido leer el documento.");
           setRightText("");
           setResultStatus("error");
@@ -653,10 +654,10 @@ export default function PremiumTranslator() {
           console.error("API /api/pro (documents) error:", res.status, raw);
 
           if (res.status === 401 || res.status === 403) {
-            setErrorKey("premiumTranslator_errorAuthRequired");
+            setErrorKey("premiumTranslator.error.authRequired");
             setErrorFallback("Debes iniciar sesión para usar Premium.");
           } else {
-            setErrorKey("premiumTranslator_errorDocuments");
+            setErrorKey("premiumTranslator.error.documents");
             setErrorFallback("No se han podido procesar los documentos ahora mismo.");
           }
 
@@ -671,10 +672,10 @@ export default function PremiumTranslator() {
           console.error("translate documents error:", e);
 
           if (e?.message === "NOT_AUTHENTICATED" || e?.message === "NO_TOKEN") {
-            setErrorKey("premiumTranslator_errorAuthRequired");
+            setErrorKey("premiumTranslator.error.authRequired");
             setErrorFallback("Debes iniciar sesión para usar Premium.");
           } else {
-            setErrorKey("premiumTranslator_errorDocuments");
+            setErrorKey("premiumTranslator.error.documents");
             setErrorFallback("No se han podido procesar los documentos ahora mismo.");
           }
 
@@ -722,36 +723,36 @@ export default function PremiumTranslator() {
   };
 
   // ===== Textos (claves nuevas Premium) =====
-  const labelTabText = tr("premiumTranslator.sources_tab_text", "Texto");
-  const labelTabDocument = tr("premiumTranslator.sources_tab_document", "Documento");
-  const labelTabUrl = tr("premiumTranslator.sources_tab_url", "URL");
+  const labelTabText = tr("premiumTranslator.sources.tab.text", "Texto");
+  const labelTabDocument = tr("premiumTranslator.sources.tab.document", "Documento");
+  const labelTabUrl = tr("premiumTranslator.sources.tab.url", "URL");
 
-  const labelChooseFileTitle = tr("premiumTranslator.choose_file_title", "Elige tu archivo o carpeta");
-  const labelAcceptedFormats = tr("premiumTranslator.accepted_formats", "Formatos admitidos");
-  const labelFolderHint = tr("premiumTranslator.folder_hint", "Puedes arrastrar varios archivos.");
+  const labelChooseFileTitle = tr("premiumTranslator.choose_file.title", "Elige tu archivo o carpeta");
+  const labelAcceptedFormats = tr("premiumTranslator.choose_file.formats", "Formatos admitidos");
+  const labelFolderHint = tr("premiumTranslator.choose_file.hint", "Puedes arrastrar varios archivos.");
 
-  const labelPasteUrls = tr("premiumTranslator.paste_urls_label", "Pegar URLs*");
-  const labelAddUrl = tr("premiumTranslator.add_url", "Añadir URLs");
-  const labelSaveUrls = tr("premiumTranslator.save_urls", "Guardar");
-  const labelCancel = tr("premiumTranslator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("premiumTranslator.urls_note_visible", "Solo se importará el texto visible.");
-  const labelUrlsNotePaywalled = tr("premiumTranslator.urls_note_paywalled", "No se admiten artículos de pago.");
-  const labelRemove = tr("premiumTranslator.remove", "Quitar");
+  const labelPasteUrls = tr("premiumTranslator.urls.paste_label", "Pegar URLs*");
+  const labelAddUrl = tr("premiumTranslator.urls.add", "Añadir URLs");
+  const labelSaveUrls = tr("premiumTranslator.urls.save", "Guardar");
+  const labelCancel = tr("premiumTranslator.common.cancel", "Cancelar");
+  const labelUrlsNoteVisible = tr("premiumTranslator.urls.note_visible", "Solo se importará el texto visible.");
+  const labelUrlsNotePaywalled = tr("premiumTranslator.urls.note_paywalled", "No se admiten artículos de pago.");
+  const labelRemove = tr("premiumTranslator.common.remove", "Quitar");
 
-  const labelSaveTranslation = tr("premiumTranslator.save_button_label", "Guardar");
-  const librarySavedMessage = tr("premiumTranslator.library_saved_toast", "Guardado en biblioteca");
+  const labelSaveTranslation = tr("premiumTranslator.library.save", "Guardar");
+  const librarySavedMessage = tr("premiumTranslator.library.saved_toast", "Guardado en biblioteca");
 
-  const labelLeftPlaceholder = tr("premiumTranslator.left_placeholder", "Escribe o pega el texto aquí…");
-  const labelRightPlaceholder = tr("premiumTranslator.right_placeholder", "Aquí aparecerá la traducción…");
+  const labelLeftPlaceholder = tr("premiumTranslator.placeholders.left", "Escribe o pega el texto aquí…");
+  const labelRightPlaceholder = tr("premiumTranslator.placeholders.right", "Aquí aparecerá la traducción…");
   const labelLoading = tr("premiumTranslator.loading", "Traduciendo…");
 
-  const labelClear = tr("premiumTranslator.clear_left", "Borrar");
-  const labelSwapAria = tr("premiumTranslator.swap_languages_aria", "Intercambiar idiomas");
-  const labelListen = tr("premiumTranslator.listen", "Escuchar");
-  const labelStop = tr("premiumTranslator.stop", "Detener");
-  const labelCopy = tr("premiumTranslator.copy", "Copiar");
-  const labelCopied = tr("premiumTranslator.copied", "Copiado");
-  const labelPdf = tr("premiumTranslator.pdf", "PDF");
+  const labelClear = tr("premiumTranslator.actions.clear_left", "Borrar");
+  const labelSwapAria = tr("premiumTranslator.actions.swap_languages_aria", "Intercambiar idiomas");
+  const labelListen = tr("premiumTranslator.actions.listen", "Escuchar");
+  const labelStop = tr("premiumTranslator.actions.stop", "Detener");
+  const labelCopy = tr("premiumTranslator.actions.copy", "Copiar");
+  const labelCopied = tr("premiumTranslator.actions.copied", "Copiado");
+  const labelPdf = tr("premiumTranslator.actions.pdf", "PDF");
 
   // ===== TTS =====
   const stopPlayback = () => {
@@ -1460,7 +1461,7 @@ export default function PremiumTranslator() {
                         if (v.length >= MAX_CHARS) {
                           clearError();
                           setCharsLimit();
-                          setErrorKey("premiumTranslator_errorMaxChars");
+                          setErrorKey("premiumTranslator.error.maxChars");
                           setErrorFallback("Has superado el límite de caracteres permitido.");
                         } else {
                           if (limitType === "chars") clearLimit();
@@ -1583,7 +1584,7 @@ export default function PremiumTranslator() {
                             if (limitType) clearLimit();
                             if (displayErr) clearError();
                           }}
-                          placeholder={tr("premiumTranslator.paste_urls_placeholder", "Introduce URLs separadas por línea")}
+                          placeholder={tr("premiumTranslator.urls.placeholder", "Introduce URLs separadas por línea")}
                           className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                           aria-label={labelPasteUrls}
                         />
@@ -1691,7 +1692,11 @@ export default function PremiumTranslator() {
                       } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                       disabled={!hasRealResult}
                     >
-                      {speaking ? <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" /> : <Volume2 className="w-5 h-5" />}
+                      {speaking ? (
+                        <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
+                      ) : (
+                        <Volume2 className="w-5 h-5" />
+                      )}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {speaking ? labelStop : labelListen}
                       </span>
