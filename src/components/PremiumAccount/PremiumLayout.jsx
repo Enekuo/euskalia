@@ -35,7 +35,7 @@ export default function PremiumLayout({ children }) {
   const location = useLocation();
   const pathname = location.pathname;
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false); 
   const [toolsOpen, setToolsOpen] = useState(
     pathname === "/cuenta-premium/traductor" ||
       pathname === "/cuenta-premium/resumen" ||
