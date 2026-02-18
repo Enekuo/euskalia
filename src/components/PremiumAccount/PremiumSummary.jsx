@@ -37,6 +37,10 @@ export default function PremiumSummary() {
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
 
+  // ✅ Prompt input inferior (como en public)
+  const [chatInput, setChatInput] = useState("");
+  const [promptLocalMsg, setPromptLocalMsg] = useState("");
+
   // Resultado / carga / error
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -147,6 +151,17 @@ export default function PremiumSummary() {
   const labelHelpRight = tr(
     "premiumSummary.create_help_right",
     "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
+  );
+
+  // ✅ Prompt inferior (mismas keys que en public)
+  const labelBottomInputPh = tr(
+    "summary.bottom_input_ph",
+    "Idatzi hemen ikuspegia (aukerakoa): tonua, luzera, puntu garrantzitsuak…"
+  );
+  const labelGenerateWithPrompt = tr("summary.generate_with_prompt", "Argibideekin sortu");
+  const labelPromptNotConnected = tr(
+    "summary.premium_prompt_not_connected",
+    "Oraindik ez dago APIra konektatuta. Laster aktibatuko dugu."
   );
 
   // Longitud
@@ -1307,6 +1322,43 @@ export default function PremiumSummary() {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* ✅ Prompt footer (misma posición visual que en public) */}
+              <div className="absolute left-0 right-0 bottom-0 bg-white p-4">
+                {promptLocalMsg && (
+                  <div className="mb-3 text-sm text-slate-600 text-center">
+                    {promptLocalMsg}
+                  </div>
+                )}
+
+                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
+                  <div className="flex items-center gap-2 px-4 py-2">
+                    <input
+                      value={chatInput}
+                      onChange={(e) => {
+                        setChatInput(e.target.value);
+                        if (promptLocalMsg) setPromptLocalMsg("");
+                      }}
+                      placeholder={labelBottomInputPh}
+                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
+                      aria-label={labelBottomInputPh}
+                    />
+
+                    <Button
+                      type="button"
+                      className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
+                      style={{ backgroundColor: "#93c5fd", color: "#ffffff" }}
+                      onClick={() => {
+                        if (!chatInput.trim()) return;
+                        setPromptLocalMsg(labelPromptNotConnected);
+                      }}
+                      disabled={!chatInput.trim()}
+                    >
+                      {labelGenerateWithPrompt}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </section>
           </motion.section>
