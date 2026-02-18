@@ -128,9 +128,9 @@ export default function LayoutPro({ children }) {
       >
         <div className="flex items-center px-4 pl-16">
           <img
-            src="/favicon.png"
+            src="/Imagen favicon.png"
             alt="Euskalia"
-            className="w-7 h-7 mr-2"
+            className="w-11 h-11 mr-2"
             draggable={false}
           />
           <span className="font-bold tracking-tight text-2xl whitespace-nowrap">
