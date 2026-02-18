@@ -18,7 +18,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger, 
+  DropdownMenuTrigger,
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -126,9 +126,17 @@ export default function LayoutPro({ children }) {
         className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] "
         style={{ width: collapsed ? 64 : 192 }}
       >
-        <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4 pl-16">
-          Euskalia
-        </span>
+        <div className="flex items-center px-4 pl-16">
+          <img
+            src="/favicon.png"
+            alt="Euskalia"
+            className="w-7 h-7 mr-2"
+            draggable={false}
+          />
+          <span className="font-bold tracking-tight text-2xl whitespace-nowrap">
+            Euskalia
+          </span>
+        </div>
       </div>
 
       {/* ========== SIDEBAR FIJO ========== */}
@@ -522,8 +530,10 @@ export default function LayoutPro({ children }) {
         </header>
 
         {/* ✅ Empujamos el contenido para que no quede debajo del header fijo */}
-        <main className="flex-1 mt-16 px-8 py-8 border-l border-slate-200">
-          {children}
+        <main className="flex-1 mt-16 py-8 border-l border-slate-200">
+          <div className="px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>
