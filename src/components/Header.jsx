@@ -195,10 +195,20 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-8 flex items-center">
+            
             <img
-              src="/euskalia-logo.svg"
+              src="/Favicon imagen.png"
+              alt=""
+              className="h-11 w-11 mr-3"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+
+            <img
+              src="/Imagen favicon.png" 
               alt="Euskalia"
-              className="h-6 mr-2"
+              className="h-11 mr-2"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
