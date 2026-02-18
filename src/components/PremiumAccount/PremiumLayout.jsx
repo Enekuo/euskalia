@@ -12,6 +12,7 @@ import {
   LifeBuoy,
   ChevronsLeft,
   ChevronsRight,
+  Sparkles,
 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import {
@@ -45,6 +46,12 @@ export default function PremiumLayout({ children }) {
       pathname === "/cuenta-premium/detector-ia"
   );
 
+  const [creatorsOpen, setCreatorsOpen] = useState(
+    pathname === "/cuenta-premium/creador-texto" ||
+      pathname === "/cuenta-premium/creador-email" ||
+      pathname === "/cuenta-premium/convertidor-audio"
+  );
+
   const languages = [
     { code: "EUS", name: "Euskara" },
     { code: "ES", name: "Español" },
@@ -62,6 +69,11 @@ export default function PremiumLayout({ children }) {
     pathname === "/cuenta-premium/parafraseador" ||
     pathname === "/cuenta-premium/humanizador" ||
     pathname === "/cuenta-premium/detector-ia";
+
+  const isCreatorsSection =
+    pathname === "/cuenta-premium/creador-texto" ||
+    pathname === "/cuenta-premium/creador-email" ||
+    pathname === "/cuenta-premium/convertidor-audio";
 
   // ===== TÍTULO DINÁMICO EN HEADER (SOLO 6 HERRAMIENTAS, SIN SUBTÍTULO) =====
   const headerTitle = useMemo(() => {
@@ -334,6 +346,89 @@ export default function PremiumLayout({ children }) {
                 <span>{tr("premiumSidebar_chat", "Asistente de IA")}</span>
               )}
             </button>
+
+            {/* ===== NUEVO BOTÓN + SUBMENÚ (mismo color que Sortu) ===== */}
+            <div className="space-y-1">
+              <button
+                onClick={() => setCreatorsOpen((v) => !v)}
+                className={`
+                  w-full flex items-center gap-2 px-3 h-11 rounded-lg text-white
+                  bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600
+                  ${collapsed ? "justify-center" : "justify-between"}
+                `}
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles size={18} />
+                  {showText && (
+                    <span>{tr("premiumSidebar_creators", "Creadores")}</span>
+                  )}
+                </div>
+
+                {showText && (
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${
+                      creatorsOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
+                )}
+              </button>
+
+              {creatorsOpen && !collapsed && (
+                <div className="ml-2 mt-1 space-y-1">
+                  <button
+                    onClick={() => navigate("/cuenta-premium/creador-texto")}
+                    className={`
+                      w-full flex items-center
+                      pl-4 pr-2 h-9
+                      text-sm
+                      ${
+                        isActive("/cuenta-premium/creador-texto")
+                          ? "text-slate-900 font-semibold"
+                          : "text-slate-700 hover:text-slate-900"
+                      }
+                    `}
+                  >
+                    <span className="mr-2 text-slate-200">│</span>
+                    <span>{tr("premiumSidebar_textCreator", "Creador de texto")}</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/cuenta-premium/creador-email")}
+                    className={`
+                      w-full flex items-center
+                      pl-4 pr-2 h-9
+                      text-sm
+                      ${
+                        isActive("/cuenta-premium/creador-email")
+                          ? "text-slate-900 font-semibold"
+                          : "text-slate-700 hover:text-slate-900"
+                      }
+                    `}
+                  >
+                    <span className="mr-2 text-slate-200">│</span>
+                    <span>{tr("premiumSidebar_emailCreator", "Creador de email")}</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/cuenta-premium/convertidor-audio")}
+                    className={`
+                      w-full flex items-center
+                      pl-4 pr-2 h-9
+                      text-sm
+                      ${
+                        isActive("/cuenta-premium/convertidor-audio")
+                          ? "text-slate-900 font-semibold"
+                          : "text-slate-700 hover:text-slate-900"
+                      }
+                    `}
+                  >
+                    <span className="mr-2 text-slate-200">└</span>
+                    <span>{tr("premiumSidebar_audioConverter", "Convertidor de audio")}</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="flex-1" />
