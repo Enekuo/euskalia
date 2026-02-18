@@ -36,7 +36,8 @@ export default function PremiumLayout({ children }) {
   const location = useLocation();
   const pathname = location.pathname;
 
-  const [collapsed, setCollapsed] = useState(false); 
+  const [collapsed, setCollapsed] = useState(false);
+
   const [toolsOpen, setToolsOpen] = useState(
     pathname === "/cuenta-premium/traductor" ||
       pathname === "/cuenta-premium/resumen" ||
@@ -46,10 +47,10 @@ export default function PremiumLayout({ children }) {
       pathname === "/cuenta-premium/detector-ia"
   );
 
-  const [creatorsOpen, setCreatorsOpen] = useState(
-    pathname === "/cuenta-premium/creador-texto" ||
-      pathname === "/cuenta-premium/creador-email" ||
-      pathname === "/cuenta-premium/convertidor-audio"
+  const [creatorOpen, setCreatorOpen] = useState(
+    pathname === "/cuenta-premium/creador/texto" ||
+      pathname === "/cuenta-premium/creador/email" ||
+      pathname === "/cuenta-premium/creador/audio"
   );
 
   const languages = [
@@ -62,6 +63,7 @@ export default function PremiumLayout({ children }) {
   const showText = !collapsed;
 
   const isActive = (target) => pathname === target;
+
   const isToolsSection =
     pathname === "/cuenta-premium/traductor" ||
     pathname === "/cuenta-premium/resumen" ||
@@ -70,10 +72,10 @@ export default function PremiumLayout({ children }) {
     pathname === "/cuenta-premium/humanizador" ||
     pathname === "/cuenta-premium/detector-ia";
 
-  const isCreatorsSection =
-    pathname === "/cuenta-premium/creador-texto" ||
-    pathname === "/cuenta-premium/creador-email" ||
-    pathname === "/cuenta-premium/convertidor-audio";
+  const isCreatorSection =
+    pathname === "/cuenta-premium/creador/texto" ||
+    pathname === "/cuenta-premium/creador/email" ||
+    pathname === "/cuenta-premium/creador/audio";
 
   // ===== TÍTULO DINÁMICO EN HEADER (SOLO 6 HERRAMIENTAS, SIN SUBTÍTULO) =====
   const headerTitle = useMemo(() => {
@@ -135,12 +137,18 @@ export default function PremiumLayout({ children }) {
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
       {/* ✅ LOGO FIJO */}
       <div
-        className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60] "
+        className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60]"
         style={{ width: collapsed ? 64 : 192 }}
       >
-        <span className="font-bold tracking-tight text-2xl whitespace-nowrap px-4 pl-16">
-          Euskalia
-        </span>
+        <div className="flex items-center gap-3 whitespace-nowrap px-4 pl-16">
+          <img
+            src="/Imagen favicon.png"
+            alt="Euskalia"
+            className="w-11 h-11 rounded-full"
+            draggable={false}
+          />
+          <span className="font-bold tracking-tight text-2xl">Euskalia</span>
+        </div>
       </div>
 
       {/* ========== SIDEBAR FIJO ========== */}
@@ -341,90 +349,90 @@ export default function PremiumLayout({ children }) {
                 }
               `}
             >
-              <Bot size={20}  />
+              <Bot size={20} />
               {showText && (
                 <span>{tr("premiumSidebar_chat", "Asistente de IA")}</span>
               )}
             </button>
 
-            {/* ===== NUEVO BOTÓN + SUBMENÚ (mismo color que Sortu) ===== */}
+            {/* Creador (NUEVO) */}
             <div className="space-y-1">
               <button
-                onClick={() => setCreatorsOpen((v) => !v)}
+                onClick={() => setCreatorOpen((v) => !v)}
                 className={`
-                  w-full flex items-center gap-2 px-3 h-11 rounded-lg text-white
-                  bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600
+                  w-full flex items-center gap-2 px-3 h-11 rounded-lg
                   ${collapsed ? "justify-center" : "justify-between"}
+                  bg-gradient-to-r from-blue-600 to-cyan-500
+                  hover:from-blue-700 hover:to-cyan-600
+                  text-white
                 `}
               >
                 <div className="flex items-center gap-2">
                   <Sparkles size={18} />
-                  {showText && (
-                    <span>{tr("premiumSidebar_creators", "Creadores")}</span>
-                  )}
+                  {showText && <span>Creador</span>}
                 </div>
 
                 {showText && (
                   <ChevronDown
                     size={14}
                     className={`transition-transform ${
-                      creatorsOpen ? "rotate-180" : "rotate-0"
+                      creatorOpen ? "rotate-180" : "rotate-0"
                     }`}
                   />
                 )}
               </button>
 
-              {creatorsOpen && !collapsed && (
+              {creatorOpen && !collapsed && (
                 <div className="ml-2 mt-1 space-y-1">
                   <button
-                    onClick={() => navigate("/cuenta-premium/creador-texto")}
+                    onClick={() => navigate("/cuenta-premium/creador/texto")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/creador-texto")
+                        isActive("/cuenta-premium/creador/texto")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
                     `}
                   >
                     <span className="mr-2 text-slate-200">│</span>
-                    <span>{tr("premiumSidebar_textCreator", "Creador de texto")}</span>
+                    <span>Creador de texto</span>
                   </button>
 
                   <button
-                    onClick={() => navigate("/cuenta-premium/creador-email")}
+                    onClick={() => navigate("/cuenta-premium/creador/email")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/creador-email")
+                        isActive("/cuenta-premium/creador/email")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
                     `}
                   >
                     <span className="mr-2 text-slate-200">│</span>
-                    <span>{tr("premiumSidebar_emailCreator", "Creador de email")}</span>
+                    <span>Creador de email</span>
                   </button>
 
                   <button
-                    onClick={() => navigate("/cuenta-premium/convertidor-audio")}
+                    onClick={() => navigate("/cuenta-premium/creador/audio")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/convertidor-audio")
+                        isActive("/cuenta-premium/creador/audio")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
                     `}
                   >
                     <span className="mr-2 text-slate-200">└</span>
-                    <span>{tr("premiumSidebar_audioConverter", "Convertidor de audio")}</span>
+                    <span>Convertidor de audio</span>
                   </button>
                 </div>
               )}
@@ -528,15 +536,18 @@ export default function PremiumLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full border border-slate-200 bg-white flex items-center justify-center">
-              <Gem size={18} className="text-slate-700" />
+            {/* ✅ SOLO EL DIAMANTE con degradado */}
+            <div className="h-9 w-9 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-cyan-500">
+              <Gem size={18} className="text-white" />
             </div>
 
+            {/* ✅ SOLO EL BOTÓN PREMIUM con degradado */}
             <button
               className="
-                h-9 px-4 rounded-full border border-slate-200
-                bg-white text-sm font-medium text-slate-800
-                hover:bg-slate-50
+                h-9 px-4 rounded-full
+                text-white text-sm font-medium
+                bg-gradient-to-r from-blue-600 to-cyan-500
+                hover:from-blue-700 hover:to-cyan-600
               "
             >
               {tr("premiumHeader_planPremium", "Plan Premium")}
