@@ -70,7 +70,7 @@ export default function PremiumGrammarCorrector() {
   // Mostrar / ocultar resaltado de cambios
   const [showDiff, setShowDiff] = useState(false);
 
-  // ✅ ORIGINAL para el diff (para que SIEMPRE funcione y salga verde)
+  // ✅ guardar el ORIGINAL real para diff (no depende de textValue)
   const [originalForDiff, setOriginalForDiff] = useState("");
 
   // Documentos
@@ -327,6 +327,7 @@ export default function PremiumGrammarCorrector() {
     setLoading(false);
     setShowDiff(false);
     setSavedToLibrary(false);
+    setOriginalForDiff("");
     clearLimit();
   };
 
@@ -638,7 +639,7 @@ export default function PremiumGrammarCorrector() {
 
       const idToken = await user.getIdToken();
 
-      // ✅ Guardar el ORIGINAL real para el diff (para que salga verde SIEMPRE)
+      // ✅ guardar original real (lo que se va a corregir)
       const originalBase =
         sourceMode === "text"
           ? (textValue || "")
