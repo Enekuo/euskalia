@@ -53,7 +53,9 @@ import PremiumSettings from "@/components/PremiumAccount/PremiumSettings";
 import PremiumAiAssistant from "@/components/PremiumAccount/PremiumAiAssistant";
 import PremiumLibrary from "@/components/PremiumAccount/PremiumLibrary";
 import PremiumLibraryDetail from "@/components/PremiumAccount/PremiumLibraryDetail";
-
+import PremiumTextCreator from "@/components/PremiumAccount/PremiumTextCreator";
+import PremiumEmailCreator from "@/components/PremiumAccount/PremiumEmailCreator";
+import PremiumAudioCreator from "@/components/PremiumAccount/PremiumAudioCreator";
 
 
 
@@ -169,6 +171,10 @@ const seo =
             <Route path="/cuenta-premium/assistant" element={<PremiumLayout><PremiumAiAssistant /></PremiumLayout>} />
             <Route path="/cuenta-premium/biblioteca" element={<PremiumLayout><PremiumLibrary /></PremiumLayout>} />
             <Route path="/cuenta-premium/biblioteca/:id" element={<PremiumLibraryDetail />} />
+            <Route path="/cuenta-premium/texto" element={<PremiumLayout><PremiumTextCreator /></PremiumLayout>} />
+            <Route path="/cuenta-premium/email" element={<PremiumLayout><PremiumEmailCreator /></PremiumLayout>} />
+            <Route path="/cuenta-premium/audio" element={<PremiumLayout><PremiumAudioCreator /></PremiumLayout>} />
+
 
 
 
