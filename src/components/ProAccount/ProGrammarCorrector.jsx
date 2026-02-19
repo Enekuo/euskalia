@@ -34,7 +34,7 @@ export default function ProGrammarCorrector() {
     return !val || val === key ? fallback : val;
   };
 
-  // ✅✅✅ PRO LIMITS (patrón único) -> FIX: guardar SOLO tipo, no el texto
+  // ✅✅✅ PRO LIMITS (patrón único) -> guardar SOLO tipo, no el texto
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
 
   const setCharsLimit = () => setLimitType("chars");
@@ -58,7 +58,7 @@ export default function ProGrammarCorrector() {
   const [errorMsg, setErrorMsg] = useState("");
 
   // Modo de corrección fijo (ya no hay pestañas)
-  const CORRECTION_MODE = "standard"; // "light" | "standard" | "deep"
+  const CORRECTION_MODE = "standard";
 
   // Idioma de referencia para la corrección (ES/EUS/EN/FR) — por defecto Euskera
   const [outputLang, setOutputLang] = useState("EUS");
@@ -102,15 +102,12 @@ export default function ProGrammarCorrector() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n =====
+  // ===== i18n (PRO) =====
   const labelSources = tr("grammar.sources_title", "Fuentes");
   const labelTabText = tr("grammar.sources_tab_text", "Texto");
   const labelTabDocument = tr("grammar.sources_tab_document", "Documento");
   const labelTabUrl = tr("grammar.sources_tab_url", "URL");
-  const labelEnterText = tr(
-    "grammar.enter_text_here_full",
-    "Escribe o pega aquí el texto que quieres corregir…"
-  );
+  const labelEnterText = tr("grammar.enter_text_here_full", "Escribe o pega aquí el texto que quieres corregir…");
   const labelChooseFileTitle = tr("grammar.choose_file_title", "Elige tu archivo o carpeta");
   const labelAcceptedFormats = tr(
     "grammar.accepted_formats",
@@ -133,17 +130,17 @@ export default function ProGrammarCorrector() {
   const labelViewChanges = tr("grammar.view_changes", "Ver cambios");
   const labelHideChanges = tr("grammar.hide_changes", "Ocultar cambios");
 
-  // ✅ Idiomas (UI)
+  // ✅ Idiomas (UI) -> REUTILIZAMOS las mismas keys globales que ya funcionan bien
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
-  // Guardar (mismo sistema que Translator)
+  // Guardar (reutiliza las mismas del sistema)
   const labelSaveTranslation = tr("save_button_label", "Guardar");
   const librarySavedMessage = tr("library_saved_toast", "Guardado en biblioteca");
 
-  // ✅ Tooltips existentes del translator (NO nuevas keys)
+  // ✅ Tooltips (reutiliza las del translator)
   const tooltipCopy = t("translator.copy") || "Copiar";
   const tooltipCopied = t("translator.copied") || "Copiado";
   const tooltipPdf = t("translator.pdf") || "PDF";
@@ -174,10 +171,7 @@ export default function ProGrammarCorrector() {
         <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
         <span className="truncate">{label}</span>
         {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
+          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
         )}
       </button>
       {showDivider && (
@@ -211,21 +205,29 @@ export default function ProGrammarCorrector() {
       .replace(/\s+/g, " ")
       .trim();
 
-  // ✅ Diff REAL
+  // ✅ para detectar cambios reales (sin bajar a minúsculas ni quitar acentos)
+  const normalizeForDiff = (s) =>
+    String(s || "")
+      .replace(/\r/g, "")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+  // ✅ Diff REAL: rojo = eliminado, verde = añadido
   const diffSegments = (original, corrected) => {
     const dmp = new diff_match_patch();
     const diffs = dmp.diff_main(original || "", corrected || "");
     dmp.diff_cleanupSemantic(diffs);
 
     return diffs.map(([op, text]) => ({
+      op, // -1 delete, 0 equal, 1 insert
       text,
-      changed: op === 1,
     }));
   };
 
   const hasDiff = useMemo(() => {
     if (!textValue || !result) return false;
-    return canonicalize(textValue) !== canonicalize(result);
+    return normalizeForDiff(textValue) !== normalizeForDiff(result);
   }, [textValue, result]);
 
   const parseList = (text) => {
@@ -293,14 +295,20 @@ export default function ProGrammarCorrector() {
 
     return (
       <p className="whitespace-pre-wrap">
-        {segments.map((seg, index) => (
-          <span
-            key={index}
-            className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
-          >
-            {seg.text}
-          </span>
-        ))}
+        {segments.map((seg, index) => {
+          const cls =
+            seg.op === 1
+              ? "bg-emerald-100 text-emerald-900 rounded px-[2px]"
+              : seg.op === -1
+              ? "bg-red-100 text-red-800 rounded px-[2px] line-through"
+              : undefined;
+
+          return (
+            <span key={index} className={cls}>
+              {seg.text}
+            </span>
+          );
+        })}
       </p>
     );
   };
@@ -433,6 +441,7 @@ export default function ProGrammarCorrector() {
     setUrlInputOpen(false);
     clearRight();
   };
+
   const removeUrl = (id) => {
     setUrlItems((prev) => prev.filter((u) => u.id !== id));
     clearRight();
@@ -526,7 +535,7 @@ export default function ProGrammarCorrector() {
     }
   };
 
-  // ===== Generar (corrección gramatical) =====
+  // ===== Generar (corrección) =====
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
@@ -547,9 +556,7 @@ export default function ProGrammarCorrector() {
     }
 
     if (!validNow) {
-      setErrorMsg(
-        tr("grammar.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección.")
-      );
+      setErrorMsg(tr("grammar.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección."));
       setLoading(false);
       return;
     }
@@ -611,6 +618,7 @@ export default function ProGrammarCorrector() {
       docNames,
       mode: CORRECTION_MODE,
       outputLang,
+      plan: "pro",
     });
     const cacheKey = await sha256Hex(cacheBase);
 
@@ -636,7 +644,7 @@ export default function ProGrammarCorrector() {
         }),
       });
 
-      // ✅✅✅ PRO LIMITS 429 (NO usar data.message del backend para no quedar “fijo” en un idioma)
+      // ✅✅✅ LIMITS 429 (no usar data.message para no fijar idioma)
       if (res.status === 429) {
         let data = null;
         try {
@@ -790,9 +798,7 @@ export default function ProGrammarCorrector() {
                       <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
                     </div>
                     <div className="mt-1 text-right text-xs">
-                      <span
-                        className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}
-                      >
+                      <span className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
                         {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
                       </span>
                     </div>
@@ -802,7 +808,9 @@ export default function ProGrammarCorrector() {
 
               {sourceMode === "document" && (
                 <div
-                  className={`h-full w-full flex flex-col relative ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
+                  className={`h-full w-full flex flex-col relative ${
+                    dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
+                  }`}
                   onDragEnter={onDragEnter}
                   onDragOver={onDragOver}
                   onDragLeave={onDragLeave}
@@ -981,7 +989,7 @@ export default function ProGrammarCorrector() {
                     <button
                       type="button"
                       className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label="Idioma principal del texto"
+                      aria-label={tr("grammar.output_language_aria", "Idioma principal del texto")}
                     >
                       <span className="truncate">
                         {outputLang === "ES"
@@ -1075,7 +1083,7 @@ export default function ProGrammarCorrector() {
               </div>
             </div>
 
-            {/* ✅✅✅ BANNER PRO (ahora se traduce según el selector de idioma de la web) */}
+            {/* ✅ Banner Pro */}
             {limitType && (
               <div className="px-6 pt-4">
                 <ProLimitBanner visible={!!limitType} message={limitMsg} />
