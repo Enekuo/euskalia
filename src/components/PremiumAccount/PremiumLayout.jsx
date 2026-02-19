@@ -385,13 +385,13 @@ export default function PremiumLayout({ children }) {
               {creatorOpen && !collapsed && (
                 <div className="ml-2 mt-1 space-y-1">
                   <button
-                    onClick={() => navigate("/cuenta-premium/creador/texto")}
+                    onClick={() => navigate("/cuenta-premium/texto")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/creador/texto")
+                        isActive("/cuenta-premium/texto")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
@@ -402,13 +402,13 @@ export default function PremiumLayout({ children }) {
                   </button>
 
                   <button
-                    onClick={() => navigate("/cuenta-premium/creador/email")}
+                    onClick={() => navigate("/cuenta-premium/email")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/creador/email")
+                        isActive("/cuenta-premium/email")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
@@ -419,13 +419,13 @@ export default function PremiumLayout({ children }) {
                   </button>
 
                   <button
-                    onClick={() => navigate("/cuenta-premium/creador/audio")}
+                    onClick={() => navigate("/cuenta-premium/convertidor")}
                     className={`
                       w-full flex items-center
                       pl-4 pr-2 h-9
                       text-sm
                       ${
-                        isActive("/cuenta-premium/creador/audio")
+                        isActive("/cuenta-premium/convertidor")
                           ? "text-slate-900 font-semibold"
                           : "text-slate-700 hover:text-slate-900"
                       }
