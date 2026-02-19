@@ -251,8 +251,8 @@ export default function PremiumAiDetector() {
     const payload = (text || "").trim();
     if (!payload) return;
 
-    // ✅ mantengo la ruta igual que Pro (NO invento rutas)
-    navigate("/cuenta-pro/humanizador", {
+    
+    navigate("/cuenta-premium/humanizador", {
       state: { text: payload },
     });
   };
