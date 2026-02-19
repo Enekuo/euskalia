@@ -70,9 +70,6 @@ export default function PremiumGrammarCorrector() {
   // Mostrar / ocultar resaltado de cambios
   const [showDiff, setShowDiff] = useState(false);
 
-  // ✅ guardar el ORIGINAL real para diff (no depende de textValue)
-  const [originalForDiff, setOriginalForDiff] = useState("");
-
   // Documentos
   const [documents, setDocuments] = useState([]); // [{id,file}]
   const [documentsText, setDocumentsText] = useState([]); // [{id,name,text}]
@@ -214,14 +211,6 @@ export default function PremiumGrammarCorrector() {
       .replace(/\s+/g, " ")
       .trim();
 
-  // ✅ para detectar cambios reales (sin bajar a minúsculas ni quitar acentos)
-  const normalizeForDiff = (s) =>
-    String(s || "")
-      .replace(/\r/g, "")
-      .replace(/[ \t]+\n/g, "\n")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim();
-
   // ✅ Diff REAL
   const diffSegments = (original, corrected) => {
     const dmp = new diff_match_patch();
@@ -229,16 +218,15 @@ export default function PremiumGrammarCorrector() {
     dmp.diff_cleanupSemantic(diffs);
 
     return diffs.map(([op, text]) => ({
-      op,
       text,
       changed: op === 1,
     }));
   };
 
   const hasDiff = useMemo(() => {
-    if (!originalForDiff || !result) return false;
-    return normalizeForDiff(originalForDiff) !== normalizeForDiff(result);
-  }, [originalForDiff, result]);
+    if (!textValue || !result) return false;
+    return canonicalize(textValue) !== canonicalize(result);
+  }, [textValue, result]);
 
   const parseList = (text) => {
     if (!text) return null;
@@ -272,7 +260,7 @@ export default function PremiumGrammarCorrector() {
   const renderResult = () => {
     if (!result) return null;
 
-    if (!showDiff || !hasDiff) {
+    if (!showDiff || !textValue || !hasDiff) {
       const parsed = parseList(result);
 
       if (parsed) {
@@ -301,20 +289,18 @@ export default function PremiumGrammarCorrector() {
       return <p className="whitespace-pre-wrap">{result}</p>;
     }
 
-    const segments = diffSegments(originalForDiff, result);
+    const segments = diffSegments(textValue, result);
 
     return (
       <p className="whitespace-pre-wrap">
-        {segments
-          .filter((seg) => seg.op !== -1)
-          .map((seg, index) => (
-            <span
-              key={index}
-              className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
-            >
-              {seg.text}
-            </span>
-          ))}
+        {segments.map((seg, index) => (
+          <span
+            key={index}
+            className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
+          >
+            {seg.text}
+          </span>
+        ))}
       </p>
     );
   };
@@ -327,7 +313,6 @@ export default function PremiumGrammarCorrector() {
     setLoading(false);
     setShowDiff(false);
     setSavedToLibrary(false);
-    setOriginalForDiff("");
     clearLimit();
   };
 
@@ -639,15 +624,7 @@ export default function PremiumGrammarCorrector() {
 
       const idToken = await user.getIdToken();
 
-      // ✅ guardar original real (lo que se va a corregir)
-      const originalBase =
-        sourceMode === "text"
-          ? (textValue || "")
-          : sourceMode === "document"
-          ? (documentsText || []).map((d) => d.text || "").join("\n\n")
-          : (textValue || "");
-      setOriginalForDiff(originalBase);
-
+      
       const res = await fetch("/api/premium", {
         method: "POST",
         headers: {
@@ -713,7 +690,7 @@ export default function PremiumGrammarCorrector() {
       setResult(cleaned);
       setLastSig(canonicalize(textValue));
       setIsOutdated(false);
-      setShowDiff(true);
+      setShowDiff(false);
     } catch (err) {
       setErrorMsg(err?.message || tr("premiumGrammar.error_generic", "Error realizando la corrección."));
     } finally {
