@@ -1,5 +1,108 @@
 // /api/premium.js
+import { kv } from "@vercel/kv";
 import crypto from "crypto";
+import admin from "firebase-admin";
+
+// ====== Configuración de límites (via ENV con defaults sensatos) ======
+const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
+
+// LÍMITES PLAN PREMIUM (puedes sobreescribir en Vercel → Env Vars)
+const PREMIUM_MAX_CHARS    = Number(process.env.PREMIUM_MAX_CHARS || 18000);      // máx. caracteres por request (Premium) (legacy fallback)
+const PREMIUM_DAILY_TOKENS = Number(process.env.PREMIUM_DAILY_TOKENS || 300000);  // cuota diaria aprox por UID
+const PREMIUM_RPM          = Number(process.env.PREMIUM_RPM || 60);               // rate limit: peticiones/min por UID
+
+// ✅✅✅ LÍMITES PREMIUM POR HERRAMIENTA (6 herramientas)
+// (defaults de ejemplo; luego los subes a tus valores finales)
+const PREMIUM_TRANSLATOR_MAX_CHARS       = Number(process.env.PREMIUM_TRANSLATOR_MAX_CHARS || 16000);
+const PREMIUM_TRANSLATOR_DAILY_REQUESTS  = Number(process.env.PREMIUM_TRANSLATOR_DAILY_REQUESTS || 30);
+
+const PREMIUM_SUMMARY_MAX_CHARS          = Number(process.env.PREMIUM_SUMMARY_MAX_CHARS || 32000);
+const PREMIUM_SUMMARY_DAILY_REQUESTS     = Number(process.env.PREMIUM_SUMMARY_DAILY_REQUESTS || 10);
+
+const PREMIUM_CORRECTOR_MAX_CHARS        = Number(process.env.PREMIUM_CORRECTOR_MAX_CHARS || 30000);
+const PREMIUM_CORRECTOR_DAILY_REQUESTS   = Number(process.env.PREMIUM_CORRECTOR_DAILY_REQUESTS || 12);
+
+const PREMIUM_PARAPHRASER_MAX_CHARS      = Number(process.env.PREMIUM_PARAPHRASER_MAX_CHARS || 30000);
+const PREMIUM_PARAPHRASER_DAILY_REQUESTS = Number(process.env.PREMIUM_PARAPHRASER_DAILY_REQUESTS || 12);
+
+const PREMIUM_AI_DETECTOR_MAX_CHARS      = Number(process.env.PREMIUM_AI_DETECTOR_MAX_CHARS || 30000);
+const PREMIUM_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PREMIUM_AI_DETECTOR_DAILY_REQUESTS || 12);
+
+const PREMIUM_HUMANIZER_MAX_CHARS        = Number(process.env.PREMIUM_HUMANIZER_MAX_CHARS || 30000);
+const PREMIUM_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PREMIUM_HUMANIZER_DAILY_REQUESTS || 12);
+
+function getPremiumLimits(tool) {
+  if (tool === "translator") {
+    return { maxChars: PREMIUM_TRANSLATOR_MAX_CHARS, dailyReqs: PREMIUM_TRANSLATOR_DAILY_REQUESTS };
+  }
+  if (tool === "summary") {
+    return { maxChars: PREMIUM_SUMMARY_MAX_CHARS, dailyReqs: PREMIUM_SUMMARY_DAILY_REQUESTS };
+  }
+  if (tool === "corrector") {
+    return { maxChars: PREMIUM_CORRECTOR_MAX_CHARS, dailyReqs: PREMIUM_CORRECTOR_DAILY_REQUESTS };
+  }
+  if (tool === "paraphraser") {
+    return { maxChars: PREMIUM_PARAPHRASER_MAX_CHARS, dailyReqs: PREMIUM_PARAPHRASER_DAILY_REQUESTS };
+  }
+  if (tool === "humanizer") {
+    return { maxChars: PREMIUM_HUMANIZER_MAX_CHARS, dailyReqs: PREMIUM_HUMANIZER_DAILY_REQUESTS };
+  }
+  if (tool === "ai_detector") {
+    return { maxChars: PREMIUM_AI_DETECTOR_MAX_CHARS, dailyReqs: PREMIUM_AI_DETECTOR_DAILY_REQUESTS };
+  }
+  // fallback legacy
+  return { maxChars: PREMIUM_MAX_CHARS, dailyReqs: PREMIUM_TRANSLATOR_DAILY_REQUESTS };
+}
+
+// Conversión aproximada chars→tokens (prudente)
+const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
+
+// ====== Firebase Admin (verificación de token) ======
+function initFirebaseAdmin() {
+  if (admin.apps?.length) return;
+
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error("Missing FIREBASE_* env vars for Firebase Admin");
+  }
+
+  // Vercel suele guardar la private key con \n escapados
+  privateKey = (privateKey || "")
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n");
+
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId,
+      clientEmail,
+      privateKey,
+    }),
+  });
+}
+
+function getBearerToken(req) {
+  const h = req.headers?.authorization || req.headers?.Authorization;
+  if (!h || typeof h !== "string") return null;
+  const parts = h.split(" ");
+  if (parts.length !== 2) return null;
+  if (parts[0].toLowerCase() !== "bearer") return null;
+  return parts[1].trim();
+}
+
+async function getUidFromRequest(req) {
+  initFirebaseAdmin();
+  const token = getBearerToken(req);
+  if (!token) return null;
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    return decoded?.uid || null;
+  } catch {
+    return null;
+  }
+}
 
 // ====== Helpers ======
 function canonicalize(s) {
@@ -11,7 +114,7 @@ function canonicalize(s) {
 }
 
 function makeCacheKey({ task, model, system, messages, src, dst, lang, length }) {
-  const userText = canonicalize((messages || []).map(m => m?.content || "").join(" "));
+  const userText = canonicalize((messages || []).map((m) => m?.content || "").join(" "));
   const payload = JSON.stringify({
     v: "v1",
     task,
@@ -19,11 +122,18 @@ function makeCacheKey({ task, model, system, messages, src, dst, lang, length })
     pair: lang || `${src || ""}-${dst || ""}` || "na",
     length: length || null,
     system: system ? canonicalize(system) : "",
-    text: userText
+    text: userText,
   });
   const sha = crypto.createHash("sha256").update(payload).digest("hex");
   const pair = lang || `${src || ""}-${dst || ""}` || "na";
   return `cache:${task}:${pair}:${sha}`;
+}
+
+function todayKey(date = new Date()) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 // Very simple HTML → texto
@@ -40,16 +150,115 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
+// ✅ detectar herramienta en PREMIUM (6)
+function detectPremiumTool(body, system, messages, hasTranslate) {
+  const rawTask = String(body?.task || "").toLowerCase();
+  const rawMode = String(body?.mode || "").toLowerCase();
+
+  // 1) detector explícito
+  if (rawMode === "ai_detector" || rawTask === "ai_detector") return "ai_detector";
+
+  // 2) traductor
+  const isTranslator =
+    hasTranslate ||
+    rawMode === "translate_urls" ||
+    rawTask.includes("translate") ||
+    rawMode.includes("translate") ||
+    rawTask.includes("traduc") ||
+    rawMode.includes("traduc") ||
+    rawMode.includes("translate_text") ||
+    rawMode.includes("translate_urls");
+
+  // 3) resumidor
+  const isSummary =
+    rawTask.includes("summary") ||
+    rawTask.includes("summar") ||
+    rawTask.includes("resum") ||
+    rawMode.includes("summary") ||
+    rawMode.includes("summar") ||
+    rawMode.includes("resum");
+
+  // 4) corrector
+  const isCorrector =
+    rawTask.includes("correct") ||
+    rawMode.includes("correct") ||
+    rawTask.includes("correg") ||
+    rawMode.includes("correg") ||
+    rawTask.includes("grammar") ||
+    rawMode.includes("grammar") ||
+    rawTask.includes("ortograf") ||
+    rawMode.includes("ortograf");
+
+  // 5) paraphraser
+  const isParaphraser =
+    rawTask.includes("paraphr") ||
+    rawMode.includes("paraphr") ||
+    rawTask.includes("rephrase") ||
+    rawMode.includes("rephrase") ||
+    rawTask.includes("reformular") ||
+    rawMode.includes("reformular");
+
+  // 6) humanizer
+  const isHumanizer =
+    rawTask.includes("humaniz") ||
+    rawMode.includes("humaniz") ||
+    rawTask.includes("humanizer") ||
+    rawMode.includes("humanizer");
+
+  let tool =
+    isTranslator ? "translator" :
+    isSummary ? "summary" :
+    isCorrector ? "corrector" :
+    isParaphraser ? "paraphraser" :
+    isHumanizer ? "humanizer" :
+    "other";
+
+  // fallback por contenido si llega “other”
+  if (tool === "other") {
+    const sys = canonicalize(system || "");
+    const user0 = canonicalize(
+      (messages || [])
+        .map((m) => (m?.role === "user" ? (m?.content || "") : ""))
+        .join(" ")
+        .slice(0, 2000)
+    );
+    const hint = `${sys} ${user0}`;
+
+    const looksSummary =
+      hint.includes("resumen") || hint.includes("resumir") || hint.includes("resume") || hint.includes("summarize") || hint.includes("summary");
+
+    const looksTranslate =
+      hint.includes("traduc") || hint.includes("traduce") || hint.includes("translate") || hint.includes("itzul") || hint.includes("translation");
+
+    const looksCorrect =
+      hint.includes("corrige") || hint.includes("correg") || hint.includes("grammar") || hint.includes("ortograf");
+
+    const looksParaphrase =
+      hint.includes("paraf") || hint.includes("reformula") || hint.includes("rephrase") || hint.includes("paraphrase");
+
+    const looksHumanize =
+      hint.includes("humaniza") || hint.includes("humanize") || hint.includes("humanizer");
+
+    if (looksTranslate && !looksSummary && !looksCorrect && !looksParaphrase && !looksHumanize) tool = "translator";
+    else if (looksSummary && !looksTranslate && !looksCorrect && !looksParaphrase && !looksHumanize) tool = "summary";
+    else if (looksCorrect && !looksTranslate && !looksSummary && !looksParaphrase && !looksHumanize) tool = "corrector";
+    else if (looksParaphrase && !looksTranslate && !looksSummary && !looksCorrect && !looksHumanize) tool = "paraphraser";
+    else if (looksHumanize && !looksTranslate && !looksSummary && !looksCorrect && !looksParaphrase) tool = "humanizer";
+  }
+
+  return tool;
+}
+
 // ====== Handler ======
 export default async function handler(req, res) {
   // CORS / Preflight
   if (req.method === "OPTIONS") {
     res.setHeader("Access-Control-Allow-Origin", "*");
+    // ✅ importante: permitir Authorization
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     return res.status(200).end();
   }
-
   if (req.method !== "POST") {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Allow", "POST, OPTIONS");
@@ -64,7 +273,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: "Missing OPENAI_API_KEY" });
     }
 
-    // Leer body seguro (igual que pro.js)
+    // ✅ PREMIUM: exigir token válido y obtener UID
+    const uid = await getUidFromRequest(req);
+    if (!uid) {
+      return res.status(401).json({
+        ok: false,
+        error: "Unauthorized",
+        message: "Necesitas iniciar sesión para usar el plan Premium."
+      });
+    }
+
+    // Leer body seguro
     const raw = await new Promise((resolve, reject) => {
       let data = "";
       req.on("data", (c) => (data += c));
@@ -86,7 +305,7 @@ export default async function handler(req, res) {
       max_tokens
     } = body;
 
-    // ====== ✅ AI DETECTOR (PREMIUM, sin límites) ======
+    // ====== ✅ AI DETECTOR (PREMIUM) ======
     if (body?.mode === "ai_detector") {
       const { text } = body || {};
 
@@ -102,6 +321,33 @@ export default async function handler(req, res) {
         });
       }
 
+      // ====== LÍMITES PLAN PREMIUM (por UID) también para detector ======
+      const day = todayKey();
+
+      // ✅ límites por herramienta (ai_detector)
+      const toolLimits = getPremiumLimits("ai_detector");
+      const PREMIUM_MAX_CHARS_TOOL = toolLimits.maxChars;
+      const PREMIUM_DAILY_REQS_TOOL = toolLimits.dailyReqs;
+
+      // ✅ límite diario por peticiones (ai_detector) - SOLO aquí (evita doble conteo)
+      try {
+        const dailyReqKey = `quota:premium:ai_detector:reqs:${day}:${uid}`;
+        const usedReqs = await kv.incr(dailyReqKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyReqKey, 60 * 60 * 26);
+        }
+        if (usedReqs > PREMIUM_DAILY_REQS_TOOL) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily requests exceeded",
+            limit: { daily_requests: PREMIUM_DAILY_REQS_TOOL, used: usedReqs, tool: "ai_detector" },
+            message:
+              `Has alcanzado el límite diario del detector IA en Premium (${PREMIUM_DAILY_REQS_TOOL} al día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch {}
+
       const detectorSystem =
         "Eres un detector de probabilidad de texto generado por IA. Devuelve SOLO JSON válido sin texto adicional.";
 
@@ -116,10 +362,64 @@ Reglas:
 Texto:
 """${trimmed.slice(0, 5000)}"""`;
 
+      const detectorMessagesForLimits = [
+        { role: "system", content: detectorSystem },
+        { role: "user", content: detectorUser },
+      ];
+
+      const totalChars =
+        detectorMessagesForLimits.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
+
+      if (totalChars > PREMIUM_MAX_CHARS_TOOL) {
+        return res.status(413).json({
+          ok: false,
+          error: "Input too long",
+          limit: { max_chars: PREMIUM_MAX_CHARS_TOOL, tool: "ai_detector" },
+          message:
+            `El texto es demasiado largo para el plan Premium. Máximo ${PREMIUM_MAX_CHARS_TOOL.toLocaleString()} caracteres por petición. ` +
+            `Divide el texto y vuelve a intentarlo.`
+        });
+      }
+
+      // 2) Rate-limit RPM por UID
+      try {
+        const rpmKey = `rl:premium:rpm:${uid}`;
+        const count = await kv.incr(rpmKey);
+        if (count === 1) {
+          await kv.expire(rpmKey, 60); // ventana 60s
+        }
+        if (count > PREMIUM_RPM) {
+          return res.status(429).json({
+            ok: false,
+            error: "Too Many Requests",
+            limit: { rpm: PREMIUM_RPM },
+            message: `Demasiadas peticiones. Límite ${PREMIUM_RPM}/min. Espera unos segundos.`
+          });
+        }
+      } catch {}
+
+      // 3) Cuota diaria aproximada de tokens por UID
+      const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
+      try {
+        const dailyKey = `quota:premium:${day}:${uid}`;
+        const used = (await kv.get(dailyKey)) || 0;
+        if (used + estTokens > PREMIUM_DAILY_TOKENS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily quota exceeded",
+            limit: { daily_tokens: PREMIUM_DAILY_TOKENS, used_tokens: used },
+            message:
+              `Has alcanzado la cuota diaria del plan Premium. ` +
+              `Disponible: ${PREMIUM_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch {}
+
+      // ====== KV CACHE (detector) ======
       const MODEL = process.env.AI_DETECTOR_MODEL || "gpt-4.1-mini";
 
-      // (mantenemos el makeCacheKey por si luego quieres cache; ahora no se usa)
-      makeCacheKey({
+      const detectorCacheKey = makeCacheKey({
         task: "ai_detector",
         model: MODEL,
         system: detectorSystem,
@@ -130,6 +430,21 @@ Texto:
         length: null
       });
 
+      try {
+        const cached = await kv.get(detectorCacheKey);
+        if (cached?.ai !== undefined && cached?.human !== undefined) {
+          await kv.expire(detectorCacheKey, CACHE_TTL_SECONDS);
+          return res.status(200).json({
+            ok: true,
+            ai: cached.ai,
+            human: cached.human,
+            note: cached.note || "Estimación orientativa basada en patrones del texto.",
+            cached: true
+          });
+        }
+      } catch {}
+
+      // ====== Llamada OpenAI (Responses API) ======
       const rr = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
@@ -197,6 +512,25 @@ Texto:
         typeof parsed?.note === "string" && parsed.note.trim()
           ? parsed.note.trim().slice(0, 140)
           : "Estimación orientativa basada en patrones del texto.";
+
+      // Guardar cache
+      try {
+        await kv.set(detectorCacheKey, { ai, human, note }, { ex: CACHE_TTL_SECONDS });
+      } catch {}
+
+      // Actualizar cuota diaria real (si hay usage en responses)
+      try {
+        const dailyKey = `quota:premium:${day}:${uid}`;
+        const used = (await kv.get(dailyKey)) || 0;
+
+        const respUsage = data?.usage || null;
+        const realTokens =
+          (respUsage?.input_tokens || 0) + (respUsage?.output_tokens || 0) ||
+          Math.max(estTokens, 1);
+
+        const newUsed = used + realTokens;
+        await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+      } catch {}
 
       return res.status(200).json({ ok: true, ai, human, note, cached: false });
     }
@@ -304,16 +638,113 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       ...messages,
     ];
 
-    // (mantenemos por si luego quieres cache; ahora no se usa)
+    // ====== ✅ Detectar herramienta PREMIUM (6) ======
+    const tool = detectPremiumTool(body, system, messages, hasTranslate);
+    const toolLimits = getPremiumLimits(tool);
+    const PREMIUM_MAX_CHARS_TOOL = toolLimits.maxChars;
+    const PREMIUM_DAILY_REQS_TOOL = toolLimits.dailyReqs;
+
+    // ====== LÍMITES PLAN PREMIUM (por UID) ======
+    const day = todayKey();
+
+    // ✅✅✅ límite diario por peticiones / herramienta (por UID)
+    // ⚠️ EXCEPTO ai_detector, porque ya se cuenta en su bloque específico
+    if (tool !== "ai_detector") {
+      try {
+        const dailyReqKey = `quota:premium:${tool}:reqs:${day}:${uid}`;
+        const usedReqs = await kv.incr(dailyReqKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyReqKey, 60 * 60 * 26);
+        }
+
+        if (usedReqs > PREMIUM_DAILY_REQS_TOOL) {
+          return res.status(429).json({
+            ok: false,
+            error: "PREMIUM_DAILY_LIMIT_REACHED",
+            limit: { daily_requests: PREMIUM_DAILY_REQS_TOOL, used: usedReqs, tool },
+          });
+        }
+      } catch {}
+    }
+
+    // 1) Máx. caracteres por request
+    const totalChars =
+      (system?.length || 0) +
+      finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
+
+    // ✅ usa límites por herramienta (y si falta, cae a PREMIUM_MAX_CHARS legacy)
+    const effectiveMaxChars = Number(PREMIUM_MAX_CHARS_TOOL || PREMIUM_MAX_CHARS);
+
+    if (totalChars > effectiveMaxChars) {
+      return res.status(413).json({
+        ok: false,
+        error: "Input too long",
+        limit: { max_chars: effectiveMaxChars, tool },
+        message:
+          `El texto es demasiado largo para tu plan Premium. Máximo ${effectiveMaxChars.toLocaleString()} caracteres por petición. ` +
+          `Divide el texto y vuelve a intentarlo.`
+      });
+    }
+
+    // 2) Rate-limit RPM por UID
+    try {
+      const rpmKey = `rl:premium:rpm:${uid}`;
+      const count = await kv.incr(rpmKey);
+      if (count === 1) {
+        await kv.expire(rpmKey, 60); // ventana 60s
+      }
+      if (count > PREMIUM_RPM) {
+        return res.status(429).json({
+          ok: false,
+          error: "Too Many Requests",
+          limit: { rpm: PREMIUM_RPM },
+          message: `Demasiadas peticiones. Límite ${PREMIUM_RPM}/min. Espera unos segundos.`
+        });
+      }
+    } catch {}
+
+    // 3) Cuota diaria aproximada de tokens por UID
+    const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
+    try {
+      const dailyKey = `quota:premium:${day}:${uid}`;
+      const used = (await kv.get(dailyKey)) || 0;
+      if (used + estTokens > PREMIUM_DAILY_TOKENS) {
+        return res.status(429).json({
+          ok: false,
+          error: "Daily quota exceeded",
+          limit: { daily_tokens: PREMIUM_DAILY_TOKENS, used_tokens: used },
+          message:
+            `Has alcanzado la cuota diaria del plan Premium. ` +
+            `Disponible: ${PREMIUM_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
+            `Vuelve mañana.`
+        });
+      }
+    } catch {}
+
+    // ====== KV CACHE ======
     const task = hasTranslate ? "translate" : (body?.task || body?.mode || "chat");
     const src  = hasTranslate ? body.from : (body?.src || null);
     const dst  = hasTranslate ? body.to   : (body?.dst || null);
     const lang = body?.lang || null;
     const length = body?.length || null;
 
-    makeCacheKey({
+    const cacheKey = makeCacheKey({
       task, model, system, messages: finalMessages, src, dst, lang, length
     });
+
+    try {
+      const cached = await kv.get(cacheKey);
+      if (cached?.content) {
+        await kv.expire(cacheKey, CACHE_TTL_SECONDS);
+        return res.status(200).json({
+          ok: true,
+          provider: "openai",
+          content: cached.content,
+          usage: cached.usage || null,
+          cached: true
+        });
+      }
+    } catch {}
 
     // ====== Llamada a OpenAI ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -348,6 +779,24 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
     const content = data?.choices?.[0]?.message?.content ?? "";
     const usage   = data?.usage ?? null;
+
+    // ====== Guardar en KV (caché resultado) ======
+    try {
+      await kv.set(cacheKey, { content, usage }, { ex: CACHE_TTL_SECONDS });
+    } catch {}
+
+    // ====== Actualizar cuota diaria real (tokens) ======
+    try {
+      const dailyKey = `quota:premium:${day}:${uid}`;
+      const used = (await kv.get(dailyKey)) || 0;
+
+      const realTokens =
+        (usage?.prompt_tokens || 0) + (usage?.completion_tokens || 0) ||
+        Math.max(estTokens, 1);
+
+      const newUsed = used + realTokens;
+      await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+    } catch {}
 
     return res.status(200).json({
       ok: true,
