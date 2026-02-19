@@ -226,9 +226,11 @@ export default function PremiumGrammarCorrector() {
     dmp.diff_cleanupSemantic(diffs);
 
     return diffs.map(([op, text]) => ({
-      text,
-      changed: op === 1,
-    }));
+  op,
+  text,
+  changed: op === 1,
+}));
+
   };
 
   const hasDiff = useMemo(() => {
@@ -301,13 +303,15 @@ export default function PremiumGrammarCorrector() {
 
     return (
       <p className="whitespace-pre-wrap">
-        {segments.map((seg, index) => (
-          <span
-            key={index}
-            className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
-          >
-            {seg.text}
-          </span>
+       {segments
+  .filter((seg) => seg.op !== -1)
+  .map((seg, index) => (
+    <span
+      key={index}
+      className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
+    >
+      {seg.text}
+    </span>
         ))}
       </p>
     );
