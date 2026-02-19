@@ -211,21 +211,29 @@ export default function PremiumGrammarCorrector() {
       .replace(/\s+/g, " ")
       .trim();
 
-  // ✅ Diff REAL
+  // ✅ para detectar cambios reales SIN perder info (no lower, no quitar acentos)
+  const normalizeForDiff = (s) =>
+    String(s || "")
+      .replace(/\r/g, "")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+  // ✅ Diff REAL (con op: -1 delete, 0 equal, 1 insert)
   const diffSegments = (original, corrected) => {
     const dmp = new diff_match_patch();
     const diffs = dmp.diff_main(original || "", corrected || "");
     dmp.diff_cleanupSemantic(diffs);
 
     return diffs.map(([op, text]) => ({
+      op,
       text,
-      changed: op === 1,
     }));
   };
 
   const hasDiff = useMemo(() => {
     if (!textValue || !result) return false;
-    return canonicalize(textValue) !== canonicalize(result);
+    return normalizeForDiff(textValue) !== normalizeForDiff(result);
   }, [textValue, result]);
 
   const parseList = (text) => {
@@ -260,6 +268,7 @@ export default function PremiumGrammarCorrector() {
   const renderResult = () => {
     if (!result) return null;
 
+    // ✅ Si NO estamos en modo diff -> texto normal
     if (!showDiff || !textValue || !hasDiff) {
       const parsed = parseList(result);
 
@@ -289,18 +298,36 @@ export default function PremiumGrammarCorrector() {
       return <p className="whitespace-pre-wrap">{result}</p>;
     }
 
+    // ✅ Modo diff: rojo lo eliminado, verde lo añadido
     const segments = diffSegments(textValue, result);
 
     return (
       <p className="whitespace-pre-wrap">
-        {segments.map((seg, index) => (
-          <span
-            key={index}
-            className={seg.changed ? "bg-emerald-100 text-emerald-900 rounded px-[2px]" : undefined}
-          >
-            {seg.text}
-          </span>
-        ))}
+        {segments.map((seg, index) => {
+          // delete (lo que estaba mal) -> ROJO
+          if (seg.op === -1) {
+            return (
+              <span
+                key={index}
+                className="bg-red-100 text-red-900 rounded px-[2px] line-through decoration-red-400"
+              >
+                {seg.text}
+              </span>
+            );
+          }
+
+          // insert (lo corregido) -> VERDE
+          if (seg.op === 1) {
+            return (
+              <span key={index} className="bg-emerald-100 text-emerald-900 rounded px-[2px]">
+                {seg.text}
+              </span>
+            );
+          }
+
+          // equal
+          return <span key={index}>{seg.text}</span>;
+        })}
       </p>
     );
   };
@@ -624,7 +651,6 @@ export default function PremiumGrammarCorrector() {
 
       const idToken = await user.getIdToken();
 
-      
       const res = await fetch("/api/premium", {
         method: "POST",
         headers: {
@@ -690,7 +716,9 @@ export default function PremiumGrammarCorrector() {
       setResult(cleaned);
       setLastSig(canonicalize(textValue));
       setIsOutdated(false);
-      setShowDiff(false);
+
+      // ✅✅✅ CLAVE: activar automáticamente el modo cambios para que se vea VERDE/ROJO
+      setShowDiff(true);
     } catch (err) {
       setErrorMsg(err?.message || tr("premiumGrammar.error_generic", "Error realizando la corrección."));
     } finally {
