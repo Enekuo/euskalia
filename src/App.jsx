@@ -173,7 +173,7 @@ const seo =
             <Route path="/cuenta-premium/biblioteca/:id" element={<PremiumLibraryDetail />} />
             <Route path="/cuenta-premium/texto" element={<PremiumLayout><PremiumTextCreator /></PremiumLayout>} />
             <Route path="/cuenta-premium/email" element={<PremiumLayout><PremiumEmailCreator /></PremiumLayout>} />
-            <Route path="/cuenta-premium/audio" element={<PremiumLayout><PremiumAudioCreator /></PremiumLayout>} />
+            <Route path="/cuenta-premium/convertidor" element={<PremiumLayout><PremiumAudioCreator /></PremiumLayout>} />
 
 
 
