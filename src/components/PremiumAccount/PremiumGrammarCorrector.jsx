@@ -211,6 +211,14 @@ export default function PremiumGrammarCorrector() {
       .replace(/\s+/g, " ")
       .trim();
 
+  // ✅ para detectar cambios reales (sin bajar a minúsculas ni quitar acentos)
+  const normalizeForDiff = (s) =>
+    String(s || "")
+      .replace(/\r/g, "")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
   // ✅ Diff REAL
   const diffSegments = (original, corrected) => {
     const dmp = new diff_match_patch();
@@ -225,7 +233,7 @@ export default function PremiumGrammarCorrector() {
 
   const hasDiff = useMemo(() => {
     if (!textValue || !result) return false;
-    return canonicalize(textValue) !== canonicalize(result);
+    return normalizeForDiff(textValue) !== normalizeForDiff(result);
   }, [textValue, result]);
 
   const parseList = (text) => {
@@ -304,6 +312,7 @@ export default function PremiumGrammarCorrector() {
       </p>
     );
   };
+
 
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
