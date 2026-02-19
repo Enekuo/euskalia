@@ -703,7 +703,7 @@ export default function PremiumGrammarCorrector() {
       setResult(cleaned);
       setLastSig(canonicalize(textValue));
       setIsOutdated(false);
-      setShowDiff(true);
+      setShowDiff(false);
     } catch (err) {
       setErrorMsg(err?.message || tr("premiumGrammar.error_generic", "Error realizando la corrección."));
     } finally {
