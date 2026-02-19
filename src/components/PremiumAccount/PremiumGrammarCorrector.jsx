@@ -624,7 +624,7 @@ export default function PremiumGrammarCorrector() {
 
       const idToken = await user.getIdToken();
 
-      // ✅ IMPORTANTE: Premium NO debe usar /api/pro
+      
       const res = await fetch("/api/premium", {
         method: "POST",
         headers: {

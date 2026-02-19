@@ -654,7 +654,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
       const idToken = await user.getIdToken();
 
-      const res = await fetch("/api/pro", {
+      const res = await fetch("/api/premium", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -152,8 +152,8 @@ export default function PremiumAiDetector() {
         return;
       }
 
-      // ✅ PREMIUM sigue usando /api/pro (NO endpoint nuevo)
-      const r = await fetch("/api/pro", {
+      
+      const r = await fetch("/api/premium", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
