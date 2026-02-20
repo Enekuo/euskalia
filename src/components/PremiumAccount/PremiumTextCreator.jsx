@@ -37,8 +37,9 @@ export default function PremiumSummary() {
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
 
-  // ✅ Prompt input inferior (como en public)
-  const [chatInput, setChatInput] = useState("");
+  // ✅ NUEVO (crear texto - panel izquierdo)
+  const [titleValue, setTitleValue] = useState("");
+  const [paragraphs, setParagraphs] = useState([""]);
 
   // Resultado / carga / error
   const [result, setResult] = useState("");
@@ -111,6 +112,7 @@ export default function PremiumSummary() {
 
   // ===== i18n =====
   const labelSources = tr("premiumSummary.sources_title", "Fuentes");
+
   const labelTabText = tr("premiumSummary.sources_tab_text", "Texto");
   const labelTabDocument = tr("premiumSummary.sources_tab_document", "Documento");
   const labelTabUrl = tr("premiumSummary.sources_tab_url", "URL");
@@ -152,12 +154,19 @@ export default function PremiumSummary() {
     "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
   );
 
-  // ✅ Prompt inferior (mismas keys que en public)
-  const labelBottomInputPh = tr(
-    "summary.bottom_input_ph",
-    "Idatzi hemen ikuspegia (aukerakoa): tonua, luzera, puntu garrantzitsuak…"
+  // ✅ NUEVO (crear texto - panel izquierdo)
+  const labelTitulo = tr("premiumTextCreator.title_label", "Título");
+  const labelParrafo = tr("premiumTextCreator.paragraph_label", "Párrafo");
+  const labelTitleOptional = tr(
+    "premiumTextCreator.title_optional",
+    "Escribe el título (opcional)"
   );
-  const labelGenerateWithPrompt = tr("summary.generate_with_prompt", "Argibideekin sortu");
+  const labelAddParagraph = tr("premiumTextCreator.add_paragraph", "+ Párrafo");
+  const labelParagraphPh = tr("premiumTextCreator.paragraph_ph", "Escribe el párrafo");
+  const labelRemoveParagraph = tr(
+    "premiumTextCreator.remove_paragraph",
+    "Borrar párrafo"
+  );
 
   // Longitud
   const LBL_SHORT = tr("premiumSummary.length_short", "Breve");
@@ -325,6 +334,27 @@ export default function PremiumSummary() {
     if (mode === summaryLength) return;
     setSummaryLength(mode);
     clearRight();
+  };
+
+  // ✅ NUEVO (crear texto - añadir / borrar párrafo)
+  const addParagraph = () => {
+    setParagraphs((prev) => [...prev, ""]);
+  };
+
+  const updateParagraph = (idx, value) => {
+    setParagraphs((prev) => {
+      const next = [...prev];
+      next[idx] = value;
+      return next;
+    });
+  };
+
+  const removeParagraph = (idx) => {
+    setParagraphs((prev) => {
+      if (prev.length <= 1) return [""];
+      const next = prev.filter((_, i) => i !== idx);
+      return next.length ? next : [""];
+    });
   };
 
   // ===== Reglas UX =====
@@ -823,13 +853,60 @@ export default function PremiumSummary() {
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
               </div>
 
-              {/* ✅ Tabs ELIMINADOS */}
+              {/* ✅ Encima a la izquierda: Titulo + Parrafo / + parrafo a la derecha */}
+              <div className="p-4 flex flex-col gap-4">
+                {/* Titulo */}
+                <div className="flex flex-col gap-2">
+                  <div className="text-[14px] font-medium text-slate-800">{labelTitulo}</div>
+                  <input
+                    value={titleValue}
+                    onChange={(e) => setTitleValue(e.target.value)}
+                    placeholder={labelTitleOptional}
+                    className="w-full h-[44px] rounded-xl border border-slate-300 bg-white px-4 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                  />
+                </div>
 
-              {/* ✅ Tabla vacía */}
+                {/* Parrafo + botón + Párrafo a la derecha */}
+                <div className="flex items-center justify-between">
+                  <div className="text-[14px] font-medium text-slate-800">{labelParrafo}</div>
+                  <button
+                    type="button"
+                    onClick={addParagraph}
+                    className="text-[14px] font-medium text-slate-700 hover:text-slate-900"
+                  >
+                    {labelAddParagraph}
+                  </button>
+                </div>
+
+                {/* Párrafos con borrar (arriba derecha del cuadro) */}
+                <div className="flex flex-col gap-3">
+                  {paragraphs.map((p, idx) => (
+                    <div key={idx} className="relative">
+                      <textarea
+                        value={p}
+                        onChange={(e) => updateParagraph(idx, e.target.value)}
+                        placeholder={labelParagraphPh}
+                        className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeParagraph(idx)}
+                        aria-label={labelRemoveParagraph}
+                        title={labelRemoveParagraph}
+                        className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ✅ Tabla vacía (SE QUEDA IGUAL) */}
               <div className="flex-1 min-h-0 overflow-hidden" />
             </aside>
 
-            {/* ===== Panel Derecho ===== */}
+            {/* ===== Panel Derecho (SE QUEDA IGUAL) ===== */}
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               {/* Barra superior */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
