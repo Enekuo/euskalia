@@ -1092,32 +1092,6 @@ export default function PremiumSummary() {
                   </div>
                 )}
               </div>
-
-              {/* ✅ Prompt footer (misma posición visual que en public) */}
-              <div className="absolute left-0 right-0 bottom-0 bg-white p-4">
-                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
-                  <div className="flex items-center gap-2 px-4 py-2">
-                    <input
-                      value={chatInput}
-                      onChange={(e) => {
-                        setChatInput(e.target.value);
-                      }}
-                      placeholder={labelBottomInputPh}
-                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
-                      aria-label={labelBottomInputPh}
-                    />
-
-                    <Button
-                      type="button"
-                      className="h-10 rounded-full px-4 shrink-0 text-white hover:brightness-95 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
-                      onClick={() => {}}
-                      disabled={!chatInput.trim()}
-                    >
-                      {labelGenerateWithPrompt}
-                    </Button>
-                  </div>
-                </div>
-              </div>
             </section>
           </motion.section>
         </div>
