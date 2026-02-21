@@ -66,8 +66,11 @@ export default function PremiumSummary() {
         )
       : "";
 
-  // Longitud del resumen
-  const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "detallado"
+  // Longitud del resumen (SE MANTIENE para no romper backend, pero YA NO se usa)
+  const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "largo"
+
+  // ✅ NUEVO: Longitud por caracteres (SLIDER)
+  const [targetChars, setTargetChars] = useState(1200);
 
   // Idioma de salida (EUS/ES/EN/FR) — por defecto Euskera
   const [outputLang, setOutputLang] = useState("EUS");
@@ -168,11 +171,6 @@ export default function PremiumSummary() {
     "Borrar párrafo"
   );
 
-  // Longitud
-  const LBL_SHORT = tr("premiumSummary.length_short", "Breve");
-  const LBL_MED = tr("premiumSummary.length_medium", "Medio");
-  const LBL_LONG = tr("premiumSummary.length_long", "Detallado");
-
   // Etiquetas de idioma
   const LBL_EUS = tr("premiumSummary.output_language_eus", "Euskara");
   const LBL_ES = tr("premiumSummary.output_language_es", "Gaztelania");
@@ -236,34 +234,6 @@ export default function PremiumSummary() {
     </div>
   );
 
-  const LengthTab = ({ active, label, onClick, showDivider }) => (
-    <div className="relative flex items-stretch">
-      <button
-        type="button"
-        onClick={onClick}
-        className="relative inline-flex items-center gap-2 h-[44px] px-3 text-[14px] font-medium"
-        style={{ color: active ? BLUE : GRAY_TEXT }}
-        aria-pressed={active}
-        aria-label={label}
-      >
-        <span className="truncate">{label}</span>
-        {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
-        )}
-      </button>
-      {showDivider && (
-        <span
-          aria-hidden
-          className="self-center"
-          style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
-        />
-      )}
-    </div>
-  );
-
   // ===== Utils =====
   const parseUrlsFromText = (text) => {
     const raw = text
@@ -283,34 +253,6 @@ export default function PremiumSummary() {
     );
   };
 
-  const enforceLength = (text, mode) => {
-    const config = {
-      breve: { maxWords: 90, maxSentences: 3 },
-      medio: { maxWords: 180, maxSentences: 6 },
-      detallado: { maxWords: 260, maxSentences: 10 },
-    };
-    const { maxWords, maxSentences } = config[mode] || config.breve;
-
-    let t2 = (text || "")
-      .replace(/\r/g, "")
-      .replace(/\n+/g, " ")
-      .replace(/\s{2,}/g, " ")
-      .trim();
-
-    const sentences = t2.split(/(?<=[.!?…])\s+/).filter(Boolean);
-    let clipped = sentences.slice(0, maxSentences).join(" ");
-
-    const words = clipped.split(/\s+/);
-    if (words.length > maxWords) {
-      clipped =
-        words
-          .slice(0, maxWords)
-          .join(" ")
-          .replace(/[.,;:–—-]*$/, "") + "…";
-    }
-    return clipped;
-  };
-
   const canonicalize = (s) =>
     (s || "")
       .normalize("NFD")
@@ -318,6 +260,25 @@ export default function PremiumSummary() {
       .toLowerCase()
       .replace(/\s+/g, " ")
       .trim();
+
+  // ✅ NUEVO: recorte por caracteres sin cortar palabras
+  const clipToChars = (text, maxChars) => {
+    const t2 = String(text || "")
+      .replace(/\r/g, "")
+      .replace(/\n+/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
+    if (!maxChars || maxChars <= 0) return t2;
+    if (t2.length <= maxChars) return t2;
+
+    let cut = t2.slice(0, maxChars);
+
+    const lastSpace = cut.lastIndexOf(" ");
+    if (lastSpace > 40) cut = cut.slice(0, lastSpace);
+
+    return cut.replace(/[.,;:–—-]*$/, "") + "…";
+  };
 
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
@@ -328,12 +289,6 @@ export default function PremiumSummary() {
     setIsTooShortResult(false);
     setLoading(false);
     setSavedToLibrary(false);
-  };
-
-  const handleLengthChange = (mode) => {
-    if (mode === summaryLength) return;
-    setSummaryLength(mode);
-    clearRight();
   };
 
   // ✅ NUEVO (crear texto - añadir / borrar párrafo)
@@ -398,6 +353,7 @@ export default function PremiumSummary() {
     documents,
     summaryLength,
     outputLang,
+    targetChars,
   ]);
 
   // URLs → reset resultado
@@ -656,12 +612,8 @@ export default function PremiumSummary() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    const lengthRule =
-      summaryLength === "breve"
-        ? "Extensión: 2–3 frases, ~70–90 palabras."
-        : summaryLength === "medio"
-        ? "Extensión: 4–6 frases, ~120–180 palabras."
-        : "Extensión: 8–10 frases, ~200–260 palabras.";
+    // ✅ NUEVO: regla por caracteres (slider)
+    const lengthRuleChars = `Longitud objetivo: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
 
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
@@ -680,7 +632,7 @@ export default function PremiumSummary() {
         : "",
       docsInline,
       `\nREQUISITO DE FORMATO: ${formattingRules}`,
-      `\nREQUISITO DE LONGITUD (${summaryLength.toUpperCase()}): ${lengthRule}`,
+      `\nREQUISITO DE LONGITUD: ${lengthRuleChars}`,
       `\n${langInstruction}`,
     ].join("");
 
@@ -706,6 +658,7 @@ export default function PremiumSummary() {
       docNames,
       summaryLength,
       outputLang,
+      targetChars,
     });
     const cacheKey = await sha256Hex(cacheBase);
 
@@ -730,9 +683,10 @@ export default function PremiumSummary() {
         },
         body: JSON.stringify({
           messages,
-          length: summaryLength,
+          length: summaryLength, // se mantiene por compatibilidad
           cacheKey,
           documentsText,
+          targetChars,
         }),
       });
 
@@ -811,7 +765,8 @@ export default function PremiumSummary() {
         return;
       }
 
-      const clipped = enforceLength(cleaned, summaryLength);
+      // ✅ NUEVO: recorta a targetChars si se pasa
+      const clipped = clipToChars(cleaned, targetChars);
 
       setResult(clipped);
       setIsTooShortResult(false);
@@ -910,25 +865,31 @@ export default function PremiumSummary() {
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               {/* Barra superior */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-2">
-                  <LengthTab
-                    active={summaryLength === "breve"}
-                    label={LBL_SHORT}
-                    onClick={() => handleLengthChange("breve")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={summaryLength === "medio"}
-                    label={LBL_MED}
-                    onClick={() => handleLengthChange("medio")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={summaryLength === "detallado"}
-                    label={LBL_LONG}
-                    onClick={() => handleLengthChange("detallado")}
-                  />
-                </div>
+                {/* ✅ SLIDER de longitud (sustituye los 3 botones) */}
+
+<div className="flex items-center gap-3 min-w-0">
+  <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
+    Longitud
+  </span>
+
+  <input
+    type="range"
+    min={300}
+    max={20000}
+    step={100}
+    value={targetChars}
+    onChange={(e) => {
+      setTargetChars(Number(e.target.value));
+      clearRight();
+    }}
+    className="w-[220px]"
+    aria-label="Longitud en caracteres"
+  />
+
+  <span className="text-sm text-slate-700 tabular-nums w-[125px] text-right">
+    {targetChars.toLocaleString("es-ES")} caracteres
+  </span>
+</div>
 
                 <div className="flex items-center gap-1">
                   {/* Selector de idioma */}
