@@ -6286,6 +6286,71 @@ premium_limit_daily: {
   FR: "Tu as atteint ta limite quotidienne Premium. Reviens demain.",
 },
 
+// =========================
+// PREMIUM CREADOR DE TEXTO
+// =========================
+
+premiumTextCreator: {
+  sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+
+  sources_tab_text: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
+  sources_tab_url: { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
+
+  enter_text_here_full: { ES: "Escribe o pega tu texto aquí…", EUS: "Idatzi edo itsatsi zure testua hemen…", EN: "Write or paste your text here…", FR: "Écris ou colle ton texte ici…" },
+  choose_file_title: { ES: "Elige tu archivo o carpeta", EUS: "Aukeratu zure fitxategia edo karpeta", EN: "Choose your file or folder", FR: "Choisis ton fichier ou dossier" },
+  accepted_formats: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…", EN: "You can add PDFs, copied text, web links…", FR: "Tu peux ajouter des PDF, du texte copié, des liens web…" },
+  folder_hint: { ES: "Aquí aparecerán tus textos o documentos subidos.", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.", EN: "Your uploaded texts or documents will appear here.", FR: "Tes textes ou documents importés apparaîtront ici." },
+
+  paste_urls_label: { ES: "Pegar URLs*", EUS: "Itsatsi URLak*", EN: "Paste URLs*", FR: "Coller des URLs*" },
+  add_url: { ES: "Añadir URLs", EUS: "Gehitu URLak", EN: "Add URLs", FR: "Ajouter des URLs" },
+  save_urls: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  cancel: { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Annuler" },
+  urls_note_visible: { ES: "Solo se importará el texto visible del sitio web.", EUS: "Webguneko testu ikusgaia bakarrik inportatuko da.", EN: "Only the visible text from the website will be imported.", FR: "Seul le texte visible du site sera importé." },
+  urls_note_paywalled: { ES: "No se admiten artículos de pago.", EUS: "Ez dira onartzen ordainpeko artikuluak.", EN: "Paywalled articles are not supported.", FR: "Les articles payants ne sont pas pris en charge." },
+  remove: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
+
+  generate_from_sources: { ES: "Generar", EUS: "Laburpena sortu", EN: "Generate", FR: "Générer" },
+  create_help_right: { ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa “Generar”.", EUS: "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”.", EN: "Select a source (text, documents or URLs) and press “Generate”.", FR: "Sélectionne une source (texte, documents ou URLs) puis clique sur “Générer”." },
+  create_help_left: { ES: "Aquí aparecerán tus textos o documentos subidos. Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…", EN: "Your uploaded texts or documents will appear here. You can add PDFs, copied text, web links…", FR: "Tes textes ou documents importés apparaîtront ici. Tu peux ajouter des PDF, du texte copié, des liens web…" },
+
+  // Crear texto (título/párrafos)
+  title_label: { ES: "Título", EUS: "Izenburua", EN: "Title", FR: "Titre" },
+  paragraph_label: { ES: "Párrafo", EUS: "Paragrafoa", EN: "Paragraph", FR: "Paragraphe" },
+  title_optional: { ES: "Escribe el título (opcional)", EUS: "Idatzi izenburua (aukerakoa)", EN: "Write the title (optional)", FR: "Écris le titre (optionnel)" },
+  add_paragraph: { ES: "+ Párrafo", EUS: "+ Paragrafoa", EN: "+ Paragraph", FR: "+ Paragraphe" },
+  paragraph_ph: { ES: "Escribe el párrafo", EUS: "Idatzi paragrafoa", EN: "Write the paragraph", FR: "Écris le paragraphe" },
+  remove_paragraph: { ES: "Borrar párrafo", EUS: "Paragrafoa ezabatu", EN: "Delete paragraph", FR: "Supprimer le paragraphe" },
+
+  // Slider longitud
+  length_label: { ES: "Longitud", EUS: "Luzera", EN: "Length", FR: "Longueur" },
+  length_aria: { ES: "Longitud en caracteres", EUS: "Luzera karakteretan", EN: "Length in characters", FR: "Longueur en caractères" },
+  length_chars: { ES: "caracteres", EUS: "karaktere", EN: "characters", FR: "caractères" },
+
+  // Idioma salida
+  output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
+  output_language_eus: { ES: "Euskera", EUS: "Euskara", EN: "Basque", FR: "Basque" },
+  output_language_es: { ES: "Español", EUS: "Gaztelania", EN: "Spanish", FR: "Espagnol" },
+  output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
+  output_language_fr: { ES: "Francés", EUS: "Français", EN: "French", FR: "Français" },
+
+  // Acciones / tooltips
+  clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Clear", FR: "Supprimer" },
+  copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+  copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+  pdf_title: { ES: "Resumen", EUS: "Laburpena", EN: "Summary", FR: "Résumé" },
+
+  // Guardado
+  save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
+
+  // Errores
+  error_need_input: { ES: "Añade texto suficiente, URLs o documentos antes de generar el resumen.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak laburpena sortu aurretik.", EN: "Add enough text, URLs, or documents before generating the summary.", FR: "Ajoute suffisamment de texte, des URLs ou des documents avant de générer le résumé." },
+  error_auth_required: { ES: "Necesitas iniciar sesión para usar Premium.", EUS: "Premium erabiltzeko saioa hasi behar duzu.", EN: "You need to log in to use Premium.", FR: "Tu dois te connecter pour utiliser Premium." },
+  error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik.", EN: "No text was received from the API.", FR: "Aucun texte n’a été reçu depuis l’API." },
+  error_generic: { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
+},
 
 
 }

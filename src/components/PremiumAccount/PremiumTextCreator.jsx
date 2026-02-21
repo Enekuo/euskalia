@@ -24,7 +24,7 @@ import {
 import { addLibraryDoc } from "@/proLibraryStore";
 import { auth } from "@/lib/firebase";
 
-export default function PremiumSummary() {
+export default function PremiumTextCreator() {
   const { t } = useTranslation();
 
   // ✅ evita que se muestre la clave literal si falta traducción
@@ -113,47 +113,47 @@ export default function PremiumSummary() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n =====
-  const labelSources = tr("premiumSummary.sources_title", "Fuentes");
+  // ===== i18n (TODO premiumTextCreator.*) =====
+  const labelSources = tr("premiumTextCreator.sources_title", "Fuentes");
 
-  const labelTabText = tr("premiumSummary.sources_tab_text", "Texto");
-  const labelTabDocument = tr("premiumSummary.sources_tab_document", "Documento");
-  const labelTabUrl = tr("premiumSummary.sources_tab_url", "URL");
+  const labelTabText = tr("premiumTextCreator.sources_tab_text", "Texto");
+  const labelTabDocument = tr("premiumTextCreator.sources_tab_document", "Documento");
+  const labelTabUrl = tr("premiumTextCreator.sources_tab_url", "URL");
   const labelEnterText = tr(
-    "premiumSummary.enter_text_here_full",
+    "premiumTextCreator.enter_text_here_full",
     "Escribe o pega tu texto aquí…"
   );
   const labelChooseFileTitle = tr(
-    "premiumSummary.choose_file_title",
+    "premiumTextCreator.choose_file_title",
     "Elige tu archivo o carpeta"
   );
   const labelAcceptedFormats = tr(
-    "premiumSummary.accepted_formats",
+    "premiumTextCreator.accepted_formats",
     "Puedes añadir archivos PDF, texto copiado, enlaces web…"
   );
   const labelFolderHint = tr(
-    "premiumSummary.folder_hint",
+    "premiumTextCreator.folder_hint",
     "Aquí aparecerán tus textos o documentos subidos."
   );
-  const labelPasteUrls = tr("premiumSummary.paste_urls_label", "Pegar URLs*");
-  const labelAddUrl = tr("premiumSummary.add_url", "Añadir URLs");
-  const labelSaveUrls = tr("premiumSummary.save_urls", "Guardar");
-  const labelCancel = tr("premiumSummary.cancel", "Cancelar");
+  const labelPasteUrls = tr("premiumTextCreator.paste_urls_label", "Pegar URLs*");
+  const labelAddUrl = tr("premiumTextCreator.add_url", "Añadir URLs");
+  const labelSaveUrls = tr("premiumTextCreator.save_urls", "Guardar");
+  const labelCancel = tr("premiumTextCreator.cancel", "Cancelar");
   const labelUrlsNoteVisible = tr(
-    "premiumSummary.urls_note_visible",
+    "premiumTextCreator.urls_note_visible",
     "Solo se importará el texto visible del sitio web."
   );
   const labelUrlsNotePaywalled = tr(
-    "premiumSummary.urls_note_paywalled",
+    "premiumTextCreator.urls_note_paywalled",
     "No se admiten artículos de pago."
   );
-  const labelRemove = tr("premiumSummary.remove", "Quitar");
+  const labelRemove = tr("premiumTextCreator.remove", "Quitar");
   const labelGenerateFromSources = tr(
-    "premiumSummary.generate_from_sources",
+    "premiumTextCreator.generate_from_sources",
     "Laburpena sortu"
   );
   const labelHelpRight = tr(
-    "premiumSummary.create_help_right",
+    "premiumTextCreator.create_help_right",
     "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
   );
 
@@ -171,27 +171,32 @@ export default function PremiumSummary() {
     "Borrar párrafo"
   );
 
+  // ✅ SLIDER (sin textos fijos)
+  const labelLength = tr("premiumTextCreator.length_label", "Longitud");
+  const labelLengthAria = tr("premiumTextCreator.length_aria", "Longitud en caracteres");
+  const labelChars = tr("premiumTextCreator.length_chars", "caracteres");
+
   // Etiquetas de idioma
-  const LBL_EUS = tr("premiumSummary.output_language_eus", "Euskara");
-  const LBL_ES = tr("premiumSummary.output_language_es", "Gaztelania");
-  const LBL_EN = tr("premiumSummary.output_language_en", "Ingelesa");
-  const LBL_FR = tr("premiumSummary.output_language_fr", "Français");
+  const LBL_EUS = tr("premiumTextCreator.output_language_eus", "Euskara");
+  const LBL_ES = tr("premiumTextCreator.output_language_es", "Gaztelania");
+  const LBL_EN = tr("premiumTextCreator.output_language_en", "Ingelesa");
+  const LBL_FR = tr("premiumTextCreator.output_language_fr", "Français");
 
   // ✅ Botón guardar + toast (verde)
-  const labelSaveSummary = tr("premiumSummary.save_button_label", "Gorde");
+  const labelSaveSummary = tr("premiumTextCreator.save_button_label", "Gorde");
   const librarySavedMessage = tr(
-    "premiumSummary.library_saved_toast",
+    "premiumTextCreator.library_saved_toast",
     "Liburutegian gordeta"
   );
 
-  // ✅ Tooltips (ahora con claves nuevas)
-  const tooltipCopy = tr("premiumSummary.copy", "Copiar");
-  const tooltipCopied = tr("premiumSummary.copied", "Copiado");
-  const tooltipPdf = tr("premiumSummary.pdf", "PDF");
+  // ✅ Tooltips
+  const tooltipCopy = tr("premiumTextCreator.copy", "Copiar");
+  const tooltipCopied = tr("premiumTextCreator.copied", "Copiado");
+  const tooltipPdf = tr("premiumTextCreator.pdf", "PDF");
 
   // Ayuda izquierda
   const leftRaw = tr(
-    "premiumSummary.create_help_left",
+    "premiumTextCreator.create_help_left",
     "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…"
   );
   const [leftTitle, leftBody] = useMemo(() => {
@@ -489,7 +494,7 @@ export default function PremiumSummary() {
     win.document.write(`
       <html>
         <head>
-          <title>${tr("premiumSummary.pdf_title", "Resumen")}</title>
+          <title>${tr("premiumTextCreator.pdf_title", "Resumen")}</title>
           <meta charset="utf-8" />
           <style>
             body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
@@ -572,7 +577,7 @@ export default function PremiumSummary() {
     if (!validNow) {
       setErrorMsg(
         tr(
-          "premiumSummary.error_need_input",
+          "premiumTextCreator.error_need_input",
           "Añade texto suficiente, URLs o documentos antes de generar el resumen."
         )
       );
@@ -612,7 +617,7 @@ export default function PremiumSummary() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    // ✅ NUEVO: regla por caracteres (slider)
+    // ✅ regla por caracteres (slider)
     const lengthRuleChars = `Longitud objetivo: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
 
     const docsInline = documentsText?.length
@@ -667,7 +672,7 @@ export default function PremiumSummary() {
       if (!user) {
         throw new Error(
           tr(
-            "premiumSummary.error_auth_required",
+            "premiumTextCreator.error_auth_required",
             "Necesitas iniciar sesión para usar Premium."
           )
         );
@@ -703,7 +708,7 @@ export default function PremiumSummary() {
           setLoading(false);
           throw new Error(
             tr(
-              "premiumSummary.error_auth_required",
+              "premiumTextCreator.error_auth_required",
               "Necesitas iniciar sesión para usar Premium."
             )
           );
@@ -745,7 +750,7 @@ export default function PremiumSummary() {
 
       if (!rawText)
         throw new Error(
-          tr("premiumSummary.error_no_text", "No se recibió texto de la API.")
+          tr("premiumTextCreator.error_no_text", "No se recibió texto de la API.")
         );
 
       const cleaned = rawText
@@ -765,7 +770,7 @@ export default function PremiumSummary() {
         return;
       }
 
-      // ✅ NUEVO: recorta a targetChars si se pasa
+      // ✅ recorta a targetChars si se pasa
       const clipped = clipToChars(cleaned, targetChars);
 
       setResult(clipped);
@@ -774,7 +779,7 @@ export default function PremiumSummary() {
       setIsOutdated(false);
     } catch (err) {
       setErrorMsg(
-        err.message || tr("premiumSummary.error_generic", "Error generando el resumen.")
+        err.message || tr("premiumTextCreator.error_generic", "Error generando el resumen.")
       );
     } finally {
       setLoading(false);
@@ -866,30 +871,29 @@ export default function PremiumSummary() {
               {/* Barra superior */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 {/* ✅ SLIDER de longitud (sustituye los 3 botones) */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
+                    {labelLength}
+                  </span>
 
-<div className="flex items-center gap-3 min-w-0">
-  <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
-    Longitud
-  </span>
+                  <input
+                    type="range"
+                    min={300}
+                    max={20000}
+                    step={100}
+                    value={targetChars}
+                    onChange={(e) => {
+                      setTargetChars(Number(e.target.value));
+                      clearRight();
+                    }}
+                    className="w-[220px]"
+                    aria-label={labelLengthAria}
+                  />
 
-  <input
-    type="range"
-    min={300}
-    max={20000}
-    step={100}
-    value={targetChars}
-    onChange={(e) => {
-      setTargetChars(Number(e.target.value));
-      clearRight();
-    }}
-    className="w-[220px]"
-    aria-label="Longitud en caracteres"
-  />
-
-  <span className="text-sm text-slate-700 tabular-nums w-[125px] text-right">
-    {targetChars.toLocaleString("es-ES")} caracteres
-  </span>
-</div>
+                  <span className="text-sm text-slate-700 tabular-nums w-[170px] text-right">
+                    {targetChars.toLocaleString("es-ES")} {labelChars}
+                  </span>
+                </div>
 
                 <div className="flex items-center gap-1">
                   {/* Selector de idioma */}
@@ -899,7 +903,7 @@ export default function PremiumSummary() {
                         type="button"
                         className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
                         aria-label={tr(
-                          "premiumSummary.output_language_aria",
+                          "premiumTextCreator.output_language_aria",
                           "Idioma de salida"
                         )}
                       >
@@ -981,7 +985,9 @@ export default function PremiumSummary() {
                     onClick={() => handleCopy(true)}
                     title={copiedFlash ? tooltipCopied : tooltipCopy}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      result
+                        ? "text-slate-600 hover:text-slate-800"
+                        : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                     disabled={!result}
@@ -997,11 +1003,13 @@ export default function PremiumSummary() {
                   <button
                     type="button"
                     onClick={handleClearLeft}
-                    title={tr("premiumSummary.clear_input", "Eliminar")}
+                    title={tr("premiumTextCreator.clear_input", "Eliminar")}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      sourceMode === "text" && textValue
+                        ? "text-slate-600 hover:text-slate-800"
+                        : "text-slate-300 cursor-not-allowed"
                     }`}
-                    aria-label={tr("premiumSummary.clear_input", "Eliminar")}
+                    aria-label={tr("premiumTextCreator.clear_input", "Eliminar")}
                     disabled={!(sourceMode === "text" && textValue)}
                   >
                     <Trash className="w-4 h-4" />
@@ -1019,7 +1027,10 @@ export default function PremiumSummary() {
               {/* Estado inicial */}
               {!loading && !result && !errorMsg && !limitType && (
                 <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 z-10"
+                    style={{ top: "30%" }}
+                  >
                     <Button
                       type="button"
                       onClick={handleGenerate}
@@ -1031,8 +1042,13 @@ export default function PremiumSummary() {
                     </Button>
                   </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 text-center px-6"
+                    style={{ top: "40%" }}
+                  >
+                    <p className="text-sm leading-6 text-slate-600 max-w-xl">
+                      {labelHelpRight}
+                    </p>
                   </div>
                 </>
               )}
@@ -1054,7 +1070,8 @@ export default function PremiumSummary() {
                         </article>
 
                         {(() => {
-                          const hasResult = !!result && result.trim().length > 0 && !isTooShortResult;
+                          const hasResult =
+                            !!result && result.trim().length > 0 && !isTooShortResult;
                           if (!hasResult) return null;
 
                           return (
