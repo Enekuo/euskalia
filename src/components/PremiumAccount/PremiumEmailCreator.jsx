@@ -138,12 +138,12 @@ export default function PremiumEmailCreator() {
     "Argibideekin sortu"
   );
 
-  // Longitud
-  const LBL_SHORT = tr("premiumEmailCreator.length_short", "Breve");
-  const LBL_MED = tr("premiumEmailCreator.length_medium", "Medio");
-  const LBL_LONG = tr("premiumEmailCreator.length_long", "Detallado");
-
-  // Etiquetas de idioma
+  // Texto formal o informal
+  const [emailTone, setEmailTone] = useState("formal");
+  const LBL_FORMAL = tr("premiumEmailCreator.tone_formal", "Formal");
+  const LBL_INFORMAL = tr("premiumEmailCreator.tone_informal", "Informal");
+  
+// Etiquetas de idioma
   const LBL_EUS = tr("premiumEmailCreator.output_language_eus", "Euskara");
   const LBL_ES = tr("premiumEmailCreator.output_language_es", "Gaztelania");
   const LBL_EN = tr("premiumEmailCreator.output_language_en", "Ingelesa");
@@ -740,27 +740,32 @@ export default function PremiumEmailCreator() {
 
             {/* ===== Panel Derecho ===== */}
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              {/* Barra superior */}
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-2">
-                  <LengthTab
-                    active={emailLength === "breve"}
-                    label={LBL_SHORT}
-                    onClick={() => handleLengthChange("breve")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={emailLength === "medio"}
-                    label={LBL_MED}
-                    onClick={() => handleLengthChange("medio")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={emailLength === "detallado"}
-                    label={LBL_LONG}
-                    onClick={() => handleLengthChange("detallado")}
-                  />
-                </div>
+             
+             {/* Barra superior */}
+<div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+  <div className="flex items-center gap-2">
+    <LengthTab
+      active={emailTone === "formal"}
+      label={LBL_FORMAL}
+      onClick={() => {
+        if (emailTone !== "formal") {
+          setEmailTone("formal");
+          clearRight();
+        }
+      }}
+      showDivider
+    />
+    <LengthTab
+      active={emailTone === "informal"}
+      label={LBL_INFORMAL}
+      onClick={() => {
+        if (emailTone !== "informal") {
+          setEmailTone("informal");
+          clearRight();
+        }
+      }}
+    />
+  </div>
 
                 <div className="flex items-center gap-1">
                   {/* Selector de idioma */}
