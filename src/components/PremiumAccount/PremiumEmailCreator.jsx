@@ -164,11 +164,14 @@ export default function PremiumEmailCreator() {
   // ✅ Labels del creador
   const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
-  const labelBig3 = tr("premiumEmailCreator.big_3", "3-Párrafo");
-  const labelSmall4 = tr("premiumEmailCreator.small_4", "4-Saludo");
-  const labelSmall5 = tr("premiumEmailCreator.small_5", "5-Nombre");
+  const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
+  const labelSmall4 = tr("premiumEmailCreator.small_4", "4- pequeño. Saludo");
+  const labelSmall5 = tr("premiumEmailCreator.small_5", "5- pequeño. Nombre");
 
-  const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
+  const placeholderSaludo = tr(
+    "premiumEmailCreator.saludo_ph",
+    "Escribe el saludo..."
+  );
   const placeholderIntro = tr(
     "premiumEmailCreator.intro_ph",
     "Escribe la introducción..."
@@ -177,8 +180,14 @@ export default function PremiumEmailCreator() {
     "premiumEmailCreator.paragraph_ph",
     "Escribe el párrafo"
   );
-  const placeholderSaludo2 = tr("premiumEmailCreator.saludo2_ph", "Escribe el saludo...");
-  const placeholderNombre = tr("premiumEmailCreator.nombre_ph", "Escribe el nombre...");
+  const placeholderSaludo2 = tr(
+    "premiumEmailCreator.saludo2_ph",
+    "Escribe el saludo..."
+  );
+  const placeholderNombre = tr(
+    "premiumEmailCreator.nombre_ph",
+    "Escribe el nombre..."
+  );
   const labelAddParagraph = tr("premiumEmailCreator.add_paragraph", "+ Párrafo");
 
   // ===== Tabs =====
@@ -270,7 +279,9 @@ export default function PremiumEmailCreator() {
     const parts = [
       (emailSaludo || "").trim(),
       (emailIntro || "").trim(),
-      ...(emailParagraphs || []).map((p) => (p || "").trim()).filter(Boolean),
+      ...(emailParagraphs || [])
+        .map((p) => (p || "").trim())
+        .filter(Boolean),
       (emailSaludo2 || "").trim(),
       (emailNombre || "").trim(),
     ].filter(Boolean);
@@ -364,7 +375,8 @@ export default function PremiumEmailCreator() {
     return trimmed.length >= 20 && words.length >= 5;
   }, [textValue]);
 
-  const hasValidInput = textIsValid || urlItems.length > 0 || documents.length > 0;
+  const hasValidInput =
+    textIsValid || urlItems.length > 0 || documents.length > 0;
 
   // ===== Acciones =====
   const handleCopy = async (flash = false) => {
@@ -567,18 +579,6 @@ export default function PremiumEmailCreator() {
         .replace(/\s{2,}/g, " ")
         .trim();
 
-      if (
-        cleaned &&
-        cleaned.trim().toLowerCase() === tooShortMsg.trim().toLowerCase()
-      ) {
-        setResult(tooShortMsg);
-        setIsTooShortResult(true);
-        setLastEmailSig(canonicalize(textValue));
-        setIsOutdated(false);
-        setLoading(false);
-        return;
-      }
-
       const clipped = enforceLength(cleaned, emailLength);
 
       setResult(clipped);
@@ -623,14 +623,15 @@ export default function PremiumEmailCreator() {
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall1}
                   </div>
-                  <input
+                  <textarea
                     value={emailSaludo}
                     onChange={(e) => {
                       setEmailSaludo(e.target.value);
                       clearRight();
                     }}
                     placeholder={placeholderSaludo}
-                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    rows={2}
                   />
                 </div>
 
@@ -639,14 +640,15 @@ export default function PremiumEmailCreator() {
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall2}
                   </div>
-                  <input
+                  <textarea
                     value={emailIntro}
                     onChange={(e) => {
                       setEmailIntro(e.target.value);
                       clearRight();
                     }}
                     placeholder={placeholderIntro}
-                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    rows={2}
                   />
                 </div>
 
@@ -705,14 +707,15 @@ export default function PremiumEmailCreator() {
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall4}
                   </div>
-                  <input
+                  <textarea
                     value={emailSaludo2}
                     onChange={(e) => {
                       setEmailSaludo2(e.target.value);
                       clearRight();
                     }}
                     placeholder={placeholderSaludo2}
-                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    rows={2}
                   />
                 </div>
 
@@ -721,14 +724,15 @@ export default function PremiumEmailCreator() {
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall5}
                   </div>
-                  <input
+                  <textarea
                     value={emailNombre}
                     onChange={(e) => {
                       setEmailNombre(e.target.value);
                       clearRight();
                     }}
                     placeholder={placeholderNombre}
-                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    rows={2}
                   />
                 </div>
               </div>
@@ -759,6 +763,93 @@ export default function PremiumEmailCreator() {
                 </div>
 
                 <div className="flex items-center gap-1">
+                  {/* Selector de idioma */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                        aria-label={tr(
+                          "premiumEmailCreator.output_language_aria",
+                          "Idioma de salida"
+                        )}
+                      >
+                        <span className="truncate">
+                          {outputLang === "ES"
+                            ? LBL_ES
+                            : outputLang === "EN"
+                            ? LBL_EN
+                            : outputLang === "FR"
+                            ? LBL_FR
+                            : LBL_EUS}
+                        </span>
+                        <svg
+                          className="w-4 h-4 text-slate-500"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                        </svg>
+                      </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                      align="end"
+                      className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
+                    >
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (outputLang !== "EUS") {
+                            setOutputLang("EUS");
+                            clearRight();
+                          }
+                        }}
+                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                      >
+                        {LBL_EUS}
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (outputLang !== "ES") {
+                            setOutputLang("ES");
+                            clearRight();
+                          }
+                        }}
+                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                      >
+                        {LBL_ES}
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (outputLang !== "EN") {
+                            setOutputLang("EN");
+                            clearRight();
+                          }
+                        }}
+                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                      >
+                        {LBL_EN}
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (outputLang !== "FR") {
+                            setOutputLang("FR");
+                            clearRight();
+                          }
+                        }}
+                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                      >
+                        {LBL_FR}
+                      </DropdownMenuItem>
+
+                      <DropdownMenuArrow className="fill-white" />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}
