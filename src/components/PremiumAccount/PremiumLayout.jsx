@@ -355,7 +355,7 @@ export default function PremiumLayout({ children }) {
               )}
             </button>
 
-            {/* Creador (NUEVO) */}
+            {/* Modo Creador (NUEVO) */}
             <div className="space-y-1">
               <button
                 onClick={() => setCreatorOpen((v) => !v)}
@@ -369,7 +369,7 @@ export default function PremiumLayout({ children }) {
               >
                 <div className="flex items-center gap-2">
                   <Sparkles size={18} />
-                  {showText && <span>Creador</span>}
+                  {showText && <span className="whitespace-nowrap">Modo creador</span>}
                 </div>
 
                 {showText && (
