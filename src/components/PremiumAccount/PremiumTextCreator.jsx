@@ -890,7 +890,7 @@ export default function PremiumTextCreator() {
                     aria-label={labelLengthAria}
                   />
 
-                  <span className="text-sm text-slate-700 tabular-nums w-[170px] text-right">
+                  <span className="text-sm text-slate-700 tabular-nums w-[125px] text-right">
                     {targetChars.toLocaleString("es-ES")} {labelChars}
                   </span>
                 </div>
