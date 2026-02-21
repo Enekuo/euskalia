@@ -96,6 +96,11 @@ export default function PremiumEmailCreator() {
   const [savedToLibrary, setSavedToLibrary] = useState(false);
   const savedTimerRef = useRef(null);
 
+  // ✅ NUEVO: inputs del creador (pequeños + párrafos grandes)
+  const [emailSaludo, setEmailSaludo] = useState("");
+  const [emailIntro, setEmailIntro] = useState("");
+  const [emailParagraphs, setEmailParagraphs] = useState([""]); // mínimo 1
+
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
@@ -110,39 +115,8 @@ export default function PremiumEmailCreator() {
   };
 
   // ===== i18n =====
-  const labelSources = tr("premiumEmailCreator.sources_title", "Fuentes");
-  const labelTabText = tr("premiumEmailCreator.sources_tab_text", "Texto");
-  const labelTabDocument = tr("premiumEmailCreator.sources_tab_document", "Documento");
-  const labelTabUrl = tr("premiumEmailCreator.sources_tab_url", "URL");
-  const labelEnterText = tr(
-    "premiumEmailCreator.enter_text_here_full",
-    "Escribe o pega tu texto aquí…"
-  );
-  const labelChooseFileTitle = tr(
-    "premiumEmailCreator.choose_file_title",
-    "Elige tu archivo o carpeta"
-  );
-  const labelAcceptedFormats = tr(
-    "premiumEmailCreator.accepted_formats",
-    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
-  );
-  const labelFolderHint = tr(
-    "premiumEmailCreator.folder_hint",
-    "Aquí aparecerán tus textos o documentos subidos."
-  );
-  const labelPasteUrls = tr("premiumEmailCreator.paste_urls_label", "Pegar URLs*");
-  const labelAddUrl = tr("premiumEmailCreator.add_url", "Añadir URLs");
-  const labelSaveUrls = tr("premiumEmailCreator.save_urls", "Guardar");
-  const labelCancel = tr("premiumEmailCreator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "premiumEmailCreator.urls_note_visible",
-    "Solo se importará el texto visible del sitio web."
-  );
-  const labelUrlsNotePaywalled = tr(
-    "premiumEmailCreator.urls_note_paywalled",
-    "No se admiten artículos de pago."
-  );
-  const labelRemove = tr("premiumEmailCreator.remove", "Quitar");
+  const labelSources = tr("premiumEmailCreator.sources_title", "Iturriak");
+
   const labelGenerateFromSources = tr(
     "premiumEmailCreator.generate_from_sources",
     "Emaila sortu"
@@ -157,7 +131,10 @@ export default function PremiumEmailCreator() {
     "emailCreator.bottom_input_ph",
     "Idatzi hemen argibideak (aukerakoa): hartzailea, tonua, helburua, call-to-action…"
   );
-  const labelGenerateWithPrompt = tr("emailCreator.generate_with_prompt", "Argibideekin sortu");
+  const labelGenerateWithPrompt = tr(
+    "emailCreator.generate_with_prompt",
+    "Argibideekin sortu"
+  );
 
   // Longitud
   const LBL_SHORT = tr("premiumEmailCreator.length_short", "Breve");
@@ -177,56 +154,21 @@ export default function PremiumEmailCreator() {
     "Liburutegian gordeta"
   );
 
-  // ✅ Tooltips (ahora con claves nuevas)
+  // ✅ Tooltips
   const tooltipCopy = tr("premiumEmailCreator.copy", "Copiar");
   const tooltipCopied = tr("premiumEmailCreator.copied", "Copiado");
   const tooltipPdf = tr("premiumEmailCreator.pdf", "PDF");
 
-  // Ayuda izquierda
-  const leftRaw = tr(
-    "premiumEmailCreator.create_help_left",
-    "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…"
-  );
-  const [leftTitle, leftBody] = useMemo(() => {
-    const parts = (leftRaw || "").split(".");
-    const first = (parts.shift() || leftRaw || "").trim();
-    const rest = parts.join(".").trim();
-    return [first.endsWith(".") ? first : `${first}.`, rest];
-  }, [leftRaw]);
+  // ✅ NUEVO (labels del creador)
+  const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
+  const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
+  const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
+  const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
+  const placeholderIntro = tr("premiumEmailCreator.intro_ph", "Escribe la introducción...");
+  const placeholderParagraph = tr("premiumEmailCreator.paragraph_ph", "Escribe el párrafo");
+  const labelAddParagraph = tr("premiumEmailCreator.add_paragraph", "+ Párrafo");
 
   // ===== Tabs =====
-  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
-    <div className="relative flex-1 min-w-0 flex items-stretch">
-      <button
-        type="button"
-        onClick={onClick}
-        className="relative inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
-        style={{ color: active ? BLUE : GRAY_TEXT }}
-        aria-pressed={active}
-        aria-label={label}
-      >
-        <Icon
-          className="w-[18px] h-[18px] shrink-0"
-          style={{ color: active ? BLUE : GRAY_ICON }}
-        />
-        <span className="truncate">{label}</span>
-        {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
-        )}
-      </button>
-      {showDivider && (
-        <span
-          aria-hidden
-          className="self-center"
-          style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
-        />
-      )}
-    </div>
-  );
-
   const LengthTab = ({ active, label, onClick, showDivider }) => (
     <div className="relative flex items-stretch">
       <button
@@ -309,6 +251,19 @@ export default function PremiumEmailCreator() {
       .toLowerCase()
       .replace(/\s+/g, " ")
       .trim();
+
+  // ✅ construir textValue desde Saludo/Intro/Parrafos
+  useEffect(() => {
+    const parts = [
+      (emailSaludo || "").trim(),
+      (emailIntro || "").trim(),
+      ...(emailParagraphs || []).map((p) => (p || "").trim()).filter(Boolean),
+    ].filter(Boolean);
+
+    const joined = parts.join("\n\n").trim();
+    setTextValue(joined);
+    setSourceMode("text");
+  }, [emailSaludo, emailIntro, emailParagraphs]);
 
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
@@ -524,8 +479,9 @@ export default function PremiumEmailCreator() {
   };
 
   const handleClearLeft = () => {
-    if (!(sourceMode === "text" && textValue)) return;
-    setTextValue("");
+    setEmailSaludo("");
+    setEmailIntro("");
+    setEmailParagraphs([""]);
     clearRight();
   };
 
@@ -551,6 +507,24 @@ export default function PremiumEmailCreator() {
     savedTimerRef.current = setTimeout(() => {
       setSavedToLibrary(false);
     }, 2000);
+  };
+
+  // ✅ NUEVO: sumar / eliminar párrafos
+  const addParagraph = () => {
+    setEmailParagraphs((prev) => [...prev, ""]);
+    clearRight();
+  };
+
+  const removeParagraph = (idx) => {
+    setEmailParagraphs((prev) => {
+      const next = prev.filter((_, i) => i !== idx);
+      return next.length ? next : [""];
+    });
+    clearRight();
+  };
+
+  const updateParagraph = (idx, val) => {
+    setEmailParagraphs((prev) => prev.map((p, i) => (i === idx ? val : p)));
   };
 
   // ===== Helper: cache key (sha-256) para KV =====
@@ -831,10 +805,78 @@ export default function PremiumEmailCreator() {
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
               </div>
 
-              {/* ✅ Tabs ELIMINADOS */}
+              {/* ✅ NUEVO: layout inputs como tu captura */}
+              <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
+                {/* 1 - Pequeño Saludo */}
+                <div className="mb-5">
+                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall1}</div>
+                  <input
+                    value={emailSaludo}
+                    onChange={(e) => {
+                      setEmailSaludo(e.target.value);
+                      clearRight();
+                    }}
+                    placeholder={placeholderSaludo}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                  />
+                </div>
 
-              {/* ✅ Tabla vacía */}
-              <div className="flex-1 min-h-0 overflow-hidden" />
+                {/* 2 - Pequeño Introducción */}
+                <div className="mb-5">
+                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall2}</div>
+                  <input
+                    value={emailIntro}
+                    onChange={(e) => {
+                      setEmailIntro(e.target.value);
+                      clearRight();
+                    }}
+                    placeholder={placeholderIntro}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                  />
+                </div>
+
+                {/* 3 - Grande Párrafo + botón +Párrafo */}
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-sm font-semibold text-slate-800">{labelBig3}</div>
+
+                  <button
+                    type="button"
+                    onClick={addParagraph}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
+                    aria-label={labelAddParagraph}
+                    title={labelAddParagraph}
+                  >
+                    <span className="whitespace-nowrap">{labelAddParagraph}</span>
+                  </button>
+                </div>
+
+                {/* Párrafos grandes (cada uno con X) */}
+                <div className="space-y-4">
+                  {emailParagraphs.map((p, idx) => (
+                    <div key={idx} className="relative">
+                      <textarea
+                        value={p}
+                        onChange={(e) => {
+                          updateParagraph(idx, e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderParagraph}
+                        className="w-full h-24 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => removeParagraph(idx)}
+                        className="absolute top-3 right-3 h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                        aria-label={tr("premiumEmailCreator.remove_paragraph", "Eliminar párrafo")}
+                        title={tr("premiumEmailCreator.remove_paragraph", "Eliminar párrafo")}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </aside>
 
             {/* ===== Panel Derecho ===== */}
@@ -969,10 +1011,12 @@ export default function PremiumEmailCreator() {
                     onClick={handleClearLeft}
                     title={tr("premiumEmailCreator.clear_input", "Eliminar")}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      (emailSaludo || emailIntro || (emailParagraphs || []).some((p) => (p || "").trim()))
+                        ? "text-slate-600 hover:text-slate-800"
+                        : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("premiumEmailCreator.clear_input", "Eliminar")}
-                    disabled={!(sourceMode === "text" && textValue)}
+                    disabled={!(emailSaludo || emailIntro || (emailParagraphs || []).some((p) => (p || "").trim()))}
                   >
                     <Trash className="w-4 h-4" />
                   </button>
