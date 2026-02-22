@@ -44,7 +44,9 @@ Detecta el idioma del texto de entrada.
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-Después de esa primera línea, escribe la TRADUCCIÓN final.
+Después de esa primera línea, escribe ÚNICAMENTE el texto traducido, sin etiquetas.
+NO escribas "Traducción:", "Translation:", "Resultado:", comillas, ni explicaciones.
+Devuelve solo el texto final traducido (sin prefijos).
 
 Traduce SIEMPRE al idioma de destino: ${dstName}.
 Responde SIEMPRE en ${dstName}.
@@ -76,7 +78,8 @@ Ez eman azalpenik.
   return `
 Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de ${srcName} a ${dstName}.
-Responde SIEMPRE en ${dstName} cuando des la TRADUCCIÓN.
+Devuelve ÚNICAMENTE la traducción en ${dstName}.
+NO escribas "Traducción:" ni ningún prefijo.
 No añadas explicaciones ni comentarios.
 `.trim();
 };
@@ -622,7 +625,7 @@ export default function ProTranslator() {
           return;
         }
 
-        const system = `${directionText(src, dst)}\n\nResponde SOLO con la traducción final.`;
+        const system = `${directionText(src, dst)}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:". Mantén el formato.`;
 
         const token = await getProToken();
 
