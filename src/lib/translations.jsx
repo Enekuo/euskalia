@@ -6292,10 +6292,10 @@ premium_limit_daily: {
 
 premiumTextCreator: {
   sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
-
-  sources_tab_text: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
-  sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
-  sources_tab_url: { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
+  mode_normal: { ES: "Normal", EUS: "Normala", EN: "Normal", FR: "Normal" },
+  mode_paragraphs: { ES: "Por párrafos", EUS: "Paragrafoz", EN: "By paragraphs", FR: "Par paragraphes" },
+  text_label: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  text_ph: { ES: "Escribe el texto", EUS: "Idatzi testua", EN: "Write the text", FR: "Écris le texte" },
 
   enter_text_here_full: { ES: "Escribe o pega tu texto aquí…", EUS: "Idatzi edo itsatsi zure testua hemen…", EN: "Write or paste your text here…", FR: "Écris ou colle ton texte ici…" },
   choose_file_title: { ES: "Elige tu archivo o carpeta", EUS: "Aukeratu zure fitxategia edo karpeta", EN: "Choose your file or folder", FR: "Choisis ton fichier ou dossier" },
@@ -6310,10 +6310,9 @@ premiumTextCreator: {
   urls_note_paywalled: { ES: "No se admiten artículos de pago.", EUS: "Ez dira onartzen ordainpeko artikuluak.", EN: "Paywalled articles are not supported.", FR: "Les articles payants ne sont pas pris en charge." },
   remove: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
 
-  generate_from_sources: { ES: "Generar", EUS: "Laburpena sortu", EN: "Generate", FR: "Générer" },
-  create_help_right: { ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa “Generar”.", EUS: "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”.", EN: "Select a source (text, documents or URLs) and press “Generate”.", FR: "Sélectionne une source (texte, documents ou URLs) puis clique sur “Générer”." },
-  create_help_left: { ES: "Aquí aparecerán tus textos o documentos subidos. Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…", EN: "Your uploaded texts or documents will appear here. You can add PDFs, copied text, web links…", FR: "Tes textes ou documents importés apparaîtront ici. Tu peux ajouter des PDF, du texte copié, des liens web…" },
-
+  generate_from_sources: { ES: "Generar texto", EUS: "Testua sortu", EN: "Generate text", FR: "Générer du texte" },
+  help_write_and_generate: { ES: "Escribe la información necesaria y pulsa \"Generar texto\".", EUS: "Idatzi beharrezko informazioa eta sakatu \"Testua sortu\".", EN: "Write the necessary information and click \"Generate text\".", FR: "Écris les informations nécessaires et clique sur \"Générer le texte\"." },
+ 
   // Crear texto (título/párrafos)
   title_label: { ES: "Título", EUS: "Izenburua", EN: "Title", FR: "Titre" },
   paragraph_label: { ES: "Párrafo", EUS: "Paragrafoa", EN: "Paragraph", FR: "Paragraphe" },

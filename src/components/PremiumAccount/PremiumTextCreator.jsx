@@ -941,7 +941,7 @@ export default function PremiumTextCreator() {
                         <div className="max-h-[440px] overflow-y-auto pr-2">
                           {/* ✅ Título opcional en MAYÚSCULA + NEGRITA */}
                           {titleUpper ? (
-                            <div className="text-[16px] font-bold text-slate-900 mb-4">
+                            <div className="text-[16px] font-bold text-slate-900 mb-4 text-center w-full">
                               {titleUpper}
                             </div>
                           ) : null}
