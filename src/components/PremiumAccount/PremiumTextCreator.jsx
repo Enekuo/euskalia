@@ -1,16 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  FileText,
-  File as FileIcon,
-  FileDown,
-  Link2 as UrlIcon,
-  Plus,
-  X,
-  Copy,
-  Trash,
-  Check,
-} from "lucide-react";
+import { FileDown, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import { Button } from "@/components/ui/button";
@@ -33,22 +23,17 @@ export default function PremiumTextCreator() {
     return !val || val === key ? fallback : val;
   };
 
-  // ===== Estado =====
-  const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
-  const [textValue, setTextValue] = useState("");
-
-  // ✅ NUEVO (crear texto - panel izquierdo)
+  // ===== Estado (Creador de texto real) =====
   const [titleValue, setTitleValue] = useState("");
-  const [paragraphs, setParagraphs] = useState([""]);
+  const [paragraphs, setParagraphs] = useState([""]); // mínimo 1
 
   // Resultado / carga / error
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Límite Premium (banner + mensaje rojo) -> FIX: guardar TIPO, no el texto
+  // ✅ Límite Premium (banner + mensaje rojo)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-
   const setCharsLimit = () => setLimitType("chars");
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
@@ -66,32 +51,11 @@ export default function PremiumTextCreator() {
         )
       : "";
 
-  // Longitud del resumen (SE MANTIENE para no romper backend, pero YA NO se usa)
-  const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "largo"
-
-  // ✅ NUEVO: Longitud por caracteres (SLIDER)
+  // ✅ Longitud por caracteres (SLIDER)
   const [targetChars, setTargetChars] = useState(1200);
 
-  // Idioma de salida (EUS/ES/EN/FR) — por defecto Euskera
+  // Idioma de salida (EUS/ES/EN/FR)
   const [outputLang, setOutputLang] = useState("EUS");
-
-  // Track “resumen desactualizado”
-  const [lastSummarySig, setLastSummarySig] = useState(null);
-  const [isOutdated, setIsOutdated] = useState(false);
-
-  // Resultado es el mensaje "texto demasiado breve"
-  const [isTooShortResult, setIsTooShortResult] = useState(false);
-
-  // Documentos
-  const [documents, setDocuments] = useState([]); // [{id,file}]
-  const [documentsText, setDocumentsText] = useState([]); // [{id,name,text}]
-  const [dragActive, setDragActive] = useState(false);
-  const fileInputRef = useRef(null);
-
-  // URLs
-  const [urlInputOpen, setUrlInputOpen] = useState(false);
-  const [urlsTextarea, setUrlsTextarea] = useState("");
-  const [urlItems, setUrlItems] = useState([]); // [{id,url,host}]
 
   // Copia: flash de tic azul
   const [copiedFlash, setCopiedFlash] = useState(false);
@@ -103,8 +67,6 @@ export default function PremiumTextCreator() {
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
-  const GRAY_ICON = "#94a3b8";
-  const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 18000;
 
   const pageVariants = {
@@ -113,51 +75,9 @@ export default function PremiumTextCreator() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n (TODO premiumTextCreator.*) =====
+  // ===== i18n (premiumTextCreator.*) =====
   const labelSources = tr("premiumTextCreator.sources_title", "Fuentes");
 
-  const labelTabText = tr("premiumTextCreator.sources_tab_text", "Texto");
-  const labelTabDocument = tr("premiumTextCreator.sources_tab_document", "Documento");
-  const labelTabUrl = tr("premiumTextCreator.sources_tab_url", "URL");
-  const labelEnterText = tr(
-    "premiumTextCreator.enter_text_here_full",
-    "Escribe o pega tu texto aquí…"
-  );
-  const labelChooseFileTitle = tr(
-    "premiumTextCreator.choose_file_title",
-    "Elige tu archivo o carpeta"
-  );
-  const labelAcceptedFormats = tr(
-    "premiumTextCreator.accepted_formats",
-    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
-  );
-  const labelFolderHint = tr(
-    "premiumTextCreator.folder_hint",
-    "Aquí aparecerán tus textos o documentos subidos."
-  );
-  const labelPasteUrls = tr("premiumTextCreator.paste_urls_label", "Pegar URLs*");
-  const labelAddUrl = tr("premiumTextCreator.add_url", "Añadir URLs");
-  const labelSaveUrls = tr("premiumTextCreator.save_urls", "Guardar");
-  const labelCancel = tr("premiumTextCreator.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "premiumTextCreator.urls_note_visible",
-    "Solo se importará el texto visible del sitio web."
-  );
-  const labelUrlsNotePaywalled = tr(
-    "premiumTextCreator.urls_note_paywalled",
-    "No se admiten artículos de pago."
-  );
-  const labelRemove = tr("premiumTextCreator.remove", "Quitar");
-  const labelGenerateFromSources = tr(
-    "premiumTextCreator.generate_from_sources",
-    "Laburpena sortu"
-  );
-  const labelHelpRight = tr(
-    "premiumTextCreator.create_help_right",
-    "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
-  );
-
-  // ✅ NUEVO (crear texto - panel izquierdo)
   const labelTitulo = tr("premiumTextCreator.title_label", "Título");
   const labelParrafo = tr("premiumTextCreator.paragraph_label", "Párrafo");
   const labelTitleOptional = tr(
@@ -171,134 +91,82 @@ export default function PremiumTextCreator() {
     "Borrar párrafo"
   );
 
-  // ✅ SLIDER (sin textos fijos)
   const labelLength = tr("premiumTextCreator.length_label", "Longitud");
   const labelLengthAria = tr("premiumTextCreator.length_aria", "Longitud en caracteres");
   const labelChars = tr("premiumTextCreator.length_chars", "caracteres");
 
-  // Etiquetas de idioma
+  const labelGenerate = tr("premiumTextCreator.generate_from_sources", "Generar");
+  const labelHelpRight = tr(
+    "premiumTextCreator.create_help_right",
+    'Rellena el título y/o los párrafos y pulsa "Generar".'
+  );
+
   const LBL_EUS = tr("premiumTextCreator.output_language_eus", "Euskara");
   const LBL_ES = tr("premiumTextCreator.output_language_es", "Gaztelania");
   const LBL_EN = tr("premiumTextCreator.output_language_en", "Ingelesa");
   const LBL_FR = tr("premiumTextCreator.output_language_fr", "Français");
 
-  // ✅ Botón guardar + toast (verde)
-  const labelSaveSummary = tr("premiumTextCreator.save_button_label", "Gorde");
+  const labelSaveText = tr("premiumTextCreator.save_button_label", "Gorde");
   const librarySavedMessage = tr(
     "premiumTextCreator.library_saved_toast",
     "Liburutegian gordeta"
   );
 
-  // ✅ Tooltips
   const tooltipCopy = tr("premiumTextCreator.copy", "Copiar");
   const tooltipCopied = tr("premiumTextCreator.copied", "Copiado");
   const tooltipPdf = tr("premiumTextCreator.pdf", "PDF");
 
-  // Ayuda izquierda
-  const leftRaw = tr(
-    "premiumTextCreator.create_help_left",
-    "Hemen agertuko dira igo dituzun testuak edo dokumentuak. Gehitu ditzakezu PDF fitxategiak, testu kopiatua, web estekak…"
-  );
-  const [leftTitle, leftBody] = useMemo(() => {
-    const parts = (leftRaw || "").split(".");
-    const first = (parts.shift() || leftRaw || "").trim();
-    const rest = parts.join(".").trim();
-    return [first.endsWith(".") ? first : `${first}.`, rest];
-  }, [leftRaw]);
-
-  // ===== Tabs =====
-  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
-    <div className="relative flex-1 min-w-0 flex items-stretch">
-      <button
-        type="button"
-        onClick={onClick}
-        className="relative inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
-        style={{ color: active ? BLUE : GRAY_TEXT }}
-        aria-pressed={active}
-        aria-label={label}
-      >
-        <Icon
-          className="w-[18px] h-[18px] shrink-0"
-          style={{ color: active ? BLUE : GRAY_ICON }}
-        />
-        <span className="truncate">{label}</span>
-        {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
-        )}
-      </button>
-      {showDivider && (
-        <span
-          aria-hidden
-          className="self-center"
-          style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
-        />
-      )}
-    </div>
-  );
-
   // ===== Utils =====
-  const parseUrlsFromText = (text) => {
-    const raw = text
-      .split(/[\s\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const valid = [];
-    for (const u of raw) {
-      try {
-        const url = new URL(u);
-        valid.push({ href: url.href, host: url.host });
-      } catch {}
-    }
-    const seen = new Set();
-    return valid.filter((v) =>
-      seen.has(v.href) ? false : (seen.add(v.href), true)
-    );
-  };
-
-  const canonicalize = (s) =>
-    (s || "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/\s+/g, " ")
-      .trim();
-
-  // ✅ NUEVO: recorte por caracteres sin cortar palabras
   const clipToChars = (text, maxChars) => {
     const t2 = String(text || "")
       .replace(/\r/g, "")
-      .replace(/\n+/g, " ")
-      .replace(/\s{2,}/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/[ \t]{2,}/g, " ")
       .trim();
 
     if (!maxChars || maxChars <= 0) return t2;
     if (t2.length <= maxChars) return t2;
 
     let cut = t2.slice(0, maxChars);
-
     const lastSpace = cut.lastIndexOf(" ");
     if (lastSpace > 40) cut = cut.slice(0, lastSpace);
-
     return cut.replace(/[.,;:–—-]*$/, "") + "…";
   };
 
-  // ===== Limpieza del panel derecho =====
+  const buildBrief = () => {
+    const tTitle = (titleValue || "").trim();
+    const ps = (paragraphs || [])
+      .map((p) => (p || "").trim())
+      .filter(Boolean);
+
+    // brief textual, no listas visibles (solo para la IA)
+    const parts = [];
+    if (tTitle) parts.push(`TÍTULO: ${tTitle}`);
+    if (ps.length) {
+      parts.push(
+        `IDEAS / PÁRRAFOS (inputs del usuario):\n${ps.map((p, i) => `${i + 1}) ${p}`).join("\n")}`
+      );
+    }
+    return parts.join("\n\n").trim();
+  };
+
+  const hasValidInput = useMemo(() => {
+    const tTitle = (titleValue || "").trim();
+    const ps = (paragraphs || []).some((p) => (p || "").trim().length > 0);
+    return !!tTitle || ps;
+  }, [titleValue, paragraphs]);
+
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
     clearLimit();
-    setIsOutdated(false);
-    setIsTooShortResult(false);
     setLoading(false);
     setSavedToLibrary(false);
   };
 
-  // ✅ NUEVO (crear texto - añadir / borrar párrafo)
   const addParagraph = () => {
     setParagraphs((prev) => [...prev, ""]);
+    clearRight();
   };
 
   const updateParagraph = (idx, value) => {
@@ -315,166 +183,9 @@ export default function PremiumTextCreator() {
       const next = prev.filter((_, i) => i !== idx);
       return next.length ? next : [""];
     });
-  };
-
-  // ===== Reglas UX =====
-  useEffect(() => {
-    const sig = canonicalize(textValue);
-    if (sig.length === 0) {
-      setIsOutdated(false);
-      return;
-    }
-    if (lastSummarySig && sig !== lastSummarySig) {
-      setIsOutdated(true);
-    } else {
-      setIsOutdated(false);
-    }
-  }, [textValue, lastSummarySig]);
-
-  // Atajos de teclado
-  useEffect(() => {
-    const onKey = (e) => {
-      const meta = e.metaKey || e.ctrlKey;
-      if (meta && e.key.toLowerCase() === "enter") {
-        e.preventDefault();
-        if (!loading) handleGenerate();
-      } else if (meta && e.key.toLowerCase() === "c") {
-        if (result) {
-          e.preventDefault();
-          handleCopy(true);
-        }
-      } else if (e.key === "Escape") {
-        if (urlInputOpen) setUrlInputOpen(false);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [
-    loading,
-    result,
-    urlInputOpen,
-    textValue,
-    urlItems,
-    documents,
-    summaryLength,
-    outputLang,
-    targetChars,
-  ]);
-
-  // URLs → reset resultado
-  useEffect(() => {
-    setResult("");
-    setErrorMsg("");
-    clearLimit();
-    setIsOutdated(false);
-    setIsTooShortResult(false);
-    setSavedToLibrary(false);
-  }, [urlItems]);
-
-  useEffect(() => {
-    return () => {
-      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
-    };
-  }, []);
-
-  // ===== Documentos =====
-  const readTextFromFiles = async (items) => {
-    const results = await Promise.all(
-      items.map(
-        ({ id, file }) =>
-          new Promise((resolve) => {
-            const name = file?.name || "";
-            const lower = name.toLowerCase();
-            const isTxt = lower.endsWith(".txt");
-            const isMd = lower.endsWith(".md");
-            if (!isTxt && !isMd) return resolve(null);
-
-            const fr = new FileReader();
-            fr.onload = () =>
-              resolve({ id, name, text: String(fr.result || "") });
-            fr.onerror = () => resolve(null);
-            fr.readAsText(file, "utf-8");
-          })
-      )
-    );
-    return results.filter(Boolean);
-  };
-
-  const triggerPick = () => fileInputRef.current?.click();
-
-  const addFiles = async (list) => {
-    if (!list?.length) return;
-
-    const arr = Array.from(list);
-    const withIds = arr.map((file) => ({ id: crypto.randomUUID(), file }));
-
-    setDocuments((prev) => [...prev, ...withIds]);
-
-    const texts = await readTextFromFiles(withIds);
-    if (texts.length) setDocumentsText((prev) => [...prev, ...texts]);
-
     clearRight();
   };
 
-  const onFiles = async (e) => {
-    await addFiles(e.target.files);
-    e.target.value = "";
-  };
-
-  const onDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-  const onDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-  const onDrop = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const dt = e.dataTransfer;
-    if (dt?.files?.length) await addFiles(dt.files);
-  };
-
-  const removeDocument = (id) => {
-    setDocuments((prev) => prev.filter((d) => d.id !== id));
-    setDocumentsText((prev) => prev.filter((d) => d.id !== id));
-    clearRight();
-  };
-
-  // ===== URLs =====
-  const addUrlsFromTextarea = () => {
-    const parsed = parseUrlsFromText(urlsTextarea);
-    if (!parsed.length) return;
-    const newItems = parsed.map((p) => ({
-      id: crypto.randomUUID(),
-      url: p.href,
-      host: p.host,
-    }));
-    setUrlItems((prev) => [...prev, ...newItems]);
-    setUrlsTextarea("");
-    setUrlInputOpen(false);
-  };
-  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
-
-  // ===== Validación =====
-  const textIsValid = useMemo(() => {
-    const trimmed = (textValue || "").trim();
-    const words = trimmed.split(/\s+/).filter(Boolean);
-    return trimmed.length >= 20 && words.length >= 5;
-  }, [textValue]);
-
-  const hasValidInput = textIsValid || urlItems.length > 0 || documents.length > 0;
-
-  // ===== Acciones =====
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
@@ -490,19 +201,26 @@ export default function PremiumTextCreator() {
     if (!result) return;
     const win = window.open("", "_blank");
     if (!win) return;
+
     const safe = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const pdfTitle = (titleValue || "").trim() || tr("premiumTextCreator.pdf_title", "Texto");
+
     win.document.write(`
       <html>
         <head>
-          <title>${tr("premiumTextCreator.pdf_title", "Resumen")}</title>
+          <title>${pdfTitle}</title>
           <meta charset="utf-8" />
           <style>
             body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
-            .box { max-width: 900px; margin: 0 auto; }
+            .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
+            h1 { font-size: 20px; margin: 0 0 16px 0; }
           </style>
         </head>
         <body>
-          <div class="box">${safe.replace(/\n/g, "<br/>")}</div>
+          <div class="box">
+            ${titleValue ? `<h1>${(titleValue || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
+            ${safe.replace(/\n/g, "<br/>")}
+          </div>
           <script>
             window.focus();
             setTimeout(() => window.print(), 200);
@@ -514,36 +232,30 @@ export default function PremiumTextCreator() {
   };
 
   const handleClearLeft = () => {
-    if (!(sourceMode === "text" && textValue)) return;
-    setTextValue("");
+    setTitleValue("");
+    setParagraphs([""]);
     clearRight();
   };
 
-  const handleSaveSummary = () => {
-    if (!result || isTooShortResult) return;
+  const handleSaveText = () => {
+    if (!result) return;
 
-    const raw = result.trim();
-    const firstLine = raw.split("\n")[0];
-    const maxTitleLength = 80;
-    let title = firstLine;
-    if (title.length > maxTitleLength) {
-      title = title.slice(0, maxTitleLength).trimEnd() + "…";
-    }
+    const niceTitle =
+      (titleValue || "").trim() ||
+      result.trim().split("\n")[0].slice(0, 80).trim() ||
+      tr("premiumTextCreator.library_default_title", "Texto generado");
 
     addLibraryDoc({
-      kind: "summary",
-      title,
+      kind: "text",
+      title: niceTitle,
       content: result,
     });
 
     setSavedToLibrary(true);
     if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
-    savedTimerRef.current = setTimeout(() => {
-      setSavedToLibrary(false);
-    }, 2000);
+    savedTimerRef.current = setTimeout(() => setSavedToLibrary(false), 2000);
   };
 
-  // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
     try {
       const enc = new TextEncoder().encode(input);
@@ -556,57 +268,55 @@ export default function PremiumTextCreator() {
     }
   };
 
-  // ===== Generar =====
+  // Atajos de teclado
+  useEffect(() => {
+    const onKey = (e) => {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && e.key.toLowerCase() === "enter") {
+        e.preventDefault();
+        if (!loading) handleGenerate();
+      } else if (meta && e.key.toLowerCase() === "c") {
+        if (result) {
+          e.preventDefault();
+          handleCopy(true);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [loading, result]);
+
+  useEffect(() => {
+    return () => {
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    };
+  }, []);
+
+  // ===== Generar (CREADOR DE TEXTO REAL) =====
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
     clearLimit();
-    setIsTooShortResult(false);
     setSavedToLibrary(false);
 
-    const trimmed = (textValue || "").trim();
-    const words = trimmed.split(/\s+/).filter(Boolean);
-    const textOk = trimmed.length >= 20 && words.length >= 5;
-    const validNow = textOk || urlItems.length > 0 || documents.length > 0;
+    const brief = buildBrief();
 
-    if ((textValue || "").length > MAX_CHARS) {
-      setCharsLimit();
-      setLoading(false);
-      return;
-    }
-    if (!validNow) {
+    if (!hasValidInput) {
       setErrorMsg(
         tr(
           "premiumTextCreator.error_need_input",
-          "Añade texto suficiente, URLs o documentos antes de generar el resumen."
+          "Escribe un título o al menos un párrafo antes de generar."
         )
       );
       setLoading(false);
       return;
     }
 
-    const urlsList = urlItems.map((u) => u.url).join("\n");
-    const docNames = documents
-      .map((d) => d.file?.name)
-      .filter(Boolean)
-      .join(", ");
-
-    const onlyText = textOk && urlItems.length === 0 && documents.length === 0;
-    const wordCount = words.length;
-    const strictExtractive = onlyText && wordCount <= 120;
-
-    const formattingRules =
-      "Devuelve un único párrafo fluido, sin listas ni viñetas, sin guiones al inicio de línea, " +
-      "sin subtítulos ni líneas sueltas. Redacta en frases completas, tono claro e informativo.";
-
-    const tooShortMsg =
-      outputLang === "ES"
-        ? "El texto es demasiado breve para resumir con fidelidad."
-        : outputLang === "EN"
-        ? "The text is too short to summarize reliably."
-        : outputLang === "FR"
-        ? "Le texte est trop court pour être résumé de manière fiable."
-        : "Testua laburregia da fideltasunez laburtzeko.";
+    if (brief.length > MAX_CHARS) {
+      setCharsLimit();
+      setLoading(false);
+      return;
+    }
 
     const langInstruction =
       outputLang === "ES"
@@ -617,51 +327,30 @@ export default function PremiumTextCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    // ✅ regla por caracteres (slider)
     const lengthRuleChars = `Longitud objetivo: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
 
-    const docsInline = documentsText?.length
-      ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
-        documentsText
-          .map((d) => `--- ${d.name} ---\n${(d.text || "").slice(0, 18000)}`)
-          .join("\n\n")
-      : "";
+    const systemBase =
+      "Eres un asistente que escribe textos originales y coherentes a partir de un briefing. " +
+      "No resumas: crea contenido nuevo. " +
+      "Respeta el sentido del briefing, mantén un tono natural y profesional. " +
+      "Evita listas y viñetas salvo que el usuario las pida explícitamente. " +
+      "Entrega el resultado en párrafos. No inventes datos concretos si no aparecen o no se deducen del briefing.";
 
     const userContent = [
-      strictExtractive
-        ? `Resume exclusivamente con la información literal del TEXTO. Prohibido añadir conocimiento externo o inferencias. Si el TEXTO no aporta suficiente contenido, responde exactamente: "${tooShortMsg}".`
-        : "Quiero un resumen profesional del siguiente contenido.",
-      textValue ? `\nTEXTO:\n${textValue}` : "",
-      urlsList
-        ? `\nURLs (extrae solo lo visible; si no puedes, ignóralas):\n${urlsList}`
-        : "",
-      docsInline,
-      `\nREQUISITO DE FORMATO: ${formattingRules}`,
+      "Quiero que redactes un texto completo basándote en este briefing.",
+      brief ? `\nBRIEFING:\n${brief}` : "",
       `\nREQUISITO DE LONGITUD: ${lengthRuleChars}`,
       `\n${langInstruction}`,
     ].join("");
 
-    const systemBase =
-      "Eres un asistente que redacta resúmenes en formato de texto corrido. " +
-      "No uses listas, viñetas, guiones ni numeraciones. " +
-      "Entrega un único párrafo, sin encabezados, con frases completas y buena coherencia. " +
-      "Sé conciso. No inventes datos.";
-
-    const systemStrict =
-      systemBase +
-      " Restringe la salida estrictamente a la información presente en el texto de entrada. " +
-      "No introduzcas fechas, nombres propios o hechos que no aparezcan explícitamente.";
-
     const messages = [
-      { role: "system", content: strictExtractive ? systemStrict : systemBase },
+      { role: "system", content: systemBase },
       { role: "user", content: userContent },
     ];
 
     const cacheBase = JSON.stringify({
-      textValue,
-      urls: urlItems.map((u) => u.url),
-      docNames,
-      summaryLength,
+      titleValue,
+      paragraphs,
       outputLang,
       targetChars,
     });
@@ -688,22 +377,19 @@ export default function PremiumTextCreator() {
         },
         body: JSON.stringify({
           messages,
-          length: summaryLength, // se mantiene por compatibilidad
+          length: "text_creator", // etiqueta interna (no rompe tu backend si lo ignora)
           cacheKey,
-          documentsText,
           targetChars,
         }),
       });
 
       if (!res.ok) {
-        // ✅ 413 = chars limit duro (payload demasiado grande)
         if (res.status === 413) {
           setCharsLimit();
           setLoading(false);
           return;
         }
 
-        // ✅ 401/403 = auth
         if (res.status === 401 || res.status === 403) {
           setLoading(false);
           throw new Error(
@@ -714,7 +400,6 @@ export default function PremiumTextCreator() {
           );
         }
 
-        // ✅ 429 = límite (daily o chars)
         if (res.status === 429) {
           let data = null;
           try {
@@ -728,7 +413,8 @@ export default function PremiumTextCreator() {
           const isDaily = typeof limit?.daily_requests === "number";
 
           if (isChars) setCharsLimit();
-          else setDailyLimit(); // fallback seguro
+          else if (isDaily) setDailyLimit();
+          else setDailyLimit();
 
           setLoading(false);
           return;
@@ -748,51 +434,34 @@ export default function PremiumTextCreator() {
         data?.message?.content ??
         "";
 
-      if (!rawText)
+      if (!rawText) {
         throw new Error(
           tr("premiumTextCreator.error_no_text", "No se recibió texto de la API.")
         );
-
-      const cleaned = rawText
-        .replace(/^\s*[-–—•]\s+/gm, "")
-        .replace(/^\s*\d+\.\s+/gm, "")
-        .replace(/\r/g, "")
-        .replace(/\n+/g, " ")
-        .replace(/\s{2,}/g, " ")
-        .trim();
-
-      if (cleaned && cleaned.trim().toLowerCase() === tooShortMsg.trim().toLowerCase()) {
-        setResult(tooShortMsg);
-        setIsTooShortResult(true);
-        setLastSummarySig(canonicalize(textValue));
-        setIsOutdated(false);
-        setLoading(false);
-        return;
       }
 
-      // ✅ recorta a targetChars si se pasa
+      const cleaned = String(rawText || "")
+        .replace(/\r/g, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .replace(/[ \t]{2,}/g, " ")
+        .trim();
+
       const clipped = clipToChars(cleaned, targetChars);
 
       setResult(clipped);
-      setIsTooShortResult(false);
-      setLastSummarySig(canonicalize(textValue));
-      setIsOutdated(false);
     } catch (err) {
       setErrorMsg(
-        err.message || tr("premiumTextCreator.error_generic", "Error generando el resumen.")
+        err.message ||
+          tr("premiumTextCreator.error_generic", "Error generando el texto.")
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ===== Contador / barra =====
-  const charCount = (textValue || "").length;
-  const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
-  const nearLimit = charCount > MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount >= MAX_CHARS;
-
-  const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
+  const canClearLeft =
+    (titleValue || "").trim().length > 0 ||
+    (paragraphs || []).some((p) => (p || "").trim().length > 0);
 
   return (
     <>
@@ -806,27 +475,28 @@ export default function PremiumTextCreator() {
             variants={pageVariants}
             transition={{ duration: 0.3 }}
           >
-            {/* ===== Panel Fuentes (izquierda) ===== */}
+            {/* ===== Panel Izquierdo ===== */}
             <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-              {/* Título */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
               </div>
 
-              {/* ✅ Encima a la izquierda: Titulo + Parrafo / + parrafo a la derecha */}
               <div className="p-4 flex flex-col gap-4">
                 {/* Titulo */}
                 <div className="flex flex-col gap-2">
                   <div className="text-[14px] font-medium text-slate-800">{labelTitulo}</div>
                   <input
                     value={titleValue}
-                    onChange={(e) => setTitleValue(e.target.value)}
+                    onChange={(e) => {
+                      setTitleValue(e.target.value);
+                      clearRight();
+                    }}
                     placeholder={labelTitleOptional}
                     className="w-full h-[44px] rounded-xl border border-slate-300 bg-white px-4 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
                   />
                 </div>
 
-                {/* Parrafo + botón + Párrafo a la derecha */}
+                {/* Parrafo + botón + Párrafo */}
                 <div className="flex items-center justify-between">
                   <div className="text-[14px] font-medium text-slate-800">{labelParrafo}</div>
                   <button
@@ -838,13 +508,16 @@ export default function PremiumTextCreator() {
                   </button>
                 </div>
 
-                {/* Párrafos con borrar (arriba derecha del cuadro) */}
+                {/* Párrafos con borrar */}
                 <div className="flex flex-col gap-3">
                   {paragraphs.map((p, idx) => (
                     <div key={idx} className="relative">
                       <textarea
                         value={p}
-                        onChange={(e) => updateParagraph(idx, e.target.value)}
+                        onChange={(e) => {
+                          updateParagraph(idx, e.target.value);
+                          clearRight();
+                        }}
                         placeholder={labelParagraphPh}
                         className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
                       />
@@ -862,15 +535,14 @@ export default function PremiumTextCreator() {
                 </div>
               </div>
 
-              {/* ✅ Tabla vacía (SE QUEDA IGUAL) */}
+              {/* Tabla vacía (se queda igual) */}
               <div className="flex-1 min-h-0 overflow-hidden" />
             </aside>
 
-            {/* ===== Panel Derecho (SE QUEDA IGUAL) ===== */}
+            {/* ===== Panel Derecho ===== */}
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              {/* Barra superior */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                {/* ✅ SLIDER de longitud (sustituye los 3 botones) */}
+                {/* Slider */}
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
                     {labelLength}
@@ -896,7 +568,7 @@ export default function PremiumTextCreator() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  {/* Selector de idioma */}
+                  {/* Idioma */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
@@ -979,7 +651,7 @@ export default function PremiumTextCreator() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {/* Copiar resultado (arriba) */}
+                  {/* Copy arriba */}
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}
@@ -999,25 +671,25 @@ export default function PremiumTextCreator() {
                     )}
                   </button>
 
-                  {/* Eliminar texto */}
+                  {/* Clear izquierda */}
                   <button
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("premiumTextCreator.clear_input", "Eliminar")}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      sourceMode === "text" && textValue
+                      canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("premiumTextCreator.clear_input", "Eliminar")}
-                    disabled={!(sourceMode === "text" && textValue)}
+                    disabled={!canClearLeft}
                   >
                     <Trash className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* ✅ Banner Premium (reutiliza el componente) */}
+              {/* Banner Premium */}
               {limitType && (
                 <div className="px-6 pt-4">
                   <ProLimitBanner visible={!!limitType} message={limitMsg} />
@@ -1038,7 +710,7 @@ export default function PremiumTextCreator() {
                       className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
                       style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
                     >
-                      {labelGenerateFromSources}
+                      {labelGenerate}
                     </Button>
                   </div>
 
@@ -1066,74 +738,59 @@ export default function PremiumTextCreator() {
                     {result && (
                       <>
                         <article className="prose prose-slate max-w-none">
-                          <p className="whitespace-normal">{result}</p>
+                          <p className="whitespace-pre-wrap">{result}</p>
                         </article>
 
-                        {(() => {
-                          const hasResult =
-                            !!result && result.trim().length > 0 && !isTooShortResult;
-                          if (!hasResult) return null;
+                        {/* Toast + controles abajo derecha */}
+                        {savedToLibrary && (
+                          <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
+                            {librarySavedMessage}
+                          </p>
+                        )}
 
-                          return (
-                            <>
-                              {/* Toast verde encima */}
-                              {savedToLibrary && (
-                                <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
-                                  {librarySavedMessage}
-                                </p>
+                        <div className="absolute bottom-4 right-6 flex items-center gap-4">
+                          <div className="flex items-center gap-4 mr-[20px] translate-y-1">
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(true)}
+                              aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                            >
+                              {copiedFlash ? (
+                                <Check className="w-5 h-5" style={{ color: BLUE }} />
+                              ) : (
+                                <Copy className="w-5 h-5" />
                               )}
+                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                {copiedFlash ? tooltipCopied : tooltipCopy}
+                              </span>
+                            </button>
 
-                              {/* Controles abajo derecha (POSICIÓN INTACTA) */}
-                              <div className="absolute bottom-4 right-6 flex items-center gap-4">
-                                {/* SOLO ICONOS (POSICIÓN INTACTA) */}
-                                <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                  {/* Copiar con tooltip ARRIBA */}
-                                  <button
-                                    type="button"
-                                    onClick={() => handleCopy(true)}
-                                    aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-                                    className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                  >
-                                    {copiedFlash ? (
-                                      <Check className="w-5 h-5" style={{ color: BLUE }} />
-                                    ) : (
-                                      <Copy className="w-5 h-5" />
-                                    )}
-                                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                      {copiedFlash ? tooltipCopied : tooltipCopy}
-                                    </span>
-                                  </button>
+                            <button
+                              type="button"
+                              onClick={handleDownloadPdf}
+                              aria-label={tooltipPdf}
+                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                            >
+                              <FileDown className="w-5 h-5" />
+                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                {tooltipPdf}
+                              </span>
+                            </button>
+                          </div>
 
-                                  {/* PDF con tooltip ARRIBA */}
-                                  <button
-                                    type="button"
-                                    onClick={handleDownloadPdf}
-                                    aria-label={tooltipPdf}
-                                    className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                  >
-                                    <FileDown className="w-5 h-5" />
-                                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                      {tooltipPdf}
-                                    </span>
-                                  </button>
-                                </div>
-
-                                {/* BOTÓN VERDE (NO SE MUEVE) */}
-                                <motion.button
-                                  type="button"
-                                  onClick={handleSaveSummary}
-                                  initial={{ opacity: 0, y: 4 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.25 }}
-                                  className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
-                                  style={{ backgroundColor: "#22c55e" }}
-                                >
-                                  {labelSaveSummary}
-                                </motion.button>
-                              </div>
-                            </>
-                          );
-                        })()}
+                          <motion.button
+                            type="button"
+                            onClick={handleSaveText}
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.25 }}
+                            className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
+                            style={{ backgroundColor: "#22c55e" }}
+                          >
+                            {labelSaveText}
+                          </motion.button>
+                        </div>
                       </>
                     )}
 
