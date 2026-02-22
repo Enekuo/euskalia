@@ -6352,6 +6352,61 @@ premiumTextCreator: {
   error_generic: { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
 },
 
+// =========================
+// PREMIUM CREADOR DE EMAIL
+// =========================
+premiumEmailCreator: {
+  sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+
+  generate_from_sources: { ES: "Generar email", EUS: "Emaila sortu", EN: "Generate email", FR: "Générer l’email" },
+  create_help_right: { ES: "Selecciona una fuente y pulsa “Generar email”.", EUS: "Hautatu iturri bat eta sakatu “Emaila sortu”.", EN: "Select a source and press “Generate email”.", FR: "Sélectionne une source puis clique sur “Générer l’email”." },
+
+  bottom_input_label: { ES: "Instrucciones", EUS: "Argibideak", EN: "Instructions", FR: "Instructions" },
+  bottom_input_ph: { ES: "Escribe aquí instrucciones (opcional): destinatario, tono, objetivo, call-to-action…", EUS: "Idatzi hemen argibideak (aukerakoa): hartzailea, tonua, helburua, call-to-action…", EN: "Write instructions here (optional): recipient, tone, goal, call-to-action…", FR: "Écris ici des instructions (optionnel) : destinataire, ton, objectif, call-to-action…" },
+  generate_with_prompt: { ES: "Generar con instrucciones", EUS: "Argibideekin sortu", EN: "Generate with instructions", FR: "Générer avec instructions" },
+
+  tone_formal: { ES: "Formal", EUS: "Formala", EN: "Formal", FR: "Formel" },
+  tone_informal: { ES: "Informal", EUS: "Informala", EN: "Informal", FR: "Informel" },
+
+  output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
+  output_language_eus: { ES: "Euskera", EUS: "Euskara", EN: "Basque", FR: "Basque" },
+  output_language_es: { ES: "Español", EUS: "Gaztelania", EN: "Spanish", FR: "Espagnol" },
+  output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
+  output_language_fr: { ES: "Francés", EUS: "Français", EN: "French", FR: "Français" },
+
+  save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  library_saved_toast: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
+  library_default_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "Email" },
+
+  copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+  copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+  pdf_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "Email" },
+  clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Clear", FR: "Supprimer" },
+
+  // Labels (1..5)
+  small_1: { ES: "1- Saludo", EUS: "1- Agurra", EN: "1- Greeting", FR: "1- Salutation" },
+  small_2: { ES: "2- Introducción", EUS: "2- Sarrera", EN: "2- Introduction", FR: "2- Introduction" },
+  big_3: { ES: "3- Párrafo", EUS: "3- Paragrafoa", EN: "3- Paragraph", FR: "3- Paragraphe" },
+  small_4: { ES: "4- Saludo", EUS: "4- Agurra", EN: "4- Closing", FR: "4- Formule" },
+  small_5: { ES: "5- Nombre", EUS: "5- Izena", EN: "5- Name", FR: "5- Nom" },
+
+  // Placeholders
+  saludo_ph: { ES: "Escribe el saludo...", EUS: "Idatzi agurra...", EN: "Write the greeting...", FR: "Écris la salutation..." },
+  intro_ph: { ES: "Escribe la introducción...", EUS: "Idatzi sarrera...", EN: "Write the introduction...", FR: "Écris l’introduction..." },
+  paragraph_ph: { ES: "Escribe el párrafo", EUS: "Idatzi paragrafoa", EN: "Write the paragraph", FR: "Écris le paragraphe" },
+  saludo2_ph: { ES: "Escribe el saludo...", EUS: "Idatzi agurra...", EN: "Write the closing...", FR: "Écris la formule..." },
+  nombre_ph: { ES: "Escribe el nombre...", EUS: "Idatzi izena...", EN: "Write the name...", FR: "Écris le nom..." },
+
+  add_paragraph: { ES: "+ Párrafo", EUS: "+ Paragrafoa", EN: "+ Paragraph", FR: "+ Paragraphe" },
+  remove_paragraph: { ES: "Eliminar párrafo", EUS: "Paragrafoa ezabatu", EN: "Delete paragraph", FR: "Supprimer le paragraphe" },
+
+  // Errores
+  error_need_input: { ES: "Añade texto suficiente antes de generar el email.", EUS: "Gehitu testu nahikoa emaila sortu aurretik.", EN: "Add enough text before generating the email.", FR: "Ajoute suffisamment de texte avant de générer l’email." },
+  error_auth_required: { ES: "Necesitas iniciar sesión para usar Premium.", EUS: "Premium erabiltzeko saioa hasi behar duzu.", EN: "You need to log in to use Premium.", FR: "Tu dois te connecter pour utiliser Premium." },
+  error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik.", EN: "No text was received from the API.", FR: "Aucun texte n’a été reçu depuis l’API." },
+  error_generic: { ES: "Error generando el email.", EUS: "Errorea emaila sortzean.", EN: "Error generating the email.", FR: "Erreur lors de la génération de l’email." },
+},
 
 }
 

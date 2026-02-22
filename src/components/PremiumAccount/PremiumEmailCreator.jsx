@@ -37,7 +37,7 @@ export default function PremiumEmailCreator() {
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
 
-  // ✅ Prompt input inferior (como en public)
+  // ✅ Prompt input inferior
   const [chatInput, setChatInput] = useState("");
 
   // Resultado / carga / error
@@ -116,7 +116,7 @@ export default function PremiumEmailCreator() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n =====
+  // ===== i18n (TODO premiumEmailCreator.*) =====
   const labelSources = tr("premiumEmailCreator.sources_title", "Iturriak");
 
   const labelGenerateFromSources = tr(
@@ -130,11 +130,11 @@ export default function PremiumEmailCreator() {
 
   // ✅ Prompt inferior
   const labelBottomInputPh = tr(
-    "emailCreator.bottom_input_ph",
+    "premiumEmailCreator.bottom_input_ph",
     "Idatzi hemen argibideak (aukerakoa): hartzailea, tonua, helburua, call-to-action…"
   );
   const labelGenerateWithPrompt = tr(
-    "emailCreator.generate_with_prompt",
+    "premiumEmailCreator.generate_with_prompt",
     "Argibideekin sortu"
   );
 
@@ -142,8 +142,8 @@ export default function PremiumEmailCreator() {
   const [emailTone, setEmailTone] = useState("formal");
   const LBL_FORMAL = tr("premiumEmailCreator.tone_formal", "Formal");
   const LBL_INFORMAL = tr("premiumEmailCreator.tone_informal", "Informal");
-  
-// Etiquetas de idioma
+
+  // Etiquetas de idioma
   const LBL_EUS = tr("premiumEmailCreator.output_language_eus", "Euskara");
   const LBL_ES = tr("premiumEmailCreator.output_language_es", "Gaztelania");
   const LBL_EN = tr("premiumEmailCreator.output_language_en", "Ingelesa");
@@ -165,30 +165,19 @@ export default function PremiumEmailCreator() {
   const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
   const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
-  const labelSmall4 = tr("premiumEmailCreator.small_4", "4- pequeño. Saludo");
-  const labelSmall5 = tr("premiumEmailCreator.small_5", "5- pequeño. Nombre");
+  const labelSmall4 = tr("premiumEmailCreator.small_4", "4- Saludo");
+  const labelSmall5 = tr("premiumEmailCreator.small_5", "5- Nombre");
 
-  const placeholderSaludo = tr(
-    "premiumEmailCreator.saludo_ph",
-    "Escribe el saludo..."
-  );
-  const placeholderIntro = tr(
-    "premiumEmailCreator.intro_ph",
-    "Escribe la introducción..."
-  );
-  const placeholderParagraph = tr(
-    "premiumEmailCreator.paragraph_ph",
-    "Escribe el párrafo"
-  );
-  const placeholderSaludo2 = tr(
-    "premiumEmailCreator.saludo2_ph",
-    "Escribe el saludo..."
-  );
-  const placeholderNombre = tr(
-    "premiumEmailCreator.nombre_ph",
-    "Escribe el nombre..."
-  );
+  const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
+  const placeholderIntro = tr("premiumEmailCreator.intro_ph", "Escribe la introducción...");
+  const placeholderParagraph = tr("premiumEmailCreator.paragraph_ph", "Escribe el párrafo");
+  const placeholderSaludo2 = tr("premiumEmailCreator.saludo2_ph", "Escribe el saludo...");
+  const placeholderNombre = tr("premiumEmailCreator.nombre_ph", "Escribe el nombre...");
   const labelAddParagraph = tr("premiumEmailCreator.add_paragraph", "+ Párrafo");
+  const labelRemoveParagraph = tr(
+    "premiumEmailCreator.remove_paragraph",
+    "Eliminar párrafo"
+  );
 
   // ===== Tabs =====
   const LengthTab = ({ active, label, onClick, showDivider }) => (
@@ -220,29 +209,19 @@ export default function PremiumEmailCreator() {
   );
 
   // ===== Utils =====
-  const parseUrlsFromText = (text) => {
-    const raw = text
-      .split(/[\s\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const valid = [];
-    for (const u of raw) {
-      try {
-        const url = new URL(u);
-        valid.push({ href: url.href, host: url.host });
-      } catch {}
-    }
-    const seen = new Set();
-    return valid.filter((v) =>
-      seen.has(v.href) ? false : (seen.add(v.href), true)
-    );
-  };
+  const canonicalize = (s) =>
+    (s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
 
   const enforceLength = (text, mode) => {
     const config = {
-      breve: { maxWords: 120, maxSentences: 5 },
-      medio: { maxWords: 220, maxSentences: 9 },
-      detallado: { maxWords: 340, maxSentences: 14 },
+      breve: { maxWords: 120, maxSentences: 6 },
+      medio: { maxWords: 220, maxSentences: 10 },
+      detallado: { maxWords: 340, maxSentences: 16 },
     };
     const { maxWords, maxSentences } = config[mode] || config.breve;
 
@@ -265,14 +244,6 @@ export default function PremiumEmailCreator() {
     }
     return clipped;
   };
-
-  const canonicalize = (s) =>
-    (s || "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/\s+/g, " ")
-      .trim();
 
   // ✅ construir textValue desde inputs
   useEffect(() => {
@@ -300,12 +271,6 @@ export default function PremiumEmailCreator() {
     setIsTooShortResult(false);
     setLoading(false);
     setSavedToLibrary(false);
-  };
-
-  const handleLengthChange = (mode) => {
-    if (mode === emailLength) return;
-    setEmailLength(mode);
-    clearRight();
   };
 
   // ===== Reglas UX =====
@@ -340,27 +305,7 @@ export default function PremiumEmailCreator() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [
-    loading,
-    result,
-    urlInputOpen,
-    textValue,
-    urlItems,
-    documents,
-    emailLength,
-    outputLang,
-    chatInput,
-  ]);
-
-  // URLs → reset resultado
-  useEffect(() => {
-    setResult("");
-    setErrorMsg("");
-    clearLimit();
-    setIsOutdated(false);
-    setIsTooShortResult(false);
-    setSavedToLibrary(false);
-  }, [urlItems]);
+  }, [loading, result, urlInputOpen, textValue, emailLength, outputLang, chatInput]);
 
   useEffect(() => {
     return () => {
@@ -375,8 +320,7 @@ export default function PremiumEmailCreator() {
     return trimmed.length >= 20 && words.length >= 5;
   }, [textValue]);
 
-  const hasValidInput =
-    textIsValid || urlItems.length > 0 || documents.length > 0;
+  const hasValidInput = textIsValid || (textValue || "").trim().length > 0;
 
   // ===== Acciones =====
   const handleCopy = async (flash = false) => {
@@ -390,12 +334,40 @@ export default function PremiumEmailCreator() {
     } catch {}
   };
 
+  const handleDownloadPdf = () => {
+    if (!result) return;
+    const win = window.open("", "_blank");
+    if (!win) return;
+    const safe = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    win.document.write(`
+      <html>
+        <head>
+          <title>${tr("premiumEmailCreator.pdf_title", "Email")}</title>
+          <meta charset="utf-8" />
+          <style>
+            body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
+            .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
+          </style>
+        </head>
+        <body>
+          <div class="box">${safe}</div>
+          <script>
+            window.focus();
+            setTimeout(() => window.print(), 200);
+          </script>
+        </body>
+      </html>
+    `);
+    win.document.close();
+  };
+
   const handleClearLeft = () => {
     setEmailSaludo("");
     setEmailIntro("");
     setEmailSaludo2("");
     setEmailNombre("");
     setEmailParagraphs([""]);
+    setChatInput("");
     clearRight();
   };
 
@@ -415,6 +387,29 @@ export default function PremiumEmailCreator() {
 
   const updateParagraph = (idx, val) => {
     setEmailParagraphs((prev) => prev.map((p, i) => (i === idx ? val : p)));
+  };
+
+  // ✅ Guardar en biblioteca
+  const handleSaveEmail = () => {
+    if (!result || isTooShortResult) return;
+
+    const raw = result.trim();
+    const firstLine = raw.split("\n")[0];
+    const maxTitleLength = 90;
+    let title = firstLine || tr("premiumEmailCreator.library_default_title", "Email");
+    if (title.length > maxTitleLength) {
+      title = title.slice(0, maxTitleLength).trimEnd() + "…";
+    }
+
+    addLibraryDoc({
+      kind: "email",
+      title,
+      content: result,
+    });
+
+    setSavedToLibrary(true);
+    if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    savedTimerRef.current = setTimeout(() => setSavedToLibrary(false), 2000);
   };
 
   // ===== Helper: cache key (sha-256) para KV =====
@@ -441,28 +436,38 @@ export default function PremiumEmailCreator() {
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     const textOk = trimmed.length >= 20 && words.length >= 5;
-    const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
     if ((textValue || "").length > MAX_CHARS) {
       setCharsLimit();
       setLoading(false);
       return;
     }
-    if (!validNow) {
+    if (!textOk) {
       setErrorMsg(
         tr(
           "premiumEmailCreator.error_need_input",
-          "Añade texto suficiente, URLs o documentos antes de generar el email."
+          "Añade texto suficiente antes de generar el email."
         )
       );
       setLoading(false);
       return;
     }
 
+    const toneRule =
+      emailTone === "informal"
+        ? "Tono: informal, cercano y natural."
+        : "Tono: formal, claro y profesional.";
+
+    const lengthRule =
+      emailLength === "breve"
+        ? "Extensión: email corto, ~90–140 palabras."
+        : emailLength === "medio"
+        ? "Extensión: email medio, ~160–240 palabras."
+        : "Extensión: email detallado, ~260–360 palabras.";
+
     const formattingRules =
-      "Devuelve un email profesional en un único bloque de texto (sin listas ni viñetas). " +
-      'Empieza con "Asunto: ..." y a continuación redacta el cuerpo con un saludo y un cierre. ' +
-      "No uses numeraciones ni guiones al inicio de línea. No inventes datos.";
+      'Devuelve un email completo. Empieza con "Asunto: ..." y luego el cuerpo. ' +
+      "Evita listas, viñetas y numeraciones. No inventes datos.";
 
     const tooShortMsg =
       outputLang === "ES"
@@ -482,31 +487,26 @@ export default function PremiumEmailCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    const lengthRule =
-      emailLength === "breve"
-        ? "Extensión: email corto, ~90–140 palabras."
-        : emailLength === "medio"
-        ? "Extensión: email medio, ~160–240 palabras."
-        : "Extensión: email detallado, ~260–360 palabras.";
-
     const promptRule = chatInput.trim()
       ? `\nINSTRUCCIONES DEL USUARIO (prioridad alta):\n${chatInput.trim()}`
       : "";
 
     const userContent = [
       "Quiero que redactes un email profesional basado en el siguiente contenido.",
-      textValue ? `\nTEXTO:\n${textValue}` : "",
+      textValue ? `\nCONTENIDO BASE:\n${textValue}` : "",
       promptRule,
-      `\nREQUISITO DE FORMATO: ${formattingRules}`,
-      `\nREQUISITO DE LONGITUD (${emailLength.toUpperCase()}): ${lengthRule}`,
+      `\nREGLAS: ${formattingRules}`,
+      `\n${toneRule}`,
+      `\n${lengthRule}`,
       `\n${langInstruction}`,
+      `\nSi el contenido no aporta suficiente información, responde exactamente: "${tooShortMsg}".`,
     ].join("");
 
     const systemBase =
-      "Eres un asistente que redacta emails profesionales. " +
-      "No uses listas, viñetas, guiones ni numeraciones. " +
-      'Empieza con "Asunto:" y redacta el cuerpo con saludo y cierre. ' +
-      "Sé claro, natural y coherente. No inventes datos.";
+      "Eres un asistente que redacta emails completos y listos para enviar. " +
+      'Siempre empieza con "Asunto:" y luego el cuerpo. ' +
+      "No uses listas, viñetas ni numeraciones. " +
+      "Sé coherente, natural y no inventes datos.";
 
     const messages = [
       { role: "system", content: systemBase },
@@ -518,6 +518,7 @@ export default function PremiumEmailCreator() {
       emailLength,
       outputLang,
       chatInput,
+      tone: emailTone,
     });
     const cacheKey = await sha256Hex(cacheBase);
 
@@ -553,11 +554,25 @@ export default function PremiumEmailCreator() {
           setLoading(false);
           return;
         }
+
+        if (res.status === 401 || res.status === 403) {
+          setLoading(false);
+          throw new Error(
+            tr(
+              "premiumEmailCreator.error_auth_required",
+              "Necesitas iniciar sesión para usar Premium."
+            )
+          );
+        }
+
         if (res.status === 429) {
+          // Si tu backend devuelve info, aquí podrías detectar chars/daily.
+          // Mantengo el fallback seguro.
           setDailyLimit();
           setLoading(false);
           return;
         }
+
         const txt = await res.text().catch(() => "");
         setLoading(false);
         throw new Error(`HTTP ${res.status}: ${txt}`);
@@ -571,13 +586,29 @@ export default function PremiumEmailCreator() {
         data?.message?.content ??
         "";
 
-      const cleaned = (rawText || "")
+      if (!rawText) {
+        throw new Error(
+          tr("premiumEmailCreator.error_no_text", "No se recibió texto de la API.")
+        );
+      }
+
+      const cleaned = String(rawText || "")
         .replace(/^\s*[-–—•]\s+/gm, "")
         .replace(/^\s*\d+\.\s+/gm, "")
         .replace(/\r/g, "")
-        .replace(/\n+/g, " ")
+        .replace(/\n{3,}/g, "\n\n")
+        .replace(/\n+/g, "\n")
         .replace(/\s{2,}/g, " ")
         .trim();
+
+      if (cleaned && cleaned.trim().toLowerCase() === tooShortMsg.trim().toLowerCase()) {
+        setResult(tooShortMsg);
+        setIsTooShortResult(true);
+        setLastEmailSig(canonicalize(textValue));
+        setIsOutdated(false);
+        setLoading(false);
+        return;
+      }
 
       const clipped = enforceLength(cleaned, emailLength);
 
@@ -587,13 +618,20 @@ export default function PremiumEmailCreator() {
       setIsOutdated(false);
     } catch (err) {
       setErrorMsg(
-        err.message ||
-          tr("premiumEmailCreator.error_generic", "Error generando el email.")
+        err.message || tr("premiumEmailCreator.error_generic", "Error generando el email.")
       );
     } finally {
       setLoading(false);
     }
   };
+
+  const canClearLeft =
+    !!emailSaludo ||
+    !!emailIntro ||
+    !!emailSaludo2 ||
+    !!emailNombre ||
+    (emailParagraphs || []).some((p) => (p || "").trim()) ||
+    !!chatInput;
 
   return (
     <>
@@ -607,13 +645,11 @@ export default function PremiumEmailCreator() {
             variants={pageVariants}
             transition={{ duration: 0.3 }}
           >
-            {/* ===== Panel Fuentes (izquierda) ===== */}
+            {/* ===== Panel Izquierdo ===== */}
             <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
               {/* Título */}
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="text-sm font-medium text-slate-700">
-                  {labelSources}
-                </div>
+                <div className="text-sm font-medium text-slate-700">{labelSources}</div>
               </div>
 
               {/* ✅ layout inputs (ORDEN: 1,2,3,4,5) */}
@@ -654,9 +690,7 @@ export default function PremiumEmailCreator() {
 
                 {/* 3 - Grande Párrafo + botón +Párrafo */}
                 <div className="mb-3 flex items-center justify-between">
-                  <div className="text-sm font-semibold text-slate-800">
-                    {labelBig3}
-                  </div>
+                  <div className="text-sm font-semibold text-slate-800">{labelBig3}</div>
 
                   <button
                     type="button"
@@ -687,14 +721,8 @@ export default function PremiumEmailCreator() {
                         type="button"
                         onClick={() => removeParagraph(idx)}
                         className="absolute top-3 right-3 h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                        aria-label={tr(
-                          "premiumEmailCreator.remove_paragraph",
-                          "Eliminar párrafo"
-                        )}
-                        title={tr(
-                          "premiumEmailCreator.remove_paragraph",
-                          "Eliminar párrafo"
-                        )}
+                        aria-label={labelRemoveParagraph}
+                        title={labelRemoveParagraph}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -720,7 +748,7 @@ export default function PremiumEmailCreator() {
                 </div>
 
                 {/* 5 - Pequeño Nombre */}
-                <div className="mb-1">
+                <div className="mb-4">
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall5}
                   </div>
@@ -735,37 +763,63 @@ export default function PremiumEmailCreator() {
                     rows={2}
                   />
                 </div>
+
+                {/* Prompt inferior */}
+                <div className="mt-2">
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {tr("premiumEmailCreator.bottom_input_label", "Argibideak")}
+                  </div>
+                  <textarea
+                    value={chatInput}
+                    onChange={(e) => {
+                      setChatInput(e.target.value);
+                      clearRight();
+                    }}
+                    placeholder={labelBottomInputPh}
+                    className="w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                  />
+                  <div className="mt-3">
+                    <Button
+                      type="button"
+                      onClick={handleGenerate}
+                      disabled={loading || !hasValidInput}
+                      className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                    >
+                      {labelGenerateWithPrompt}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </aside>
 
             {/* ===== Panel Derecho ===== */}
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-             
-             {/* Barra superior */}
-<div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-  <div className="flex items-center gap-2">
-    <LengthTab
-      active={emailTone === "formal"}
-      label={LBL_FORMAL}
-      onClick={() => {
-        if (emailTone !== "formal") {
-          setEmailTone("formal");
-          clearRight();
-        }
-      }}
-      showDivider
-    />
-    <LengthTab
-      active={emailTone === "informal"}
-      label={LBL_INFORMAL}
-      onClick={() => {
-        if (emailTone !== "informal") {
-          setEmailTone("informal");
-          clearRight();
-        }
-      }}
-    />
-  </div>
+              {/* Barra superior */}
+              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+                <div className="flex items-center gap-2">
+                  <LengthTab
+                    active={emailTone === "formal"}
+                    label={LBL_FORMAL}
+                    onClick={() => {
+                      if (emailTone !== "formal") {
+                        setEmailTone("formal");
+                        clearRight();
+                      }
+                    }}
+                    showDivider
+                  />
+                  <LengthTab
+                    active={emailTone === "informal"}
+                    label={LBL_INFORMAL}
+                    onClick={() => {
+                      if (emailTone !== "informal") {
+                        setEmailTone("informal");
+                        clearRight();
+                      }
+                    }}
+                  />
+                </div>
 
                 <div className="flex items-center gap-1">
                   {/* Selector de idioma */}
@@ -814,7 +868,6 @@ export default function PremiumEmailCreator() {
                       >
                         {LBL_EUS}
                       </DropdownMenuItem>
-
                       <DropdownMenuItem
                         onClick={() => {
                           if (outputLang !== "ES") {
@@ -826,7 +879,6 @@ export default function PremiumEmailCreator() {
                       >
                         {LBL_ES}
                       </DropdownMenuItem>
-
                       <DropdownMenuItem
                         onClick={() => {
                           if (outputLang !== "EN") {
@@ -838,7 +890,6 @@ export default function PremiumEmailCreator() {
                       >
                         {LBL_EN}
                       </DropdownMenuItem>
-
                       <DropdownMenuItem
                         onClick={() => {
                           if (outputLang !== "FR") {
@@ -850,11 +901,11 @@ export default function PremiumEmailCreator() {
                       >
                         {LBL_FR}
                       </DropdownMenuItem>
-
                       <DropdownMenuArrow className="fill-white" />
                     </DropdownMenuContent>
                   </DropdownMenu>
 
+                  {/* Copiar resultado (arriba) */}
                   <button
                     type="button"
                     onClick={() => handleCopy(true)}
@@ -874,34 +925,30 @@ export default function PremiumEmailCreator() {
                     )}
                   </button>
 
+                  {/* Limpiar inputs */}
                   <button
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("premiumEmailCreator.clear_input", "Eliminar")}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      (emailSaludo ||
-                        emailIntro ||
-                        emailSaludo2 ||
-                        emailNombre ||
-                        (emailParagraphs || []).some((p) => (p || "").trim()))
+                      canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("premiumEmailCreator.clear_input", "Eliminar")}
-                    disabled={
-                      !(
-                        emailSaludo ||
-                        emailIntro ||
-                        emailSaludo2 ||
-                        emailNombre ||
-                        (emailParagraphs || []).some((p) => (p || "").trim())
-                      )
-                    }
+                    disabled={!canClearLeft}
                   >
                     <Trash className="w-4 h-4" />
                   </button>
                 </div>
               </div>
+
+              {/* ✅ Banner Premium */}
+              {limitType && (
+                <div className="px-6 pt-4">
+                  <ProLimitBanner visible={!!limitType} message={limitMsg} />
+                </div>
+              )}
 
               {/* Estado inicial */}
               {!loading && !result && !errorMsg && !limitType && (
@@ -932,6 +979,7 @@ export default function PremiumEmailCreator() {
                 </>
               )}
 
+              {/* Resultado / errores / loader */}
               <div className="w-full">
                 {(result || errorMsg || loading) && (
                   <div className="px-6 pt-24 pb-[110px] max-w-3xl mx-auto">
@@ -942,9 +990,76 @@ export default function PremiumEmailCreator() {
                     )}
 
                     {result && (
-                      <article className="prose prose-slate max-w-none">
-                        <p className="whitespace-normal">{result}</p>
-                      </article>
+                      <>
+                        <article className="prose prose-slate max-w-none">
+                          <p className="whitespace-pre-wrap">{result}</p>
+                        </article>
+
+                        {(() => {
+                          const hasResult =
+                            !!result && result.trim().length > 0 && !isTooShortResult;
+                          if (!hasResult) return null;
+
+                          return (
+                            <>
+                              {/* Toast verde encima */}
+                              {savedToLibrary && (
+                                <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
+                                  {librarySavedMessage}
+                                </p>
+                              )}
+
+                              {/* Controles abajo derecha (MISMO PATRÓN) */}
+                              <div className="absolute bottom-4 right-6 flex items-center gap-4">
+                                <div className="flex items-center gap-4 mr-[20px] translate-y-1">
+                                  {/* Copiar con tooltip ARRIBA */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(true)}
+                                    aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                                    className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                  >
+                                    {copiedFlash ? (
+                                      <Check className="w-5 h-5" style={{ color: BLUE }} />
+                                    ) : (
+                                      <Copy className="w-5 h-5" />
+                                    )}
+                                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                      {copiedFlash ? tooltipCopied : tooltipCopy}
+                                    </span>
+                                  </button>
+
+                                  {/* PDF con tooltip ARRIBA */}
+                                  <button
+                                    type="button"
+                                    onClick={handleDownloadPdf}
+                                    aria-label={tooltipPdf}
+                                    className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                  >
+                                    <FileDown className="w-5 h-5" />
+                                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                      {tooltipPdf}
+                                    </span>
+                                  </button>
+                                </div>
+
+                                {/* BOTÓN VERDE */}
+                                <motion.button
+                                  type="button"
+                                  onClick={handleSaveEmail}
+                                  initial={{ opacity: 0, y: 4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.25 }}
+                                  className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
+                                  style={{ backgroundColor: "#22c55e" }}
+                                >
+                                  {labelSaveEmail}
+                                </motion.button>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </>
                     )}
 
                     {loading && !result && (
