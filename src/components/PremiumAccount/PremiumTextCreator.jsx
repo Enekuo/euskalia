@@ -27,6 +27,9 @@ export default function PremiumTextCreator() {
   const [titleValue, setTitleValue] = useState("");
   const [paragraphs, setParagraphs] = useState([""]); // mínimo 1
 
+  // ✅ NUEVO: modo de generación
+  const [writeMode, setWriteMode] = useState("normal"); // "normal" | "paragraphs"
+
   // Resultado / carga / error
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -91,6 +94,10 @@ export default function PremiumTextCreator() {
     "Borrar párrafo"
   );
 
+  // ✅ NUEVO: botones modo
+  const labelModeNormal = tr("premiumTextCreator.mode_normal", "Normal");
+  const labelModeParagraphs = tr("premiumTextCreator.mode_paragraphs", "Por párrafos");
+
   const labelLength = tr("premiumTextCreator.length_label", "Longitud");
   const labelLengthAria = tr("premiumTextCreator.length_aria", "Longitud en caracteres");
   const labelChars = tr("premiumTextCreator.length_chars", "caracteres");
@@ -139,13 +146,19 @@ export default function PremiumTextCreator() {
       .map((p) => (p || "").trim())
       .filter(Boolean);
 
-    // brief textual, no listas visibles (solo para la IA)
     const parts = [];
-    if (tTitle) parts.push(`TÍTULO: ${tTitle}`);
+    if (tTitle) parts.push(`TÍTULO (opcional): ${tTitle}`);
+
     if (ps.length) {
-      parts.push(
-        `IDEAS / PÁRRAFOS (inputs del usuario):\n${ps.map((p, i) => `${i + 1}) ${p}`).join("\n")}`
-      );
+      if (writeMode === "paragraphs") {
+        parts.push(
+          `PÁRRAFOS DEL USUARIO (1 bloque por párrafo; NO mezclar):\n${ps
+            .map((p, i) => `${i + 1}) ${p}`)
+            .join("\n")}`
+        );
+      } else {
+        parts.push(`CONTENIDO / IDEAS DEL USUARIO:\n${ps.join("\n")}`);
+      }
     }
     return parts.join("\n\n").trim();
   };
@@ -186,10 +199,19 @@ export default function PremiumTextCreator() {
     clearRight();
   };
 
+  const titleUpper = useMemo(() => (titleValue || "").trim().toUpperCase(), [titleValue]);
+
+  const fullExportText = useMemo(() => {
+    const body = (result || "").trim();
+    if (!body) return "";
+    if (titleUpper) return `${titleUpper}\n\n${body}`;
+    return body;
+  }, [result, titleUpper]);
+
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
-      await navigator.clipboard.writeText(result);
+      await navigator.clipboard.writeText(fullExportText || result);
       if (flash) {
         setCopiedFlash(true);
         setTimeout(() => setCopiedFlash(false), 1200);
@@ -202,7 +224,7 @@ export default function PremiumTextCreator() {
     const win = window.open("", "_blank");
     if (!win) return;
 
-    const safe = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     const pdfTitle = (titleValue || "").trim() || tr("premiumTextCreator.pdf_title", "Texto");
 
     win.document.write(`
@@ -213,13 +235,13 @@ export default function PremiumTextCreator() {
           <style>
             body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
             .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
-            h1 { font-size: 20px; margin: 0 0 16px 0; }
+            h1 { font-size: 20px; margin: 0 0 16px 0; font-weight: 700; text-transform: uppercase; }
           </style>
         </head>
         <body>
           <div class="box">
-            ${titleValue ? `<h1>${(titleValue || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
-            ${safe.replace(/\n/g, "<br/>")}
+            ${titleUpper ? `<h1>${titleUpper.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
+            ${safeBody.replace(/\n/g, "<br/>")}
           </div>
           <script>
             window.focus();
@@ -248,7 +270,7 @@ export default function PremiumTextCreator() {
     addLibraryDoc({
       kind: "text",
       title: niceTitle,
-      content: result,
+      content: fullExportText || result,
     });
 
     setSavedToLibrary(true);
@@ -284,7 +306,7 @@ export default function PremiumTextCreator() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result]);
+  }, [loading, result, fullExportText]);
 
   useEffect(() => {
     return () => {
@@ -336,9 +358,17 @@ export default function PremiumTextCreator() {
       "Evita listas y viñetas salvo que el usuario las pida explícitamente. " +
       "Entrega el resultado en párrafos. No inventes datos concretos si no aparecen o no se deducen del briefing.";
 
+    const paragraphModeRule =
+      writeMode === "paragraphs"
+        ? `MODO POR PÁRRAFOS (OBLIGATORIO): devuelve EXACTAMENTE ${
+            (paragraphs || []).filter((p) => (p || "").trim().length > 0).length || 1
+          } párrafos en la salida, separados por una línea en blanco. Cada párrafo de salida debe corresponder 1:1 con cada párrafo del usuario (mismo orden). No mezcles contenido entre párrafos.`
+        : `MODO NORMAL: puedes estructurar el texto libremente en varios párrafos coherentes.`;
+
     const userContent = [
       "Quiero que redactes un texto completo basándote en este briefing.",
       brief ? `\nBRIEFING:\n${brief}` : "",
+      `\nREGLA DE ESTRUCTURA: ${paragraphModeRule}`,
       `\nREQUISITO DE LONGITUD: ${lengthRuleChars}`,
       `\n${langInstruction}`,
     ].join("");
@@ -351,6 +381,7 @@ export default function PremiumTextCreator() {
     const cacheBase = JSON.stringify({
       titleValue,
       paragraphs,
+      writeMode,
       outputLang,
       targetChars,
     });
@@ -377,9 +408,10 @@ export default function PremiumTextCreator() {
         },
         body: JSON.stringify({
           messages,
-          length: "text_creator", // etiqueta interna (no rompe tu backend si lo ignora)
+          length: "text_creator",
           cacheKey,
           targetChars,
+          writeMode,
         }),
       });
 
@@ -451,8 +483,7 @@ export default function PremiumTextCreator() {
       setResult(clipped);
     } catch (err) {
       setErrorMsg(
-        err.message ||
-          tr("premiumTextCreator.error_generic", "Error generando el texto.")
+        err.message || tr("premiumTextCreator.error_generic", "Error generando el texto.")
       );
     } finally {
       setLoading(false);
@@ -494,6 +525,47 @@ export default function PremiumTextCreator() {
                     placeholder={labelTitleOptional}
                     className="w-full h-[44px] rounded-xl border border-slate-300 bg-white px-4 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
                   />
+                </div>
+
+                {/* ✅ NUEVO: Botones modo (Normal / Por párrafos) */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (writeMode !== "normal") {
+                        setWriteMode("normal");
+                        clearRight();
+                      }
+                    }}
+                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    style={{
+                      borderColor: writeMode === "normal" ? BLUE : "#e2e8f0",
+                      backgroundColor: writeMode === "normal" ? "#eff6ff" : "#ffffff",
+                      color: writeMode === "normal" ? BLUE : "#334155",
+                    }}
+                    aria-pressed={writeMode === "normal"}
+                  >
+                    {labelModeNormal}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (writeMode !== "paragraphs") {
+                        setWriteMode("paragraphs");
+                        clearRight();
+                      }
+                    }}
+                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    style={{
+                      borderColor: writeMode === "paragraphs" ? BLUE : "#e2e8f0",
+                      backgroundColor: writeMode === "paragraphs" ? "#eff6ff" : "#ffffff",
+                      color: writeMode === "paragraphs" ? BLUE : "#334155",
+                    }}
+                    aria-pressed={writeMode === "paragraphs"}
+                  >
+                    {labelModeParagraphs}
+                  </button>
                 </div>
 
                 {/* Parrafo + botón + Párrafo */}
@@ -737,10 +809,17 @@ export default function PremiumTextCreator() {
 
                     {result && (
                       <>
-                         <div className="max-h-[440px] overflow-y-auto pr-2">
-                         <article className="prose prose-slate max-w-none">
-                         <p className="whitespace-pre-wrap">{result}</p>
-                         </article>
+                        <div className="max-h-[440px] overflow-y-auto pr-2">
+                          {/* ✅ Título opcional en MAYÚSCULA + NEGRITA */}
+                          {titleUpper ? (
+                            <div className="text-[16px] font-bold text-slate-900 mb-4">
+                              {titleUpper}
+                            </div>
+                          ) : null}
+
+                          <article className="prose prose-slate max-w-none">
+                            <p className="whitespace-pre-wrap">{result}</p>
+                          </article>
                         </div>
 
                         {/* Toast + controles abajo derecha */}
