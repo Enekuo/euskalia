@@ -43,11 +43,13 @@ Detecta el idioma del texto de entrada.
 La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
 DETECTED_LANGUAGE: <codigo_idioma>
 Ejemplos de código: es, en, fr, de, pt-BR, it, nl, ru, ar, ja, zh, etc.
-Después de esa primera línea, escribe la TRADUCCIÓN final.
+Después de esa primera línea, escribe ÚNICAMENTE el texto traducido, sin etiquetas.
+NO escribas "Traducción:", "Translation:", "Resultado:", comillas, ni explicaciones.
 
 Traduce SIEMPRE al idioma de destino: ${dstName}.
 Responde SIEMPRE en ${dstName}.
 No añadas explicaciones ni comentarios.
+Devuelve solo el texto final traducido (sin prefijos).
 `.trim();
   }
 
@@ -56,7 +58,7 @@ No añadas explicaciones ni comentarios.
     return `
 Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de Euskera a Español.
-Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
+Devuelve ÚNICAMENTE la traducción en Español. NO escribas "Traducción:" ni ningún prefijo.
 No cambies de idioma en la traducción.
 No añadas explicaciones.
 `.trim();
@@ -68,13 +70,14 @@ Itzuli BETI gaztelaniatik euskarara.
 Erantzun BETI euskaraz itzulpena ematean.
 Ez aldatu hizkuntza itzulpenean.
 Ez eman azalpenik.
+Ez idatzi "Itzulpena:" edo antzeko aurrizkirik.
 `.trim();
   }
 
   return `
 Eres Euskalia, un traductor profesional.
 Traduce SIEMPRE de ${srcName} a ${dstName}.
-Responde SIEMPRE en ${dstName} cuando des la TRADUCCIÓN.
+Devuelve ÚNICAMENTE la traducción en ${dstName}. NO escribas "Traducción:" ni ningún prefijo.
 No añadas explicaciones ni comentarios.
 `.trim();
 };
@@ -100,9 +103,15 @@ export default function PremiumTranslator() {
 
   const limitMsg =
     limitType === "daily"
-      ? tr("premiumTranslator_limit_daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
+      ? tr(
+          "premiumTranslator_limit_daily",
+          "Has alcanzado tu límite diario del plan Premium. Vuelve mañana."
+        )
       : limitType === "chars"
-      ? tr("premiumTranslator_limit_chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
+      ? tr(
+          "premiumTranslator_limit_chars",
+          "Has superado el límite máximo de caracteres para tu plan Premium."
+        )
       : "";
 
   // ===== ERROR (derivado, no fijo) =====
@@ -316,6 +325,9 @@ export default function PremiumTranslator() {
       return false;
     }
 
+    // ✅ limpieza por si se cuela el prefijo
+    out = out.replace(/^\s*(traducci[oó]n|translation|resultado)\s*:\s*/i, "");
+
     setRightText(out);
     setResultStatus("success");
     return true;
@@ -378,7 +390,10 @@ export default function PremiumTranslator() {
         clearError();
         clearLimit();
 
-        const system = `${directionText(src, dst)}\n\nResponde SOLO con la traducción final. Mantén el formato.`;
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:". Mantén el formato.`;
 
         const token = await getProToken();
 
@@ -591,7 +606,9 @@ export default function PremiumTranslator() {
         setResultStatus("loading");
         clearLimit();
 
-        const contents = await Promise.all(documents.map(({ file }) => readFileAsText(file)));
+        const contents = await Promise.all(
+          documents.map(({ file }) => readFileAsText(file))
+        );
         const combined = contents.join("\n\n---\n\n").slice(0, MAX_CHARS);
 
         if (!combined.trim()) {
@@ -602,7 +619,10 @@ export default function PremiumTranslator() {
           return;
         }
 
-        const system = `${directionText(src, dst)}\n\nResponde SOLO con la traducción final.`;
+        const system = `${directionText(
+          src,
+          dst
+        )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:".`;
 
         const token = await getProToken();
 
@@ -704,7 +724,11 @@ export default function PremiumTranslator() {
   const Dropdown = ({ open, selected, onSelect, align = "left", options }) => {
     if (!open) return null;
     return (
-      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0" : "left-0"}`}>
+      <div
+        className={`absolute top-full mt-2 z-50 ${
+          align === "right" ? "right-0" : "left-0"
+        }`}
+      >
         <div className="relative">
           <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
             <path d="M0,10 L10,0 L20,10" className="fill-white" />
@@ -712,7 +736,12 @@ export default function PremiumTranslator() {
           </svg>
           <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
             {(options || []).map((val) => (
-              <Item key={val} label={langLabel(val)} active={selected === val} onClick={() => onSelect(val)} />
+              <Item
+                key={val}
+                label={langLabel(val)}
+                active={selected === val}
+                onClick={() => onSelect(val)}
+              />
             ))}
           </div>
         </div>
@@ -725,7 +754,10 @@ export default function PremiumTranslator() {
   const labelTabDocument = tr("premiumTranslator_sources_tab_document", "Documento");
   const labelTabUrl = tr("premiumTranslator_sources_tab_url", "URL");
 
-  const labelChooseFileTitle = tr("premiumTranslator_choose_file_title", "Elige tu archivo o carpeta");
+  const labelChooseFileTitle = tr(
+    "premiumTranslator_choose_file_title",
+    "Elige tu archivo o carpeta"
+  );
   const labelAcceptedFormats = tr("premiumTranslator_accepted_formats", "Formatos admitidos");
   const labelFolderHint = tr("premiumTranslator_folder_hint", "Puedes arrastrar varios archivos.");
 
@@ -733,19 +765,34 @@ export default function PremiumTranslator() {
   const labelAddUrl = tr("premiumTranslator_add_url", "Añadir URLs");
   const labelSaveUrls = tr("premiumTranslator_save_urls", "Guardar");
   const labelCancel = tr("premiumTranslator_cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("premiumTranslator_urls_note_visible", "Solo se importará el texto visible.");
-  const labelUrlsNotePaywalled = tr("premiumTranslator_urls_note_paywalled", "No se admiten artículos de pago.");
+  const labelUrlsNoteVisible = tr(
+    "premiumTranslator_urls_note_visible",
+    "Solo se importará el texto visible."
+  );
+  const labelUrlsNotePaywalled = tr(
+    "premiumTranslator_urls_note_paywalled",
+    "No se admiten artículos de pago."
+  );
   const labelRemove = tr("premiumTranslator_remove", "Quitar");
 
   const labelSaveTranslation = tr("premiumTranslator_save_button_label", "Guardar");
   const librarySavedMessage = tr("premiumTranslator_library_saved_toast", "Guardado en biblioteca");
 
-  const labelLeftPlaceholder = tr("premiumTranslator_left_placeholder", "Escribe o pega el texto aquí…");
-  const labelRightPlaceholder = tr("premiumTranslator_right_placeholder", "Aquí aparecerá la traducción…");
+  const labelLeftPlaceholder = tr(
+    "premiumTranslator_left_placeholder",
+    "Escribe o pega el texto aquí…"
+  );
+  const labelRightPlaceholder = tr(
+    "premiumTranslator_right_placeholder",
+    "Aquí aparecerá la traducción…"
+  );
   const labelLoading = tr("premiumTranslator_loading", "Traduciendo…");
 
   const labelClear = tr("premiumTranslator_clear_left", "Borrar");
-  const labelSwapAria = tr("premiumTranslator_swap_languages_aria", "Intercambiar idiomas");
+  const labelSwapAria = tr(
+    "premiumTranslator_swap_languages_aria",
+    "Intercambiar idiomas"
+  );
   const labelListen = tr("premiumTranslator_listen", "Escuchar");
   const labelStop = tr("premiumTranslator_stop", "Detener");
   const labelCopy = tr("premiumTranslator_copy", "Copiar");
@@ -1276,10 +1323,16 @@ export default function PremiumTranslator() {
                       clearError();
                     }}
                     className={`inline-flex items-center gap-2 ${
-                      sourceMode === "text" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
+                      sourceMode === "text"
+                        ? "text-blue-600"
+                        : "text-slate-700 hover:text-slate-900"
                     }`}
                   >
-                    <FileText className={`w-4 h-4 ${sourceMode === "text" ? "text-blue-600" : "text-slate-500"}`} />
+                    <FileText
+                      className={`w-4 h-4 ${
+                        sourceMode === "text" ? "text-blue-600" : "text-slate-500"
+                      }`}
+                    />
                     <span>{labelTabText}</span>
                   </button>
 
@@ -1293,10 +1346,16 @@ export default function PremiumTranslator() {
                       clearError();
                     }}
                     className={`inline-flex items-center gap-2 ${
-                      sourceMode === "document" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
+                      sourceMode === "document"
+                        ? "text-blue-600"
+                        : "text-slate-700 hover:text-slate-900"
                     }`}
                   >
-                    <FileIcon className={`w-4 h-4 ${sourceMode === "document" ? "text-blue-600" : "text-slate-500"}`} />
+                    <FileIcon
+                      className={`w-4 h-4 ${
+                        sourceMode === "document" ? "text-blue-600" : "text-slate-500"
+                      }`}
+                    />
                     <span>{labelTabDocument}</span>
                   </button>
 
@@ -1310,10 +1369,16 @@ export default function PremiumTranslator() {
                       clearError();
                     }}
                     className={`inline-flex items-center gap-2 ${
-                      sourceMode === "url" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
+                      sourceMode === "url"
+                        ? "text-blue-600"
+                        : "text-slate-700 hover:text-slate-900"
                     }`}
                   >
-                    <UrlIcon className={`w-4 h-4 ${sourceMode === "url" ? "text-blue-600" : "text-slate-500"}`} />
+                    <UrlIcon
+                      className={`w-4 h-4 ${
+                        sourceMode === "url" ? "text-blue-600" : "text-slate-500"
+                      }`}
+                    />
                     <span>{labelTabUrl}</span>
                   </button>
 
@@ -1512,7 +1577,9 @@ export default function PremiumTranslator() {
                       <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center">
                         <Plus className="w-9 h-9 text-sky-600" />
                       </div>
-                      <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
+                      <div className="text-xl font-semibold text-slate-800">
+                        {labelChooseFileTitle}
+                      </div>
                       <div className="mt-3 text-sm text-slate-500">{labelAcceptedFormats}</div>
                       <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                     </button>
@@ -1521,13 +1588,18 @@ export default function PremiumTranslator() {
                       <div className="mt-4 flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-200 bg-white">
                         <ul className="divide-y divide-slate-200">
                           {documents.map(({ id, file }) => (
-                            <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
+                            <li
+                              key={id}
+                              className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
+                            >
                               <div className="min-w-0 flex items-center gap-3 flex-1">
                                 <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
                                   <FileIcon className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-sm font-medium block truncate">{file.name}</span>
+                                  <span className="text-sm font-medium block truncate">
+                                    {file.name}
+                                  </span>
                                   <span className="text-xs text-slate-500">
                                     {(file.size / 1024 / 1024).toFixed(2)} MB
                                   </span>
@@ -1683,7 +1755,9 @@ export default function PremiumTranslator() {
                 )}
 
                 <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
-                  {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
+                  {savedToLibrary && (
+                    <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>
+                  )}
 
                   <div className="flex items-center gap-4">
                     <button
