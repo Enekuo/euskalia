@@ -612,9 +612,9 @@ export default function PremiumTextCreator() {
                       }}
                       onInput={() => autoGrowNormal()}
                       placeholder={labelTextoPh}
-                      className="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
-                      style={{ height: "88px", overflowY: "hidden" }}
-                    />
+                      className="w-full flex-1 min-h-0 resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                      style={{ minHeight: "24px", overflowY: "hidden" }}
+                  />
                   </div>
                 )}
 
@@ -663,7 +663,11 @@ export default function PremiumTextCreator() {
               </div>
 
               {/* Tabla vacía (se queda igual) */}
-              <div className="flex-1 min-h-0 overflow-hidden" />
+              {writeMode === "paragraphs" ? (
+  <div className="flex-1 min-h-0 overflow-hidden" />
+) : (
+  <div className="h-0 overflow-hidden" />
+)}
             </aside>
 
             {/* ===== Panel Derecho ===== */}
