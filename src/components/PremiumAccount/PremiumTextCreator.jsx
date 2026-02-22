@@ -737,7 +737,7 @@ export default function PremiumTextCreator() {
 
                     {result && (
                       <>
-                         <div className="max-h-[520px] overflow-y-auto pr-2">
+                         <div className="max-h-[440px] overflow-y-auto pr-2">
                          <article className="prose prose-slate max-w-none">
                          <p className="whitespace-pre-wrap">{result}</p>
                          </article>
