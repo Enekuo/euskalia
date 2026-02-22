@@ -94,6 +94,10 @@ export default function PremiumTextCreator() {
     "Borrar párrafo"
   );
 
+  // ✅ NUEVO: label para modo Normal (Texto)
+  const labelTexto = tr("premiumTextCreator.text_label", "Texto");
+  const labelTextoPh = tr("premiumTextCreator.text_ph", "Escribe el texto");
+
   // ✅ NUEVO: botones modo
   const labelModeNormal = tr("premiumTextCreator.mode_normal", "Normal");
   const labelModeParagraphs = tr("premiumTextCreator.mode_paragraphs", "Por párrafos");
@@ -239,7 +243,7 @@ export default function PremiumTextCreator() {
           </style>
         </head>
         <body>
-          <div class="box">
+          <div className="box">
             ${titleUpper ? `<h1>${titleUpper.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
             ${safeBody.replace(/\n/g, "<br/>")}
           </div>
@@ -518,6 +522,7 @@ export default function PremiumTextCreator() {
                     onClick={() => {
                       if (writeMode !== "normal") {
                         setWriteMode("normal");
+                        setParagraphs((prev) => [prev?.[0] ?? ""]);
                         clearRight();
                       }
                     }}
@@ -568,43 +573,64 @@ export default function PremiumTextCreator() {
                   />
                 </div>
 
-                {/* Parrafo + botón + Párrafo */}
-                <div className="flex items-center justify-between">
-                  <div className="text-[14px] font-medium text-slate-800">{labelParrafo}</div>
-                  <button
-                    type="button"
-                    onClick={addParagraph}
-                    className="text-[14px] font-medium text-slate-700 hover:text-slate-900"
-                  >
-                    {labelAddParagraph}
-                  </button>
-                </div>
+                {/* ===== MODO NORMAL: 1 textarea "Texto" ===== */}
+                {writeMode === "normal" && (
+                  <div className="flex flex-col gap-2">
+                    <div className="text-[14px] font-medium text-slate-800">{labelTexto}</div>
+                    <textarea
+                      value={paragraphs?.[0] ?? ""}
+                      onChange={(e) => {
+                        updateParagraph(0, e.target.value);
+                        clearRight();
+                      }}
+                      placeholder={labelTextoPh}
+                      className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                    />
+                  </div>
+                )}
 
-                {/* Párrafos con borrar */}
-                <div className="flex flex-col gap-3">
-                  {paragraphs.map((p, idx) => (
-                    <div key={idx} className="relative">
-                      <textarea
-                        value={p}
-                        onChange={(e) => {
-                          updateParagraph(idx, e.target.value);
-                          clearRight();
-                        }}
-                        placeholder={labelParagraphPh}
-                        className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
-                      />
+                {/* ===== MODO POR PÁRRAFOS: EXACTAMENTE COMO ESTÁ AHORA ===== */}
+                {writeMode === "paragraphs" && (
+                  <>
+                    {/* Parrafo + botón + Párrafo */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-[14px] font-medium text-slate-800">{labelParrafo}</div>
                       <button
                         type="button"
-                        onClick={() => removeParagraph(idx)}
-                        aria-label={labelRemoveParagraph}
-                        title={labelRemoveParagraph}
-                        className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                        onClick={addParagraph}
+                        className="text-[14px] font-medium text-slate-700 hover:text-slate-900"
                       >
-                        <X className="w-4 h-4" />
+                        {labelAddParagraph}
                       </button>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Párrafos con borrar */}
+                    <div className="flex flex-col gap-3">
+                      {paragraphs.map((p, idx) => (
+                        <div key={idx} className="relative">
+                          <textarea
+                            value={p}
+                            onChange={(e) => {
+                              updateParagraph(idx, e.target.value);
+                              clearRight();
+                            }}
+                            placeholder={labelParagraphPh}
+                            className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeParagraph(idx)}
+                            aria-label={labelRemoveParagraph}
+                            title={labelRemoveParagraph}
+                            className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Tabla vacía (se queda igual) */}
