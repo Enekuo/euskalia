@@ -73,7 +73,6 @@ export default function PremiumTextCreator() {
 
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
-  const GRAY_TEXT = "#64748b";
   const MAX_CHARS = 18000;
 
   const pageVariants = {
@@ -132,20 +131,73 @@ export default function PremiumTextCreator() {
   const tooltipPdf = tr("premiumTextCreator.pdf", "PDF");
 
   // ===== Utils =====
-  const clipToChars = (text, maxChars) => {
-    const t2 = String(text || "")
+  const normalizeText = (text) =>
+    String(text || "")
       .replace(/\r/g, "")
       .replace(/\n{3,}/g, "\n\n")
       .replace(/[ \t]{2,}/g, " ")
       .trim();
 
-    if (!maxChars || maxChars <= 0) return t2;
-    if (t2.length <= maxChars) return t2;
+  const trimToBudget = (text, budget) => {
+    const s = normalizeText(text);
+    if (!budget || budget <= 0) return "";
+    if (s.length <= budget) return s;
 
-    let cut = t2.slice(0, maxChars);
+    let cut = s.slice(0, budget);
+
+    // intenta cortar en frontera de palabra
     const lastSpace = cut.lastIndexOf(" ");
     if (lastSpace > 40) cut = cut.slice(0, lastSpace);
-    return cut.replace(/[.,;:–—-]*$/, "") + "…";
+
+    // limpia puntuación final rara
+    cut = cut.replace(/[.,;:–—-]*$/, "").trim();
+
+    // añade elipsis si recortamos
+    return cut ? cut + "…" : "…";
+  };
+
+  // ✅ NUEVO: en modo "Por párrafos", repartimos el presupuesto de caracteres
+  // entre párrafos para que no se queden los primeros demasiado largos.
+  const splitAndBalanceParagraphs = (raw, expectedCount, totalBudget) => {
+    const s = normalizeText(raw);
+    if (!s) return "";
+
+    // separa por líneas en blanco
+    let parts = s
+      .split(/\n\s*\n+/g)
+      .map((p) => normalizeText(p))
+      .filter(Boolean);
+
+    // si viene como 1 bloque, intentamos partir suavemente en frases
+    if (parts.length <= 1 && expectedCount > 1) {
+      const single = parts[0] || s;
+      const sentences = single.split(/(?<=[.!?])\s+/g).filter(Boolean);
+      parts = [];
+      let cur = "";
+      for (const sen of sentences) {
+        const next = (cur ? cur + " " : "") + sen;
+        parts.push(next);
+        cur = "";
+      }
+      if (!parts.length) parts = [single];
+    }
+
+    if (expectedCount <= 1) expectedCount = 1;
+
+    if (parts.length > expectedCount) {
+      const head = parts.slice(0, expectedCount - 1);
+      const tail = parts.slice(expectedCount - 1).join("\n\n");
+      parts = [...head, tail];
+    } else if (parts.length < expectedCount) {
+      while (parts.length < expectedCount) parts.push("");
+    }
+
+    const base = Math.floor((totalBudget || 0) / expectedCount);
+    const rem = Math.max(0, (totalBudget || 0) - base * expectedCount);
+    const budgets = Array.from({ length: expectedCount }, (_, i) => base + (i < rem ? 1 : 0));
+
+    const out = parts.map((p, i) => trimToBudget(p, budgets[i]));
+    return out.join("\n\n").trim();
   };
 
   const buildBrief = () => {
@@ -207,7 +259,7 @@ export default function PremiumTextCreator() {
     clearRight();
   };
 
-  // ✅ auto-grow textarea (modo Normal) hasta el fondo del panel (sin pasar de la tabla)
+  // ✅ auto-grow textarea (modo Normal) hasta el fondo del panel
   const autoGrowNormal = () => {
     const wrap = normalWrapRef.current;
     const ta = normalTaRef.current;
@@ -379,7 +431,12 @@ export default function PremiumTextCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    const lengthRuleChars = `Longitud objetivo: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
+    const expectedParagraphsCount =
+      writeMode === "paragraphs"
+        ? (paragraphs || []).filter((p) => (p || "").trim().length > 0).length || 1
+        : 0;
+
+    const lengthRuleChars = `Longitud objetivo TOTAL: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
 
     const systemBase =
       "Eres un asistente que escribe textos originales y coherentes a partir de un briefing. " +
@@ -390,16 +447,21 @@ export default function PremiumTextCreator() {
 
     const paragraphModeRule =
       writeMode === "paragraphs"
-        ? `MODO POR PÁRRAFOS (OBLIGATORIO): devuelve EXACTAMENTE ${
-            (paragraphs || []).filter((p) => (p || "").trim().length > 0).length || 1
-          } párrafos en la salida, separados por una línea en blanco. Cada párrafo de salida debe corresponder 1:1 con cada párrafo del usuario (mismo orden). No mezcles contenido entre párrafos.`
-        : `MODO NORMAL: puedes estructurar el texto libremente en varios párrafos coherentes.`;
+        ? `MODO POR PÁRRAFOS (OBLIGATORIO):
+- Devuelve EXACTAMENTE ${expectedParagraphsCount} párrafos en la salida, separados por una línea en blanco.
+- Cada párrafo de salida corresponde 1:1 con cada párrafo del usuario (mismo orden). No mezcles contenido entre párrafos.
+- REPARTO DE LONGITUD: la longitud objetivo (${targetChars} caracteres) es TOTAL. Distribuye los caracteres de forma equilibrada entre los ${expectedParagraphsCount} párrafos (aprox. ${Math.max(
+            1,
+            Math.floor(targetChars / expectedParagraphsCount)
+          )} caracteres por párrafo, con pequeñas variaciones).
+- MUY IMPORTANTE: NO te detengas cuando un párrafo alcance su cuota; continúa escribiendo en el siguiente hasta completar un texto completo.`
+        : `MODO NORMAL: puedes estructurar el texto libremente en varios párrafos coherentes. La longitud objetivo (${targetChars}) es TOTAL.`;
 
     const userContent = [
       "Quiero que redactes un texto completo basándote en este briefing.",
       brief ? `\nBRIEFING:\n${brief}` : "",
-      `\nREGLA DE ESTRUCTURA: ${paragraphModeRule}`,
-      `\nREQUISITO DE LONGITUD: ${lengthRuleChars}`,
+      `\nREGLA DE ESTRUCTURA:\n${paragraphModeRule}`,
+      `\nREQUISITO DE LONGITUD:\n${lengthRuleChars}`,
       `\n${langInstruction}`,
     ].join("");
 
@@ -502,15 +564,23 @@ export default function PremiumTextCreator() {
         );
       }
 
-      const cleaned = String(rawText || "")
-        .replace(/\r/g, "")
-        .replace(/\n{3,}/g, "\n\n")
-        .replace(/[ \t]{2,}/g, " ")
-        .trim();
+      const cleaned = normalizeText(rawText);
 
-      const clipped = clipToChars(cleaned, targetChars);
+      // ✅ CAMBIO CLAVE:
+      // - En NORMAL: recorte global.
+      // - En POR PÁRRAFOS: reparto de presupuesto por párrafo.
+      let finalText = "";
+      if (writeMode === "paragraphs") {
+        finalText = splitAndBalanceParagraphs(
+          cleaned,
+          expectedParagraphsCount || 1,
+          targetChars
+        );
+      } else {
+        finalText = trimToBudget(cleaned, targetChars);
+      }
 
-      setResult(clipped);
+      setResult(finalText);
     } catch (err) {
       setErrorMsg(
         err.message || tr("premiumTextCreator.error_generic", "Error generando el texto.")
@@ -614,7 +684,7 @@ export default function PremiumTextCreator() {
                       placeholder={labelTextoPh}
                       className="w-full flex-1 min-h-0 resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
                       style={{ minHeight: "24px", overflowY: "hidden" }}
-                  />
+                    />
                   </div>
                 )}
 
@@ -664,10 +734,10 @@ export default function PremiumTextCreator() {
 
               {/* Tabla vacía (se queda igual) */}
               {writeMode === "paragraphs" ? (
-  <div className="flex-1 min-h-0 overflow-hidden" />
-) : (
-  <div className="h-0 overflow-hidden" />
-)}
+                <div className="flex-1 min-h-0 overflow-hidden" />
+              ) : (
+                <div className="h-0 overflow-hidden" />
+              )}
             </aside>
 
             {/* ===== Panel Derecho ===== */}
