@@ -728,7 +728,7 @@ export default function PremiumTextCreator() {
               {/* Resultado / errores / loader */}
               <div className="w-full">
                 {(result || errorMsg || loading) && (
-                  <div className="px-6 pt-12 pb-[110px] max-w-3xl mx-auto">
+                  <div className="px-6 pt-10 pb-[110px] max-w-3xl mx-auto">
                     {errorMsg && (
                       <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                         {errorMsg}
