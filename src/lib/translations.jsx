@@ -6311,7 +6311,7 @@ premiumTextCreator: {
   remove: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
 
   generate_from_sources: { ES: "Generar texto", EUS: "Testua sortu", EN: "Generate text", FR: "Générer du texte" },
-  help_write_and_generate: { ES: "Escribe la información necesaria y pulsa \"Generar texto\".", EUS: "Idatzi beharrezko informazioa eta sakatu \"Testua sortu\".", EN: "Write the necessary information and click \"Generate text\".", FR: "Écris les informations nécessaires et clique sur \"Générer le texte\"." },
+  create_help_right: { ES: "Escribe la información necesaria y pulsa \"Generar texto\".", EUS: "Idatzi beharrezko informazioa eta sakatu \"Testua sortu\".", EN: "Write the necessary information and click \"Generate text\".", FR: "Écris les informations nécessaires et clique sur \"Générer le texte\"." },
  
   // Crear texto (título/párrafos)
   title_label: { ES: "Título", EUS: "Izenburua", EN: "Title", FR: "Titre" },
