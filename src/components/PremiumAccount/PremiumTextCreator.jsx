@@ -510,24 +510,8 @@ export default function PremiumTextCreator() {
             <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
-              </div>
 
-              <div className="p-4 flex flex-col gap-4">
-                {/* Titulo */}
-                <div className="flex flex-col gap-2">
-                  <div className="text-[14px] font-medium text-slate-800">{labelTitulo}</div>
-                  <input
-                    value={titleValue}
-                    onChange={(e) => {
-                      setTitleValue(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={labelTitleOptional}
-                    className="w-full h-[44px] rounded-xl border border-slate-300 bg-white px-4 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
-                  />
-                </div>
-
-                {/* ✅ NUEVO: Botones modo (Normal / Por párrafos) */}
+                {/* ✅ Botones modo arriba, en el header */}
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -566,6 +550,22 @@ export default function PremiumTextCreator() {
                   >
                     {labelModeParagraphs}
                   </button>
+                </div>
+              </div>
+
+              <div className="p-4 flex flex-col gap-4">
+                {/* Titulo */}
+                <div className="flex flex-col gap-2">
+                  <div className="text-[14px] font-medium text-slate-800">{labelTitulo}</div>
+                  <input
+                    value={titleValue}
+                    onChange={(e) => {
+                      setTitleValue(e.target.value);
+                      clearRight();
+                    }}
+                    placeholder={labelTitleOptional}
+                    className="w-full h-[44px] rounded-xl border border-slate-300 bg-white px-4 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                  />
                 </div>
 
                 {/* Parrafo + botón + Párrafo */}
