@@ -67,6 +67,10 @@ export default function PremiumTextCreator() {
   const [savedToLibrary, setSavedToLibrary] = useState(false);
   const savedTimerRef = useRef(null);
 
+  // ✅ NUEVO: refs para auto-grow (modo Normal)
+  const normalWrapRef = useRef(null);
+  const normalTaRef = useRef(null);
+
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
@@ -94,11 +98,11 @@ export default function PremiumTextCreator() {
     "Borrar párrafo"
   );
 
-  // ✅ NUEVO: label para modo Normal (Texto)
+  // ✅ label para modo Normal (Texto)
   const labelTexto = tr("premiumTextCreator.text_label", "Texto");
   const labelTextoPh = tr("premiumTextCreator.text_ph", "Escribe el texto");
 
-  // ✅ NUEVO: botones modo
+  // ✅ botones modo
   const labelModeNormal = tr("premiumTextCreator.mode_normal", "Normal");
   const labelModeParagraphs = tr("premiumTextCreator.mode_paragraphs", "Por párrafos");
 
@@ -203,6 +207,28 @@ export default function PremiumTextCreator() {
     clearRight();
   };
 
+  // ✅ auto-grow textarea (modo Normal) hasta el fondo del panel (sin pasar de la tabla)
+  const autoGrowNormal = () => {
+    const wrap = normalWrapRef.current;
+    const ta = normalTaRef.current;
+    if (!wrap || !ta) return;
+
+    const maxH = wrap.clientHeight;
+
+    ta.style.height = "auto";
+
+    const nextH = Math.min(ta.scrollHeight, maxH);
+    ta.style.height = `${nextH}px`;
+
+    ta.style.overflowY = ta.scrollHeight > maxH ? "auto" : "hidden";
+  };
+
+  useEffect(() => {
+    if (writeMode === "normal") {
+      setTimeout(() => autoGrowNormal(), 0);
+    }
+  }, [writeMode]);
+
   const titleUpper = useMemo(() => (titleValue || "").trim().toUpperCase(), [titleValue]);
 
   const fullExportText = useMemo(() => {
@@ -243,7 +269,7 @@ export default function PremiumTextCreator() {
           </style>
         </head>
         <body>
-          <div className="box">
+          <div class="box">
             ${titleUpper ? `<h1>${titleUpper.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
             ${safeBody.replace(/\n/g, "<br/>")}
           </div>
@@ -558,7 +584,7 @@ export default function PremiumTextCreator() {
                 </div>
               </div>
 
-              <div className="p-4 flex flex-col gap-4">
+              <div className="p-4 flex flex-col gap-4 flex-1 min-h-0">
                 {/* Titulo */}
                 <div className="flex flex-col gap-2">
                   <div className="text-[14px] font-medium text-slate-800">{labelTitulo}</div>
@@ -573,18 +599,21 @@ export default function PremiumTextCreator() {
                   />
                 </div>
 
-                {/* ===== MODO NORMAL: 1 textarea "Texto" ===== */}
+                {/* ===== MODO NORMAL: textarea auto-grow hasta el fondo del panel ===== */}
                 {writeMode === "normal" && (
-                  <div className="flex flex-col gap-2">
+                  <div ref={normalWrapRef} className="flex flex-col gap-2 flex-1 min-h-0">
                     <div className="text-[14px] font-medium text-slate-800">{labelTexto}</div>
                     <textarea
+                      ref={normalTaRef}
                       value={paragraphs?.[0] ?? ""}
                       onChange={(e) => {
                         updateParagraph(0, e.target.value);
                         clearRight();
                       }}
+                      onInput={() => autoGrowNormal()}
                       placeholder={labelTextoPh}
-                      className="w-full h-[88px] resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                      className="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-400/40"
+                      style={{ height: "88px", overflowY: "hidden" }}
                     />
                   </div>
                 )}
