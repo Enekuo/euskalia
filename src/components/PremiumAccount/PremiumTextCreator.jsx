@@ -737,9 +737,11 @@ export default function PremiumTextCreator() {
 
                     {result && (
                       <>
-                        <article className="prose prose-slate max-w-none">
-                          <p className="whitespace-pre-wrap">{result}</p>
-                        </article>
+                         <div className="max-h-[360px] overflow-y-auto pr-2">
+                         <article className="prose prose-slate max-w-none">
+                         <p className="whitespace-pre-wrap">{result}</p>
+                         </article>
+                        </div>
 
                         {/* Toast + controles abajo derecha */}
                         {savedToLibrary && (
