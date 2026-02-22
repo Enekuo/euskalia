@@ -728,7 +728,7 @@ export default function PremiumTextCreator() {
               {/* Resultado / errores / loader */}
               <div className="w-full">
                 {(result || errorMsg || loading) && (
-                  <div className="px-6 pt-6 pb-[110px] max-w-3xl mx-auto">
+                  <div className="px-6 pt-12 pb-[110px] max-w-3xl mx-auto">
                     {errorMsg && (
                       <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                         {errorMsg}
@@ -737,7 +737,7 @@ export default function PremiumTextCreator() {
 
                     {result && (
                       <>
-                         <div className="max-h-[400px] overflow-y-auto pr-2">
+                         <div className="max-h-[520px] overflow-y-auto pr-2">
                          <article className="prose prose-slate max-w-none">
                          <p className="whitespace-pre-wrap">{result}</p>
                          </article>
