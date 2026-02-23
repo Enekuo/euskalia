@@ -217,32 +217,74 @@ export default function PremiumEmailCreator() {
       .replace(/\s+/g, " ")
       .trim();
 
+  // ✅ elimina cualquier cabecera tipo "Asunto:" / "Subject:" etc si se cuela
+  const stripEmailHeaders = (text) => {
+    let t0 = String(text || "").replace(/\r/g, "").trim();
+    if (!t0) return "";
+
+    // Quita líneas iniciales tipo:
+    // Asunto: ...
+    // Subject: ...
+    // Objet : ...
+    // Gaia: ... (eu)
+    // y también "Para:" / "To:" por si acaso
+    const headerRegex = /^(asunto|subject|objet|gaia|para|to)\s*:\s*.*$/i;
+
+    let lines = t0.split("\n");
+    while (lines.length && headerRegex.test(lines[0].trim())) {
+      lines.shift();
+      // quita líneas vacías tras header
+      while (lines.length && lines[0].trim() === "") lines.shift();
+    }
+
+    return lines.join("\n").trim();
+  };
+
+  // ✅ limita longitud sin destruir párrafos (estilo Gmail)
   const enforceLength = (text, mode) => {
     const config = {
-      breve: { maxWords: 120, maxSentences: 6 },
-      medio: { maxWords: 220, maxSentences: 10 },
-      detallado: { maxWords: 340, maxSentences: 16 },
+      breve: { maxWords: 140 },
+      medio: { maxWords: 240 },
+      detallado: { maxWords: 360 },
     };
-    const { maxWords, maxSentences } = config[mode] || config.breve;
+    const { maxWords } = config[mode] || config.breve;
 
-    let t2 = (text || "")
+    let t2 = String(text || "")
       .replace(/\r/g, "")
-      .replace(/\n+/g, " ")
-      .replace(/\s{2,}/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
       .trim();
 
-    const sentences = t2.split(/(?<=[.!?…])\s+/).filter(Boolean);
-    let clipped = sentences.slice(0, maxSentences).join(" ");
+    // separa por párrafos
+    const paras = t2.split(/\n\s*\n/g).map((p) => p.trim()).filter(Boolean);
+    if (!paras.length) return "";
 
-    const words = clipped.split(/\s+/);
-    if (words.length > maxWords) {
-      clipped =
+    const out = [];
+    let used = 0;
+
+    for (let i = 0; i < paras.length; i++) {
+      const p = paras[i].replace(/\n+/g, " ").replace(/\s{2,}/g, " ").trim();
+      if (!p) continue;
+
+      const words = p.split(/\s+/).filter(Boolean);
+      if (used + words.length <= maxWords) {
+        out.push(p);
+        used += words.length;
+        continue;
+      }
+
+      const remaining = Math.max(0, maxWords - used);
+      if (remaining <= 0) break;
+
+      const clipped =
         words
-          .slice(0, maxWords)
+          .slice(0, remaining)
           .join(" ")
           .replace(/[.,;:–—-]*$/, "") + "…";
+      out.push(clipped);
+      break;
     }
-    return clipped;
+
+    return out.join("\n\n").trim();
   };
 
   // ✅ construir textValue desde inputs
@@ -465,8 +507,11 @@ export default function PremiumEmailCreator() {
         ? "Extensión: email medio, ~160–240 palabras."
         : "Extensión: email detallado, ~260–360 palabras.";
 
+    // ✅ IMPORTANTE: SOLO CUERPO (sin Para / sin Asunto)
     const formattingRules =
-      'Devuelve un email completo. Empieza con "Asunto: ..." y luego el cuerpo. ' +
+      "Devuelve SOLO el cuerpo del email (lo que se escribiría en el área inferior de Gmail). " +
+      "NO incluyas 'Asunto', NO incluyas 'Para', NO incluyas cabeceras. " +
+      "Mantén párrafos con saltos de línea. " +
       "Evita listas, viñetas y numeraciones. No inventes datos.";
 
     const tooShortMsg =
@@ -492,7 +537,7 @@ export default function PremiumEmailCreator() {
       : "";
 
     const userContent = [
-      "Quiero que redactes un email profesional basado en el siguiente contenido.",
+      "Quiero que redactes el CUERPO de un email basado en el siguiente contenido.",
       textValue ? `\nCONTENIDO BASE:\n${textValue}` : "",
       promptRule,
       `\nREGLAS: ${formattingRules}`,
@@ -503,8 +548,9 @@ export default function PremiumEmailCreator() {
     ].join("");
 
     const systemBase =
-      "Eres un asistente que redacta emails completos y listos para enviar. " +
-      'Siempre empieza con "Asunto:" y luego el cuerpo. ' +
+      "Eres un asistente que redacta emails listos para pegar en Gmail. " +
+      "Devuelve SOLO el cuerpo del email (sin Asunto, sin Para, sin cabeceras). " +
+      "Mantén párrafos con saltos de línea. " +
       "No uses listas, viñetas ni numeraciones. " +
       "Sé coherente, natural y no inventes datos.";
 
@@ -566,8 +612,6 @@ export default function PremiumEmailCreator() {
         }
 
         if (res.status === 429) {
-          // Si tu backend devuelve info, aquí podrías detectar chars/daily.
-          // Mantengo el fallback seguro.
           setDailyLimit();
           setLoading(false);
           return;
@@ -592,14 +636,15 @@ export default function PremiumEmailCreator() {
         );
       }
 
-      const cleaned = String(rawText || "")
+      let cleaned = String(rawText || "")
         .replace(/^\s*[-–—•]\s+/gm, "")
         .replace(/^\s*\d+\.\s+/gm, "")
         .replace(/\r/g, "")
         .replace(/\n{3,}/g, "\n\n")
-        .replace(/\n+/g, "\n")
-        .replace(/\s{2,}/g, " ")
         .trim();
+
+      // ✅ si se cuela "Asunto:" / "Subject:" etc, se elimina
+      cleaned = stripEmailHeaders(cleaned);
 
       if (cleaned && cleaned.trim().toLowerCase() === tooShortMsg.trim().toLowerCase()) {
         setResult(tooShortMsg);
@@ -991,9 +1036,26 @@ export default function PremiumEmailCreator() {
 
                     {result && (
                       <>
-                        <article className="prose prose-slate max-w-none">
-                          <p className="whitespace-pre-wrap">{result}</p>
-                        </article>
+                        {/* ✅ Vista estilo cuerpo de Gmail (solo lo de abajo) */}
+                        <div className="w-full">
+                          <div
+                            className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                            style={{
+                              minHeight: 280,
+                              padding: "18px 18px",
+                            }}
+                          >
+                            <div
+                              className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
+                              style={{
+                                fontFamily:
+                                  'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                              }}
+                            >
+                              {result}
+                            </div>
+                          </div>
+                        </div>
 
                         {(() => {
                           const hasResult =
