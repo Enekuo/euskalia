@@ -79,9 +79,9 @@ export default function PremiumEmailCreator() {
   const [emailSaludo, setEmailSaludo] = useState("");
   const [emailIntro, setEmailIntro] = useState("");
   const [emailParagraphs, setEmailParagraphs] = useState([""]); // mínimo 1
-  const [emailFinalPhrase, setEmailFinalPhrase] = useState(""); // ✅ NUEVO: entre 3 y 4
-  const [emailSaludo2, setEmailSaludo2] = useState(""); // (4) despedida/cierre
-  const [emailNombre, setEmailNombre] = useState(""); // (5) firma
+  const [emailFinalPhrase, setEmailFinalPhrase] = useState(""); // ✅ (4) Frase final (opcional usuario, SIEMPRE la crea la IA)
+  const [emailSaludo2, setEmailSaludo2] = useState(""); // ✅ (5) Saludo / cierre
+  const [emailNombre, setEmailNombre] = useState(""); // ✅ (6) Nombre
 
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
@@ -140,13 +140,13 @@ export default function PremiumEmailCreator() {
   const tooltipCopied = tr("premiumEmailCreator.copied", "Copiado");
   const tooltipPdf = tr("premiumEmailCreator.pdf", "PDF");
 
-  // ✅ Labels del creador
+  // ✅ Labels del creador (RENÚMEROS: frase final=4, saludo=5, nombre=6)
   const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
   const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
-  const labelFinal = tr("premiumEmailCreator.final_phrase", "Frase final"); // ✅ NUEVO
-  const labelSmall4 = tr("premiumEmailCreator.small_4", "4- Saludo");
-  const labelSmall5 = tr("premiumEmailCreator.small_5", "5- Nombre");
+  const labelFinal = tr("premiumEmailCreator.final_phrase", "4- Frase final"); // ✅ ahora es 4
+  const labelSmall4 = tr("premiumEmailCreator.small_4", "5- Saludo"); // ✅ ahora es 5
+  const labelSmall5 = tr("premiumEmailCreator.small_5", "6- Nombre"); // ✅ ahora es 6
 
   const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
   const placeholderIntro = tr("premiumEmailCreator.intro_ph", "Escribe la introducción...");
@@ -220,7 +220,6 @@ export default function PremiumEmailCreator() {
   };
 
   const ensureParagraphBreaks = (s) => {
-    // Asegura saltos de línea limpios (no pega todo)
     let t0 = String(s || "").replace(/\r/g, "").trim();
     if (!t0) return "";
     t0 = t0.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n");
@@ -257,7 +256,6 @@ export default function PremiumEmailCreator() {
           : "Dans l’attente de votre réponse.",
       };
     }
-    // EUS
     return {
       defaultName: "Zure izena",
       defaultClosing: isInformal ? "Agur," : "Adeitasunez,",
@@ -267,7 +265,6 @@ export default function PremiumEmailCreator() {
     };
   };
 
-  // Heurística simple para reintentar si sale en idioma incorrecto
   const languageLooksWrong = (text, lang) => {
     const s = canonicalize(text);
     if (!s) return false;
@@ -456,7 +453,6 @@ export default function PremiumEmailCreator() {
     clearRight();
   };
 
-  // ✅ sumar / eliminar párrafos
   const addParagraph = () => {
     setEmailParagraphs((prev) => [...prev, ""]);
     clearRight();
@@ -474,7 +470,6 @@ export default function PremiumEmailCreator() {
     setEmailParagraphs((prev) => prev.map((p, i) => (i === idx ? val : p)));
   };
 
-  // ✅ Guardar en biblioteca
   const handleSaveEmail = () => {
     if (!result) return;
 
@@ -500,7 +495,6 @@ export default function PremiumEmailCreator() {
     savedTimerRef.current = setTimeout(() => setSavedToLibrary(false), 2000);
   };
 
-  // ===== Helper: cache key (sha-256) =====
   const sha256Hex = async (input) => {
     try {
       const enc = new TextEncoder().encode(input);
@@ -536,18 +530,13 @@ export default function PremiumEmailCreator() {
       safeClosing,
     ].filter(Boolean);
 
-    // Cierre + nombre SIEMPRE como 2 últimas líneas
     const out = [];
-    // todo menos el cierre
     for (let i = 0; i < blocks.length - 1; i++) out.push(blocks[i]);
-    // cierre
     const last = blocks.length ? blocks[blocks.length - 1] : "";
     if (last) out.push(last);
 
     let body = out.join("\n\n").trim();
     body = ensureParagraphBreaks(body);
-
-    // Firma en última línea, separada
     body = (body ? body + "\n" : "") + safeName;
 
     return ensureParagraphBreaks(body);
@@ -672,7 +661,6 @@ export default function PremiumEmailCreator() {
       ? `ERABILTZAILEAREN ARGIBIDEAK (lehentasun handia):\n${chatInput.trim()}`
       : "";
 
-    // ✅ Pedimos PARTES separadas para respetar párrafos sí o sí
     const schemaRules =
       "DEVUELVE UN JSON VÁLIDO (sin texto extra) con EXACTAMENTE estas claves:\n" +
       `{"subject":"...","saludo":"...","intro":"...","paragraphs":["..."],"finalPhrase":"...","closing":"...","name":"..."}\n` +
@@ -680,7 +668,7 @@ export default function PremiumEmailCreator() {
       "- saludo: una línea de saludo.\n" +
       "- intro: un párrafo.\n" +
       "- paragraphs: array de párrafos (uno por cada idea del usuario).\n" +
-      "- finalPhrase: una frase final (si falta, créala).\n" +
+      "- finalPhrase: una frase final (SIEMPRE debes crearla aunque el usuario no la escriba).\n" +
       "- closing: SOLO cierre (ej: '" +
       defaultClosing +
       "') (sin nombre).\n" +
@@ -697,9 +685,9 @@ export default function PremiumEmailCreator() {
       `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
       `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
       `- (3) Párrafos/Notas:\n${paragraphsBlock ? paragraphsBlock : "(vacío -> crea contenido mínimo coherente)"}`,
-      `- (3.5) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
-      `- (4) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
-      `- (5) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
+      `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
+      `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
+      `- (6) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
       "",
       userInstructions ? userInstructions : "",
       "",
@@ -735,7 +723,6 @@ export default function PremiumEmailCreator() {
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      // 1er intento
       let r1 = await fetchEmailOnce(messages1, emailLength, cacheKey);
       if (r1.kind === "limit") {
         if (r1.type === "chars") setCharsLimit();
@@ -754,7 +741,6 @@ export default function PremiumEmailCreator() {
         parsed1 = null;
       }
 
-      // Si no viene JSON, error
       if (!parsed1 || typeof parsed1 !== "object") {
         throw new Error(
           tr(
@@ -774,16 +760,19 @@ export default function PremiumEmailCreator() {
         name: String(parsed1.name || "").trim(),
       };
 
-      // Fallbacks para asegurar SIEMPRE todo
       const finalClosing =
         (emailSaludo2 || "").trim() || parts1.closing || defaultClosing;
+
+      // ✅ Frase final: opcional usuario, pero SIEMPRE la IA la crea
       const finalFinalPhrase =
         (emailFinalPhrase || "").trim() || parts1.finalPhrase || defaultFinalPhrase;
 
       const safeParts = {
-        saludo: parts1.saludo || ((outputLang === "EUS" && emailTone === "formal") ? "Kaixo," : parts1.saludo),
+        saludo: parts1.saludo,
         intro: parts1.intro,
-        paragraphs: (parts1.paragraphs || []).map((p) => String(p || "").trim()).filter(Boolean),
+        paragraphs: (parts1.paragraphs || [])
+          .map((p) => String(p || "").trim())
+          .filter(Boolean),
         finalPhrase: finalFinalPhrase,
         closing: finalClosing,
         name: parts1.name || finalName,
@@ -791,7 +780,6 @@ export default function PremiumEmailCreator() {
 
       let builtBody1 = buildBodyFromParts(safeParts);
 
-      // ✅ Si el idioma sale mal -> reintento UNA vez con instrucción más dura
       const combined1 = `${subject1}\n${builtBody1}`;
       if (languageLooksWrong(combined1, outputLang)) {
         const hardLangRule =
@@ -814,7 +802,12 @@ export default function PremiumEmailCreator() {
           { role: "user", content: basePrompt + "\n\n" + hardLangRule },
         ];
 
-        let r2 = await fetchEmailOnce(messages2, emailLength, cacheKey ? cacheKey + "-retry" : null);
+        let r2 = await fetchEmailOnce(
+          messages2,
+          emailLength,
+          cacheKey ? cacheKey + "-retry" : null
+        );
+
         if (r2.kind === "limit") {
           if (r2.type === "chars") setCharsLimit();
           else setDailyLimit();
@@ -845,13 +838,16 @@ export default function PremiumEmailCreator() {
 
           const finalClosing2 =
             (emailSaludo2 || "").trim() || parts2.closing || defaultClosing;
+
           const finalFinalPhrase2 =
             (emailFinalPhrase || "").trim() || parts2.finalPhrase || defaultFinalPhrase;
 
           const safeParts2 = {
             saludo: parts2.saludo,
             intro: parts2.intro,
-            paragraphs: (parts2.paragraphs || []).map((p) => String(p || "").trim()).filter(Boolean),
+            paragraphs: (parts2.paragraphs || [])
+              .map((p) => String(p || "").trim())
+              .filter(Boolean),
             finalPhrase: finalFinalPhrase2,
             closing: finalClosing2,
             name: parts2.name || finalName,
@@ -859,7 +855,9 @@ export default function PremiumEmailCreator() {
 
           const builtBody2 = buildBodyFromParts(safeParts2);
 
-          setEmailSubject(subject2 || subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
+          setEmailSubject(
+            subject2 || subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta")
+          );
           setResult(builtBody2);
           setLastEmailSig(canonicalize(textValue));
           setIsOutdated(false);
@@ -868,7 +866,9 @@ export default function PremiumEmailCreator() {
         }
       }
 
-      setEmailSubject(subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
+      setEmailSubject(
+        subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta")
+      );
       setResult(builtBody1);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
@@ -984,7 +984,7 @@ export default function PremiumEmailCreator() {
                   ))}
                 </div>
 
-                {/* ✅ NUEVO: Frase final (entre 3 y 4) */}
+                {/* ✅ 4 - Frase final */}
                 <div className="mb-5">
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelFinal}
@@ -1001,7 +1001,7 @@ export default function PremiumEmailCreator() {
                   />
                 </div>
 
-                {/* 4 */}
+                {/* ✅ 5 - Saludo */}
                 <div className="mb-5">
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall4}
@@ -1018,7 +1018,7 @@ export default function PremiumEmailCreator() {
                   />
                 </div>
 
-                {/* 5 */}
+                {/* ✅ 6 - Nombre */}
                 <div className="mb-4">
                   <div className="text-sm font-semibold text-slate-800 mb-2">
                     {labelSmall5}
@@ -1240,7 +1240,6 @@ export default function PremiumEmailCreator() {
 
                     {result && (
                       <>
-                        {/* ✅ ASUNTO EXACTO */}
                         <div className="w-full mb-4">
                           <div
                             className="w-full bg-white"
@@ -1267,7 +1266,6 @@ export default function PremiumEmailCreator() {
                           </div>
                         </div>
 
-                        {/* ✅ CUERPO (respeta párrafos sí o sí) */}
                         <div className="w-full">
                           <div
                             className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
