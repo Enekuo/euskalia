@@ -222,18 +222,11 @@ export default function PremiumEmailCreator() {
     let t0 = String(text || "").replace(/\r/g, "").trim();
     if (!t0) return "";
 
-    // Quita líneas iniciales tipo:
-    // Asunto: ...
-    // Subject: ...
-    // Objet : ...
-    // Gaia: ... (eu)
-    // y también "Para:" / "To:" por si acaso
     const headerRegex = /^(asunto|subject|objet|gaia|para|to)\s*:\s*.*$/i;
 
     let lines = t0.split("\n");
     while (lines.length && headerRegex.test(lines[0].trim())) {
       lines.shift();
-      // quita líneas vacías tras header
       while (lines.length && lines[0].trim() === "") lines.shift();
     }
 
@@ -254,7 +247,6 @@ export default function PremiumEmailCreator() {
       .replace(/\n{3,}/g, "\n\n")
       .trim();
 
-    // separa por párrafos
     const paras = t2.split(/\n\s*\n/g).map((p) => p.trim()).filter(Boolean);
     if (!paras.length) return "";
 
@@ -356,13 +348,30 @@ export default function PremiumEmailCreator() {
   }, []);
 
   // ===== Validación =====
-  const textIsValid = useMemo(() => {
-    const trimmed = (textValue || "").trim();
-    const words = trimmed.split(/\s+/).filter(Boolean);
-    return trimmed.length >= 20 && words.length >= 5;
-  }, [textValue]);
+  const paragraphMinOk = useMemo(() => {
+    const paras = emailParagraphs || [];
+    for (const p of paras) {
+      const trimmed = (p || "").trim();
+      if (!trimmed) continue;
+      const words = trimmed.split(/\s+/).filter(Boolean);
+      if (words.length < 5) return false;
+    }
+    return true;
+  }, [emailParagraphs]);
 
-  const hasValidInput = textIsValid || (textValue || "").trim().length > 0;
+  const hasAnyInput = useMemo(() => {
+    const anyParagraph = (emailParagraphs || []).some((p) => (p || "").trim());
+    return (
+      !!(emailSaludo || "").trim() ||
+      !!(emailIntro || "").trim() ||
+      anyParagraph ||
+      !!(emailSaludo2 || "").trim() ||
+      !!(emailNombre || "").trim() ||
+      !!(chatInput || "").trim()
+    );
+  }, [emailSaludo, emailIntro, emailParagraphs, emailSaludo2, emailNombre, chatInput]);
+
+  const hasValidInput = hasAnyInput && paragraphMinOk;
 
   // ===== Acciones =====
   const handleCopy = async (flash = false) => {
@@ -433,7 +442,7 @@ export default function PremiumEmailCreator() {
 
   // ✅ Guardar en biblioteca
   const handleSaveEmail = () => {
-    if (!result || isTooShortResult) return;
+    if (!result) return;
 
     const raw = result.trim();
     const firstLine = raw.split("\n")[0];
@@ -475,20 +484,28 @@ export default function PremiumEmailCreator() {
     setIsTooShortResult(false);
     setSavedToLibrary(false);
 
-    const trimmed = (textValue || "").trim();
-    const words = trimmed.split(/\s+/).filter(Boolean);
-    const textOk = trimmed.length >= 20 && words.length >= 5;
-
     if ((textValue || "").length > MAX_CHARS) {
       setCharsLimit();
       setLoading(false);
       return;
     }
-    if (!textOk) {
+
+    if (!hasAnyInput) {
       setErrorMsg(
         tr(
           "premiumEmailCreator.error_need_input",
-          "Añade texto suficiente antes de generar el email."
+          "Añade algo de información antes de generar el email."
+        )
+      );
+      setLoading(false);
+      return;
+    }
+
+    if (!paragraphMinOk) {
+      setErrorMsg(
+        tr(
+          "premiumEmailCreator.error_paragraph_min_words",
+          "Cada párrafo debe tener al menos 5 palabras (los demás campos pueden ser cortos)."
         )
       );
       setLoading(false);
@@ -510,18 +527,9 @@ export default function PremiumEmailCreator() {
     // ✅ IMPORTANTE: SOLO CUERPO (sin Para / sin Asunto)
     const formattingRules =
       "Devuelve SOLO el cuerpo del email (lo que se escribiría en el área inferior de Gmail). " +
-      "NO incluyas 'Asunto', NO incluyas 'Para', NO incluyas cabeceras. " +
+      "NO incluyas 'Asunto', NO incluyas 'Para', NO pongas cabeceras. " +
       "Mantén párrafos con saltos de línea. " +
       "Evita listas, viñetas y numeraciones. No inventes datos.";
-
-    const tooShortMsg =
-      outputLang === "ES"
-        ? "El texto es demasiado breve para redactar un email con fidelidad."
-        : outputLang === "EN"
-        ? "The text is too short to draft a reliable email."
-        : outputLang === "FR"
-        ? "Le texte est trop court pour rédiger un email fiable."
-        : "Testua laburregia da fideltasunez email bat idazteko.";
 
     const langInstruction =
       outputLang === "ES"
@@ -532,20 +540,32 @@ export default function PremiumEmailCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    const promptRule = chatInput.trim()
-      ? `\nINSTRUCCIONES DEL USUARIO (prioridad alta):\n${chatInput.trim()}`
-      : "";
-
     const userContent = [
-      "Quiero que redactes el CUERPO de un email basado en el siguiente contenido.",
-      textValue ? `\nCONTENIDO BASE:\n${textValue}` : "",
-      promptRule,
-      `\nREGLAS: ${formattingRules}`,
-      `\n${toneRule}`,
-      `\n${lengthRule}`,
-      `\n${langInstruction}`,
-      `\nSi el contenido no aporta suficiente información, responde exactamente: "${tooShortMsg}".`,
-    ].join("");
+      "Redacta SOLO el CUERPO del email (lo que se pega en la zona inferior de Gmail).",
+      "NO escribas 'Asunto', NO escribas 'Para', NO pongas cabeceras.",
+      "Mantén párrafos con saltos de línea. Sin listas ni viñetas.",
+      "",
+      "DATOS DEL USUARIO (algunos pueden estar vacíos; si están vacíos, complétalos de forma natural):",
+      `- Saludo 1: ${(emailSaludo || "").trim() || "(vacío)"}`,
+      `- Introducción: ${(emailIntro || "").trim() || "(vacío)"}`,
+      `- Párrafos: ${
+        (emailParagraphs || [])
+          .map((p) => (p || "").trim())
+          .filter(Boolean)
+          .join(" | ") || "(vacío)"
+      }`,
+      `- Saludo final: ${(emailSaludo2 || "").trim() || "(vacío)"}`,
+      `- Nombre/Firma: ${(emailNombre || "").trim() || "(vacío)"}`,
+      "",
+      chatInput.trim()
+        ? `INSTRUCCIONES DEL USUARIO (prioridad alta):\n${chatInput.trim()}`
+        : "",
+      "",
+      `REGLAS: ${formattingRules}`,
+      `${toneRule}`,
+      `${lengthRule}`,
+      `${langInstruction}`,
+    ].join("\n");
 
     const systemBase =
       "Eres un asistente que redacta emails listos para pegar en Gmail. " +
@@ -565,6 +585,11 @@ export default function PremiumEmailCreator() {
       outputLang,
       chatInput,
       tone: emailTone,
+      emailSaludo,
+      emailIntro,
+      emailParagraphs,
+      emailSaludo2,
+      emailNombre,
     });
     const cacheKey = await sha256Hex(cacheBase);
 
@@ -643,17 +668,7 @@ export default function PremiumEmailCreator() {
         .replace(/\n{3,}/g, "\n\n")
         .trim();
 
-      // ✅ si se cuela "Asunto:" / "Subject:" etc, se elimina
       cleaned = stripEmailHeaders(cleaned);
-
-      if (cleaned && cleaned.trim().toLowerCase() === tooShortMsg.trim().toLowerCase()) {
-        setResult(tooShortMsg);
-        setIsTooShortResult(true);
-        setLastEmailSig(canonicalize(textValue));
-        setIsOutdated(false);
-        setLoading(false);
-        return;
-      }
 
       const clipped = enforceLength(cleaned, emailLength);
 
@@ -1058,8 +1073,7 @@ export default function PremiumEmailCreator() {
                         </div>
 
                         {(() => {
-                          const hasResult =
-                            !!result && result.trim().length > 0 && !isTooShortResult;
+                          const hasResult = !!result && result.trim().length > 0;
                           if (!hasResult) return null;
 
                           return (
