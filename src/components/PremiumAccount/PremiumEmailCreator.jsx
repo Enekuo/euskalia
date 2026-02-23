@@ -53,6 +53,7 @@ export default function PremiumEmailCreator() {
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
 
+
   const limitMsg =
     limitType === "chars"
       ? tr(
@@ -277,7 +278,6 @@ export default function PremiumEmailCreator() {
   const sanitizeJsonText = (s) => {
     const t0 = String(s || "").trim();
     if (!t0) return "";
-    // quita ```json ... ```
     if (t0.startsWith("```")) {
       const t1 = t0.replace(/^```[a-zA-Z]*\n?/, "").replace(/```$/, "");
       return t1.trim();
@@ -288,9 +288,7 @@ export default function PremiumEmailCreator() {
   const normalizeSubject = (s) => {
     let t0 = String(s || "").replace(/\r/g, "").replace(/\n+/g, " ").trim();
     if (!t0) return "";
-    // evita "Asunto: "
     t0 = t0.replace(/^(asunto|subject|objet|gaia)\s*[:\-]\s*/i, "").trim();
-    // límite de longitud visual (Gmail)
     if (t0.length > 70) t0 = t0.slice(0, 70).trimEnd() + "…";
     return t0;
   };
@@ -393,7 +391,7 @@ export default function PremiumEmailCreator() {
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
-      await navigator.clipboard.writeText(result);
+      await navigator.clipboard.writeText((emailSubject ? `Asunto: ${emailSubject}\n\n` : "") + result);
       if (flash) {
         setCopiedFlash(true);
         setTimeout(() => setCopiedFlash(false), 1200);
@@ -422,7 +420,7 @@ export default function PremiumEmailCreator() {
         </head>
         <body>
           <div class="box">
-            ${safeSubject ? `<div class="subj">Asunto: ${safeSubject}</div>` : ""}
+            <div class="subj">Asunto: ${safeSubject}</div>
             <div>${safeBody}</div>
           </div>
           <script>
@@ -480,7 +478,7 @@ export default function PremiumEmailCreator() {
     addLibraryDoc({
       kind: "email",
       title,
-      content: (emailSubject ? `Asunto: ${emailSubject}\n\n` : "") + result,
+      content: `Asunto: ${emailSubject}\n\n${result}`,
     });
 
     setSavedToLibrary(true);
@@ -557,14 +555,30 @@ export default function PremiumEmailCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
-    // ✅ aquí la clave: NO es traductor, es redactor. Interpreta notas sueltas y mejora redacción.
+    const missingNameDefault =
+      outputLang === "ES"
+        ? "Tu nombre"
+        : outputLang === "EN"
+        ? "Your name"
+        : outputLang === "FR"
+        ? "Votre nom"
+        : "Zure izena";
+
     const formattingRules =
       "Tu tarea NO es traducir literalmente. Es interpretar la información rápida y suelta del usuario " +
-      "y convertirla en un email bien escrito, natural y coherente. " +
+      "y convertirla en un email bien escrito, natural y coherente.\n" +
       "Devuelve un JSON válido con EXACTAMENTE estas claves: " +
       '{"subject": "...", "body": "..."}.\n' +
       "- subject: una sola línea, corta y clara (máx. ~60 caracteres), sin saltos de línea.\n" +
-      "- body: SOLO el cuerpo del email (lo que se pega en la zona inferior de Gmail), con párrafos y saltos de línea.\n" +
+      "- body: SOLO el cuerpo del email, con saltos de línea.\n" +
+      "OBLIGATORIO: el body debe contener SIEMPRE los 5 huecos (en este orden):\n" +
+      "1) saludo inicial (si está vacío, créalo)\n" +
+      "2) introducción (si está vacía, créala)\n" +
+      "3) contenido principal usando TODOS los párrafos/notas\n" +
+      "4) despedida/cierre (si está vacío, créalo) -> debe ir en una línea separada antes de la firma\n" +
+      "5) firma/nombre (si está vacío, usa exactamente: \"" +
+      missingNameDefault +
+      "\")\n" +
       "NO incluyas 'Asunto:' dentro de body. NO incluyas 'Para:'. NO uses listas/viñetas. No inventes datos.";
 
     const paragraphsBlock = (emailParagraphs || [])
@@ -577,14 +591,14 @@ export default function PremiumEmailCreator() {
 
     const userContent = [
       "Redacta un email completo a partir de notas sueltas.",
-      "Si el usuario deja campos vacíos, complétalos de forma natural sin preguntar.",
+      "Si el usuario deja campos vacíos, complétalos de forma natural.",
       "",
-      "DATOS DEL USUARIO:",
-      `- Saludo inicial (puede estar vacío): ${(emailSaludo || "").trim() || "(vacío)"}`,
-      `- Introducción (puede estar vacía): ${(emailIntro || "").trim() || "(vacío)"}`,
-      `- Párrafos (notas): ${paragraphsBlock ? `\n${paragraphsBlock}` : "(vacío)"}`,
-      `- Despedida (puede estar vacía): ${(emailSaludo2 || "").trim() || "(vacío)"}`,
-      `- Nombre/Firma (puede estar vacío): ${(emailNombre || "").trim() || "(vacío)"}`,
+      "DATOS DEL USUARIO (pueden estar mezclados de idioma; tú lo conviertes al idioma de salida):",
+      `- 1 Saludo inicial: ${(emailSaludo || "").trim() || "(vacío)"}`,
+      `- 2 Introducción: ${(emailIntro || "").trim() || "(vacío)"}`,
+      `- 3 Párrafos/notas: ${paragraphsBlock ? `\n${paragraphsBlock}` : "(vacío)"}`,
+      `- 4 Despedida/cierre: ${(emailSaludo2 || "").trim() || "(vacío)"}`,
+      `- 5 Nombre/firma: ${(emailNombre || "").trim() || "(vacío)"}`,
       "",
       chatInput.trim()
         ? `INSTRUCCIONES DEL USUARIO (prioridad alta):\n${chatInput.trim()}`
@@ -594,13 +608,16 @@ export default function PremiumEmailCreator() {
       `${toneRule}`,
       `${lengthRule}`,
       `${langInstruction}`,
+      "",
+      "IMPORTANTE: en el body, la despedida (4) y la firma (5) deben ir así al final:",
+      "[línea de despedida]",
+      "[línea de firma]",
     ].join("\n");
 
     const systemBase =
       "Eres un redactor experto de emails. " +
       "Interpreta notas sueltas y las conviertes en un email impecable. " +
-      "Devuelve SIEMPRE un JSON válido con subject y body. " +
-      "No incluyas cabeceras tipo 'Asunto:' dentro del body.";
+      "Devuelve SIEMPRE un JSON válido con subject y body.";
 
     const messages = [
       { role: "system", content: systemBase },
@@ -690,7 +707,6 @@ export default function PremiumEmailCreator() {
 
       const cleanJson = sanitizeJsonText(rawText);
 
-      // ✅ esperado: JSON { subject, body }
       let parsed = null;
       try {
         parsed = JSON.parse(cleanJson);
@@ -705,7 +721,6 @@ export default function PremiumEmailCreator() {
         subjectFinal = normalizeSubject(parsed.subject || "");
         bodyFinal = String(parsed.body || "");
       } else {
-        // fallback seguro si el modelo no devuelve JSON
         const fallbackText = String(rawText || "")
           .replace(/^\s*[-–—•]\s+/gm, "")
           .replace(/^\s*\d+\.\s+/gm, "")
@@ -713,7 +728,6 @@ export default function PremiumEmailCreator() {
           .replace(/\n{3,}/g, "\n\n")
           .trim();
 
-        // intenta extraer "Asunto: xxx" si existe
         const lines = fallbackText.split("\n");
         const m = (lines[0] || "").match(/^(asunto|subject|objet|gaia)\s*[:\-]\s*(.+)$/i);
         if (m && m[2]) {
@@ -731,6 +745,17 @@ export default function PremiumEmailCreator() {
         .trim();
 
       bodyFinal = enforceLength(bodyFinal, emailLength);
+
+      if (!subjectFinal) {
+        subjectFinal =
+          outputLang === "ES"
+            ? "Consulta"
+            : outputLang === "EN"
+            ? "Quick question"
+            : outputLang === "FR"
+            ? "Question rapide"
+            : "Galdera laburra";
+      }
 
       setEmailSubject(subjectFinal);
       setResult(bodyFinal);
@@ -1111,7 +1136,7 @@ export default function PremiumEmailCreator() {
 
                     {result && (
                       <>
-                        {/* ✅ ASUNTO (exactamente arriba del cuerpo, estilo Gmail) */}
+                        {/* ✅ ASUNTO EXACTO: "Asunto: (asunto)" */}
                         <div className="w-full mb-4">
                           <div
                             className="w-full bg-white"
@@ -1124,17 +1149,23 @@ export default function PremiumEmailCreator() {
                             }}
                           >
                             <span
+                              className="text-[14px] text-slate-500"
+                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                            >
+                              Asunto:&nbsp;
+                            </span>
+                            <span
                               className={`text-[14px] ${
                                 emailSubject ? "text-slate-800" : "text-slate-400"
                               }`}
                               style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
                             >
-                              {emailSubject ? emailSubject : "Asunto"}
+                              {emailSubject ? emailSubject : ""}
                             </span>
                           </div>
                         </div>
 
-                        {/* ✅ CUERPO (lo de abajo de Gmail) */}
+                        {/* ✅ CUERPO */}
                         <div className="w-full">
                           <div
                             className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
@@ -1168,10 +1199,9 @@ export default function PremiumEmailCreator() {
                                 </p>
                               )}
 
-                              {/* Controles abajo derecha (MISMO PATRÓN) */}
+                              {/* Controles abajo derecha */}
                               <div className="absolute bottom-4 right-6 flex items-center gap-4">
                                 <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                  {/* Copiar con tooltip ARRIBA */}
                                   <button
                                     type="button"
                                     onClick={() => handleCopy(true)}
@@ -1188,7 +1218,6 @@ export default function PremiumEmailCreator() {
                                     </span>
                                   </button>
 
-                                  {/* PDF con tooltip ARRIBA */}
                                   <button
                                     type="button"
                                     onClick={handleDownloadPdf}
@@ -1202,7 +1231,6 @@ export default function PremiumEmailCreator() {
                                   </button>
                                 </div>
 
-                                {/* BOTÓN VERDE */}
                                 <motion.button
                                   type="button"
                                   onClick={handleSaveEmail}
