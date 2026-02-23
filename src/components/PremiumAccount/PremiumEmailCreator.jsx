@@ -42,6 +42,7 @@ export default function PremiumEmailCreator() {
 
   // Resultado / carga / error
   const [result, setResult] = useState("");
+  const [emailSubject, setEmailSubject] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -75,9 +76,6 @@ export default function PremiumEmailCreator() {
   const [lastEmailSig, setLastEmailSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
 
-  // Resultado es el mensaje "texto demasiado breve"
-  const [isTooShortResult, setIsTooShortResult] = useState(false);
-
   // Documentos
   const [documents, setDocuments] = useState([]); // [{id,file}]
   const [documentsText, setDocumentsText] = useState([]); // [{id,name,text}]
@@ -106,7 +104,6 @@ export default function PremiumEmailCreator() {
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
-  const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 18000;
 
@@ -217,12 +214,11 @@ export default function PremiumEmailCreator() {
       .replace(/\s+/g, " ")
       .trim();
 
-  // ✅ elimina cualquier cabecera tipo "Asunto:" / "Subject:" etc si se cuela
   const stripEmailHeaders = (text) => {
     let t0 = String(text || "").replace(/\r/g, "").trim();
     if (!t0) return "";
 
-    const headerRegex = /^(asunto|subject|objet|gaia|para|to)\s*:\s*.*$/i;
+    const headerRegex = /^(asunto|subject|objet|gaia|para|to)\s*[:\-]\s*.*$/i;
 
     let lines = t0.split("\n");
     while (lines.length && headerRegex.test(lines[0].trim())) {
@@ -233,7 +229,6 @@ export default function PremiumEmailCreator() {
     return lines.join("\n").trim();
   };
 
-  // ✅ limita longitud sin destruir párrafos (estilo Gmail)
   const enforceLength = (text, mode) => {
     const config = {
       breve: { maxWords: 140 },
@@ -279,6 +274,27 @@ export default function PremiumEmailCreator() {
     return out.join("\n\n").trim();
   };
 
+  const sanitizeJsonText = (s) => {
+    const t0 = String(s || "").trim();
+    if (!t0) return "";
+    // quita ```json ... ```
+    if (t0.startsWith("```")) {
+      const t1 = t0.replace(/^```[a-zA-Z]*\n?/, "").replace(/```$/, "");
+      return t1.trim();
+    }
+    return t0;
+  };
+
+  const normalizeSubject = (s) => {
+    let t0 = String(s || "").replace(/\r/g, "").replace(/\n+/g, " ").trim();
+    if (!t0) return "";
+    // evita "Asunto: "
+    t0 = t0.replace(/^(asunto|subject|objet|gaia)\s*[:\-]\s*/i, "").trim();
+    // límite de longitud visual (Gmail)
+    if (t0.length > 70) t0 = t0.slice(0, 70).trimEnd() + "…";
+    return t0;
+  };
+
   // ✅ construir textValue desde inputs
   useEffect(() => {
     const parts = [
@@ -299,10 +315,10 @@ export default function PremiumEmailCreator() {
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
     setResult("");
+    setEmailSubject("");
     setErrorMsg("");
     clearLimit();
     setIsOutdated(false);
-    setIsTooShortResult(false);
     setLoading(false);
     setSavedToLibrary(false);
   };
@@ -389,7 +405,10 @@ export default function PremiumEmailCreator() {
     if (!result) return;
     const win = window.open("", "_blank");
     if (!win) return;
-    const safe = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    const safeSubject = (emailSubject || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
     win.document.write(`
       <html>
         <head>
@@ -398,10 +417,14 @@ export default function PremiumEmailCreator() {
           <style>
             body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
             .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
+            .subj { font-weight: 700; margin-bottom: 14px; }
           </style>
         </head>
         <body>
-          <div class="box">${safe}</div>
+          <div class="box">
+            ${safeSubject ? `<div class="subj">Asunto: ${safeSubject}</div>` : ""}
+            <div>${safeBody}</div>
+          </div>
           <script>
             window.focus();
             setTimeout(() => window.print(), 200);
@@ -444,10 +467,12 @@ export default function PremiumEmailCreator() {
   const handleSaveEmail = () => {
     if (!result) return;
 
+    const titleBase = normalizeSubject(emailSubject);
     const raw = result.trim();
     const firstLine = raw.split("\n")[0];
     const maxTitleLength = 90;
-    let title = firstLine || tr("premiumEmailCreator.library_default_title", "Email");
+
+    let title = titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
     if (title.length > maxTitleLength) {
       title = title.slice(0, maxTitleLength).trimEnd() + "…";
     }
@@ -455,7 +480,7 @@ export default function PremiumEmailCreator() {
     addLibraryDoc({
       kind: "email",
       title,
-      content: result,
+      content: (emailSubject ? `Asunto: ${emailSubject}\n\n` : "") + result,
     });
 
     setSavedToLibrary(true);
@@ -481,7 +506,6 @@ export default function PremiumEmailCreator() {
     setLoading(true);
     setErrorMsg("");
     clearLimit();
-    setIsTooShortResult(false);
     setSavedToLibrary(false);
 
     if ((textValue || "").length > MAX_CHARS) {
@@ -519,17 +543,10 @@ export default function PremiumEmailCreator() {
 
     const lengthRule =
       emailLength === "breve"
-        ? "Extensión: email corto, ~90–140 palabras."
+        ? "Extensión: email corto."
         : emailLength === "medio"
-        ? "Extensión: email medio, ~160–240 palabras."
-        : "Extensión: email detallado, ~260–360 palabras.";
-
-    // ✅ IMPORTANTE: SOLO CUERPO (sin Para / sin Asunto)
-    const formattingRules =
-      "Devuelve SOLO el cuerpo del email (lo que se escribiría en el área inferior de Gmail). " +
-      "NO incluyas 'Asunto', NO incluyas 'Para', NO pongas cabeceras. " +
-      "Mantén párrafos con saltos de línea. " +
-      "Evita listas, viñetas y numeraciones. No inventes datos.";
+        ? "Extensión: email medio."
+        : "Extensión: email detallado.";
 
     const langInstruction =
       outputLang === "ES"
@@ -540,39 +557,50 @@ export default function PremiumEmailCreator() {
         ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
         : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
 
+    // ✅ aquí la clave: NO es traductor, es redactor. Interpreta notas sueltas y mejora redacción.
+    const formattingRules =
+      "Tu tarea NO es traducir literalmente. Es interpretar la información rápida y suelta del usuario " +
+      "y convertirla en un email bien escrito, natural y coherente. " +
+      "Devuelve un JSON válido con EXACTAMENTE estas claves: " +
+      '{"subject": "...", "body": "..."}.\n' +
+      "- subject: una sola línea, corta y clara (máx. ~60 caracteres), sin saltos de línea.\n" +
+      "- body: SOLO el cuerpo del email (lo que se pega en la zona inferior de Gmail), con párrafos y saltos de línea.\n" +
+      "NO incluyas 'Asunto:' dentro de body. NO incluyas 'Para:'. NO uses listas/viñetas. No inventes datos.";
+
+    const paragraphsBlock = (emailParagraphs || [])
+      .map((p, i) => {
+        const v = (p || "").trim();
+        return v ? `  ${i + 1}. ${v}` : null;
+      })
+      .filter(Boolean)
+      .join("\n");
+
     const userContent = [
-      "Redacta SOLO el CUERPO del email (lo que se pega en la zona inferior de Gmail).",
-      "NO escribas 'Asunto', NO escribas 'Para', NO pongas cabeceras.",
-      "Mantén párrafos con saltos de línea. Sin listas ni viñetas.",
+      "Redacta un email completo a partir de notas sueltas.",
+      "Si el usuario deja campos vacíos, complétalos de forma natural sin preguntar.",
       "",
-      "DATOS DEL USUARIO (algunos pueden estar vacíos; si están vacíos, complétalos de forma natural):",
-      `- Saludo 1: ${(emailSaludo || "").trim() || "(vacío)"}`,
-      `- Introducción: ${(emailIntro || "").trim() || "(vacío)"}`,
-      `- Párrafos: ${
-        (emailParagraphs || [])
-          .map((p) => (p || "").trim())
-          .filter(Boolean)
-          .join(" | ") || "(vacío)"
-      }`,
-      `- Saludo final: ${(emailSaludo2 || "").trim() || "(vacío)"}`,
-      `- Nombre/Firma: ${(emailNombre || "").trim() || "(vacío)"}`,
+      "DATOS DEL USUARIO:",
+      `- Saludo inicial (puede estar vacío): ${(emailSaludo || "").trim() || "(vacío)"}`,
+      `- Introducción (puede estar vacía): ${(emailIntro || "").trim() || "(vacío)"}`,
+      `- Párrafos (notas): ${paragraphsBlock ? `\n${paragraphsBlock}` : "(vacío)"}`,
+      `- Despedida (puede estar vacía): ${(emailSaludo2 || "").trim() || "(vacío)"}`,
+      `- Nombre/Firma (puede estar vacío): ${(emailNombre || "").trim() || "(vacío)"}`,
       "",
       chatInput.trim()
         ? `INSTRUCCIONES DEL USUARIO (prioridad alta):\n${chatInput.trim()}`
         : "",
       "",
-      `REGLAS: ${formattingRules}`,
+      `REGLAS:\n${formattingRules}`,
       `${toneRule}`,
       `${lengthRule}`,
       `${langInstruction}`,
     ].join("\n");
 
     const systemBase =
-      "Eres un asistente que redacta emails listos para pegar en Gmail. " +
-      "Devuelve SOLO el cuerpo del email (sin Asunto, sin Para, sin cabeceras). " +
-      "Mantén párrafos con saltos de línea. " +
-      "No uses listas, viñetas ni numeraciones. " +
-      "Sé coherente, natural y no inventes datos.";
+      "Eres un redactor experto de emails. " +
+      "Interpreta notas sueltas y las conviertes en un email impecable. " +
+      "Devuelve SIEMPRE un JSON válido con subject y body. " +
+      "No incluyas cabeceras tipo 'Asunto:' dentro del body.";
 
     const messages = [
       { role: "system", content: systemBase },
@@ -580,7 +608,6 @@ export default function PremiumEmailCreator() {
     ];
 
     const cacheBase = JSON.stringify({
-      textValue,
       emailLength,
       outputLang,
       chatInput,
@@ -661,19 +688,52 @@ export default function PremiumEmailCreator() {
         );
       }
 
-      let cleaned = String(rawText || "")
-        .replace(/^\s*[-–—•]\s+/gm, "")
-        .replace(/^\s*\d+\.\s+/gm, "")
+      const cleanJson = sanitizeJsonText(rawText);
+
+      // ✅ esperado: JSON { subject, body }
+      let parsed = null;
+      try {
+        parsed = JSON.parse(cleanJson);
+      } catch {
+        parsed = null;
+      }
+
+      let subjectFinal = "";
+      let bodyFinal = "";
+
+      if (parsed && typeof parsed === "object") {
+        subjectFinal = normalizeSubject(parsed.subject || "");
+        bodyFinal = String(parsed.body || "");
+      } else {
+        // fallback seguro si el modelo no devuelve JSON
+        const fallbackText = String(rawText || "")
+          .replace(/^\s*[-–—•]\s+/gm, "")
+          .replace(/^\s*\d+\.\s+/gm, "")
+          .replace(/\r/g, "")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+
+        // intenta extraer "Asunto: xxx" si existe
+        const lines = fallbackText.split("\n");
+        const m = (lines[0] || "").match(/^(asunto|subject|objet|gaia)\s*[:\-]\s*(.+)$/i);
+        if (m && m[2]) {
+          subjectFinal = normalizeSubject(m[2]);
+          bodyFinal = stripEmailHeaders(fallbackText);
+        } else {
+          bodyFinal = stripEmailHeaders(fallbackText);
+          subjectFinal = "";
+        }
+      }
+
+      bodyFinal = String(bodyFinal || "")
         .replace(/\r/g, "")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
 
-      cleaned = stripEmailHeaders(cleaned);
+      bodyFinal = enforceLength(bodyFinal, emailLength);
 
-      const clipped = enforceLength(cleaned, emailLength);
-
-      setResult(clipped);
-      setIsTooShortResult(false);
+      setEmailSubject(subjectFinal);
+      setResult(bodyFinal);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
     } catch (err) {
@@ -1051,7 +1111,30 @@ export default function PremiumEmailCreator() {
 
                     {result && (
                       <>
-                        {/* ✅ Vista estilo cuerpo de Gmail (solo lo de abajo) */}
+                        {/* ✅ ASUNTO (exactamente arriba del cuerpo, estilo Gmail) */}
+                        <div className="w-full mb-4">
+                          <div
+                            className="w-full bg-white"
+                            style={{
+                              height: 48,
+                              display: "flex",
+                              alignItems: "center",
+                              padding: "0 14px",
+                              borderBottom: "1px solid #e5e7eb",
+                            }}
+                          >
+                            <span
+                              className={`text-[14px] ${
+                                emailSubject ? "text-slate-800" : "text-slate-400"
+                              }`}
+                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                            >
+                              {emailSubject ? emailSubject : "Asunto"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* ✅ CUERPO (lo de abajo de Gmail) */}
                         <div className="w-full">
                           <div
                             className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
