@@ -1,12 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  FileDown,
-  X,
-  Copy,
-  Trash,
-  Check,
-} from "lucide-react";
+import { FileDown, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
 import { Button } from "@/components/ui/button";
@@ -42,9 +36,8 @@ export default function PremiumEmailCreator() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Límite Premium (banner + mensaje rojo) -> FIX: guardar TIPO, no el texto
+  // ✅ Límite Premium (banner + mensaje rojo)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-
   const setCharsLimit = () => setLimitType("chars");
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
@@ -72,7 +65,7 @@ export default function PremiumEmailCreator() {
   const [lastEmailSig, setLastEmailSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
 
-  // Documentos / URLs (se mantienen por si luego lo usas; ahora no se usan)
+  // URLs (se mantiene por atajos Escape)
   const [urlInputOpen, setUrlInputOpen] = useState(false);
 
   // Copia: flash de tic azul
@@ -82,12 +75,13 @@ export default function PremiumEmailCreator() {
   const [savedToLibrary, setSavedToLibrary] = useState(false);
   const savedTimerRef = useRef(null);
 
-  // ✅ inputs del creador (pequeños + párrafos grandes)
+  // ✅ inputs del creador
   const [emailSaludo, setEmailSaludo] = useState("");
   const [emailIntro, setEmailIntro] = useState("");
-  const [emailSaludo2, setEmailSaludo2] = useState(""); // (4) despedida
-  const [emailNombre, setEmailNombre] = useState(""); // (5) firma
   const [emailParagraphs, setEmailParagraphs] = useState([""]); // mínimo 1
+  const [emailFinalPhrase, setEmailFinalPhrase] = useState(""); // ✅ NUEVO: entre 3 y 4
+  const [emailSaludo2, setEmailSaludo2] = useState(""); // (4) despedida/cierre
+  const [emailNombre, setEmailNombre] = useState(""); // (5) firma
 
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
@@ -150,12 +144,17 @@ export default function PremiumEmailCreator() {
   const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
   const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
+  const labelFinal = tr("premiumEmailCreator.final_phrase", "Frase final"); // ✅ NUEVO
   const labelSmall4 = tr("premiumEmailCreator.small_4", "4- Saludo");
   const labelSmall5 = tr("premiumEmailCreator.small_5", "5- Nombre");
 
   const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
   const placeholderIntro = tr("premiumEmailCreator.intro_ph", "Escribe la introducción...");
   const placeholderParagraph = tr("premiumEmailCreator.paragraph_ph", "Escribe el párrafo");
+  const placeholderFinal = tr(
+    "premiumEmailCreator.final_phrase_ph",
+    "Escribe la frase final..."
+  );
   const placeholderSaludo2 = tr("premiumEmailCreator.saludo2_ph", "Escribe el saludo...");
   const placeholderNombre = tr("premiumEmailCreator.nombre_ph", "Escribe el nombre...");
   const labelAddParagraph = tr("premiumEmailCreator.add_paragraph", "+ Párrafo");
@@ -220,64 +219,12 @@ export default function PremiumEmailCreator() {
     return t0;
   };
 
-  const enforceLength = (text, mode) => {
-    const config = {
-      breve: { maxWords: 140 },
-      medio: { maxWords: 240 },
-      detallado: { maxWords: 360 },
-    };
-    const { maxWords } = config[mode] || config.breve;
-
-    let t2 = String(text || "")
-      .replace(/\r/g, "")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim();
-
-    const paras = t2.split(/\n\s*\n/g).map((p) => p.trim()).filter(Boolean);
-    if (!paras.length) return "";
-
-    const out = [];
-    let used = 0;
-
-    for (let i = 0; i < paras.length; i++) {
-      const p = paras[i].replace(/\n+/g, " ").replace(/\s{2,}/g, " ").trim();
-      if (!p) continue;
-
-      const words = p.split(/\s+/).filter(Boolean);
-      if (used + words.length <= maxWords) {
-        out.push(p);
-        used += words.length;
-        continue;
-      }
-
-      const remaining = Math.max(0, maxWords - used);
-      if (remaining <= 0) break;
-
-      const clipped =
-        words
-          .slice(0, remaining)
-          .join(" ")
-          .replace(/[.,;:–—-]*$/, "") + "…";
-      out.push(clipped);
-      break;
-    }
-
-    return out.join("\n\n").trim();
-  };
-
-  const stripEmailHeaders = (text) => {
-    let t0 = String(text || "").replace(/\r/g, "").trim();
+  const ensureParagraphBreaks = (s) => {
+    // Asegura saltos de línea limpios (no pega todo)
+    let t0 = String(s || "").replace(/\r/g, "").trim();
     if (!t0) return "";
-
-    const headerRegex = /^(asunto|subject|objet|gaia|para|to)\s*[:\-]\s*.*$/i;
-
-    let lines = t0.split("\n");
-    while (lines.length && headerRegex.test(lines[0].trim())) {
-      lines.shift();
-      while (lines.length && lines[0].trim() === "") lines.shift();
-    }
-
-    return lines.join("\n").trim();
+    t0 = t0.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n");
+    return t0.trim();
   };
 
   const getDefaultsByLang = (lang, tone) => {
@@ -287,88 +234,67 @@ export default function PremiumEmailCreator() {
       return {
         defaultName: "Tu nombre",
         defaultClosing: isInformal ? "Un saludo," : "Atentamente,",
+        defaultFinalPhrase: isInformal
+          ? "Quedo atento a tu respuesta."
+          : "Quedo a la espera de tu respuesta.",
       };
     }
     if (lang === "EN") {
       return {
         defaultName: "Your name",
         defaultClosing: isInformal ? "Best," : "Sincerely,",
+        defaultFinalPhrase: isInformal
+          ? "Looking forward to your reply."
+          : "I look forward to your response.",
       };
     }
     if (lang === "FR") {
       return {
         defaultName: "Votre nom",
         defaultClosing: isInformal ? "Bien à vous," : "Cordialement,",
+        defaultFinalPhrase: isInformal
+          ? "Dans l’attente de votre retour."
+          : "Dans l’attente de votre réponse.",
       };
     }
     // EUS
     return {
       defaultName: "Zure izena",
       defaultClosing: isInformal ? "Agur," : "Adeitasunez,",
+      defaultFinalPhrase: isInformal
+        ? "Zure erantzunaren zain geratzen naiz."
+        : "Zure erantzunaren zain geratzen naiz.",
     };
   };
 
-  // ✅ FORZAR que SIEMPRE existan (4) y (5) separados
-  const enforceClosingAndSignature = (body, finalName, finalClosing) => {
-    const name = String(finalName || "").trim();
-    const closing = String(finalClosing || "").trim();
+  // Heurística simple para reintentar si sale en idioma incorrecto
+  const languageLooksWrong = (text, lang) => {
+    const s = canonicalize(text);
+    if (!s) return false;
 
-    let b = String(body || "").replace(/\r/g, "").trim();
-    if (!b) b = "";
+    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente)\b/.test(
+      s
+    );
+    const eusHits = /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
+      s
+    );
+    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely)\b/.test(s);
+    const frHits = /\b(le|la|les|de|que|et|pour|je|vous|cordialement)\b/.test(s);
 
-    // Normaliza saltos
-    b = b.replace(/\n{3,}/g, "\n\n").trim();
-
-    let lines = b.split("\n").map((l) => l.trimRight());
-    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
-
-    // Caso 1: última línea es nombre y la anterior parece despedida -> OK
-    if (lines.length >= 2) {
-      const last = (lines[lines.length - 1] || "").trim();
-      const prev = (lines[lines.length - 2] || "").trim();
-      if (last && name && last.toLowerCase() === name.toLowerCase()) {
-        if (prev) {
-          return lines.join("\n").trim();
-        }
-      }
-    }
-
-    // Caso 2: última línea contiene "..., Nombre" -> separar
-    if (lines.length >= 1) {
-      const last = (lines[lines.length - 1] || "").trim();
-      const commaSplit = last.split(",");
-      if (commaSplit.length >= 2) {
-        const possibleName = commaSplit[commaSplit.length - 1].trim();
-        const possibleClosing = commaSplit.slice(0, commaSplit.length - 1).join(",").trim();
-        if (possibleName && name && possibleName.toLowerCase() === name.toLowerCase()) {
-          // Reemplaza última línea por 2 líneas: closing + name
-          lines.pop();
-          if (possibleClosing) lines.push(possibleClosing.endsWith(",") ? possibleClosing : possibleClosing + ",");
-          lines.push(name);
-          return lines.join("\n").trim();
-        }
-      }
-    }
-
-    // Caso 3: no hay firma correcta -> añadir cierre + firma SIEMPRE
-    // Quitamos una posible firma si el último renglón es muy parecido a un nombre que haya escrito el user
-    // (no tocamos contenido, solo garantizamos los 2 últimos renglones)
-    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
-
-    // Añade separación
-    if (lines.length) lines.push("");
-    lines.push(closing);
-    lines.push(name);
-
-    return lines.join("\n").trim();
+    if (lang === "EUS") return esHits || enHits || frHits ? !eusHits : false;
+    if (lang === "ES") return eusHits || enHits || frHits ? !esHits : false;
+    if (lang === "EN") return esHits || eusHits || frHits ? !enHits : false;
+    if (lang === "FR") return esHits || eusHits || enHits ? !frHits : false;
+    return false;
   };
 
-  // ✅ construir textValue desde inputs
+  // ===== construir textValue desde inputs =====
   useEffect(() => {
     const parts = [
       (emailSaludo || "").trim(),
       (emailIntro || "").trim(),
       ...(emailParagraphs || []).map((p) => (p || "").trim()).filter(Boolean),
+      (emailFinalPhrase || "").trim(),
       (emailSaludo2 || "").trim(),
       (emailNombre || "").trim(),
     ].filter(Boolean);
@@ -376,7 +302,14 @@ export default function PremiumEmailCreator() {
     const joined = parts.join("\n\n").trim();
     setTextValue(joined);
     setSourceMode("text");
-  }, [emailSaludo, emailIntro, emailParagraphs, emailSaludo2, emailNombre]);
+  }, [
+    emailSaludo,
+    emailIntro,
+    emailParagraphs,
+    emailFinalPhrase,
+    emailSaludo2,
+    emailNombre,
+  ]);
 
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
@@ -447,11 +380,20 @@ export default function PremiumEmailCreator() {
       !!(emailSaludo || "").trim() ||
       !!(emailIntro || "").trim() ||
       anyParagraph ||
+      !!(emailFinalPhrase || "").trim() ||
       !!(emailSaludo2 || "").trim() ||
       !!(emailNombre || "").trim() ||
       !!(chatInput || "").trim()
     );
-  }, [emailSaludo, emailIntro, emailParagraphs, emailSaludo2, emailNombre, chatInput]);
+  }, [
+    emailSaludo,
+    emailIntro,
+    emailParagraphs,
+    emailFinalPhrase,
+    emailSaludo2,
+    emailNombre,
+    chatInput,
+  ]);
 
   const hasValidInput = hasAnyInput && paragraphMinOk;
 
@@ -506,6 +448,7 @@ export default function PremiumEmailCreator() {
   const handleClearLeft = () => {
     setEmailSaludo("");
     setEmailIntro("");
+    setEmailFinalPhrase("");
     setEmailSaludo2("");
     setEmailNombre("");
     setEmailParagraphs([""]);
@@ -540,7 +483,8 @@ export default function PremiumEmailCreator() {
     const firstLine = raw.split("\n")[0];
     const maxTitleLength = 90;
 
-    let title = titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
+    let title =
+      titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
     if (title.length > maxTitleLength) {
       title = title.slice(0, maxTitleLength).trimEnd() + "…";
     }
@@ -556,7 +500,7 @@ export default function PremiumEmailCreator() {
     savedTimerRef.current = setTimeout(() => setSavedToLibrary(false), 2000);
   };
 
-  // ===== Helper: cache key (sha-256) para KV =====
+  // ===== Helper: cache key (sha-256) =====
   const sha256Hex = async (input) => {
     try {
       const enc = new TextEncoder().encode(input);
@@ -567,6 +511,92 @@ export default function PremiumEmailCreator() {
     } catch {
       return null;
     }
+  };
+
+  const buildBodyFromParts = ({
+    saludo,
+    intro,
+    paragraphs,
+    finalPhrase,
+    closing,
+    name,
+  }) => {
+    const safeSaludo = (saludo || "").trim();
+    const safeIntro = (intro || "").trim();
+    const safeParas = Array.isArray(paragraphs) ? paragraphs : [];
+    const safeFinal = (finalPhrase || "").trim();
+    const safeClosing = (closing || "").trim();
+    const safeName = (name || "").trim();
+
+    const blocks = [
+      safeSaludo,
+      safeIntro,
+      ...safeParas.map((p) => String(p || "").trim()).filter(Boolean),
+      safeFinal,
+      safeClosing,
+    ].filter(Boolean);
+
+    // Cierre + nombre SIEMPRE como 2 últimas líneas
+    const out = [];
+    // todo menos el cierre
+    for (let i = 0; i < blocks.length - 1; i++) out.push(blocks[i]);
+    // cierre
+    const last = blocks.length ? blocks[blocks.length - 1] : "";
+    if (last) out.push(last);
+
+    let body = out.join("\n\n").trim();
+    body = ensureParagraphBreaks(body);
+
+    // Firma en última línea, separada
+    body = (body ? body + "\n" : "") + safeName;
+
+    return ensureParagraphBreaks(body);
+  };
+
+  const fetchEmailOnce = async (messages, emailLength, cacheKey) => {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error(
+        tr("premiumEmailCreator.error_auth_required", "Necesitas iniciar sesión para usar Premium.")
+      );
+    }
+
+    const idToken = await user.getIdToken();
+
+    const res = await fetch("/api/premium", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({
+        messages,
+        length: emailLength,
+        cacheKey,
+      }),
+    });
+
+    if (!res.ok) {
+      if (res.status === 413) return { kind: "limit", type: "chars" };
+      if (res.status === 429) return { kind: "limit", type: "daily" };
+      if (res.status === 401 || res.status === 403) {
+        throw new Error(
+          tr("premiumEmailCreator.error_auth_required", "Necesitas iniciar sesión para usar Premium.")
+        );
+      }
+      const txt = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status}: ${txt}`);
+    }
+
+    const data = await res.json();
+    const rawText =
+      data?.text ??
+      data?.content ??
+      data?.choices?.[0]?.message?.content ??
+      data?.message?.content ??
+      "";
+
+    return { kind: "ok", rawText };
   };
 
   // ===== Generar =====
@@ -584,10 +614,7 @@ export default function PremiumEmailCreator() {
 
     if (!hasAnyInput) {
       setErrorMsg(
-        tr(
-          "premiumEmailCreator.error_need_input",
-          "Añade algo de información antes de generar el email."
-        )
+        tr("premiumEmailCreator.error_need_input", "Añade algo de información antes de generar el email.")
       );
       setLoading(false);
       return;
@@ -604,7 +631,10 @@ export default function PremiumEmailCreator() {
       return;
     }
 
-    const { defaultName, defaultClosing } = getDefaultsByLang(outputLang, emailTone);
+    const { defaultName, defaultClosing, defaultFinalPhrase } = getDefaultsByLang(
+      outputLang,
+      emailTone
+    );
 
     const finalNameFromUser = (emailNombre || "").trim();
     const finalName = finalNameFromUser ? finalNameFromUser : defaultName;
@@ -621,32 +651,14 @@ export default function PremiumEmailCreator() {
         ? "Extensión: email medio."
         : "Extensión: email detallado.";
 
-    // ✅ MUY IMPORTANTE: prohibir mezcla de idiomas
     const langInstruction =
       outputLang === "ES"
-        ? "IDIOMA DE SALIDA OBLIGATORIO: español (es). TODO (subject y body) debe estar 100% en español. PROHIBIDO incluir cualquier palabra/frase en euskera/inglés/francés."
+        ? "IDIOMA OBLIGATORIO: español (es). TODO (subject + todas las partes) debe estar 100% en español. PROHIBIDO mezclar idiomas."
         : outputLang === "EN"
-        ? "OUTPUT LANGUAGE (MANDATORY): English (en). EVERYTHING (subject and body) must be 100% English. FORBIDDEN to include Spanish/Basque/French words."
+        ? "OUTPUT LANGUAGE (MANDATORY): English (en). Everything (subject + all parts) must be 100% English. Do NOT mix languages."
         : outputLang === "FR"
-        ? "LANGUE DE SORTIE (OBLIGATOIRE) : français (fr). Tout (subject et body) doit être 100% en français. Interdit d'inclure espagnol/basque/anglais."
-        : "IRTEERAKO HIZKUNTZA (DERRIGORREZ): euskara (eu). DENA (subject eta body) %100 euskaraz. DEBEKATUTA gaztelaniaz/ingelesez/frantsesez hitzik edo esaldirik.";
-
-    const formattingRules =
-      "Helburua: erabiltzaileak azkar eta solte idatzitakoa INTERPRETATU, eta email ondo idatzia sortu (ez itzulpen literala).\n" +
-      "ERABATEKO ARAUA: output-a %100 aukeratutako hizkuntzan. Beste hizkuntzetako esaldiak DEBEKATUTA. Ezer beste hizkuntzan agertzen bada, BERRIDATZI.\n" +
-      "Itzuli JSON bakarra, baliozkoa, GAKO HAUETAN BAKARRIK: " +
-      '{"subject":"...","body":"..."}.\n' +
-      "- subject: lerro bakarra (max ~60 karaktere), salto barik.\n" +
-      "- body: emailaren gorputza bakarrik.\n" +
-      "DERRIGORREZ: body-k BETI 5 atalak izan behar ditu (ordena honetan):\n" +
-      "1) Saludo/hasiera (hutsa bada, sortu)\n" +
-      "2) Sarrera/introdukzioa (hutsa bada, sortu)\n" +
-      "3) Eduki nagusia: erabiltzailearen paragrafo/notak guztiak erabili\n" +
-      "4) Agurra/itxiera (hutsa bada, sortu) -> LERRO BAKAR batean, ETA EZIN du izena eduki\n" +
-      "5) Sinadura/izena -> AZKEN LERROAN bakarrik, izen hutsa (adib. \"" +
-      finalName +
-      "\")\n" +
-      "DEBEKATUTA: 'Para:', 'To:', 'Asunto:' body barruan, zerrendak/viñetak, eta datuak asmatzea.";
+        ? "LANGUE OBLIGATOIRE : français (fr). Tout (subject + toutes les parties) doit être 100% en français. Interdit de mélanger."
+        : "HIZKUNTZA DERRIGORREZ: euskara (eu). DENA (subject + atal guztiak) %100 euskaraz. DEBEKATUTA hizkuntzak nahastea.";
 
     const paragraphsBlock = (emailParagraphs || [])
       .map((p, i) => {
@@ -656,41 +668,56 @@ export default function PremiumEmailCreator() {
       .filter(Boolean)
       .join("\n");
 
-    const userContent = [
-      "Sortu email osoa (asunto + body) jarraibide hauekin.",
-      "Erabiltzaileak eremuak hutsik uzten baditu, zuk osatu modu naturalean.",
+    const userInstructions = chatInput.trim()
+      ? `ERABILTZAILEAREN ARGIBIDEAK (lehentasun handia):\n${chatInput.trim()}`
+      : "";
+
+    // ✅ Pedimos PARTES separadas para respetar párrafos sí o sí
+    const schemaRules =
+      "DEVUELVE UN JSON VÁLIDO (sin texto extra) con EXACTAMENTE estas claves:\n" +
+      `{"subject":"...","saludo":"...","intro":"...","paragraphs":["..."],"finalPhrase":"...","closing":"...","name":"..."}\n` +
+      "- subject: una frase corta.\n" +
+      "- saludo: una línea de saludo.\n" +
+      "- intro: un párrafo.\n" +
+      "- paragraphs: array de párrafos (uno por cada idea del usuario).\n" +
+      "- finalPhrase: una frase final (si falta, créala).\n" +
+      "- closing: SOLO cierre (ej: '" +
+      defaultClosing +
+      "') (sin nombre).\n" +
+      "- name: SOLO el nombre (ej: '" +
+      finalName +
+      "').\n" +
+      "REGLA: si el usuario escribe en otro idioma, tú lo REESCRIBES al idioma de salida.\n" +
+      "REGLA: no copies literal, interpreta y mejora las frases.";
+
+    const basePrompt = [
+      "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
       "",
-      "ERABILTZAILEAREN DATUAK (nahasian egon daitezke; zuk aukeratutako hizkuntzan berridatzi):",
-      `- (1) Saludo/Hasiera: ${(emailSaludo || "").trim() || "(hutsa)"}`,
-      `- (2) Sarrera: ${(emailIntro || "").trim() || "(hutsa)"}`,
-      `- (3) Paragrafo/Notak: ${paragraphsBlock ? `\n${paragraphsBlock}` : "(hutsa)"}`,
-      `- (4) Agurra/Itxiera: ${(emailSaludo2 || "").trim() || "(hutsa)"}`,
-      `- (5) Izena/Sinadura: ${(emailNombre || "").trim() || "(hutsa -> erabili lehenetsia)"}`,
+      "DATOS DEL USUARIO (pueden estar en cualquier idioma):",
+      `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
+      `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
+      `- (3) Párrafos/Notas:\n${paragraphsBlock ? paragraphsBlock : "(vacío -> crea contenido mínimo coherente)"}`,
+      `- (3.5) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
+      `- (4) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
+      `- (5) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
       "",
-      chatInput.trim()
-        ? `ERABILTZAILEAREN ARGIBIDEAK (lehentasun handia):\n${chatInput.trim()}`
-        : "",
+      userInstructions ? userInstructions : "",
       "",
-      `ARAUAK:\n${formattingRules}`,
+      `REGLAS:\n${schemaRules}`,
       `${toneRule}`,
       `${lengthRule}`,
       `${langInstruction}`,
       "",
-      "FORMATOA (azken bi lerroak derrigor):",
-      `${defaultClosing}`,
-      `${finalName}`,
+      "IMPORTANTE: TODO debe salir en el idioma del selector, sin mezcla.",
     ].join("\n");
 
     const systemBase =
-      "Eres un redactor experto de emails. " +
-      "Interpretas notas sueltas y las conviertes en un email impecable. " +
-      "REGLA CRÍTICA: la salida debe ser 100% en el idioma indicado. " +
-      "Si detectas mezcla de idiomas, reescribes todo al idioma de salida. " +
-      "Devuelves SIEMPRE un JSON válido con subject y body.";
+      "Eres un redactor experto de emails. Interpretas notas sueltas y las conviertes en un email impecable. " +
+      "Regla crítica: salida 100% en el idioma solicitado. Devuelves SOLO JSON válido con las claves indicadas.";
 
-    const messages = [
+    const messages1 = [
       { role: "system", content: systemBase },
-      { role: "user", content: userContent },
+      { role: "user", content: basePrompt },
     ];
 
     const cacheBase = JSON.stringify({
@@ -701,130 +728,148 @@ export default function PremiumEmailCreator() {
       emailSaludo,
       emailIntro,
       emailParagraphs,
+      emailFinalPhrase,
       emailSaludo2,
       emailNombre,
     });
     const cacheKey = await sha256Hex(cacheBase);
 
     try {
-      const user = auth.currentUser;
-      if (!user) {
+      // 1er intento
+      let r1 = await fetchEmailOnce(messages1, emailLength, cacheKey);
+      if (r1.kind === "limit") {
+        if (r1.type === "chars") setCharsLimit();
+        else setDailyLimit();
+        setLoading(false);
+        return;
+      }
+
+      const raw1 = r1.rawText || "";
+      const clean1 = sanitizeJsonText(raw1);
+
+      let parsed1 = null;
+      try {
+        parsed1 = JSON.parse(clean1);
+      } catch {
+        parsed1 = null;
+      }
+
+      // Si no viene JSON, error
+      if (!parsed1 || typeof parsed1 !== "object") {
         throw new Error(
           tr(
-            "premiumEmailCreator.error_auth_required",
-            "Necesitas iniciar sesión para usar Premium."
+            "premiumEmailCreator.error_no_text",
+            "La API no devolvió el formato correcto (JSON)."
           )
         );
       }
 
-      const idToken = await user.getIdToken();
+      const subject1 = normalizeSubject(parsed1.subject || "");
+      const parts1 = {
+        saludo: String(parsed1.saludo || "").trim(),
+        intro: String(parsed1.intro || "").trim(),
+        paragraphs: Array.isArray(parsed1.paragraphs) ? parsed1.paragraphs : [],
+        finalPhrase: String(parsed1.finalPhrase || "").trim(),
+        closing: String(parsed1.closing || "").trim(),
+        name: String(parsed1.name || "").trim(),
+      };
 
-      const res = await fetch("/api/premium", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          messages,
-          length: emailLength,
-          cacheKey,
-        }),
-      });
+      // Fallbacks para asegurar SIEMPRE todo
+      const finalClosing =
+        (emailSaludo2 || "").trim() || parts1.closing || defaultClosing;
+      const finalFinalPhrase =
+        (emailFinalPhrase || "").trim() || parts1.finalPhrase || defaultFinalPhrase;
 
-      if (!res.ok) {
-        if (res.status === 413) {
-          setCharsLimit();
-          setLoading(false);
-          return;
-        }
+      const safeParts = {
+        saludo: parts1.saludo || ((outputLang === "EUS" && emailTone === "formal") ? "Kaixo," : parts1.saludo),
+        intro: parts1.intro,
+        paragraphs: (parts1.paragraphs || []).map((p) => String(p || "").trim()).filter(Boolean),
+        finalPhrase: finalFinalPhrase,
+        closing: finalClosing,
+        name: parts1.name || finalName,
+      };
 
-        if (res.status === 401 || res.status === 403) {
-          setLoading(false);
-          throw new Error(
-            tr(
-              "premiumEmailCreator.error_auth_required",
-              "Necesitas iniciar sesión para usar Premium."
-            )
-          );
-        }
+      let builtBody1 = buildBodyFromParts(safeParts);
 
-        if (res.status === 429) {
-          setDailyLimit();
-          setLoading(false);
-          return;
-        }
-
-        const txt = await res.text().catch(() => "");
-        setLoading(false);
-        throw new Error(`HTTP ${res.status}: ${txt}`);
-      }
-
-      const data = await res.json();
-      const rawText =
-        data?.text ??
-        data?.content ??
-        data?.choices?.[0]?.message?.content ??
-        data?.message?.content ??
-        "";
-
-      if (!rawText) {
-        throw new Error(
-          tr("premiumEmailCreator.error_no_text", "No se recibió texto de la API.")
-        );
-      }
-
-      const cleanJson = sanitizeJsonText(rawText);
-
-      let parsed = null;
-      try {
-        parsed = JSON.parse(cleanJson);
-      } catch {
-        parsed = null;
-      }
-
-      let subjectFinal = "";
-      let bodyFinal = "";
-
-      if (parsed && typeof parsed === "object") {
-        subjectFinal = normalizeSubject(parsed.subject || "");
-        bodyFinal = String(parsed.body || "");
-      } else {
-        const fallbackText = String(rawText || "")
-          .replace(/^\s*[-–—•]\s+/gm, "")
-          .replace(/^\s*\d+\.\s+/gm, "")
-          .replace(/\r/g, "")
-          .replace(/\n{3,}/g, "\n\n")
-          .trim();
-
-        bodyFinal = stripEmailHeaders(fallbackText);
-        subjectFinal = "";
-      }
-
-      bodyFinal = String(bodyFinal || "")
-        .replace(/\r/g, "")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
-
-      bodyFinal = enforceLength(bodyFinal, emailLength);
-
-      // ✅ FORZAR SIEMPRE (4) y (5) separados, aunque la IA lo haga mal
-      const { defaultClosing: closingFallback } = getDefaultsByLang(outputLang, emailTone);
-      bodyFinal = enforceClosingAndSignature(bodyFinal, finalName, closingFallback);
-
-      if (!subjectFinal) {
-        subjectFinal =
-          outputLang === "ES"
-            ? "Consulta"
+      // ✅ Si el idioma sale mal -> reintento UNA vez con instrucción más dura
+      const combined1 = `${subject1}\n${builtBody1}`;
+      if (languageLooksWrong(combined1, outputLang)) {
+        const hardLangRule =
+          outputLang === "EUS"
+            ? "REGLA ABSOLUTA: ESCRIBE TODO EN EUSKERA (eu). PROHIBIDO castellano/inglés/francés. Reescribe cualquier input al euskera."
+            : outputLang === "ES"
+            ? "REGLA ABSOLUTA: ESCRIBE TODO EN ESPAÑOL (es). PROHIBIDO euskera/inglés/francés. Reescribe cualquier input al español."
             : outputLang === "EN"
-            ? "Quick question"
-            : outputLang === "FR"
-            ? "Question rapide"
-            : "Kontsulta";
+            ? "ABSOLUTE RULE: WRITE EVERYTHING IN ENGLISH (en). Do NOT include Spanish/Basque/French. Rewrite any input into English."
+            : "RÈGLE ABSOLUE : TOUT EN FRANÇAIS (fr). Interdit espagnol/basque/anglais. Réécris tout en français.";
+
+        const messages2 = [
+          {
+            role: "system",
+            content:
+              systemBase +
+              " " +
+              "IMPORTANTÍSIMO: si detectas mezcla de idiomas, vuelves a escribir TODO.",
+          },
+          { role: "user", content: basePrompt + "\n\n" + hardLangRule },
+        ];
+
+        let r2 = await fetchEmailOnce(messages2, emailLength, cacheKey ? cacheKey + "-retry" : null);
+        if (r2.kind === "limit") {
+          if (r2.type === "chars") setCharsLimit();
+          else setDailyLimit();
+          setLoading(false);
+          return;
+        }
+
+        const raw2 = r2.rawText || "";
+        const clean2 = sanitizeJsonText(raw2);
+
+        let parsed2 = null;
+        try {
+          parsed2 = JSON.parse(clean2);
+        } catch {
+          parsed2 = null;
+        }
+
+        if (parsed2 && typeof parsed2 === "object") {
+          const subject2 = normalizeSubject(parsed2.subject || "");
+          const parts2 = {
+            saludo: String(parsed2.saludo || "").trim(),
+            intro: String(parsed2.intro || "").trim(),
+            paragraphs: Array.isArray(parsed2.paragraphs) ? parsed2.paragraphs : [],
+            finalPhrase: String(parsed2.finalPhrase || "").trim(),
+            closing: String(parsed2.closing || "").trim(),
+            name: String(parsed2.name || "").trim(),
+          };
+
+          const finalClosing2 =
+            (emailSaludo2 || "").trim() || parts2.closing || defaultClosing;
+          const finalFinalPhrase2 =
+            (emailFinalPhrase || "").trim() || parts2.finalPhrase || defaultFinalPhrase;
+
+          const safeParts2 = {
+            saludo: parts2.saludo,
+            intro: parts2.intro,
+            paragraphs: (parts2.paragraphs || []).map((p) => String(p || "").trim()).filter(Boolean),
+            finalPhrase: finalFinalPhrase2,
+            closing: finalClosing2,
+            name: parts2.name || finalName,
+          };
+
+          const builtBody2 = buildBodyFromParts(safeParts2);
+
+          setEmailSubject(subject2 || subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
+          setResult(builtBody2);
+          setLastEmailSig(canonicalize(textValue));
+          setIsOutdated(false);
+          setLoading(false);
+          return;
+        }
       }
 
-      setEmailSubject(subjectFinal);
-      setResult(bodyFinal);
+      setEmailSubject(subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
+      setResult(builtBody1);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
     } catch (err) {
@@ -839,6 +884,7 @@ export default function PremiumEmailCreator() {
   const canClearLeft =
     !!emailSaludo ||
     !!emailIntro ||
+    !!emailFinalPhrase ||
     !!emailSaludo2 ||
     !!emailNombre ||
     (emailParagraphs || []).some((p) => (p || "").trim()) ||
@@ -865,7 +911,9 @@ export default function PremiumEmailCreator() {
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
                 {/* 1 */}
                 <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall1}</div>
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {labelSmall1}
+                  </div>
                   <textarea
                     value={emailSaludo}
                     onChange={(e) => {
@@ -880,7 +928,9 @@ export default function PremiumEmailCreator() {
 
                 {/* 2 */}
                 <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall2}</div>
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {labelSmall2}
+                  </div>
                   <textarea
                     value={emailIntro}
                     onChange={(e) => {
@@ -895,7 +945,9 @@ export default function PremiumEmailCreator() {
 
                 {/* 3 */}
                 <div className="mb-3 flex items-center justify-between">
-                  <div className="text-sm font-semibold text-slate-800">{labelBig3}</div>
+                  <div className="text-sm font-semibold text-slate-800">
+                    {labelBig3}
+                  </div>
                   <button
                     type="button"
                     onClick={addParagraph}
@@ -932,9 +984,28 @@ export default function PremiumEmailCreator() {
                   ))}
                 </div>
 
+                {/* ✅ NUEVO: Frase final (entre 3 y 4) */}
+                <div className="mb-5">
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {labelFinal}
+                  </div>
+                  <textarea
+                    value={emailFinalPhrase}
+                    onChange={(e) => {
+                      setEmailFinalPhrase(e.target.value);
+                      clearRight();
+                    }}
+                    placeholder={placeholderFinal}
+                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    rows={2}
+                  />
+                </div>
+
                 {/* 4 */}
                 <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall4}</div>
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {labelSmall4}
+                  </div>
                   <textarea
                     value={emailSaludo2}
                     onChange={(e) => {
@@ -949,7 +1020,9 @@ export default function PremiumEmailCreator() {
 
                 {/* 5 */}
                 <div className="mb-4">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">{labelSmall5}</div>
+                  <div className="text-sm font-semibold text-slate-800 mb-2">
+                    {labelSmall5}
+                  </div>
                   <textarea
                     value={emailNombre}
                     onChange={(e) => {
@@ -1194,7 +1267,7 @@ export default function PremiumEmailCreator() {
                           </div>
                         </div>
 
-                        {/* ✅ CUERPO */}
+                        {/* ✅ CUERPO (respeta párrafos sí o sí) */}
                         <div className="w-full">
                           <div
                             className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
