@@ -53,7 +53,6 @@ export default function PremiumEmailCreator() {
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
 
-
   const limitMsg =
     limitType === "chars"
       ? tr(
@@ -76,6 +75,9 @@ export default function PremiumEmailCreator() {
   // Track “email desactualizado”
   const [lastEmailSig, setLastEmailSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
+
+  // Resultado es el mensaje "texto demasiado breve"
+  const [isTooShortResult, setIsTooShortResult] = useState(false);
 
   // Documentos
   const [documents, setDocuments] = useState([]); // [{id,file}]
@@ -317,6 +319,7 @@ export default function PremiumEmailCreator() {
     setErrorMsg("");
     clearLimit();
     setIsOutdated(false);
+    setIsTooShortResult(false);
     setLoading(false);
     setSavedToLibrary(false);
   };
@@ -391,7 +394,9 @@ export default function PremiumEmailCreator() {
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
-      await navigator.clipboard.writeText((emailSubject ? `Asunto: ${emailSubject}\n\n` : "") + result);
+      await navigator.clipboard.writeText(
+        (emailSubject ? `Asunto: ${emailSubject}\n\n` : "") + result
+      );
       if (flash) {
         setCopiedFlash(true);
         setTimeout(() => setCopiedFlash(false), 1200);
@@ -470,7 +475,8 @@ export default function PremiumEmailCreator() {
     const firstLine = raw.split("\n")[0];
     const maxTitleLength = 90;
 
-    let title = titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
+    let title =
+      titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
     if (title.length > maxTitleLength) {
       title = title.slice(0, maxTitleLength).trimEnd() + "…";
     }
@@ -548,12 +554,12 @@ export default function PremiumEmailCreator() {
 
     const langInstruction =
       outputLang === "ES"
-        ? "Idioma de salida: español (ISO: es). Redacta toda la respuesta en español."
+        ? "IDIOMA DE SALIDA OBLIGATORIO: español (es). Todo (subject y body) debe estar 100% en español, aunque el usuario escriba en otro idioma."
         : outputLang === "EN"
-        ? "Output language: English (ISO: en). Write the entire response in English."
+        ? "OUTPUT LANGUAGE (MANDATORY): English (en). Everything (subject and body) must be 100% in English, even if the user writes in another language."
         : outputLang === "FR"
-        ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
-        : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
+        ? "LANGUE DE SORTIE (OBLIGATOIRE) : français (fr). Tout (subject et body) doit être 100% en français, même si l'utilisateur écrit dans une autre langue."
+        : "IRTEERAKO HIZKUNTZA (DERRIGORREZ): euskara (eu). Dena (subject eta body) %100 euskaraz izan behar da, erabiltzaileak beste hizkuntza batean idatzi arren.";
 
     const missingNameDefault =
       outputLang === "ES"
@@ -567,6 +573,7 @@ export default function PremiumEmailCreator() {
     const formattingRules =
       "Tu tarea NO es traducir literalmente. Es interpretar la información rápida y suelta del usuario " +
       "y convertirla en un email bien escrito, natural y coherente.\n" +
+      "REGLA CRÍTICA: aunque el usuario escriba en otro idioma, NO copies frases en ese idioma. Reescribe TODO en el idioma de salida indicado.\n" +
       "Devuelve un JSON válido con EXACTAMENTE estas claves: " +
       '{"subject": "...", "body": "..."}.\n' +
       "- subject: una sola línea, corta y clara (máx. ~60 caracteres), sin saltos de línea.\n" +
@@ -616,8 +623,11 @@ export default function PremiumEmailCreator() {
 
     const systemBase =
       "Eres un redactor experto de emails. " +
-      "Interpreta notas sueltas y las conviertes en un email impecable. " +
-      "Devuelve SIEMPRE un JSON válido con subject y body.";
+      "Interpreta notas sueltas y conviértelas en un email impecable. " +
+      "REGLA CRÍTICA: La salida debe estar 100% en el idioma de salida indicado, aunque el usuario escriba en otro idioma. " +
+      "No traduzcas literalmente: reescribe con naturalidad en el idioma de salida. " +
+      "Devuelve SIEMPRE un JSON válido con subject y body. " +
+      "No incluyas 'Asunto:' dentro de body.";
 
     const messages = [
       { role: "system", content: systemBase },
@@ -761,6 +771,7 @@ export default function PremiumEmailCreator() {
       setResult(bodyFinal);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
+      setIsTooShortResult(false);
     } catch (err) {
       setErrorMsg(
         err.message || tr("premiumEmailCreator.error_generic", "Error generando el email.")
