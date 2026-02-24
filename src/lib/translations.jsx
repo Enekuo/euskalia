@@ -4899,6 +4899,9 @@ premiumHeader_paraphraser: { ES: "Parafraseador", EUS: "Parafrasatzailea", EN: "
 premiumHeader_aiDetector: { ES: "Detector de IA", EUS: "IA detektagailua", EN: "AI Detector", FR: "Détecteur IA" },
 premiumHeader_humanizer: { ES: "Humanizador", EUS: "Humanizatzailea", EN: "Humanizer", FR: "Humaniseur" },
 premiumHeader_planPremium: { ES: "Premium", EUS: "Premium", EN: "Premium", FR: "Premium" },
+premiumHeader_creatorText: { ES: "Creador de texto", EUS: "Testu sortzailea", EN: "Text creator", FR: "Créateur de texte" },
+premiumHeader_creatorEmail: { ES: "Creador de email", EUS: "Email sortzailea", EN: "Email creator", FR: "Créateur d’email" },
+premiumHeader_creatorAudio: { ES: "Convertidor de audio", EUS: "Audio bihurtzailea", EN: "Audio converter", FR: "Convertisseur audio" },
 
 // =========================
 //        PREMIUM HOME

@@ -48,9 +48,9 @@ export default function PremiumLayout({ children }) {
   );
 
   const [creatorOpen, setCreatorOpen] = useState(
-    pathname === "/cuenta-premium/creador/texto" ||
-      pathname === "/cuenta-premium/creador/email" ||
-      pathname === "/cuenta-premium/creador/audio"
+    pathname === "/cuenta-premium/texto" ||
+      pathname === "/cuenta-premium/email" ||
+      pathname === "/cuenta-premium/convertidor"
   );
 
   const languages = [
@@ -73,11 +73,11 @@ export default function PremiumLayout({ children }) {
     pathname === "/cuenta-premium/detector-ia";
 
   const isCreatorSection =
-    pathname === "/cuenta-premium/creador/texto" ||
-    pathname === "/cuenta-premium/creador/email" ||
-    pathname === "/cuenta-premium/creador/audio";
+    pathname === "/cuenta-premium/texto" ||
+    pathname === "/cuenta-premium/email" ||
+    pathname === "/cuenta-premium/convertidor";
 
-  // ===== TÍTULO DINÁMICO EN HEADER (SOLO 6 HERRAMIENTAS, SIN SUBTÍTULO) =====
+  // ===== TÍTULO DINÁMICO EN HEADER (6 HERRAMIENTAS + 3 MODO CREADOR) =====
   const headerTitle = useMemo(() => {
     if (pathname === "/cuenta-premium/traductor") {
       return tr("premiumHeader_translator", "Traductor");
@@ -97,6 +97,18 @@ export default function PremiumLayout({ children }) {
     if (pathname === "/cuenta-premium/humanizador") {
       return tr("premiumHeader_humanizer", "Humanizador");
     }
+
+    // ✅ MODO CREADOR (3 herramientas)
+    if (pathname === "/cuenta-premium/texto") {
+      return tr("premiumHeader_creatorText", "Creador de texto");
+    }
+    if (pathname === "/cuenta-premium/email") {
+      return tr("premiumHeader_creatorEmail", "Creador de email");
+    }
+    if (pathname === "/cuenta-premium/convertidor") {
+      return tr("premiumHeader_creatorAudio", "Convertidor de audio");
+    }
+
     return null;
   }, [pathname, tr]);
 
@@ -414,25 +426,8 @@ export default function PremiumLayout({ children }) {
                       }
                     `}
                   >
-                    <span className="mr-2 text-slate-200">│</span>
-                    <span>Creador de email</span>
-                  </button>
-
-                  <button
-                    onClick={() => navigate("/cuenta-premium/convertidor")}
-                    className={`
-                      w-full flex items-center
-                      pl-4 pr-2 h-9
-                      text-sm
-                      ${
-                        isActive("/cuenta-premium/convertidor")
-                          ? "text-slate-900 font-semibold"
-                          : "text-slate-700 hover:text-slate-900"
-                      }
-                    `}
-                  >
                     <span className="mr-2 text-slate-200">└</span>
-                    <span>Convertidor de audio</span>
+                    <span>Creador de email</span>
                   </button>
                 </div>
               )}
