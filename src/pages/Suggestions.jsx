@@ -98,17 +98,7 @@ export default function Suggestions() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10 space-y-6">
         {/* CABECERA */}
         <div className="relative space-y-4 text-center">
-          {/* BOTÓN CUENTA PREMIUM (solo en PUBLIC) */}
-          {!isPremiumPath && (
-            <button
-              type="button"
-              onClick={() => navigate("/cuenta-premium")}
-              className="absolute right-0 top-0 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm hover:bg-white hover:border-slate-300 transition"
-            >
-              <Gem className="w-4 h-4 text-blue-600" />
-              {tr("suggestions.premium_account_button", "Cuenta Premium")}
-            </button>
-          )}
+         
 
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1 text-[11px] font-medium text-blue-700 shadow-sm mx-auto">
             <Sparkles className="w-3.5 h-3.5" />
