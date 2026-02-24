@@ -30,6 +30,10 @@ export default function PremiumEmailCreator() {
   // ✅ Prompt input inferior
   const [chatInput, setChatInput] = useState("");
 
+  // ✅ Modo: plantilla vs creativo
+  const [emailMode, setEmailMode] = useState("template"); // "template" | "creative"
+  const [creativeInfo, setCreativeInfo] = useState("");
+
   // Resultado / carga / error
   const [result, setResult] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
@@ -75,7 +79,7 @@ export default function PremiumEmailCreator() {
   const [savedToLibrary, setSavedToLibrary] = useState(false);
   const savedTimerRef = useRef(null);
 
-  // ✅ inputs del creador
+  // ✅ inputs del creador (plantilla)
   const [emailSaludo, setEmailSaludo] = useState("");
   const [emailIntro, setEmailIntro] = useState("");
   const [emailParagraphs, setEmailParagraphs] = useState([""]); // mínimo 1
@@ -161,6 +165,14 @@ export default function PremiumEmailCreator() {
   const labelRemoveParagraph = tr(
     "premiumEmailCreator.remove_paragraph",
     "Eliminar párrafo"
+  );
+
+  // ✅ Botones modo
+  const labelModeTemplate = tr("premiumEmailCreator.mode_template", "Plantilla");
+  const labelModeCreative = tr("premiumEmailCreator.mode_creative", "Creativo");
+  const placeholderCreative = tr(
+    "premiumEmailCreator.creative_ph",
+    "Escribe aquí toda la información: a quién va dirigido, objetivo, contexto, puntos clave, tono, si quieres CTA, etc..."
   );
 
   // ===== Tabs =====
@@ -285,8 +297,10 @@ export default function PremiumEmailCreator() {
     return false;
   };
 
-  // ===== construir textValue desde inputs =====
+  // ===== construir textValue desde inputs (solo plantilla) =====
   useEffect(() => {
+    if (emailMode !== "template") return;
+
     const parts = [
       (emailSaludo || "").trim(),
       (emailIntro || "").trim(),
@@ -300,6 +314,7 @@ export default function PremiumEmailCreator() {
     setTextValue(joined);
     setSourceMode("text");
   }, [
+    emailMode,
     emailSaludo,
     emailIntro,
     emailParagraphs,
@@ -361,6 +376,7 @@ export default function PremiumEmailCreator() {
 
   // ===== Validación =====
   const paragraphMinOk = useMemo(() => {
+    if (emailMode !== "template") return true;
     const paras = emailParagraphs || [];
     for (const p of paras) {
       const trimmed = (p || "").trim();
@@ -369,9 +385,13 @@ export default function PremiumEmailCreator() {
       if (words.length < 5) return false;
     }
     return true;
-  }, [emailParagraphs]);
+  }, [emailMode, emailParagraphs]);
 
   const hasAnyInput = useMemo(() => {
+    if (emailMode === "creative") {
+      return !!(creativeInfo || "").trim();
+    }
+
     const anyParagraph = (emailParagraphs || []).some((p) => (p || "").trim());
     return (
       !!(emailSaludo || "").trim() ||
@@ -383,6 +403,8 @@ export default function PremiumEmailCreator() {
       !!(chatInput || "").trim()
     );
   }, [
+    emailMode,
+    creativeInfo,
     emailSaludo,
     emailIntro,
     emailParagraphs,
@@ -450,6 +472,7 @@ export default function PremiumEmailCreator() {
     setEmailNombre("");
     setEmailParagraphs([""]);
     setChatInput("");
+    setCreativeInfo("");
     clearRight();
   };
 
@@ -595,7 +618,13 @@ export default function PremiumEmailCreator() {
     clearLimit();
     setSavedToLibrary(false);
 
-    if ((textValue || "").length > MAX_CHARS) {
+    if ((textValue || "").length > MAX_CHARS && emailMode === "template") {
+      setCharsLimit();
+      setLoading(false);
+      return;
+    }
+
+    if (emailMode === "creative" && (creativeInfo || "").length > MAX_CHARS) {
       setCharsLimit();
       setLoading(false);
       return;
@@ -678,26 +707,46 @@ export default function PremiumEmailCreator() {
       "REGLA: si el usuario escribe en otro idioma, tú lo REESCRIBES al idioma de salida.\n" +
       "REGLA: no copies literal, interpreta y mejora las frases.";
 
-    const basePrompt = [
-      "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
-      "",
-      "DATOS DEL USUARIO (pueden estar en cualquier idioma):",
-      `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
-      `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
-      `- (3) Párrafos/Notas:\n${paragraphsBlock ? paragraphsBlock : "(vacío -> crea contenido mínimo coherente)"}`,
-      `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
-      `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
-      `- (6) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
-      "",
-      userInstructions ? userInstructions : "",
-      "",
-      `REGLAS:\n${schemaRules}`,
-      `${toneRule}`,
-      `${lengthRule}`,
-      `${langInstruction}`,
-      "",
-      "IMPORTANTE: TODO debe salir en el idioma del selector, sin mezcla.",
-    ].join("\n");
+    const basePrompt =
+      emailMode === "creative"
+        ? [
+            "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
+            "",
+            "MODO: CREATIVO",
+            "El usuario solo aporta información general. Tú debes inferir todas las partes del email (saludo, intro, párrafos, frase final, cierre y nombre si falta).",
+            "",
+            "INFORMACIÓN DEL USUARIO (puede estar en cualquier idioma):",
+            `${(creativeInfo || "").trim()}`,
+            "",
+            `REGLAS:\n${schemaRules}`,
+            `${toneRule}`,
+            `${lengthRule}`,
+            `${langInstruction}`,
+            "",
+            "IMPORTANTE: TODO debe salir en el idioma del selector, sin mezcla.",
+          ].join("\n")
+        : [
+            "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
+            "",
+            "DATOS DEL USUARIO (pueden estar en cualquier idioma):",
+            `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
+            `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
+            `- (3) Párrafos/Notas:\n${
+              paragraphsBlock ? paragraphsBlock : "(vacío -> crea contenido mínimo coherente)"
+            }`,
+            `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
+            `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
+            `- (6) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
+            "",
+            userInstructions ? userInstructions : "",
+            "",
+            `REGLAS:\n${schemaRules}`,
+            `${toneRule}`,
+            `${lengthRule}`,
+            `${langInstruction}`,
+            "",
+            "IMPORTANTE: TODO debe salir en el idioma del selector, sin mezcla.",
+          ].join("\n");
 
     const systemBase =
       "Eres un redactor experto de emails. Interpretas notas sueltas y las conviertes en un email impecable. " +
@@ -709,6 +758,8 @@ export default function PremiumEmailCreator() {
     ];
 
     const cacheBase = JSON.stringify({
+      mode: emailMode,
+      creativeInfo,
       emailLength,
       outputLang,
       chatInput,
@@ -866,9 +917,7 @@ export default function PremiumEmailCreator() {
         }
       }
 
-      setEmailSubject(
-        subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta")
-      );
+      setEmailSubject(subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
       setResult(builtBody1);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
@@ -888,7 +937,8 @@ export default function PremiumEmailCreator() {
     !!emailSaludo2 ||
     !!emailNombre ||
     (emailParagraphs || []).some((p) => (p || "").trim()) ||
-    !!chatInput;
+    !!chatInput ||
+    !!creativeInfo;
 
   return (
     <>
@@ -906,161 +956,235 @@ export default function PremiumEmailCreator() {
             <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
+
+                {/* ✅ Botones: Creativo / Plantilla */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (emailMode !== "creative") {
+                        setEmailMode("creative");
+                        clearRight();
+                      }
+                    }}
+                    className="h-8 px-3 rounded-full text-[13px] font-semibold border"
+                    style={{
+                      backgroundColor: emailMode === "creative" ? BLUE : "#ffffff",
+                      color: emailMode === "creative" ? "#ffffff" : "#0f172a",
+                      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
+                    }}
+                    aria-pressed={emailMode === "creative"}
+                    aria-label={labelModeCreative}
+                  >
+                    {labelModeCreative}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (emailMode !== "template") {
+                        setEmailMode("template");
+                        clearRight();
+                      }
+                    }}
+                    className="h-8 px-3 rounded-full text-[13px] font-semibold border"
+                    style={{
+                      backgroundColor: emailMode === "template" ? BLUE : "#ffffff",
+                      color: emailMode === "template" ? "#ffffff" : "#0f172a",
+                      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
+                    }}
+                    aria-pressed={emailMode === "template"}
+                    aria-label={labelModeTemplate}
+                  >
+                    {labelModeTemplate}
+                  </button>
+                </div>
               </div>
 
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
-                {/* 1 */}
-                <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {labelSmall1}
-                  </div>
-                  <textarea
-                    value={emailSaludo}
-                    onChange={(e) => {
-                      setEmailSaludo(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={placeholderSaludo}
-                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                    rows={2}
-                  />
-                </div>
-
-                {/* 2 */}
-                <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {labelSmall2}
-                  </div>
-                  <textarea
-                    value={emailIntro}
-                    onChange={(e) => {
-                      setEmailIntro(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={placeholderIntro}
-                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                    rows={2}
-                  />
-                </div>
-
-                {/* 3 */}
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="text-sm font-semibold text-slate-800">
-                    {labelBig3}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addParagraph}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
-                    aria-label={labelAddParagraph}
-                    title={labelAddParagraph}
-                  >
-                    <span className="whitespace-nowrap">{labelAddParagraph}</span>
-                  </button>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                  {emailParagraphs.map((p, idx) => (
-                    <div key={idx} className="relative">
+                {emailMode === "creative" ? (
+                  <>
+                    <div className="mb-4">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {tr("premiumEmailCreator.creative_label", "Información")}
+                      </div>
                       <textarea
-                        value={p}
+                        value={creativeInfo}
                         onChange={(e) => {
-                          updateParagraph(idx, e.target.value);
+                          setCreativeInfo(e.target.value);
                           clearRight();
                         }}
-                        placeholder={placeholderParagraph}
-                        className="w-full h-24 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        placeholder={placeholderCreative}
+                        className="w-full h-[260px] resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
                       />
+                    </div>
+
+                    <div className="mt-2">
+                      <Button
+                        type="button"
+                        onClick={handleGenerate}
+                        disabled={loading || !hasValidInput}
+                        className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                      >
+                        {labelGenerateFromSources}
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* 1 */}
+                    <div className="mb-5">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {labelSmall1}
+                      </div>
+                      <textarea
+                        value={emailSaludo}
+                        onChange={(e) => {
+                          setEmailSaludo(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderSaludo}
+                        className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        rows={2}
+                      />
+                    </div>
+
+                    {/* 2 */}
+                    <div className="mb-5">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {labelSmall2}
+                      </div>
+                      <textarea
+                        value={emailIntro}
+                        onChange={(e) => {
+                          setEmailIntro(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderIntro}
+                        className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        rows={2}
+                      />
+                    </div>
+
+                    {/* 3 */}
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="text-sm font-semibold text-slate-800">{labelBig3}</div>
                       <button
                         type="button"
-                        onClick={() => removeParagraph(idx)}
-                        className="absolute top-3 right-3 h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                        aria-label={labelRemoveParagraph}
-                        title={labelRemoveParagraph}
+                        onClick={addParagraph}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
+                        aria-label={labelAddParagraph}
+                        title={labelAddParagraph}
                       >
-                        <X className="w-4 h-4" />
+                        <span className="whitespace-nowrap">{labelAddParagraph}</span>
                       </button>
                     </div>
-                  ))}
-                </div>
 
-                {/* ✅ 4 - Frase final */}
-                <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {labelFinal}
-                  </div>
-                  <textarea
-                    value={emailFinalPhrase}
-                    onChange={(e) => {
-                      setEmailFinalPhrase(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={placeholderFinal}
-                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                    rows={2}
-                  />
-                </div>
+                    <div className="space-y-4 mb-6">
+                      {emailParagraphs.map((p, idx) => (
+                        <div key={idx} className="relative">
+                          <textarea
+                            value={p}
+                            onChange={(e) => {
+                              updateParagraph(idx, e.target.value);
+                              clearRight();
+                            }}
+                            placeholder={placeholderParagraph}
+                            className="w-full h-24 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeParagraph(idx)}
+                            className="absolute top-3 right-3 h-8 w-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                            aria-label={labelRemoveParagraph}
+                            title={labelRemoveParagraph}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
 
-                {/* ✅ 5 - Saludo */}
-                <div className="mb-5">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {labelSmall4}
-                  </div>
-                  <textarea
-                    value={emailSaludo2}
-                    onChange={(e) => {
-                      setEmailSaludo2(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={placeholderSaludo2}
-                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                    rows={2}
-                  />
-                </div>
+                    {/* ✅ 4 - Frase final */}
+                    <div className="mb-5">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {labelFinal}
+                      </div>
+                      <textarea
+                        value={emailFinalPhrase}
+                        onChange={(e) => {
+                          setEmailFinalPhrase(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderFinal}
+                        className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        rows={2}
+                      />
+                    </div>
 
-                {/* ✅ 6 - Nombre */}
-                <div className="mb-4">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {labelSmall5}
-                  </div>
-                  <textarea
-                    value={emailNombre}
-                    onChange={(e) => {
-                      setEmailNombre(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={placeholderNombre}
-                    className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                    rows={2}
-                  />
-                </div>
+                    {/* ✅ 5 - Saludo */}
+                    <div className="mb-5">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {labelSmall4}
+                      </div>
+                      <textarea
+                        value={emailSaludo2}
+                        onChange={(e) => {
+                          setEmailSaludo2(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderSaludo2}
+                        className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        rows={2}
+                      />
+                    </div>
 
-                {/* Prompt inferior */}
-                <div className="mt-2">
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    {tr("premiumEmailCreator.bottom_input_label", "Argibideak")}
-                  </div>
-                  <textarea
-                    value={chatInput}
-                    onChange={(e) => {
-                      setChatInput(e.target.value);
-                      clearRight();
-                    }}
-                    placeholder={labelBottomInputPh}
-                    className="w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                  />
-                  <div className="mt-3">
-                    <Button
-                      type="button"
-                      onClick={handleGenerate}
-                      disabled={loading || !hasValidInput}
-                      className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                    >
-                      {labelGenerateWithPrompt}
-                    </Button>
-                  </div>
-                </div>
+                    {/* ✅ 6 - Nombre */}
+                    <div className="mb-4">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {labelSmall5}
+                      </div>
+                      <textarea
+                        value={emailNombre}
+                        onChange={(e) => {
+                          setEmailNombre(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={placeholderNombre}
+                        className="w-full h-11 overflow-hidden resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                        rows={2}
+                      />
+                    </div>
+
+                    {/* Prompt inferior */}
+                    <div className="mt-2">
+                      <div className="text-sm font-semibold text-slate-800 mb-2">
+                        {tr("premiumEmailCreator.bottom_input_label", "Argibideak")}
+                      </div>
+                      <textarea
+                        value={chatInput}
+                        onChange={(e) => {
+                          setChatInput(e.target.value);
+                          clearRight();
+                        }}
+                        placeholder={labelBottomInputPh}
+                        className="w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                      />
+                      <div className="mt-3">
+                        <Button
+                          type="button"
+                          onClick={handleGenerate}
+                          disabled={loading || !hasValidInput}
+                          className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                        >
+                          {labelGenerateWithPrompt}
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </aside>
 
