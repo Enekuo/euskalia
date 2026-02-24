@@ -110,12 +110,6 @@ export default function PremiumEmailCreator() {
     "premiumEmailCreator.create_help_right",
     "Hautatu iturri bat eta sakatu “Emaila sortu”."
   );
-
-  // ✅ Prompt inferior
-  const labelBottomInputPh = tr(
-    "premiumEmailCreator.bottom_input_ph",
-    "Idatzi hemen argibideak (aukerakoa): hartzailea, tonua, helburua, call-to-action…"
-  );
   const labelGenerateWithPrompt = tr(
     "premiumEmailCreator.generate_with_prompt",
     "Argibideekin sortu"
@@ -959,46 +953,44 @@ export default function PremiumEmailCreator() {
 
                 {/* ✅ Botones: Creativo / Plantilla */}
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (emailMode !== "creative") {
-                        setEmailMode("creative");
-                        clearRight();
-                      }
-                    }}
-                    className="h-8 px-3 rounded-full text-[13px] font-semibold border"
-                    style={{
-                      backgroundColor: emailMode === "creative" ? BLUE : "#ffffff",
-                      color: emailMode === "creative" ? "#ffffff" : "#0f172a",
-                      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
-                    }}
-                    aria-pressed={emailMode === "creative"}
-                    aria-label={labelModeCreative}
-                  >
-                    {labelModeCreative}
-                  </button>
+  <button
+    type="button"
+    onClick={() => {
+      if (emailMode !== "creative") {
+        setEmailMode("creative");
+        clearRight();
+      }
+    }}
+    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+    style={{
+      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
+      backgroundColor: emailMode === "creative" ? "#eff6ff" : "#ffffff",
+      color: emailMode === "creative" ? BLUE : "#334155",
+    }}
+    aria-pressed={emailMode === "creative"}
+  >
+    {labelModeCreative}
+  </button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (emailMode !== "template") {
-                        setEmailMode("template");
-                        clearRight();
-                      }
-                    }}
-                    className="h-8 px-3 rounded-full text-[13px] font-semibold border"
-                    style={{
-                      backgroundColor: emailMode === "template" ? BLUE : "#ffffff",
-                      color: emailMode === "template" ? "#ffffff" : "#0f172a",
-                      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
-                    }}
-                    aria-pressed={emailMode === "template"}
-                    aria-label={labelModeTemplate}
-                  >
-                    {labelModeTemplate}
-                  </button>
-                </div>
+  <button
+    type="button"
+    onClick={() => {
+      if (emailMode !== "template") {
+        setEmailMode("template");
+        clearRight();
+      }
+    }}
+    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+    style={{
+      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
+      backgroundColor: emailMode === "template" ? "#eff6ff" : "#ffffff",
+      color: emailMode === "template" ? BLUE : "#334155",
+    }}
+    aria-pressed={emailMode === "template"}
+  >
+    {labelModeTemplate}
+  </button>
+</div>
               </div>
 
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
@@ -1157,32 +1149,6 @@ export default function PremiumEmailCreator() {
                       />
                     </div>
 
-                    {/* Prompt inferior */}
-                    <div className="mt-2">
-                      <div className="text-sm font-semibold text-slate-800 mb-2">
-                        {tr("premiumEmailCreator.bottom_input_label", "Argibideak")}
-                      </div>
-                      <textarea
-                        value={chatInput}
-                        onChange={(e) => {
-                          setChatInput(e.target.value);
-                          clearRight();
-                        }}
-                        placeholder={labelBottomInputPh}
-                        className="w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
-                      />
-                      <div className="mt-3">
-                        <Button
-                          type="button"
-                          onClick={handleGenerate}
-                          disabled={loading || !hasValidInput}
-                          className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                        >
-                          {labelGenerateWithPrompt}
-                        </Button>
-                      </div>
-                    </div>
                   </>
                 )}
               </div>
