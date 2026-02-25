@@ -4902,7 +4902,7 @@ premiumHeader_planPremium: { ES: "Premium", EUS: "Premium", EN: "Premium", FR: "
 premiumHeader_creatorText: { ES: "Creador de texto", EUS: "Testu sortzailea", EN: "Text creator", FR: "Créateur de texte" },
 premiumHeader_creatorEmail: { ES: "Creador de email", EUS: "Email sortzailea", EN: "Email creator", FR: "Créateur d’email" },
 premiumHeader_creatorAudio: { ES: "Convertidor de audio", EUS: "Audio bihurtzailea", EN: "Audio converter", FR: "Convertisseur audio" },
-
+premiumHeader_aiAssistant: { ES: "Asistente de IA", EUS: "IA asistentea", EN: "AI Assistant", FR: "Assistant IA" },
 // =========================
 //        PREMIUM HOME
 // =========================

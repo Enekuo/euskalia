@@ -77,7 +77,7 @@ export default function PremiumLayout({ children }) {
     pathname === "/cuenta-premium/email" ||
     pathname === "/cuenta-premium/convertidor";
 
-  // ===== TÍTULO DINÁMICO EN HEADER (6 HERRAMIENTAS + 3 MODO CREADOR) =====
+  // ===== TÍTULO DINÁMICO EN HEADER (6 HERRAMIENTAS + 3 MODO CREADOR + ASISTENTE) =====
   const headerTitle = useMemo(() => {
     if (pathname === "/cuenta-premium/traductor") {
       return tr("premiumHeader_translator", "Traductor");
@@ -107,6 +107,11 @@ export default function PremiumLayout({ children }) {
     }
     if (pathname === "/cuenta-premium/convertidor") {
       return tr("premiumHeader_creatorAudio", "Convertidor de audio");
+    }
+
+    // ✅ ASISTENTE DE IA
+    if (pathname === "/cuenta-premium/assistant") {
+      return tr("premiumHeader_aiAssistant", "Asistente de IA");
     }
 
     return null;

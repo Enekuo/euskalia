@@ -1,12 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {
-  Sparkles,
-  FileText,
-  Pencil,
-  ChevronDown,
-  Plus,
-  ArrowUp,
-} from "lucide-react";
+import { Sparkles, FileText, Pencil, ChevronDown, Plus, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 
 export default function PremiumAiAssistant() {
@@ -17,33 +10,27 @@ export default function PremiumAiAssistant() {
     return !val || val === key ? fallback : val;
   };
 
-  const [tab, setTab] = useState("chat"); // "chat" | "history"
   const [input, setInput] = useState("");
 
-  const placeholderTitle = useMemo(
-    () => tr("assistant.title", "Euskalia AI"),
-    [t]
-  );
+  const placeholderTitle = useMemo(() => tr("assistant.title", "Euskalia AI"), [t]);
 
   return (
     <div className="w-full min-h-[calc(100vh-64px)] px-3 sm:px-6 py-6 sm:py-10">
-      {/* PAGE BACKGROUND (página independiente) */}
       <div className="mx-auto w-full max-w-[980px]">
-        <div className="mb-5">
-          <div className="text-[22px] sm:text-[26px] font-extrabold text-slate-900">
-            {tr("assistant.page_title", "Asistente de IA")}
+        {/* ✅ TITULO GRANDE + SUBTITULO (solo lo redondeado) */}
+        <div className="text-center">
+          <div className="text-[34px] sm:text-[44px] font-extrabold tracking-tight text-slate-900">
+            {tr("assistant.big_title", "¿Cómo puedo ayudar?")}
           </div>
-          <div className="mt-1 text-[14px] sm:text-[15px] text-slate-600">
-            {tr(
-              "assistant.page_subtitle",
-              "Asistente lingüístico centrado en euskera para ayudarte con textos, traducción, correcciones y resúmenes."
-            )}
+          <div className="mt-2 text-[16px] sm:text-[18px] text-slate-600">
+            {tr("assistant.big_subtitle", "Usa el chat IA para generar nuevas ideas")}
           </div>
         </div>
 
         {/* PANEL CENTRAL */}
         <div
           className="
+            mt-10
             w-full
             bg-white
             rounded-[18px]
@@ -52,44 +39,8 @@ export default function PremiumAiAssistant() {
             border border-slate-100
           "
         >
-          {/* TOP BAR */}
-          <div className="flex items-center justify-between px-6 pt-5">
-            {/* Tabs */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setTab("chat")}
-                className={`
-                  h-9 px-4 rounded-full text-sm font-semibold
-                  border
-                  ${
-                    tab === "chat"
-                      ? "bg-white border-slate-200 text-slate-900 shadow-sm"
-                      : "bg-slate-50 border-transparent text-slate-500 hover:text-slate-700"
-                  }
-                `}
-              >
-                {tr("assistant.tab_chat", "Chat")}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setTab("history")}
-                className={`
-                  h-9 px-4 rounded-full text-sm font-semibold
-                  border
-                  ${
-                    tab === "history"
-                      ? "bg-white border-slate-200 text-slate-900 shadow-sm"
-                      : "bg-slate-50 border-transparent text-slate-500 hover:text-slate-700"
-                  }
-                `}
-              >
-                {tr("assistant.tab_history", "History")}
-              </button>
-            </div>
-
-            {/* Actions */}
+          {/* TOP BAR (solo acciones, sin tabs) */}
+          <div className="flex items-center justify-end px-6 pt-5">
             <div className="flex items-center gap-3 text-slate-400">
               <button
                 type="button"
@@ -127,9 +78,22 @@ export default function PremiumAiAssistant() {
           </div>
 
           {/* CONTENT */}
-          <div className="px-6 pt-6 pb-0">
+          <div className="px-6 pt-3 pb-0">
+            {/* ✅ CHAT PILL POR ENCIMA (y sin History) */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="
+                  h-9 px-4 rounded-full text-sm font-semibold
+                  border bg-white border-slate-200 text-slate-900 shadow-sm
+                "
+              >
+                {tr("assistant.tab_chat", "Chat")}
+              </button>
+            </div>
+
             {/* Cabecera del asistente */}
-            <div className="flex items-start gap-3">
+            <div className="mt-5 flex items-start gap-3">
               <div className="mt-0.5 h-6 w-6 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
@@ -148,7 +112,7 @@ export default function PremiumAiAssistant() {
               </div>
             </div>
 
-            {/* ZONA CHAT / HISTORY */}
+            {/* ZONA CHAT */}
             <div
               className="
                 mt-5
@@ -159,28 +123,11 @@ export default function PremiumAiAssistant() {
                 flex flex-col
               "
             >
-              {/* espacio para mensajes */}
               <div className="flex-1 overflow-auto px-2 sm:px-4 py-3">
-                {tab === "chat" ? (
-                  <div />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-[14px] font-semibold text-slate-700">
-                        {tr("assistant.history_empty_title", "Sin historial")}
-                      </div>
-                      <div className="mt-1 text-[13px] text-slate-500">
-                        {tr(
-                          "assistant.history_empty_subtitle",
-                          "Aquí aparecerán tus conversaciones guardadas."
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <div />
               </div>
 
-              {/* INPUT BOX (✅ solo 1 “piso”) */}
+              {/* INPUT BOX */}
               <div className="px-2 sm:px-4 pb-4">
                 <div
                   className="
@@ -262,8 +209,25 @@ export default function PremiumAiAssistant() {
             </div>
           </div>
 
-          {/* padding inferior */}
           <div className="h-5" />
+        </div>
+
+        {/* ✅ TEXTO LEGAL ABAJO (solo lo redondeado) */}
+        <div className="mt-10 text-center text-[12px] text-slate-500">
+          <span>
+            {tr(
+              "assistant.legal_prefix",
+              "Al usar el chat IA, confirmas que estás de acuerdo con nuestras "
+            )}
+          </span>
+          <span className="text-blue-600 underline underline-offset-2 cursor-pointer">
+            {tr("assistant.legal_terms", "Condiciones del servicio")}
+          </span>
+          <span>{tr("assistant.legal_middle", " y que has leído la ")}</span>
+          <span className="text-blue-600 underline underline-offset-2 cursor-pointer">
+            {tr("assistant.legal_privacy", "Política de privacidad")}
+          </span>
+          <span>.</span>
         </div>
       </div>
     </div>
