@@ -114,41 +114,27 @@ export default function PremiumAiAssistant() {
             </div>
 
             {/* Acciones */}
-            <div className="flex items-center gap-3 text-slate-400">
-              <button
-                type="button"
-                className="h-9 w-9 rounded-full hover:bg-slate-50 inline-flex items-center justify-center"
-                aria-label="Actions"
-                title="Actions"
-              >
-                <Sparkles className="w-4.5 h-4.5" />
-              </button>
-              <button
-                type="button"
-                className="h-9 w-9 rounded-full hover:bg-slate-50 inline-flex items-center justify-center"
-                aria-label="Document"
-                title="Document"
-              >
-                <FileText className="w-4.5 h-4.5" />
-              </button>
-              <button
-                type="button"
-                className="h-9 w-9 rounded-full hover:bg-slate-50 inline-flex items-center justify-center"
-                aria-label="Edit"
-                title="Edit"
-              >
-                <Pencil className="w-4.5 h-4.5" />
-              </button>
-              <button
-                type="button"
-                className="h-9 w-9 rounded-full hover:bg-slate-50 inline-flex items-center justify-center"
-                aria-label="More"
-                title="More"
-              >
-                <ChevronDown className="w-4.5 h-4.5" />
-              </button>
-            </div>
-          </div>
+<div className="flex items-start justify-between px-6 pt-5">
+  {/* Nuevo chat */}
+  <div className="flex items-center gap-2">
+    <button
+      type="button"
+      onClick={newChat}
+      className="
+        h-9 px-4 rounded-full text-sm font-semibold
+        border bg-white border-slate-200 text-slate-900 shadow-sm
+        inline-flex items-center gap-2
+        hover:bg-slate-50
+      "
+    >
+      <span className="text-[18px] leading-none">+</span>
+      {tr("assistant.new_chat", "Nuevo chat")}
+    </button>
+  </div>
+</div>
+</div>
+   
+  
 
           {/* CONTENT */}
           <div className="px-6 pt-3 pb-0">
