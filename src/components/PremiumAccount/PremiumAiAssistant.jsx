@@ -1,7 +1,8 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
-import { Sparkles, Plus, ArrowUp } from "lucide-react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { Sparkles, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
+import { auth } from "@/lib/firebase";
 
 export default function PremiumAiAssistant() {
   const { t } = useTranslation();
@@ -15,7 +16,9 @@ export default function PremiumAiAssistant() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [avatarOk, setAvatarOk] = useState(true);
+  const [isSending, setIsSending] = useState(false);
   const listRef = useRef(null);
+  const inputRef = useRef(null);
 
   const scrollToBottom = () => {
     const el = listRef.current;
@@ -27,31 +30,122 @@ export default function PremiumAiAssistant() {
     scrollToBottom();
   }, [messages.length]);
 
+  const systemInstruction = useMemo(() => {
+    return `
+Eres Euskalia AI, un asistente especializado en transformación, mejora, análisis, reescritura, resumen, traducción y generación de textos.
+Eres flexible y natural dentro de tareas de texto: puedes redactar, reformular, cambiar tono/formato, estructurar y mejorar contenido.
+NO respondas preguntas de cultura general u otros temas que no impliquen trabajar con un texto o crear/redactar texto.
+Si el usuario pregunta algo fuera de contexto, responde SOLO con una frase breve indicando que el asistente está enfocado en tareas de texto, y ofrece 2 ejemplos de lo que sí puedes hacer.
+No inventes datos: si el usuario pide información factual, pídele que pegue el texto o que aclare el objetivo del texto a redactar.
+    `.trim();
+  }, []);
+
   const newChat = () => {
     setMessages([]);
     setInput("");
+    setIsSending(false);
+    setTimeout(() => {
+      inputRef.current?.focus?.();
+    }, 0);
   };
 
-  const send = () => {
+  const extractAssistantText = (data) => {
+    if (!data) return "";
+    if (typeof data === "string") return data;
+    return (
+      data.text ||
+      data.reply ||
+      data.content ||
+      data.message ||
+      (data.choices &&
+        data.choices[0] &&
+        data.choices[0].message &&
+        data.choices[0].message.content) ||
+      ""
+    );
+  };
+
+  const callApi = async (chatMessages) => {
+    const user = auth?.currentUser || null;
+    const token = user ? await user.getIdToken() : null;
+
+    const payload = {
+      messages: [
+        { role: "system", content: systemInstruction },
+        ...chatMessages.map((m) => ({
+          role: m.role,
+          content: m.text,
+        })),
+      ],
+    };
+
+    const res = await fetch("/api/pro", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+
+    let data = null;
+    try {
+      data = await res.json();
+    } catch {}
+
+    if (!res.ok) {
+      const msg =
+        extractAssistantText(data) ||
+        `Error ${res.status}. No se pudo generar la respuesta.`;
+      throw new Error(msg);
+    }
+
+    const out = extractAssistantText(data);
+    if (!out) throw new Error("Respuesta vacía del servidor.");
+    return out;
+  };
+
+  const send = async () => {
     const text = (input || "").trim();
-    if (!text) return;
+    if (!text || isSending) return;
 
-    setMessages((prev) => [...prev, { role: "user", text }]);
+    const next = [...messages, { role: "user", text }];
+    setMessages(next);
     setInput("");
+    setIsSending(true);
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: "¡Hola! ¿En qué puedo ayudarte hoy?",
-        },
-      ]);
-    }, 150);
+    const placeholderId = `${Date.now()}_${Math.random()
+      .toString(16)
+      .slice(2)}`;
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", text: "…", _id: placeholderId },
+    ]);
+
+    try {
+      const reply = await callApi(next);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === placeholderId ? { role: "assistant", text: reply } : m
+        )
+      );
+    } catch (e) {
+      const errText =
+        (e && e.message) ||
+        "No se pudo generar la respuesta. Inténtalo de nuevo.";
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === placeholderId ? { role: "assistant", text: errText } : m
+        )
+      );
+    } finally {
+      setIsSending(false);
+      setTimeout(() => inputRef.current?.focus?.(), 0);
+    }
   };
 
   const onKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter") {
       e.preventDefault();
       send();
     }
@@ -61,10 +155,8 @@ export default function PremiumAiAssistant() {
     <div className="w-full min-h-[calc(100vh-64px)] px-3 sm:px-6 py-6 sm:py-10">
       <div className="mx-auto w-full max-w-[1100px]">
         <div className="w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100">
-
           {/* TOP BAR */}
           <div className="flex items-start justify-between px-6 pt-6">
-
             {/* TÍTULO */}
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -90,17 +182,16 @@ export default function PremiumAiAssistant() {
           {/* CONTENT */}
           <div className="px-6 pt-3 pb-0">
             <div className="mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col">
-
               {/* MENSAJES */}
               <div ref={listRef} className="flex-1 overflow-auto px-4 py-4">
                 {messages.length === 0 ? (
                   <div className="h-full w-full flex items-center justify-center">
                     <div className="text-center px-4">
                       <div className="text-[40px] font-extrabold tracking-tight text-slate-900">
-                        ¿Cómo puedo ayudar?
+                        ¿Cómo puedo ayudarte?
                       </div>
                       <div className="mt-2 text-[18px] text-slate-600">
-                        Usa el chat IA para generar nuevas ideas
+                        Escribe tu petición
                       </div>
                     </div>
                   </div>
@@ -112,7 +203,7 @@ export default function PremiumAiAssistant() {
                       if (isUser) {
                         return (
                           <div key={idx} className="w-full flex justify-end">
-                            <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-sky-100 text-slate-900 border border-sky-200">
+                            <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-sky-100 text-slate-900 border border-sky-200 whitespace-pre-wrap">
                               {m.text}
                             </div>
                           </div>
@@ -120,7 +211,10 @@ export default function PremiumAiAssistant() {
                       }
 
                       return (
-                        <div key={idx} className="w-full flex justify-start items-start gap-3">
+                        <div
+                          key={idx}
+                          className="w-full flex justify-start items-start gap-3"
+                        >
                           <div className="mt-0.5 h-10 w-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center overflow-hidden">
                             {avatarOk ? (
                               <img
@@ -134,7 +228,7 @@ export default function PremiumAiAssistant() {
                             )}
                           </div>
 
-                          <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-slate-100 text-slate-900 border border-slate-200">
+                          <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-slate-100 text-slate-900 border border-slate-200 whitespace-pre-wrap">
                             {m.text}
                           </div>
                         </div>
@@ -146,40 +240,28 @@ export default function PremiumAiAssistant() {
 
               {/* INPUT */}
               <div className="px-4 pb-4">
-                <div className="rounded-[18px] border-2 border-slate-900/90 bg-white px-4 py-2 flex items-center gap-3">
-
-                  <button
-                    type="button"
-                    className="h-9 w-9 rounded-full border border-slate-200 bg-white hover:bg-slate-50 inline-flex items-center justify-center text-slate-700"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-
-                  <textarea
+                <div className="rounded-[18px] border-2 border-slate-900/90 bg-white px-4 h-12 flex items-center gap-3">
+                  <input
+                    ref={inputRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={onKeyDown}
-                    rows={1}
-                    placeholder="Ask anything…"
-                    className="flex-1 resize-none outline-none text-[14px] text-slate-900 placeholder:text-slate-400 h-9 min-h-[36px] max-h-[72px]"
+                    placeholder="Escribe aquí…"
+                    className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
                   />
 
                   <button
                     type="button"
                     onClick={send}
-                    disabled={!input.trim()}
+                    disabled={!input.trim() || isSending}
                     className={`h-10 w-10 rounded-full inline-flex items-center justify-center transition ${
-                      input.trim()
+                      input.trim() && !isSending
                         ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
                         : "bg-slate-100 text-slate-300 cursor-not-allowed"
                     }`}
                   >
                     <ArrowUp className="w-5 h-5" />
                   </button>
-                </div>
-
-                <div className="pt-3 text-center text-[12px] text-slate-500">
-                  Euskalia AI can make mistakes. Double-check replies.
                 </div>
               </div>
             </div>
@@ -205,7 +287,8 @@ export default function PremiumAiAssistant() {
             className="text-blue-600 underline underline-offset-2 hover:text-blue-700"
           >
             Política de privacidad
-          </button>.
+          </button>
+          .
         </div>
       </div>
     </div>
