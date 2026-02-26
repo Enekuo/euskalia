@@ -30,13 +30,14 @@ export default function PremiumAiAssistant() {
     scrollToBottom();
   }, [messages.length]);
 
-  const systemInstruction = useMemo(() => {
+  // ✅ prompt corto + redirección mínima + no repetir capacidades
+  const systemInstructionBase = useMemo(() => {
     return `
-Eres Euskalia AI, un asistente especializado en transformación, mejora, análisis, reescritura, resumen, traducción y generación de textos.
-Eres flexible y natural dentro de tareas de texto: puedes redactar, reformular, cambiar tono/formato, estructurar y mejorar contenido.
-NO respondas preguntas de cultura general u otros temas que no impliquen trabajar con un texto o crear/redactar texto.
-Si el usuario pregunta algo fuera de contexto, responde SOLO con una frase breve indicando que el asistente está enfocado en tareas de texto, y ofrece 2 ejemplos de lo que sí puedes hacer.
-No inventes datos: si el usuario pide información factual, pídele que pegue el texto o que aclare el objetivo del texto a redactar.
+Eres Euskalia AI, un asistente de escritura.
+Responde de forma útil y directa trabajando con textos: redactar, reescribir, resumir, traducir, mejorar.
+No respondas preguntas de cultura general o temas fuera de escritura.
+Si el usuario pide algo fuera de contexto, responde SOLO con: "Puedo ayudarte con textos. Pega el texto o dime qué quieres redactar/mejorar."
+No añadas listas de capacidades, ejemplos, ni explicaciones extra.
     `.trim();
   }, []);
 
@@ -68,6 +69,23 @@ No inventes datos: si el usuario pide información factual, pídele que pegue el
   const callApi = async (chatMessages) => {
     const user = auth?.currentUser || null;
     const token = user ? await user.getIdToken() : null;
+
+    // ✅ Si ya hubo al menos 1 redirección, endurecemos para que NO vuelva a repetirlo
+    const outOfScopeCount = chatMessages.filter(
+      (m) =>
+        m.role === "assistant" &&
+        typeof m.text === "string" &&
+        m.text.includes("Puedo ayudarte con textos.")
+    ).length;
+
+    const systemInstruction =
+      outOfScopeCount >= 1
+        ? `
+${systemInstructionBase}
+
+IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite SOLO exactamente: "Puedo ayudarte con textos. Pega el texto o dime qué quieres redactar/mejorar."
+          `.trim()
+        : systemInstructionBase;
 
     const payload = {
       messages: [
@@ -157,18 +175,15 @@ No inventes datos: si el usuario pide información factual, pídele que pegue el
         <div className="w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100">
           {/* TOP BAR */}
           <div className="flex items-start justify-between px-6 pt-6">
-            {/* TÍTULO */}
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
-
               <div className="text-[20px] font-extrabold text-slate-900">
                 Asistente de IA
               </div>
             </div>
 
-            {/* BOTÓN NUEVO CHAT */}
             <button
               type="button"
               onClick={newChat}
@@ -179,16 +194,14 @@ No inventes datos: si el usuario pide información factual, pídele que pegue el
             </button>
           </div>
 
-          {/* CONTENT */}
           <div className="px-6 pt-3 pb-0">
             <div className="mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col">
-              {/* MENSAJES */}
               <div ref={listRef} className="flex-1 overflow-auto px-4 py-4">
                 {messages.length === 0 ? (
                   <div className="h-full w-full flex items-center justify-center">
                     <div className="text-center px-4">
                       <div className="text-[40px] font-extrabold tracking-tight text-slate-900">
-                        ¿Cómo puedo ayudarte?
+                        ¿Cómo puedo ayudar?
                       </div>
                       <div className="mt-2 text-[18px] text-slate-600">
                         Escribe tu petición
@@ -270,7 +283,6 @@ No inventes datos: si el usuario pide información factual, pídele que pegue el
           <div className="h-5" />
         </div>
 
-        {/* TEXTO LEGAL */}
         <div className="mt-10 text-center text-[12px] text-slate-500">
           Al usar el chat IA, confirmas que estás de acuerdo con nuestras{" "}
           <button
