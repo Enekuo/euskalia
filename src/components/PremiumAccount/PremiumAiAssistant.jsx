@@ -30,14 +30,25 @@ export default function PremiumAiAssistant() {
     scrollToBottom();
   }, [messages.length]);
 
-  // ✅ prompt corto + redirección mínima + no repetir capacidades
+  // ✅ SYSTEM PROMPT INTELIGENTE (sin frase fija)
   const systemInstructionBase = useMemo(() => {
     return `
-Eres Euskalia AI, un asistente de escritura.
-Responde de forma útil y directa trabajando con textos: redactar, reescribir, resumir, traducir, mejorar.
-No respondas preguntas de cultura general o temas fuera de escritura.
-Si el usuario pide algo fuera de contexto, responde SOLO con: "Puedo ayudarte con textos. Pega el texto o dime qué quieres redactar/mejorar."
-No añadas listas de capacidades, ejemplos, ni explicaciones extra.
+Eres Euskalia AI, un asistente especializado en trabajo con textos.
+
+Responde de forma natural, profesional y directa.
+Adáptate al mensaje del usuario sin enumerar capacidades ni explicar lo que puedes hacer.
+
+Tu función es ayudar redactando, reescribiendo, corrigiendo, resumiendo o mejorando textos.
+
+Si el usuario hace una pregunta claramente fuera del ámbito de escritura o textos,
+redirige de forma breve y natural hacia el trabajo con textos,
+pero genera la frase tú mismo.
+No repitas frases exactas ni uses siempre la misma redirección.
+No expliques tus capacidades.
+No uses listas.
+No des ejemplos innecesarios.
+
+La respuesta debe sonar humana, segura y natural.
     `.trim();
   }, []);
 
@@ -70,26 +81,9 @@ No añadas listas de capacidades, ejemplos, ni explicaciones extra.
     const user = auth?.currentUser || null;
     const token = user ? await user.getIdToken() : null;
 
-    // ✅ Si ya hubo al menos 1 redirección, endurecemos para que NO vuelva a repetirlo
-    const outOfScopeCount = chatMessages.filter(
-      (m) =>
-        m.role === "assistant" &&
-        typeof m.text === "string" &&
-        m.text.includes("Puedo ayudarte con textos.")
-    ).length;
-
-    const systemInstruction =
-      outOfScopeCount >= 1
-        ? `
-${systemInstructionBase}
-
-IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite SOLO exactamente: "Puedo ayudarte con textos. Pega el texto o dime qué quieres redactar/mejorar."
-          `.trim()
-        : systemInstructionBase;
-
     const payload = {
       messages: [
-        { role: "system", content: systemInstruction },
+        { role: "system", content: systemInstructionBase },
         ...chatMessages.map((m) => ({
           role: m.role,
           content: m.text,
@@ -135,6 +129,7 @@ IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite S
     const placeholderId = `${Date.now()}_${Math.random()
       .toString(16)
       .slice(2)}`;
+
     setMessages((prev) => [
       ...prev,
       { role: "assistant", text: "…", _id: placeholderId },
@@ -173,7 +168,6 @@ IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite S
     <div className="w-full min-h-[calc(100vh-64px)] px-3 sm:px-6 py-6 sm:py-10">
       <div className="mx-auto w-full max-w-[1100px]">
         <div className="w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100">
-          {/* TOP BAR */}
           <div className="flex items-start justify-between px-6 pt-6">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -251,7 +245,6 @@ IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite S
                 )}
               </div>
 
-              {/* INPUT */}
               <div className="px-4 pb-4">
                 <div className="rounded-[18px] border-2 border-slate-900/90 bg-white px-4 h-12 flex items-center gap-3">
                   <input
@@ -281,26 +274,6 @@ IMPORTANTE: ya has redirigido antes. Si vuelve a ser fuera de contexto, repite S
           </div>
 
           <div className="h-5" />
-        </div>
-
-        <div className="mt-10 text-center text-[12px] text-slate-500">
-          Al usar el chat IA, confirmas que estás de acuerdo con nuestras{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/terminos-condiciones")}
-            className="text-blue-600 underline underline-offset-2 hover:text-blue-700"
-          >
-            Términos y condiciones
-          </button>{" "}
-          y que has leído la{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/politica-de-privacidad")}
-            className="text-blue-600 underline underline-offset-2 hover:text-blue-700"
-          >
-            Política de privacidad
-          </button>
-          .
         </div>
       </div>
     </div>
