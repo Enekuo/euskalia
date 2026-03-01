@@ -825,8 +825,25 @@ export default function PremiumEmailCreator() {
 
       let builtBody1 = buildBodyFromParts(safeParts);
 
+      // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
+      const partsToCheck = [
+        subject1,
+        parts1.saludo,
+        parts1.intro,
+        ...(parts1.paragraphs || []),
+        parts1.finalPhrase,
+        parts1.closing,
+        parts1.name,
+      ]
+        .map((x) => String(x || "").trim())
+        .filter(Boolean);
+
+      const anyPartWrong = partsToCheck.some((p) =>
+        languageLooksWrong(p, outputLang)
+      );
+
       const combined1 = `${subject1}\n${builtBody1}`;
-      if (languageLooksWrong(combined1, outputLang)) {
+      if (anyPartWrong || languageLooksWrong(combined1, outputLang)) {
         const hardLangRule =
           outputLang === "EUS"
             ? "REGLA ABSOLUTA: ESCRIBE TODO EN EUSKERA (eu). PROHIBIDO castellano/inglés/francés. Reescribe cualquier input al euskera."
@@ -852,7 +869,7 @@ export default function PremiumEmailCreator() {
           emailLength,
           cacheKey ? cacheKey + "-retry" : null
         );
-
+        
         if (r2.kind === "limit") {
           if (r2.type === "chars") setCharsLimit();
           else setDailyLimit();
