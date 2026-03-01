@@ -820,6 +820,16 @@ export default function PremiumEmailCreator() {
         name: String(parsed1.name || "").trim(),
       };
 
+       const forceLangOnSaludoIfNeeded = (saludoRaw) => {
+  const s0 = String(saludoRaw || "").trim();
+  if (!s0) return s0;
+  if (languageLooksWrong(s0, outputLang)) return "";
+  return s0;
+};
+
+parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
+
+
       const finalClosing =
         (emailSaludo2 || "").trim() || parts1.closing || defaultClosing;
 
