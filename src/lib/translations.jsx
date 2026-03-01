@@ -6639,7 +6639,7 @@ premiumAiAssistant_newChat: {
 
 premiumAiAssistant_emptyTitle: {
   ES: "¿Cómo puedo ayudar?",
-  EUS: "Nola lagun zaitzaket?",
+  EUS: "Nola lagun dezaket ?",
   EN: "How can I help?",
   FR: "Comment puis-je aider ?",
 },
