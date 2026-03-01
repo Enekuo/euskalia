@@ -284,7 +284,7 @@ export default function PremiumEmailCreator() {
     const s = canonicalize(text);
     if (!s) return false;
 
-    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente)\b/.test(
+    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas)\b/.test(
       s
     );
     const eusHits = /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
