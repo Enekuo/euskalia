@@ -1328,115 +1328,114 @@ export default function PremiumEmailCreator() {
                       </div>
                     )}
 
-                    {result && (
-                      <>
-                        <div className="w-full mb-4">
-                          <div
-                            className="w-full bg-white"
-                            style={{
-                              height: 48,
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "0 14px",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <span
-                              className="text-[14px] text-slate-500"
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-                            >
-                              Asunto:&nbsp;
-                            </span>
-                            <span
-                              className={`text-[14px] ${emailSubject ? "text-slate-800" : "text-slate-400"}`}
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-                            >
-                              {emailSubject ? emailSubject : ""}
-                            </span>
-                          </div>
-                        </div>
+{result && (
+  <>
+    <div className="w-full mb-4">
+      <div
+        className="w-full bg-white"
+        style={{
+          height: 48,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 14px",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        <span
+          className="text-[14px] text-slate-500"
+          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+        >
+          Asunto:&nbsp;
+        </span>
+        <span
+          className={`text-[14px] ${emailSubject ? "text-slate-800" : "text-slate-400"}`}
+          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+        >
+          {emailSubject ? emailSubject : ""}
+        </span>
+      </div>
+    </div>
 
-                        <div className="w-full">
-                          <div
-                         className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
-                         style={{ height: 320, padding: "18px 18px" }}
-                        >
-                       
-                            <div
-                              className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-                            >
-                              {result}
-                            </div>
-                          </div>
-                        </div>
-
-                        {savedToLibrary && (
-                          <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
-                            {librarySavedMessage}
-                          </p>
-                        )}
-
-                        <div className="absolute bottom-4 right-6 flex items-center gap-4">
-                          <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                            <button
-                              type="button"
-                              onClick={() => handleCopy(true)}
-                              aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                            >
-                              {copiedFlash ? (
-                                <Check className="w-5 h-5" style={{ color: BLUE }} />
-                              ) : (
-                                <Copy className="w-5 h-5" />
-                              )}
-                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                {copiedFlash ? tooltipCopied : tooltipCopy}
-                              </span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={handleDownloadPdf}
-                              aria-label={tooltipPdf}
-                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                            >
-                              <FileDown className="w-5 h-5" />
-                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                {tooltipPdf}
-                              </span>
-                            </button>
-                          </div>
-
-                          <motion.button
-                            type="button"
-                            onClick={handleSaveEmail}
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.25 }}
-                            className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
-                            style={{ backgroundColor: "#22c55e" }}
-                          >
-                            {labelSaveEmail}
-                          </motion.button>
-                        </div>
-                      </>
-                    )}
-
-                    {loading && !result && (
-                      <div className="space-y-3 animate-pulse">
-                        <div className="h-4 bg-slate-200 rounded" />
-                        <div className="h-4 bg-slate-200 rounded w-11/12" />
-                        <div className="h-4 bg-slate-200 rounded w-10/12" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
-          </motion.section>
+    <div className="w-full">
+      <div
+        className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
+        style={{ height: 460, padding: "18px 18px" }}
+      >
+        <div
+          className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
+          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+        >
+          {result}
         </div>
-      </section>
-    </>
-  );
+      </div>
+    </div>
+
+    {savedToLibrary && (
+      <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
+        {librarySavedMessage}
+      </p>
+    )}
+
+    <div className="absolute bottom-4 right-6 flex items-center gap-4">
+      <div className="flex items-center gap-4 mr-[20px] translate-y-1">
+        <button
+          type="button"
+          onClick={() => handleCopy(true)}
+          aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+          className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+        >
+          {copiedFlash ? (
+            <Check className="w-5 h-5" style={{ color: BLUE }} />
+          ) : (
+            <Copy className="w-5 h-5" />
+          )}
+          <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+            {copiedFlash ? tooltipCopied : tooltipCopy}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDownloadPdf}
+          aria-label={tooltipPdf}
+          className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+        >
+          <FileDown className="w-5 h-5" />
+          <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+            {tooltipPdf}
+          </span>
+        </button>
+      </div>
+
+      <motion.button
+        type="button"
+        onClick={handleSaveEmail}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+        className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
+        style={{ backgroundColor: "#22c55e" }}
+      >
+        {labelSaveEmail}
+      </motion.button>
+    </div>
+  </>
+)}
+
+{loading && !result && (
+  <div className="space-y-3 animate-pulse">
+    <div className="h-4 bg-slate-200 rounded" />
+    <div className="h-4 bg-slate-200 rounded w-11/12" />
+    <div className="h-4 bg-slate-200 rounded w-10/12" />
+  </div>
+)}
+</div>
+)}
+</div>
+</section>
+</motion.section>
+</div>
+</section>
+</>
+);
 }
