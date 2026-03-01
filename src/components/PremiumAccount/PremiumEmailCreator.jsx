@@ -275,14 +275,26 @@ export default function PremiumEmailCreator() {
     const s = canonicalize(text);
     if (!s) return false;
 
-    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente)\b/.test(
-      s
-    );
-    const eusHits = /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
-      s
-    );
-    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely)\b/.test(s);
-    const frHits = /\b(le|la|les|de|que|et|pour|je|vous|cordialement)\b/.test(s);
+    // ✅ Heurística ampliada: incluye saludos/cierres típicos (clave para tu bug)
+    const esHits =
+      /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|hola|buenas|buenos|estimad|querid|cordialmente|un saludo|saludos)\b/.test(
+        s
+      );
+
+    const eusHits =
+      /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi|kaixo|egun|arratsalde|gau|mila|eskerrik asko)\b/.test(
+        s
+      );
+
+    const enHits =
+      /\b(the|and|to|for|i|you|please|regards|sincerely|hello|hi|dear|thanks|best)\b/.test(
+        s
+      );
+
+    const frHits =
+      /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour|salut|merci|bien a vous)\b/.test(
+        s
+      );
 
     if (lang === "EUS") return esHits || enHits || frHits ? !eusHits : false;
     if (lang === "ES") return eusHits || enHits || frHits ? !esHits : false;
