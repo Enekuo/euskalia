@@ -271,30 +271,27 @@ export default function PremiumEmailCreator() {
     };
   };
 
+  // ✅ fallback saludo por idioma (parche definitivo)
+  const defaultGreetingByLang = (lang, tone) => {
+    const informal = tone === "informal";
+    if (lang === "ES") return informal ? "Hola," : "Estimado/a,";
+    if (lang === "EN") return informal ? "Hi," : "Dear,";
+    if (lang === "FR") return informal ? "Salut," : "Madame, Monsieur,";
+    return informal ? "Kaixo," : "Agurgarria,";
+  };
+
   const languageLooksWrong = (text, lang) => {
     const s = canonicalize(text);
     if (!s) return false;
 
-    // ✅ Heurística ampliada: incluye saludos/cierres típicos (clave para tu bug)
-    const esHits =
-      /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|hola|buenas|buenos|estimad|querid|cordialmente|un saludo|saludos)\b/.test(
-        s
-      );
-
-    const eusHits =
-      /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi|kaixo|egun|arratsalde|gau|mila|eskerrik asko)\b/.test(
-        s
-      );
-
-    const enHits =
-      /\b(the|and|to|for|i|you|please|regards|sincerely|hello|hi|dear|thanks|best)\b/.test(
-        s
-      );
-
-    const frHits =
-      /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour|salut|merci|bien a vous)\b/.test(
-        s
-      );
+    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente)\b/.test(
+      s
+    );
+    const eusHits = /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
+      s
+    );
+    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely)\b/.test(s);
+    const frHits = /\b(le|la|les|de|que|et|pour|je|vous|cordialement)\b/.test(s);
 
     if (lang === "EUS") return esHits || enHits || frHits ? !eusHits : false;
     if (lang === "ES") return eusHits || enHits || frHits ? !esHits : false;
@@ -701,6 +698,12 @@ export default function PremiumEmailCreator() {
       `{"subject":"...","saludo":"...","intro":"...","paragraphs":["..."],"finalPhrase":"...","closing":"...","name":"..."}\n` +
       "- subject: una frase corta.\n" +
       "- saludo: una línea de saludo.\n" +
+      "- EJEMPLOS de saludo según idioma:\n" +
+      "  - EUS formal: \"Agurgarria,\" o \"Jaun/Andre agurgarria,\"\n" +
+      "  - EUS informal: \"Kaixo,\"\n" +
+      "  - ES formal: \"Estimado/a,\"\n" +
+      "  - EN formal: \"Dear ...,\"\n" +
+      "  - FR formal: \"Madame, Monsieur,\"\n" +
       "- intro: un párrafo.\n" +
       "- paragraphs: array de párrafos (uno por cada idea del usuario).\n" +
       "- finalPhrase: una frase final (SIEMPRE debes crearla aunque el usuario no la escriba).\n" +
@@ -824,8 +827,14 @@ export default function PremiumEmailCreator() {
       const finalFinalPhrase =
         (emailFinalPhrase || "").trim() || parts1.finalPhrase || defaultFinalPhrase;
 
+      // ✅ PARCHE: si el saludo viene en idioma incorrecto, lo sustituimos por el saludo correcto del idioma
+      const fixedSaludo1 =
+        parts1.saludo && !languageLooksWrong(parts1.saludo, outputLang)
+          ? parts1.saludo
+          : defaultGreetingByLang(outputLang, emailTone);
+
       const safeParts = {
-        saludo: parts1.saludo,
+        saludo: fixedSaludo1,
         intro: parts1.intro,
         paragraphs: (parts1.paragraphs || [])
           .map((p) => String(p || "").trim())
@@ -840,7 +849,7 @@ export default function PremiumEmailCreator() {
       // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
       const partsToCheck = [
         subject1,
-        parts1.saludo,
+        fixedSaludo1,
         parts1.intro,
         ...(parts1.paragraphs || []),
         parts1.finalPhrase,
@@ -881,7 +890,7 @@ export default function PremiumEmailCreator() {
           emailLength,
           cacheKey ? cacheKey + "-retry" : null
         );
-        
+
         if (r2.kind === "limit") {
           if (r2.type === "chars") setCharsLimit();
           else setDailyLimit();
@@ -916,8 +925,14 @@ export default function PremiumEmailCreator() {
           const finalFinalPhrase2 =
             (emailFinalPhrase || "").trim() || parts2.finalPhrase || defaultFinalPhrase;
 
+          // ✅ PARCHE (retry): forzar saludo correcto si viene en idioma incorrecto
+          const fixedSaludo2 =
+            parts2.saludo && !languageLooksWrong(parts2.saludo, outputLang)
+              ? parts2.saludo
+              : defaultGreetingByLang(outputLang, emailTone);
+
           const safeParts2 = {
-            saludo: parts2.saludo,
+            saludo: fixedSaludo2,
             intro: parts2.intro,
             paragraphs: (parts2.paragraphs || [])
               .map((p) => String(p || "").trim())
@@ -982,44 +997,44 @@ export default function PremiumEmailCreator() {
 
                 {/* ✅ Botones: Creativo / Plantilla */}
                 <div className="flex items-center gap-2">
-  <button
-    type="button"
-    onClick={() => {
-      if (emailMode !== "creative") {
-        setEmailMode("creative");
-        clearRight();
-      }
-    }}
-    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
-    style={{
-      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
-      backgroundColor: emailMode === "creative" ? "#eff6ff" : "#ffffff",
-      color: emailMode === "creative" ? BLUE : "#334155",
-    }}
-    aria-pressed={emailMode === "creative"}
-  >
-    {labelModeCreative}
-  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (emailMode !== "creative") {
+                        setEmailMode("creative");
+                        clearRight();
+                      }
+                    }}
+                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    style={{
+                      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
+                      backgroundColor: emailMode === "creative" ? "#eff6ff" : "#ffffff",
+                      color: emailMode === "creative" ? BLUE : "#334155",
+                    }}
+                    aria-pressed={emailMode === "creative"}
+                  >
+                    {labelModeCreative}
+                  </button>
 
-  <button
-    type="button"
-    onClick={() => {
-      if (emailMode !== "template") {
-        setEmailMode("template");
-        clearRight();
-      }
-    }}
-    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
-    style={{
-      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
-      backgroundColor: emailMode === "template" ? "#eff6ff" : "#ffffff",
-      color: emailMode === "template" ? BLUE : "#334155",
-    }}
-    aria-pressed={emailMode === "template"}
-  >
-    {labelModeTemplate}
-  </button>
-</div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (emailMode !== "template") {
+                        setEmailMode("template");
+                        clearRight();
+                      }
+                    }}
+                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    style={{
+                      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
+                      backgroundColor: emailMode === "template" ? "#eff6ff" : "#ffffff",
+                      color: emailMode === "template" ? BLUE : "#334155",
+                    }}
+                    aria-pressed={emailMode === "template"}
+                  >
+                    {labelModeTemplate}
+                  </button>
+                </div>
               </div>
 
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
@@ -1177,7 +1192,6 @@ export default function PremiumEmailCreator() {
                         rows={2}
                       />
                     </div>
-
                   </>
                 )}
               </div>
@@ -1357,114 +1371,116 @@ export default function PremiumEmailCreator() {
                       </div>
                     )}
 
-{result && (
-  <>
-    <div className="w-full mb-4">
-      <div
-        className="w-full bg-white"
-        style={{
-          height: 48,
-          display: "flex",
-          alignItems: "center",
-          padding: "0 14px",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      >
-        <span
-          className="text-[14px] text-slate-500"
-          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-        >
-          Asunto:&nbsp;
-        </span>
-        <span
-          className={`text-[14px] ${emailSubject ? "text-slate-800" : "text-slate-400"}`}
-          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-        >
-          {emailSubject ? emailSubject : ""}
-        </span>
-      </div>
-    </div>
+                    {result && (
+                      <>
+                        <div className="w-full mb-4">
+                          <div
+                            className="w-full bg-white"
+                            style={{
+                              height: 48,
+                              display: "flex",
+                              alignItems: "center",
+                              padding: "0 14px",
+                              borderBottom: "1px solid #e5e7eb",
+                            }}
+                          >
+                            <span
+                              className="text-[14px] text-slate-500"
+                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                            >
+                              Asunto:&nbsp;
+                            </span>
+                            <span
+                              className={`text-[14px] ${
+                                emailSubject ? "text-slate-800" : "text-slate-400"
+                              }`}
+                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                            >
+                              {emailSubject ? emailSubject : ""}
+                            </span>
+                          </div>
+                        </div>
 
-    <div className="w-full">
-      <div
-        className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
-        style={{ height: 380, padding: "18px 18px 44px 18px" }}
-      >
-        <div
-          className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
-          style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
-        >
-          {result}
+                        <div className="w-full">
+                          <div
+                            className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
+                            style={{ height: 380, padding: "18px 18px 44px 18px" }}
+                          >
+                            <div
+                              className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
+                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                            >
+                              {result}
+                            </div>
+                          </div>
+                        </div>
+
+                        {savedToLibrary && (
+                          <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
+                            {librarySavedMessage}
+                          </p>
+                        )}
+
+                        <div className="absolute bottom-4 right-6 flex items-center gap-4">
+                          <div className="flex items-center gap-4 mr-[20px] translate-y-1">
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(true)}
+                              aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                            >
+                              {copiedFlash ? (
+                                <Check className="w-5 h-5" style={{ color: BLUE }} />
+                              ) : (
+                                <Copy className="w-5 h-5" />
+                              )}
+                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                {copiedFlash ? tooltipCopied : tooltipCopy}
+                              </span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={handleDownloadPdf}
+                              aria-label={tooltipPdf}
+                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                            >
+                              <FileDown className="w-5 h-5" />
+                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                {tooltipPdf}
+                              </span>
+                            </button>
+                          </div>
+
+                          <motion.button
+                            type="button"
+                            onClick={handleSaveEmail}
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.25 }}
+                            className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
+                            style={{ backgroundColor: "#22c55e" }}
+                          >
+                            {labelSaveEmail}
+                          </motion.button>
+                        </div>
+                      </>
+                    )}
+
+                    {loading && !result && (
+                      <div className="space-y-3 animate-pulse">
+                        <div className="h-4 bg-slate-200 rounded" />
+                        <div className="h-4 bg-slate-200 rounded w-11/12" />
+                        <div className="h-4 bg-slate-200 rounded w-10/12" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          </motion.section>
         </div>
-      </div>
-    </div>
-
-    {savedToLibrary && (
-      <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
-        {librarySavedMessage}
-      </p>
-    )}
-
-    <div className="absolute bottom-4 right-6 flex items-center gap-4">
-      <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-        <button
-          type="button"
-          onClick={() => handleCopy(true)}
-          aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-          className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-        >
-          {copiedFlash ? (
-            <Check className="w-5 h-5" style={{ color: BLUE }} />
-          ) : (
-            <Copy className="w-5 h-5" />
-          )}
-          <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-            {copiedFlash ? tooltipCopied : tooltipCopy}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleDownloadPdf}
-          aria-label={tooltipPdf}
-          className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-        >
-          <FileDown className="w-5 h-5" />
-          <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-            {tooltipPdf}
-          </span>
-        </button>
-      </div>
-
-      <motion.button
-        type="button"
-        onClick={handleSaveEmail}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className="inline-flex items-center justify-center rounded-full px-6 h-9 text-sm font-semibold text-white hover:brightness-95 active:scale-[0.98] transition-all"
-        style={{ backgroundColor: "#22c55e" }}
-      >
-        {labelSaveEmail}
-      </motion.button>
-    </div>
-  </>
-)}
-
-{loading && !result && (
-  <div className="space-y-3 animate-pulse">
-    <div className="h-4 bg-slate-200 rounded" />
-    <div className="h-4 bg-slate-200 rounded w-11/12" />
-    <div className="h-4 bg-slate-200 rounded w-10/12" />
-  </div>
-)}
-</div>
-)}
-</div>
-</section>
-</motion.section>
-</div>
-</section>
-</>
-);
+      </section>
+    </>
+  );
 }
