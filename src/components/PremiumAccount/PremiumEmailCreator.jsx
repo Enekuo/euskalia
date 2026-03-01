@@ -834,14 +834,14 @@ export default function PremiumEmailCreator() {
           : defaultGreetingByLang(outputLang, emailTone);
 
       const safeParts = {
-        saludo: fixedSaludo1,
-        intro: parts1.intro,
-        paragraphs: (parts1.paragraphs || [])
+          saludo: ensureSaludoHasAddressee(parts1.saludo, emailSaludo, outputLang),
+          intro: parts1.intro,
+          paragraphs: (parts1.paragraphs || [])
           .map((p) => String(p || "").trim())
           .filter(Boolean),
-        finalPhrase: finalFinalPhrase,
-        closing: finalClosing,
-        name: parts1.name || finalName,
+          finalPhrase: finalFinalPhrase,
+          closing: finalClosing,
+          name: parts1.name || finalName,
       };
 
       let builtBody1 = buildBodyFromParts(safeParts);
