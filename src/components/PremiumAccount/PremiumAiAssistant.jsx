@@ -110,12 +110,16 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     if (!res.ok) {
       const msg =
         extractAssistantText(data) ||
-        `Error ${res.status}. No se pudo generar la respuesta.`;
+        tr(
+          "premiumAiAssistant_errorHttp",
+          "Error {status}. No se pudo generar la respuesta."
+        ).replace("{status}", String(res.status));
       throw new Error(msg);
     }
 
     const out = extractAssistantText(data);
-    if (!out) throw new Error("Respuesta vacía del servidor.");
+    if (!out)
+      throw new Error(tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor."));
     return out;
   };
 
@@ -147,7 +151,10 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     } catch (e) {
       const errText =
         (e && e.message) ||
-        "No se pudo generar la respuesta. Inténtalo de nuevo.";
+        tr(
+          "premiumAiAssistant_errorGeneric",
+          "No se pudo generar la respuesta. Inténtalo de nuevo."
+        );
       setMessages((prev) =>
         prev.map((m) =>
           m._id === placeholderId ? { role: "assistant", text: errText } : m
@@ -176,7 +183,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="text-[20px] font-extrabold text-slate-900">
-                Asistente de IA
+                {tr("premiumAiAssistant_title", "Asistente de IA")}
               </div>
             </div>
 
@@ -186,7 +193,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
               className="h-9 px-4 rounded-full text-sm font-semibold border bg-white border-slate-200 text-slate-900 shadow-sm inline-flex items-center gap-2 hover:bg-slate-50"
             >
               <span className="text-[18px] leading-none">+</span>
-              Nuevo chat
+              {tr("premiumAiAssistant_newChat", "Nuevo chat")}
             </button>
           </div>
 
@@ -197,10 +204,10 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                   <div className="h-full w-full flex items-center justify-center">
                     <div className="text-center px-4">
                       <div className="text-[40px] font-extrabold tracking-tight text-slate-900">
-                        ¿Cómo puedo ayudar?
+                        {tr("premiumAiAssistant_emptyTitle", "¿Cómo puedo ayudar?")}
                       </div>
                       <div className="mt-2 text-[18px] text-slate-600">
-                        Escribe tu petición
+                        {tr("premiumAiAssistant_emptySubtitle", "Escribe tu petición")}
                       </div>
                     </div>
                   </div>
@@ -254,7 +261,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={onKeyDown}
-                    placeholder="Escribe aquí…"
+                    placeholder={tr("premiumAiAssistant_placeholder", "Escribe aquí…")}
                     className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
                   />
 

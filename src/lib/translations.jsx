@@ -6623,6 +6623,62 @@ premiumEmailCreator: {
   },
 },
 
+premiumAiAssistant_title: {
+  ES: "Asistente de IA",
+  EUS: "IA Laguntzailea",
+  EN: "AI Assistant",
+  FR: "Assistant IA",
+},
+
+premiumAiAssistant_newChat: {
+  ES: "Nuevo chat",
+  EUS: "Txat berria",
+  EN: "New chat",
+  FR: "Nouveau chat",
+},
+
+premiumAiAssistant_emptyTitle: {
+  ES: "¿Cómo puedo ayudar?",
+  EUS: "Nola lagun zaitzaket?",
+  EN: "How can I help?",
+  FR: "Comment puis-je aider ?",
+},
+
+premiumAiAssistant_emptySubtitle: {
+  ES: "Escribe tu petición",
+  EUS: "Idatzi zure eskaera",
+  EN: "Write your request",
+  FR: "Écris ta demande",
+},
+
+premiumAiAssistant_placeholder: {
+  ES: "Escribe aquí…",
+  EUS: "Idatzi hemen…",
+  EN: "Write here…",
+  FR: "Écris ici…",
+},
+
+premiumAiAssistant_errorGeneric: {
+  ES: "No se pudo generar la respuesta. Inténtalo de nuevo.",
+  EUS: "Ezin izan da erantzuna sortu. Saiatu berriro.",
+  EN: "Could not generate a response. Please try again.",
+  FR: "Impossible de générer la réponse. Réessaie.",
+},
+
+premiumAiAssistant_errorHttp: {
+  ES: "Error {status}. No se pudo generar la respuesta.",
+  EUS: "Errorea {status}. Ezin izan da erantzuna sortu.",
+  EN: "Error {status}. Could not generate a response.",
+  FR: "Erreur {status}. Impossible de générer la réponse.",
+},
+
+premiumAiAssistant_errorEmpty: {
+  ES: "Respuesta vacía del servidor.",
+  EUS: "Zerbitzariaren erantzuna hutsik dago.",
+  EN: "Empty response from the server.",
+  FR: "Réponse vide du serveur.",
+},
+
 }
 
 /* ====== i18n runtime ====== */
