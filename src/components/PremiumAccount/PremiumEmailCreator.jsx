@@ -147,14 +147,26 @@ export default function PremiumEmailCreator() {
   const labelSmall5 = tr("premiumEmailCreator.small_5", "6- Nombre"); // ✅ ahora es 6
 
   const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
-  const placeholderIntro = tr("premiumEmailCreator.intro_ph", "Escribe la introducción...");
-  const placeholderParagraph = tr("premiumEmailCreator.paragraph_ph", "Escribe el párrafo");
+  const placeholderIntro = tr(
+    "premiumEmailCreator.intro_ph",
+    "Escribe la introducción..."
+  );
+  const placeholderParagraph = tr(
+    "premiumEmailCreator.paragraph_ph",
+    "Escribe el párrafo"
+  );
   const placeholderFinal = tr(
     "premiumEmailCreator.final_phrase_ph",
     "Escribe la frase final..."
   );
-  const placeholderSaludo2 = tr("premiumEmailCreator.saludo2_ph", "Escribe el saludo...");
-  const placeholderNombre = tr("premiumEmailCreator.nombre_ph", "Escribe el nombre...");
+  const placeholderSaludo2 = tr(
+    "premiumEmailCreator.saludo2_ph",
+    "Escribe el saludo..."
+  );
+  const placeholderNombre = tr(
+    "premiumEmailCreator.nombre_ph",
+    "Escribe el nombre..."
+  );
   const labelAddParagraph = tr("premiumEmailCreator.add_paragraph", "+ Párrafo");
   const labelRemoveParagraph = tr(
     "premiumEmailCreator.remove_paragraph",
@@ -284,20 +296,93 @@ export default function PremiumEmailCreator() {
     const s = canonicalize(text);
     if (!s) return false;
 
-    const esHits = /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas)\b/.test(
-      s
-    );
-    const eusHits = /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
-      s
-    );
-    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely)\b/.test(s);
-    const frHits = /\b(le|la|les|de|que|et|pour|je|vous|cordialement)\b/.test(s);
+    const esHits =
+      /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas)\b/.test(
+        s
+      );
+    const eusHits =
+      /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
+        s
+      );
+    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely|dear)\b/.test(s);
+    const frHits =
+      /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour)\b/.test(s);
 
     if (lang === "EUS") return esHits || enHits || frHits ? !eusHits : false;
     if (lang === "ES") return eusHits || enHits || frHits ? !esHits : false;
     if (lang === "EN") return esHits || eusHits || frHits ? !enHits : false;
     if (lang === "FR") return esHits || eusHits || enHits ? !frHits : false;
     return false;
+  };
+
+  // ✅ SALUDO: siempre correcto en el idioma + intenta conservar destinatario si el usuario lo pone
+  const ensureSaludoHasAddressee = (generatedSaludo, userSaludo, lang, tone) => {
+    const gen0 = String(generatedSaludo || "").trim();
+    const usr0 = String(userSaludo || "").trim();
+
+    const stripPunct = (x) =>
+      String(x || "")
+        .replace(/\r/g, "")
+        .replace(/\n+/g, " ")
+        .replace(/[,:;.!?]+$/g, "")
+        .trim();
+
+    const extractNameLike = (x) => {
+      const s0 = stripPunct(x);
+      if (!s0) return "";
+
+      const cleaned = s0
+        .replace(
+          /^(estimado\/a|estimado|estimada|estimados|estimadas|hola|buenos dias|buenas tardes|buenas|dear|hi|hello|madame|monsieur|madame,\s*monsieur|bonjour|salut|agurgarria|jaun\/andre agurgarria|kaixo)\b\s*/i,
+          ""
+        )
+        .replace(/^[:\-–—]\s*/g, "")
+        .trim();
+
+      if (!cleaned) return "";
+      if (cleaned.length <= 1) return "";
+      return cleaned;
+    };
+
+    const base = defaultGreetingByLang(lang, tone);
+    const baseNoPunct = stripPunct(base);
+
+    const addFromUser = extractNameLike(usr0);
+    const addFromGen = extractNameLike(gen0);
+    const addressee = addFromUser || addFromGen;
+
+    const genOk = gen0 && !languageLooksWrong(gen0, lang);
+
+    if (genOk) {
+      const normalized = stripPunct(gen0);
+      if (!normalized) return base;
+      return normalized.endsWith(",") ? normalized : normalized + ",";
+    }
+
+    if (lang === "FR" && tone === "formal") {
+      return "Madame, Monsieur,";
+    }
+
+    if (addressee) {
+      if (lang === "EUS") {
+        const head = tone === "informal" ? "Kaixo" : "Agurgarri";
+        return `${head} ${addressee},`;
+      }
+      if (lang === "ES") {
+        const head = tone === "informal" ? "Hola" : "Estimado/a";
+        return `${head} ${addressee},`;
+      }
+      if (lang === "EN") {
+        const head = tone === "informal" ? "Hi" : "Dear";
+        return `${head} ${addressee},`;
+      }
+      if (lang === "FR") {
+        const head = tone === "informal" ? "Salut" : "Bonjour";
+        return `${head} ${addressee},`;
+      }
+    }
+
+    return baseNoPunct ? baseNoPunct + "," : base;
   };
 
   // ===== construir textValue desde inputs (solo plantilla) =====
@@ -572,7 +657,10 @@ export default function PremiumEmailCreator() {
     const user = auth.currentUser;
     if (!user) {
       throw new Error(
-        tr("premiumEmailCreator.error_auth_required", "Necesitas iniciar sesión para usar Premium.")
+        tr(
+          "premiumEmailCreator.error_auth_required",
+          "Necesitas iniciar sesión para usar Premium."
+        )
       );
     }
 
@@ -596,7 +684,10 @@ export default function PremiumEmailCreator() {
       if (res.status === 429) return { kind: "limit", type: "daily" };
       if (res.status === 401 || res.status === 403) {
         throw new Error(
-          tr("premiumEmailCreator.error_auth_required", "Necesitas iniciar sesión para usar Premium.")
+          tr(
+            "premiumEmailCreator.error_auth_required",
+            "Necesitas iniciar sesión para usar Premium."
+          )
         );
       }
       const txt = await res.text().catch(() => "");
@@ -635,7 +726,10 @@ export default function PremiumEmailCreator() {
 
     if (!hasAnyInput) {
       setErrorMsg(
-        tr("premiumEmailCreator.error_need_input", "Añade algo de información antes de generar el email.")
+        tr(
+          "premiumEmailCreator.error_need_input",
+          "Añade algo de información antes de generar el email."
+        )
       );
       setLoading(false);
       return;
@@ -699,11 +793,11 @@ export default function PremiumEmailCreator() {
       "- subject: una frase corta.\n" +
       "- saludo: una línea de saludo.\n" +
       "- EJEMPLOS de saludo según idioma:\n" +
-      "  - EUS formal: \"Agurgarria,\" o \"Jaun/Andre agurgarria,\"\n" +
-      "  - EUS informal: \"Kaixo,\"\n" +
-      "  - ES formal: \"Estimado/a,\"\n" +
-      "  - EN formal: \"Dear ...,\"\n" +
-      "  - FR formal: \"Madame, Monsieur,\"\n" +
+      '  - EUS formal: "Agurgarria," o "Jaun/Andre agurgarria,"\n' +
+      '  - EUS informal: "Kaixo,"\n' +
+      '  - ES formal: "Estimado/a,"\n' +
+      '  - EN formal: "Dear ...,"\n' +
+      '  - FR formal: "Madame, Monsieur,"\n' +
       "- intro: un párrafo.\n" +
       "- paragraphs: array de párrafos (uno por cada idea del usuario).\n" +
       "- finalPhrase: una frase final (SIEMPRE debes crearla aunque el usuario no la escriba).\n" +
@@ -820,15 +914,14 @@ export default function PremiumEmailCreator() {
         name: String(parsed1.name || "").trim(),
       };
 
-       const forceLangOnSaludoIfNeeded = (saludoRaw) => {
-  const s0 = String(saludoRaw || "").trim();
-  if (!s0) return s0;
-  if (languageLooksWrong(s0, outputLang)) return "";
-  return s0;
-};
+      const forceLangOnSaludoIfNeeded = (saludoRaw) => {
+        const s0 = String(saludoRaw || "").trim();
+        if (!s0) return s0;
+        if (languageLooksWrong(s0, outputLang)) return "";
+        return s0;
+      };
 
-parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
-
+      parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
 
       const finalClosing =
         (emailSaludo2 || "").trim() || parts1.closing || defaultClosing;
@@ -837,21 +930,23 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
       const finalFinalPhrase =
         (emailFinalPhrase || "").trim() || parts1.finalPhrase || defaultFinalPhrase;
 
-      // ✅ PARCHE: si el saludo viene en idioma incorrecto, lo sustituimos por el saludo correcto del idioma
-      const fixedSaludo1 =
-        parts1.saludo && !languageLooksWrong(parts1.saludo, outputLang)
-          ? parts1.saludo
-          : defaultGreetingByLang(outputLang, emailTone);
+      // ✅ Saludo SIEMPRE correcto (idioma + coma + destinatario si existe)
+      const finalSaludo1 = ensureSaludoHasAddressee(
+        parts1.saludo,
+        emailSaludo,
+        outputLang,
+        emailTone
+      );
 
       const safeParts = {
-          saludo: ensureSaludoHasAddressee(parts1.saludo, emailSaludo, outputLang),
-          intro: parts1.intro,
-          paragraphs: (parts1.paragraphs || [])
+        saludo: finalSaludo1,
+        intro: parts1.intro,
+        paragraphs: (parts1.paragraphs || [])
           .map((p) => String(p || "").trim())
           .filter(Boolean),
-          finalPhrase: finalFinalPhrase,
-          closing: finalClosing,
-          name: parts1.name || finalName,
+        finalPhrase: finalFinalPhrase,
+        closing: finalClosing,
+        name: parts1.name || finalName,
       };
 
       let builtBody1 = buildBodyFromParts(safeParts);
@@ -859,7 +954,7 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
       // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
       const partsToCheck = [
         subject1,
-        fixedSaludo1,
+        finalSaludo1,
         parts1.intro,
         ...(parts1.paragraphs || []),
         parts1.finalPhrase,
@@ -869,9 +964,7 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
         .map((x) => String(x || "").trim())
         .filter(Boolean);
 
-      const anyPartWrong = partsToCheck.some((p) =>
-        languageLooksWrong(p, outputLang)
-      );
+      const anyPartWrong = partsToCheck.some((p) => languageLooksWrong(p, outputLang));
 
       const combined1 = `${subject1}\n${builtBody1}`;
       if (anyPartWrong || languageLooksWrong(combined1, outputLang)) {
@@ -935,14 +1028,15 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
           const finalFinalPhrase2 =
             (emailFinalPhrase || "").trim() || parts2.finalPhrase || defaultFinalPhrase;
 
-          // ✅ PARCHE (retry): forzar saludo correcto si viene en idioma incorrecto
-          const fixedSaludo2 =
-            parts2.saludo && !languageLooksWrong(parts2.saludo, outputLang)
-              ? parts2.saludo
-              : defaultGreetingByLang(outputLang, emailTone);
+          const finalSaludo2 = ensureSaludoHasAddressee(
+            parts2.saludo,
+            emailSaludo,
+            outputLang,
+            emailTone
+          );
 
           const safeParts2 = {
-            saludo: fixedSaludo2,
+            saludo: finalSaludo2,
             intro: parts2.intro,
             paragraphs: (parts2.paragraphs || [])
               .map((p) => String(p || "").trim())
@@ -1240,7 +1334,10 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                       <button
                         type="button"
                         className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                        aria-label={tr("premiumEmailCreator.output_language_aria", "Idioma de salida")}
+                        aria-label={tr(
+                          "premiumEmailCreator.output_language_aria",
+                          "Idioma de salida"
+                        )}
                       >
                         <span className="truncate">
                           {outputLang === "ES"
@@ -1319,7 +1416,9 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                     onClick={() => handleCopy(true)}
                     title={copiedFlash ? tooltipCopied : tooltipCopy}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      result
+                        ? "text-slate-600 hover:text-slate-800"
+                        : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                     disabled={!result}
@@ -1336,7 +1435,9 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                     onClick={handleClearLeft}
                     title={tr("premiumEmailCreator.clear_input", "Eliminar")}
                     className={`h-9 w-9 flex items-center justify-center ${
-                      canClearLeft ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      canClearLeft
+                        ? "text-slate-600 hover:text-slate-800"
+                        : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("premiumEmailCreator.clear_input", "Eliminar")}
                     disabled={!canClearLeft}
@@ -1354,7 +1455,10 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
 
               {!loading && !result && !errorMsg && !limitType && (
                 <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 z-10"
+                    style={{ top: "30%" }}
+                  >
                     <Button
                       type="button"
                       onClick={handleGenerate}
@@ -1366,8 +1470,13 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                     </Button>
                   </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 text-center px-6"
+                    style={{ top: "40%" }}
+                  >
+                    <p className="text-sm leading-6 text-slate-600 max-w-xl">
+                      {labelHelpRight}
+                    </p>
                   </div>
                 </>
               )}
@@ -1396,7 +1505,9 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                           >
                             <span
                               className="text-[14px] text-slate-500"
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                              style={{
+                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                              }}
                             >
                               Asunto:&nbsp;
                             </span>
@@ -1404,7 +1515,9 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                               className={`text-[14px] ${
                                 emailSubject ? "text-slate-800" : "text-slate-400"
                               }`}
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                              style={{
+                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                              }}
                             >
                               {emailSubject ? emailSubject : ""}
                             </span>
@@ -1418,7 +1531,9 @@ parts1.saludo = forceLangOnSaludoIfNeeded(parts1.saludo);
                           >
                             <div
                               className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
-                              style={{ fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif' }}
+                              style={{
+                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                              }}
                             >
                               {result}
                             </div>
