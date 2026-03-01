@@ -1359,7 +1359,7 @@ export default function PremiumEmailCreator() {
     <div className="w-full">
       <div
         className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
-        style={{ height: 460, padding: "18px 18px" }}
+        style={{ height: 440, padding: "18px 18px 44px 18px" }}
       >
         <div
           className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
