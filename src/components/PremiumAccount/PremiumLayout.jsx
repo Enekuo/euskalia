@@ -643,7 +643,7 @@ export default function PremiumLayout({ children }) {
               "
             >
               <Gem size={14} className="text-white" />
-              <span>12.450 / 20.000</span>
+              <span>0.0 / 20.000</span>
               <span className="opacity-90 font-medium">caracteres</span>
             </div>
           </div>
