@@ -637,6 +637,14 @@ MODO CREATIVO:
 
       const data = await res.json();
 
+      if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+        window.dispatchEvent(
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+          })
+        );
+      }
+
       const rawText =
         data?.text ??
         data?.content ??
