@@ -191,16 +191,61 @@ export default function PremiumLayout({ children }) {
     run();
   }, []);
 
-  // ✅✅✅ NUEVO: escuchar updates desde cualquier herramienta (CustomEvent)
+  // ✅✅✅ NUEVO: escuchar updates desde cualquier herramienta (CustomEvent) + compatibilidad total
   useEffect(() => {
-    const onUpdate = (e) => {
-      const d = e?.detail || {};
-      if (typeof d.usedChars === "number") setPremiumUsedChars(d.usedChars);
-      if (typeof d.limitChars === "number") setPremiumLimitChars(d.limitChars);
+    const pickNumber = (v) => {
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      if (typeof v === "string") {
+        const n = parseInt(v, 10);
+        return Number.isFinite(n) ? n : null;
+      }
+      return null;
     };
 
+    const onUpdate = (e) => {
+      const d = e?.detail || {};
+
+      // used
+      const used =
+        pickNumber(d.usedChars) ??
+        pickNumber(d.used_chars) ??
+        pickNumber(d.used) ??
+        pickNumber(d.used_chars_total) ??
+        null;
+
+      // limit/max
+      const limit =
+        pickNumber(d.limitChars) ??
+        pickNumber(d.limit_chars) ??
+        pickNumber(d.maxChars) ??
+        pickNumber(d.max_chars) ??
+        null;
+
+      if (used !== null) setPremiumUsedChars(used);
+      if (limit !== null) setPremiumLimitChars(limit);
+
+      // fallback: si no viene used, al menos actualizamos desde localStorage (por herramientas que solo guardan)
+      if (used === null) {
+        try {
+          const raw1 = localStorage.getItem("premium_used_chars");
+          const raw2 = localStorage.getItem("premiumUsedChars");
+          const base = raw1 ?? raw2;
+          const n = base ? parseInt(base, 10) || 0 : 0;
+          setPremiumUsedChars(n);
+        } catch {}
+      }
+    };
+
+    // escuchamos TODOS los nombres típicos
     window.addEventListener("premium-usage-update", onUpdate);
-    return () => window.removeEventListener("premium-usage-update", onUpdate);
+    window.addEventListener("premium_usage_update", onUpdate);
+    window.addEventListener("premiumUsageUpdate", onUpdate);
+
+    return () => {
+      window.removeEventListener("premium-usage-update", onUpdate);
+      window.removeEventListener("premium_usage_update", onUpdate);
+      window.removeEventListener("premiumUsageUpdate", onUpdate);
+    };
   }, []);
 
   const formatDot = (n) => {
