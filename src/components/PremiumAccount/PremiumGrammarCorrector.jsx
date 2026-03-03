@@ -34,83 +34,6 @@ export default function PremiumGrammarCorrector() {
     return !val || val === key ? fallback : val;
   };
 
-  // ✅✅✅ Usage sync (contador header Premium) — compatible con Layout
-  const bumpPremiumUsage = (data, inputLen = 0) => {
-    try {
-      const usedFromApi =
-        data?.usage?.used_chars ??
-        data?.usage?.usedChars ??
-        data?.used_chars ??
-        data?.usedChars ??
-        data?.usage?.chars ??
-        null;
-
-      const maxFromApi =
-        data?.limit?.max_chars ??
-        data?.limit?.maxChars ??
-        data?.max_chars ??
-        data?.maxChars ??
-        data?.plan?.max_chars ??
-        null;
-
-      const LS_KEY_1 = "premium_used_chars";
-      const LS_KEY_2 = "premiumUsedChars";
-
-      let nextUsed = 0;
-
-      const usedNum =
-        typeof usedFromApi === "number"
-          ? usedFromApi
-          : typeof usedFromApi === "string"
-          ? parseInt(usedFromApi, 10)
-          : NaN;
-
-      if (Number.isFinite(usedNum)) {
-        nextUsed = Math.max(0, Math.floor(usedNum));
-      } else {
-        let prev = 0;
-        try {
-          const raw1 = localStorage.getItem(LS_KEY_1);
-          const raw2 = localStorage.getItem(LS_KEY_2);
-          const base = raw1 ?? raw2;
-          prev = base ? parseInt(base, 10) || 0 : 0;
-        } catch {}
-        nextUsed = Math.max(0, prev + Math.max(0, inputLen | 0));
-      }
-
-      try {
-        localStorage.setItem(LS_KEY_1, String(nextUsed));
-        localStorage.setItem(LS_KEY_2, String(nextUsed));
-      } catch {}
-
-      const maxNum =
-        typeof maxFromApi === "number"
-          ? maxFromApi
-          : typeof maxFromApi === "string"
-          ? parseInt(maxFromApi, 10)
-          : NaN;
-
-      const maxFinal = Number.isFinite(maxNum) ? Math.floor(maxNum) : undefined;
-      const delta = Math.max(0, inputLen | 0);
-
-      const detail = {
-        used_chars: nextUsed,
-        max_chars: maxFinal,
-        delta_chars: delta,
-        usedChars: nextUsed,
-        maxChars: maxFinal,
-        deltaChars: delta,
-        source: "corrector",
-      };
-
-      window.dispatchEvent(new CustomEvent("premium-usage-update", { detail }));
-      window.dispatchEvent(new CustomEvent("premium_usage_update", { detail }));
-      window.dispatchEvent(new CustomEvent("premiumUsageUpdate", { detail }));
-
-      window.__PREMIUM_USAGE__ = { ...(window.__PREMIUM_USAGE__ || {}), ...detail };
-    } catch {}
-  };
-
   // ✅✅✅ PREMIUM LIMITS (igual patrón que Pro) -> guardar SOLO tipo, no el texto
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
 
@@ -449,13 +372,7 @@ export default function PremiumGrammarCorrector() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result, urlInputOpen, textValue, urlItems, documents, documentsText, outputLang]);
-
-  // ✅ Limpieza automática al cambiar cosas (patrón único)
-  useEffect(() => {
-    clearRight();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlItems.length, documents.length, documentsText.length, outputLang]);
+  }, [loading, result, urlInputOpen, textValue, urlItems, documents, outputLang]);
 
   // ===== Documentos =====
   const readTextFromFiles = async (items) => {
@@ -548,6 +465,11 @@ export default function PremiumGrammarCorrector() {
     setUrlItems((prev) => prev.filter((u) => u.id !== id));
     clearRight();
   };
+
+  useEffect(() => {
+    clearRight();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlItems.length]);
 
   // ===== Validación =====
   const textIsValid = useMemo(() => {
@@ -721,12 +643,6 @@ export default function PremiumGrammarCorrector() {
     });
     const cacheKey = await sha256Hex(cacheBase);
 
-    // ✅ inputLen para sumar contador Premium SIEMPRE
-    const inputLen =
-      (textValue || "").length +
-      (urlsList || "").length +
-      (documentsText || []).reduce((acc, d) => acc + String(d?.text || "").length, 0);
-
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -743,15 +659,13 @@ export default function PremiumGrammarCorrector() {
         },
         body: JSON.stringify({
           messages,
-          mode: "correct",
-          correctionMode: CORRECTION_MODE,
-          outputLang,
+          mode: CORRECTION_MODE,
           cacheKey,
           documentsText,
         }),
       });
 
-      // ✅✅✅ LIMITS 429 (no fijar idioma)
+      // ✅✅✅ LIMITS 429 (no usar data.message para no fijar idioma)
       if (res.status === 429) {
         let data = null;
         try {
@@ -788,8 +702,14 @@ export default function PremiumGrammarCorrector() {
 
       const data = await res.json();
 
-      // ✅✅✅ ACTUALIZA CONTADOR PREMIUM
-      bumpPremiumUsage(data, inputLen);
+      // ✅✅✅ FIX: actualizar contador del header (igual que Parafraseador/Humanizador)
+      if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+        window.dispatchEvent(
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+          })
+        );
+      }
 
       const rawText =
         data?.text ??
@@ -800,7 +720,7 @@ export default function PremiumGrammarCorrector() {
 
       if (!rawText) throw new Error(tr("premiumGrammar.error_no_text", "No se recibió texto de la API."));
 
-      const cleaned = String(rawText || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
+      const cleaned = rawText.replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
 
       setResult(cleaned);
       setLastSig(canonicalize(textValue));
@@ -819,7 +739,7 @@ export default function PremiumGrammarCorrector() {
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount >= MAX_CHARS;
+  const overLimit = charCount > MAX_CHARS;
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
@@ -1200,10 +1120,12 @@ export default function PremiumGrammarCorrector() {
               </div>
             </div>
 
-            {/* ✅ Banner visual limpio (sin texto) */}
-            <div className="px-6 pt-4">
-              <ProLimitBanner visible={!!limitType} message={""} />
-            </div>
+            {/* ✅ Banner Premium */}
+            {limitType && (
+              <div className="px-6 pt-4">
+                <ProLimitBanner visible={!!limitType} message={limitMsg} />
+              </div>
+            )}
 
             {/* Estado inicial (BOTÓN + AYUDA) — solo si NO hay limitType */}
             {!loading && !hasRealResult && !errorMsg && !limitType && (
@@ -1228,14 +1150,8 @@ export default function PremiumGrammarCorrector() {
 
             {/* Contenido normal */}
             <div className="w-full">
-              {(hasRealResult || loading || errorMsg || limitType) && (
-                <div className="px-6 pt-8 pb-32 max-w-3xl mx-auto">
-                  {limitType && (
-                    <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                      {limitMsg}
-                    </div>
-                  )}
-
+              {(hasRealResult || loading || (errorMsg && !limitType) || limitType) && (
+                <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
                   {errorMsg && !limitType && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                       {errorMsg}
