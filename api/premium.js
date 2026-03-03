@@ -6,13 +6,18 @@ import admin from "firebase-admin";
 // ====== Configuración de límites (via ENV con defaults sensatos) ======
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
-// LÍMITES PLAN PREMIUM (puedes sobreescribir en Vercel → Env Vars)
-const PREMIUM_MAX_CHARS    = Number(process.env.PREMIUM_MAX_CHARS || 18000);      // máx. caracteres por request (Premium) (legacy fallback)
-const PREMIUM_DAILY_TOKENS = Number(process.env.PREMIUM_DAILY_TOKENS || 300000);  // cuota diaria aprox por UID
+// ✅ NUEVO: LÍMITE GLOBAL MENSUAL PREMIUM (por UID)
+const PREMIUM_MONTHLY_CHARS = Number(process.env.PREMIUM_MONTHLY_CHARS || 2000000);
+
+// TTL para el contador mensual (lo dejamos ~62 días para cubrir cambios de mes y evitar expiraciones raras)
+const PREMIUM_MONTHLY_TTL_SECONDS = Number(process.env.PREMIUM_MONTHLY_TTL_SECONDS || 60 * 60 * 24 * 62);
+
+// LÍMITES LEGACY (se mantienen para no romper nada, pero ya NO gobiernan el bloqueo principal)
+const PREMIUM_MAX_CHARS    = Number(process.env.PREMIUM_MAX_CHARS || 18000);      // legacy fallback
+const PREMIUM_DAILY_TOKENS = Number(process.env.PREMIUM_DAILY_TOKENS || 300000);  // legacy
 const PREMIUM_RPM          = Number(process.env.PREMIUM_RPM || 60);               // rate limit: peticiones/min por UID
 
-// ✅✅✅ LÍMITES PREMIUM POR HERRAMIENTA (6 herramientas)
-// (defaults de ejemplo; luego los subes a tus valores finales)
+// ✅✅✅ LÍMITES PREMIUM POR HERRAMIENTA (legacy; se mantienen pero NO se usan para bloquear el uso global)
 const PREMIUM_TRANSLATOR_MAX_CHARS       = Number(process.env.PREMIUM_TRANSLATOR_MAX_CHARS || 16000);
 const PREMIUM_TRANSLATOR_DAILY_REQUESTS  = Number(process.env.PREMIUM_TRANSLATOR_DAILY_REQUESTS || 30);
 
@@ -54,7 +59,7 @@ function getPremiumLimits(tool) {
   return { maxChars: PREMIUM_MAX_CHARS, dailyReqs: PREMIUM_TRANSLATOR_DAILY_REQUESTS };
 }
 
-// Conversión aproximada chars→tokens (prudente)
+// Conversión aproximada chars→tokens (legacy)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
 
 // ====== Firebase Admin (verificación de token) ======
@@ -136,6 +141,17 @@ function todayKey(date = new Date()) {
   return `${y}-${m}-${d}`;
 }
 
+// ✅ NUEVO: clave del periodo mensual (UTC)
+function monthKey(date = new Date()) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  return `${y}-${m}`;
+}
+
+function premiumMonthlyUsageKey(uid, month = monthKey()) {
+  return `usage:premium:chars:${month}:${uid}`;
+}
+
 // Very simple HTML → texto
 function htmlToText(html) {
   if (!html) return "";
@@ -150,15 +166,13 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
-// ✅ detectar herramienta en PREMIUM (6)
+// ✅ detectar herramienta en PREMIUM (legacy; ya no aplica límites por tool)
 function detectPremiumTool(body, system, messages, hasTranslate) {
   const rawTask = String(body?.task || "").toLowerCase();
   const rawMode = String(body?.mode || "").toLowerCase();
 
-  // 1) detector explícito
   if (rawMode === "ai_detector" || rawTask === "ai_detector") return "ai_detector";
 
-  // 2) traductor
   const isTranslator =
     hasTranslate ||
     rawMode === "translate_urls" ||
@@ -169,7 +183,6 @@ function detectPremiumTool(body, system, messages, hasTranslate) {
     rawMode.includes("translate_text") ||
     rawMode.includes("translate_urls");
 
-  // 3) resumidor
   const isSummary =
     rawTask.includes("summary") ||
     rawTask.includes("summar") ||
@@ -178,7 +191,6 @@ function detectPremiumTool(body, system, messages, hasTranslate) {
     rawMode.includes("summar") ||
     rawMode.includes("resum");
 
-  // 4) corrector
   const isCorrector =
     rawTask.includes("correct") ||
     rawMode.includes("correct") ||
@@ -189,7 +201,6 @@ function detectPremiumTool(body, system, messages, hasTranslate) {
     rawTask.includes("ortograf") ||
     rawMode.includes("ortograf");
 
-  // 5) paraphraser
   const isParaphraser =
     rawTask.includes("paraphr") ||
     rawMode.includes("paraphr") ||
@@ -198,7 +209,6 @@ function detectPremiumTool(body, system, messages, hasTranslate) {
     rawTask.includes("reformular") ||
     rawMode.includes("reformular");
 
-  // 6) humanizer
   const isHumanizer =
     rawTask.includes("humaniz") ||
     rawMode.includes("humaniz") ||
@@ -213,7 +223,6 @@ function detectPremiumTool(body, system, messages, hasTranslate) {
     isHumanizer ? "humanizer" :
     "other";
 
-  // fallback por contenido si llega “other”
   if (tool === "other") {
     const sys = canonicalize(system || "");
     const user0 = canonicalize(
@@ -254,7 +263,6 @@ export default async function handler(req, res) {
   // CORS / Preflight
   if (req.method === "OPTIONS") {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    // ✅ importante: permitir Authorization
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     return res.status(200).end();
@@ -321,33 +329,6 @@ export default async function handler(req, res) {
         });
       }
 
-      // ====== LÍMITES PLAN PREMIUM (por UID) también para detector ======
-      const day = todayKey();
-
-      // ✅ límites por herramienta (ai_detector)
-      const toolLimits = getPremiumLimits("ai_detector");
-      const PREMIUM_MAX_CHARS_TOOL = toolLimits.maxChars;
-      const PREMIUM_DAILY_REQS_TOOL = toolLimits.dailyReqs;
-
-      // ✅ límite diario por peticiones (ai_detector) - SOLO aquí (evita doble conteo)
-      try {
-        const dailyReqKey = `quota:premium:ai_detector:reqs:${day}:${uid}`;
-        const usedReqs = await kv.incr(dailyReqKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyReqKey, 60 * 60 * 26);
-        }
-        if (usedReqs > PREMIUM_DAILY_REQS_TOOL) {
-          return res.status(429).json({
-            ok: false,
-            error: "Daily requests exceeded",
-            limit: { daily_requests: PREMIUM_DAILY_REQS_TOOL, used: usedReqs, tool: "ai_detector" },
-            message:
-              `Has alcanzado el límite diario del detector IA en Premium (${PREMIUM_DAILY_REQS_TOOL} al día). ` +
-              `Vuelve mañana.`
-          });
-        }
-      } catch {}
-
       const detectorSystem =
         "Eres un detector de probabilidad de texto generado por IA. Devuelve SOLO JSON válido sin texto adicional.";
 
@@ -370,23 +351,27 @@ Texto:
       const totalChars =
         detectorMessagesForLimits.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-      if (totalChars > PREMIUM_MAX_CHARS_TOOL) {
+      // (se mantiene un límite razonable por request para no romper el modelo)
+      const detectorToolLimits = getPremiumLimits("ai_detector");
+      const detectorMax = Number(detectorToolLimits.maxChars || PREMIUM_MAX_CHARS);
+
+      if (totalChars > detectorMax) {
         return res.status(413).json({
           ok: false,
           error: "Input too long",
-          limit: { max_chars: PREMIUM_MAX_CHARS_TOOL, tool: "ai_detector" },
+          limit: { max_chars: detectorMax, tool: "ai_detector" },
           message:
-            `El texto es demasiado largo para el plan Premium. Máximo ${PREMIUM_MAX_CHARS_TOOL.toLocaleString()} caracteres por petición. ` +
+            `El texto es demasiado largo para el plan Premium. Máximo ${detectorMax.toLocaleString()} caracteres por petición. ` +
             `Divide el texto y vuelve a intentarlo.`
         });
       }
 
-      // 2) Rate-limit RPM por UID
+      // Rate-limit RPM por UID (esto sí lo mantenemos)
       try {
         const rpmKey = `rl:premium:rpm:${uid}`;
         const count = await kv.incr(rpmKey);
         if (count === 1) {
-          await kv.expire(rpmKey, 60); // ventana 60s
+          await kv.expire(rpmKey, 60);
         }
         if (count > PREMIUM_RPM) {
           return res.status(429).json({
@@ -398,27 +383,14 @@ Texto:
         }
       } catch {}
 
-      // 3) Cuota diaria aproximada de tokens por UID
-      const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
-      try {
-        const dailyKey = `quota:premium:${day}:${uid}`;
-        const used = (await kv.get(dailyKey)) || 0;
-        if (used + estTokens > PREMIUM_DAILY_TOKENS) {
-          return res.status(429).json({
-            ok: false,
-            error: "Daily quota exceeded",
-            limit: { daily_tokens: PREMIUM_DAILY_TOKENS, used_tokens: used },
-            message:
-              `Has alcanzado la cuota diaria del plan Premium. ` +
-              `Disponible: ${PREMIUM_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
-              `Vuelve mañana.`
-          });
-        }
-      } catch {}
+      // ✅✅✅ NUEVO: LÍMITE GLOBAL MENSUAL (input+output) para detector también
+      const month = monthKey();
+      const usageKey = premiumMonthlyUsageKey(uid, month);
+      const usedChars0 = Number((await kv.get(usageKey)) || 0);
+      const inputChars = totalChars;
 
-      // ====== KV CACHE (detector) ======
+      // Cache key detector
       const MODEL = process.env.AI_DETECTOR_MODEL || "gpt-4.1-mini";
-
       const detectorCacheKey = makeCacheKey({
         task: "ai_detector",
         model: MODEL,
@@ -430,21 +402,53 @@ Texto:
         length: null
       });
 
+      // Si hay cache, igual cuenta (para evitar “gratis infinito” repitiendo)
       try {
         const cached = await kv.get(detectorCacheKey);
         if (cached?.ai !== undefined && cached?.human !== undefined) {
+          const cachedNote = cached.note || "Estimación orientativa basada en patrones del texto.";
+          const outputJson = JSON.stringify({ ai: cached.ai, human: cached.human, note: cachedNote });
+          const outputChars = outputJson.length;
+          const spentChars = inputChars + outputChars;
+
+          if (usedChars0 + spentChars > PREMIUM_MONTHLY_CHARS) {
+            return res.status(429).json({
+              ok: false,
+              error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+              usedChars: usedChars0,
+              limitChars: PREMIUM_MONTHLY_CHARS,
+              message: "Has alcanzado el límite mensual del plan Premium."
+            });
+          }
+
+          const newUsed = usedChars0 + spentChars;
+          await kv.set(usageKey, newUsed, { ex: PREMIUM_MONTHLY_TTL_SECONDS });
           await kv.expire(detectorCacheKey, CACHE_TTL_SECONDS);
+
           return res.status(200).json({
             ok: true,
             ai: cached.ai,
             human: cached.human,
-            note: cached.note || "Estimación orientativa basada en patrones del texto.",
-            cached: true
+            note: cachedNote,
+            cached: true,
+            usedChars: newUsed,
+            limitChars: PREMIUM_MONTHLY_CHARS
           });
         }
       } catch {}
 
-      // ====== Llamada OpenAI (Responses API) ======
+      // Pre-check (solo input) para evitar llamadas si ya está reventado
+      if (usedChars0 + inputChars > PREMIUM_MONTHLY_CHARS) {
+        return res.status(429).json({
+          ok: false,
+          error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+          usedChars: usedChars0,
+          limitChars: PREMIUM_MONTHLY_CHARS,
+          message: "Has alcanzado el límite mensual del plan Premium."
+        });
+      }
+
+      // OpenAI (Responses API)
       const rr = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
@@ -477,7 +481,7 @@ Texto:
         });
       }
 
-      // extraer texto JSON del response (robusto)
+      // extraer output json
       let rawOut = data?.output_text || "";
       if (!rawOut && Array.isArray(data?.output)) {
         for (const item of data.output) {
@@ -518,21 +522,36 @@ Texto:
         await kv.set(detectorCacheKey, { ai, human, note }, { ex: CACHE_TTL_SECONDS });
       } catch {}
 
-      // Actualizar cuota diaria real (si hay usage en responses)
+      // ✅✅✅ NUEVO: sumar GLOBAL mensual (input + output)
+      const outJson = JSON.stringify({ ai, human, note });
+      const outputChars = outJson.length;
+      const spentChars = inputChars + outputChars;
+
+      // Recheck estricto (por si cambió entre medias)
+      const usedChars1 = Number((await kv.get(usageKey)) || 0);
+      if (usedChars1 + spentChars > PREMIUM_MONTHLY_CHARS) {
+        return res.status(429).json({
+          ok: false,
+          error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+          usedChars: usedChars1,
+          limitChars: PREMIUM_MONTHLY_CHARS,
+          message: "Has alcanzado el límite mensual del plan Premium."
+        });
+      }
+      const newUsed = usedChars1 + spentChars;
       try {
-        const dailyKey = `quota:premium:${day}:${uid}`;
-        const used = (await kv.get(dailyKey)) || 0;
-
-        const respUsage = data?.usage || null;
-        const realTokens =
-          (respUsage?.input_tokens || 0) + (respUsage?.output_tokens || 0) ||
-          Math.max(estTokens, 1);
-
-        const newUsed = used + realTokens;
-        await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+        await kv.set(usageKey, newUsed, { ex: PREMIUM_MONTHLY_TTL_SECONDS });
       } catch {}
 
-      return res.status(200).json({ ok: true, ai, human, note, cached: false });
+      return res.status(200).json({
+        ok: true,
+        ai,
+        human,
+        note,
+        cached: false,
+        usedChars: newUsed,
+        limitChars: PREMIUM_MONTHLY_CHARS
+      });
     }
 
     // ====== Soporte especial: traducir desde URLs ======
@@ -571,7 +590,6 @@ Texto:
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto según par de idiomas
       if (!system) {
         if (src === "eus" && dst === "es") {
           system = `
@@ -638,42 +656,17 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       ...messages,
     ];
 
-    // ====== ✅ Detectar herramienta PREMIUM (6) ======
+    // ====== Detectar herramienta (solo informativo)
     const tool = detectPremiumTool(body, system, messages, hasTranslate);
-    const toolLimits = getPremiumLimits(tool);
-    const PREMIUM_MAX_CHARS_TOOL = toolLimits.maxChars;
-    const PREMIUM_DAILY_REQS_TOOL = toolLimits.dailyReqs;
 
-    // ====== LÍMITES PLAN PREMIUM (por UID) ======
-    const day = todayKey();
-
-    // ✅✅✅ límite diario por peticiones / herramienta (por UID)
-    // ⚠️ EXCEPTO ai_detector, porque ya se cuenta en su bloque específico
-    if (tool !== "ai_detector") {
-      try {
-        const dailyReqKey = `quota:premium:${tool}:reqs:${day}:${uid}`;
-        const usedReqs = await kv.incr(dailyReqKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyReqKey, 60 * 60 * 26);
-        }
-
-        if (usedReqs > PREMIUM_DAILY_REQS_TOOL) {
-          return res.status(429).json({
-            ok: false,
-            error: "PREMIUM_DAILY_LIMIT_REACHED",
-            limit: { daily_requests: PREMIUM_DAILY_REQS_TOOL, used: usedReqs, tool },
-          });
-        }
-      } catch {}
-    }
-
-    // 1) Máx. caracteres por request
+    // ====== 1) Máx. caracteres por request (mantenemos para estabilidad) ======
     const totalChars =
       (system?.length || 0) +
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
-    // ✅ usa límites por herramienta (y si falta, cae a PREMIUM_MAX_CHARS legacy)
-    const effectiveMaxChars = Number(PREMIUM_MAX_CHARS_TOOL || PREMIUM_MAX_CHARS);
+    // límite por request: usa tool max si existe, si no cae a PREMIUM_MAX_CHARS
+    const toolLimits = getPremiumLimits(tool);
+    const effectiveMaxChars = Number(toolLimits?.maxChars || PREMIUM_MAX_CHARS);
 
     if (totalChars > effectiveMaxChars) {
       return res.status(413).json({
@@ -686,12 +679,12 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    // 2) Rate-limit RPM por UID
+    // ====== 2) Rate-limit RPM por UID (sí lo mantenemos) ======
     try {
       const rpmKey = `rl:premium:rpm:${uid}`;
       const count = await kv.incr(rpmKey);
       if (count === 1) {
-        await kv.expire(rpmKey, 60); // ventana 60s
+        await kv.expire(rpmKey, 60);
       }
       if (count > PREMIUM_RPM) {
         return res.status(429).json({
@@ -703,23 +696,24 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       }
     } catch {}
 
-    // 3) Cuota diaria aproximada de tokens por UID
-    const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
-    try {
-      const dailyKey = `quota:premium:${day}:${uid}`;
-      const used = (await kv.get(dailyKey)) || 0;
-      if (used + estTokens > PREMIUM_DAILY_TOKENS) {
-        return res.status(429).json({
-          ok: false,
-          error: "Daily quota exceeded",
-          limit: { daily_tokens: PREMIUM_DAILY_TOKENS, used_tokens: used },
-          message:
-            `Has alcanzado la cuota diaria del plan Premium. ` +
-            `Disponible: ${PREMIUM_DAILY_TOKENS.toLocaleString()} tokens/día. ` +
-            `Vuelve mañana.`
-        });
-      }
-    } catch {}
+    // ====== ✅✅✅ NUEVO: LÍMITE GLOBAL MENSUAL (input + output) ======
+    const month = monthKey();
+    const usageKey = premiumMonthlyUsageKey(uid, month);
+
+    // inputChars = totalChars (lo que mandamos al modelo)
+    const inputChars = totalChars;
+
+    // Precheck (solo input) para evitar gastar API si ya no hay margen ni para procesar
+    const usedChars0 = Number((await kv.get(usageKey)) || 0);
+    if (usedChars0 + inputChars > PREMIUM_MONTHLY_CHARS) {
+      return res.status(429).json({
+        ok: false,
+        error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+        usedChars: usedChars0,
+        limitChars: PREMIUM_MONTHLY_CHARS,
+        message: "Has alcanzado el límite mensual del plan Premium."
+      });
+    }
 
     // ====== KV CACHE ======
     const task = hasTranslate ? "translate" : (body?.task || body?.mode || "chat");
@@ -732,16 +726,36 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       task, model, system, messages: finalMessages, src, dst, lang, length
     });
 
+    // Si hay cache, también cuenta como gasto (para evitar abuso)
     try {
       const cached = await kv.get(cacheKey);
       if (cached?.content) {
+        const outputChars = String(cached.content || "").length;
+        const spentChars = inputChars + outputChars;
+
+        const usedNow = Number((await kv.get(usageKey)) || 0);
+        if (usedNow + spentChars > PREMIUM_MONTHLY_CHARS) {
+          return res.status(429).json({
+            ok: false,
+            error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+            usedChars: usedNow,
+            limitChars: PREMIUM_MONTHLY_CHARS,
+            message: "Has alcanzado el límite mensual del plan Premium."
+          });
+        }
+
+        const newUsed = usedNow + spentChars;
+        await kv.set(usageKey, newUsed, { ex: PREMIUM_MONTHLY_TTL_SECONDS });
+
         await kv.expire(cacheKey, CACHE_TTL_SECONDS);
         return res.status(200).json({
           ok: true,
           provider: "openai",
           content: cached.content,
           usage: cached.usage || null,
-          cached: true
+          cached: true,
+          usedChars: newUsed,
+          limitChars: PREMIUM_MONTHLY_CHARS
         });
       }
     } catch {}
@@ -785,17 +799,25 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       await kv.set(cacheKey, { content, usage }, { ex: CACHE_TTL_SECONDS });
     } catch {}
 
-    // ====== Actualizar cuota diaria real (tokens) ======
+    // ====== ✅✅✅ NUEVO: sumar GLOBAL mensual (input + output) ======
+    const outputChars = String(content || "").length;
+    const spentChars = inputChars + outputChars;
+
+    // Recheck estricto (por si cambió entre medias)
+    const usedChars1 = Number((await kv.get(usageKey)) || 0);
+    if (usedChars1 + spentChars > PREMIUM_MONTHLY_CHARS) {
+      return res.status(429).json({
+        ok: false,
+        error: "PREMIUM_MONTHLY_LIMIT_REACHED",
+        usedChars: usedChars1,
+        limitChars: PREMIUM_MONTHLY_CHARS,
+        message: "Has alcanzado el límite mensual del plan Premium."
+      });
+    }
+
+    const newUsed = usedChars1 + spentChars;
     try {
-      const dailyKey = `quota:premium:${day}:${uid}`;
-      const used = (await kv.get(dailyKey)) || 0;
-
-      const realTokens =
-        (usage?.prompt_tokens || 0) + (usage?.completion_tokens || 0) ||
-        Math.max(estTokens, 1);
-
-      const newUsed = used + realTokens;
-      await kv.set(dailyKey, newUsed, { ex: 60 * 60 * 26 }); // ~26h
+      await kv.set(usageKey, newUsed, { ex: PREMIUM_MONTHLY_TTL_SECONDS });
     } catch {}
 
     return res.status(200).json({
@@ -803,7 +825,9 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       provider: "openai",
       content,
       usage,
-      cached: false
+      cached: false,
+      usedChars: newUsed,
+      limitChars: PREMIUM_MONTHLY_CHARS
     });
   } catch (err) {
     return res.status(500).json({ ok: false, error: err?.message || "Server error" });

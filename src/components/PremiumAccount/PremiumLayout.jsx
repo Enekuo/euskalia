@@ -163,6 +163,40 @@ export default function PremiumLayout({ children }) {
   const avatarInitial = useMemo(() => firstInitial(user), [user]);
   const avatarPhoto = user?.photoURL || "";
 
+  const [premiumUsedChars, setPremiumUsedChars] = useState(0);
+  const [premiumLimitChars, setPremiumLimitChars] = useState(0);
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const u = auth.currentUser;
+        if (!u) return;
+
+        const idToken = await u.getIdToken();
+        const r = await fetch("/api/premium-usage", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+
+        const data = await r.json().catch(() => ({}));
+        if (data?.ok) {
+          setPremiumUsedChars(Number(data.usedChars || 0));
+          setPremiumLimitChars(Number(data.limitChars || 0));
+        }
+      } catch {}
+    };
+
+    run();
+  }, []);
+
+  const formatDot = (n) => {
+    const x = Number(n || 0);
+    if (!Number.isFinite(x)) return "0";
+    return Math.round(x).toLocaleString("es-ES");
+  };
+
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
       {/* ✅ LOGO FIJO */}
@@ -643,7 +677,7 @@ export default function PremiumLayout({ children }) {
               "
             >
               <Gem size={14} className="text-white" />
-              <span>0.0 / 20.000</span>
+              <span>{formatDot(premiumUsedChars)} / {formatDot(premiumLimitChars || 0)}</span>
               <span className="opacity-90 font-medium">caracteres</span>
             </div>
           </div>
