@@ -103,15 +103,9 @@ export default function PremiumTranslator() {
 
   const limitMsg =
     limitType === "daily"
-      ? tr(
-          "premiumTranslator_limit_daily",
-          "Has alcanzado tu límite diario del plan Premium. Vuelve mañana."
-        )
+      ? tr("premiumTranslator_limit_daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
       : limitType === "chars"
-      ? tr(
-          "premiumTranslator_limit_chars",
-          "Has superado el límite máximo de caracteres para tu plan Premium."
-        )
+      ? tr("premiumTranslator_limit_chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
       : "";
 
   // ===== ERROR (derivado, no fijo) =====
@@ -212,8 +206,8 @@ export default function PremiumTranslator() {
 
   const [resultStatus, setResultStatus] = useState("idle"); // "idle" | "loading" | "success" | "error"
 
-  // ✅ token para /api/pro
-  const getProToken = async () => {
+  // ✅ token para /api/premium
+  const getPremiumToken = async () => {
     const user = auth?.currentUser;
     if (!user) throw new Error("NOT_AUTHENTICATED");
     const token = await user.getIdToken();
@@ -291,7 +285,13 @@ export default function PremiumTranslator() {
   };
 
   const applyTranslationOutput = (data) => {
-    let out = (data?.content ?? data?.translation ?? "").toString();
+    let out =
+      (data?.text ??
+        data?.content ??
+        data?.translation ??
+        data?.choices?.[0]?.message?.content ??
+        data?.message?.content ??
+        "") + "";
 
     if (src === "auto") {
       const { code, cleaned } = extractDetectedLine(out);
@@ -395,9 +395,9 @@ export default function PremiumTranslator() {
           dst
         )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:". Mantén el formato.`;
 
-        const token = await getProToken();
+        const token = await getPremiumToken();
 
-        const res = await fetch("/api/pro", {
+        const res = await fetch("/api/premium", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -405,8 +405,6 @@ export default function PremiumTranslator() {
           },
           signal: controller.signal,
           body: JSON.stringify({
-            model: "gpt-4o-mini",
-            temperature: 0.2,
             mode: "translate_text",
             src,
             dst,
@@ -440,12 +438,13 @@ export default function PremiumTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/pro error:", res.status, raw);
-          throw new Error(`API /api/pro ${res.status}`);
+          console.error("API /api/premium error:", res.status, raw);
+          throw new Error(`API /api/premium ${res.status}`);
         }
 
         const data = await res.json();
 
+        // ✅✅✅ FIX CONTADOR PREMIUM (igual que paraphraser/humanizer)
         if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
           window.dispatchEvent(
             new CustomEvent("premium-usage-update", {
@@ -506,9 +505,9 @@ export default function PremiumTranslator() {
         clearLimit();
 
         const urls = urlItems.map((u) => u.url);
-        const token = await getProToken();
+        const token = await getPremiumToken();
 
-        const res = await fetch("/api/pro", {
+        const res = await fetch("/api/premium", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -520,8 +519,6 @@ export default function PremiumTranslator() {
             src,
             dst,
             urls,
-            model: "gpt-4o-mini",
-            temperature: 0.2,
           }),
         });
 
@@ -547,7 +544,7 @@ export default function PremiumTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/pro (urls) error:", res.status, raw);
+          console.error("API /api/premium (urls) error:", res.status, raw);
 
           if (res.status === 401 || res.status === 403) {
             setErrorKey("premiumTranslator_errorAuthRequired");
@@ -563,6 +560,7 @@ export default function PremiumTranslator() {
 
         const data = await res.json();
 
+        // ✅✅✅ FIX CONTADOR PREMIUM
         if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
           window.dispatchEvent(
             new CustomEvent("premium-usage-update", {
@@ -624,9 +622,7 @@ export default function PremiumTranslator() {
         setResultStatus("loading");
         clearLimit();
 
-        const contents = await Promise.all(
-          documents.map(({ file }) => readFileAsText(file))
-        );
+        const contents = await Promise.all(documents.map(({ file }) => readFileAsText(file)));
         const combined = contents.join("\n\n---\n\n").slice(0, MAX_CHARS);
 
         if (!combined.trim()) {
@@ -642,9 +638,9 @@ export default function PremiumTranslator() {
           dst
         )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:" .`;
 
-        const token = await getProToken();
+        const token = await getPremiumToken();
 
-        const res = await fetch("/api/pro", {
+        const res = await fetch("/api/premium", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -652,8 +648,6 @@ export default function PremiumTranslator() {
           },
           signal: controller.signal,
           body: JSON.stringify({
-            model: "gpt-4o-mini",
-            temperature: 0.2,
             mode: "translate_text",
             src,
             dst,
@@ -687,7 +681,7 @@ export default function PremiumTranslator() {
 
         if (!res.ok) {
           const raw = await res.text().catch(() => "");
-          console.error("API /api/pro (documents) error:", res.status, raw);
+          console.error("API /api/premium (documents) error:", res.status, raw);
 
           if (res.status === 401 || res.status === 403) {
             setErrorKey("premiumTranslator_errorAuthRequired");
@@ -703,6 +697,7 @@ export default function PremiumTranslator() {
 
         const data = await res.json();
 
+        // ✅✅✅ FIX CONTADOR PREMIUM
         if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
           window.dispatchEvent(
             new CustomEvent("premium-usage-update", {
@@ -751,11 +746,7 @@ export default function PremiumTranslator() {
   const Dropdown = ({ open, selected, onSelect, align = "left", options }) => {
     if (!open) return null;
     return (
-      <div
-        className={`absolute top-full mt-2 z-50 ${
-          align === "right" ? "right-0" : "left-0"
-        }`}
-      >
+      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0" : "left-0"}`}>
         <div className="relative">
           <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
             <path d="M0,10 L10,0 L20,10" className="fill-white" />
@@ -763,12 +754,7 @@ export default function PremiumTranslator() {
           </svg>
           <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
             {(options || []).map((val) => (
-              <Item
-                key={val}
-                label={langLabel(val)}
-                active={selected === val}
-                onClick={() => onSelect(val)}
-              />
+              <Item key={val} label={langLabel(val)} active={selected === val} onClick={() => onSelect(val)} />
             ))}
           </div>
         </div>
@@ -781,10 +767,7 @@ export default function PremiumTranslator() {
   const labelTabDocument = tr("premiumTranslator_sources_tab_document", "Documento");
   const labelTabUrl = tr("premiumTranslator_sources_tab_url", "URL");
 
-  const labelChooseFileTitle = tr(
-    "premiumTranslator_choose_file_title",
-    "Elige tu archivo o carpeta"
-  );
+  const labelChooseFileTitle = tr("premiumTranslator_choose_file_title", "Elige tu archivo o carpeta");
   const labelAcceptedFormats = tr("premiumTranslator_accepted_formats", "Formatos admitidos");
   const labelFolderHint = tr("premiumTranslator_folder_hint", "Puedes arrastrar varios archivos.");
 
@@ -792,34 +775,19 @@ export default function PremiumTranslator() {
   const labelAddUrl = tr("premiumTranslator_add_url", "Añadir URLs");
   const labelSaveUrls = tr("premiumTranslator_save_urls", "Guardar");
   const labelCancel = tr("premiumTranslator_cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "premiumTranslator_urls_note_visible",
-    "Solo se importará el texto visible."
-  );
-  const labelUrlsNotePaywalled = tr(
-    "premiumTranslator_urls_note_paywalled",
-    "No se admiten artículos de pago."
-  );
+  const labelUrlsNoteVisible = tr("premiumTranslator_urls_note_visible", "Solo se importará el texto visible.");
+  const labelUrlsNotePaywalled = tr("premiumTranslator_urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("premiumTranslator_remove", "Quitar");
 
   const labelSaveTranslation = tr("premiumTranslator_save_button_label", "Guardar");
   const librarySavedMessage = tr("premiumTranslator_library_saved_toast", "Guardado en biblioteca");
 
-  const labelLeftPlaceholder = tr(
-    "premiumTranslator_left_placeholder",
-    "Escribe o pega el texto aquí…"
-  );
-  const labelRightPlaceholder = tr(
-    "premiumTranslator_right_placeholder",
-    "Aquí aparecerá la traducción…"
-  );
+  const labelLeftPlaceholder = tr("premiumTranslator_left_placeholder", "Escribe o pega el texto aquí…");
+  const labelRightPlaceholder = tr("premiumTranslator_right_placeholder", "Aquí aparecerá la traducción…");
   const labelLoading = tr("premiumTranslator_loading", "Traduciendo…");
 
   const labelClear = tr("premiumTranslator_clear_left", "Borrar");
-  const labelSwapAria = tr(
-    "premiumTranslator_swap_languages_aria",
-    "Intercambiar idiomas"
-  );
+  const labelSwapAria = tr("premiumTranslator_swap_languages_aria", "Intercambiar idiomas");
   const labelListen = tr("premiumTranslator_listen", "Escuchar");
   const labelStop = tr("premiumTranslator_stop", "Detener");
   const labelCopy = tr("premiumTranslator_copy", "Copiar");
@@ -1604,9 +1572,7 @@ export default function PremiumTranslator() {
                       <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center">
                         <Plus className="w-9 h-9 text-sky-600" />
                       </div>
-                      <div className="text-xl font-semibold text-slate-800">
-                        {labelChooseFileTitle}
-                      </div>
+                      <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
                       <div className="mt-3 text-sm text-slate-500">{labelAcceptedFormats}</div>
                       <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                     </button>
@@ -1615,21 +1581,14 @@ export default function PremiumTranslator() {
                       <div className="mt-4 flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-200 bg-white">
                         <ul className="divide-y divide-slate-200">
                           {documents.map(({ id, file }) => (
-                            <li
-                              key={id}
-                              className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
-                            >
+                            <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
                               <div className="min-w-0 flex items-center gap-3 flex-1">
                                 <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
                                   <FileIcon className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-sm font-medium block truncate">
-                                    {file.name}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                  </span>
+                                  <span className="text-sm font-medium block truncate">{file.name}</span>
+                                  <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
                                 </div>
                               </div>
                               <button
@@ -1681,10 +1640,7 @@ export default function PremiumTranslator() {
                             if (limitType) clearLimit();
                             if (displayErr) clearError();
                           }}
-                          placeholder={tr(
-                            "premiumTranslator_paste_urls_placeholder",
-                            "Introduce URLs separadas por línea"
-                          )}
+                          placeholder={tr("premiumTranslator_paste_urls_placeholder", "Introduce URLs separadas por línea")}
                           className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                           aria-label={labelPasteUrls}
                         />
@@ -1782,9 +1738,7 @@ export default function PremiumTranslator() {
                 )}
 
                 <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
-                  {savedToLibrary && (
-                    <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>
-                  )}
+                  {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
 
                   <div className="flex items-center gap-4">
                     <button
