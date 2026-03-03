@@ -191,6 +191,18 @@ export default function PremiumLayout({ children }) {
     run();
   }, []);
 
+  // ✅✅✅ NUEVO: escuchar updates desde cualquier herramienta (CustomEvent)
+  useEffect(() => {
+    const onUpdate = (e) => {
+      const d = e?.detail || {};
+      if (typeof d.usedChars === "number") setPremiumUsedChars(d.usedChars);
+      if (typeof d.limitChars === "number") setPremiumLimitChars(d.limitChars);
+    };
+
+    window.addEventListener("premium-usage-update", onUpdate);
+    return () => window.removeEventListener("premium-usage-update", onUpdate);
+  }, []);
+
   const formatDot = (n) => {
     const x = Number(n || 0);
     if (!Number.isFinite(x)) return "0";

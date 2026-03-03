@@ -445,6 +445,15 @@ export default function PremiumTranslator() {
         }
 
         const data = await res.json();
+
+        if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+          window.dispatchEvent(
+            new CustomEvent("premium-usage-update", {
+              detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+            })
+          );
+        }
+
         const ok = applyTranslationOutput(data);
         if (ok) setDirty(false);
       } catch (e) {
@@ -553,6 +562,15 @@ export default function PremiumTranslator() {
         }
 
         const data = await res.json();
+
+        if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+          window.dispatchEvent(
+            new CustomEvent("premium-usage-update", {
+              detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+            })
+          );
+        }
+
         applyTranslationOutput(data);
       } catch (e) {
         if (e.name !== "AbortError") {
@@ -622,7 +640,7 @@ export default function PremiumTranslator() {
         const system = `${directionText(
           src,
           dst
-        )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:".`;
+        )}\n\nDevuelve ÚNICAMENTE el texto traducido. No añadas prefijos tipo "Traducción:" .`;
 
         const token = await getProToken();
 
@@ -684,6 +702,15 @@ export default function PremiumTranslator() {
         }
 
         const data = await res.json();
+
+        if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+          window.dispatchEvent(
+            new CustomEvent("premium-usage-update", {
+              detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+            })
+          );
+        }
+
         applyTranslationOutput(data);
       } catch (e) {
         if (e.name !== "AbortError") {
