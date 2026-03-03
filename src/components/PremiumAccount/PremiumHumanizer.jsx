@@ -38,6 +38,65 @@ export default function PremiumHumanizer() {
     return v;
   };
 
+  // ✅✅✅ Usage sync (contador header Premium)
+  const bumpPremiumUsage = (data, inputLen = 0) => {
+    try {
+      // 1) Si backend devuelve algo de uso/límites, lo intentamos leer
+      const usedFromApi =
+        data?.usage?.used_chars ??
+        data?.usage?.usedChars ??
+        data?.used_chars ??
+        data?.usedChars ??
+        data?.usage?.chars ??
+        null;
+
+      const maxFromApi =
+        data?.limit?.max_chars ??
+        data?.limit?.maxChars ??
+        data?.max_chars ??
+        data?.maxChars ??
+        data?.plan?.max_chars ??
+        null;
+
+      // 2) Fallback: acumulamos localmente por inputLen (para que SIEMPRE sume)
+      const LS_KEY = "premium_used_chars";
+      let nextUsed = 0;
+
+      if (typeof usedFromApi === "number" && Number.isFinite(usedFromApi)) {
+        nextUsed = Math.max(0, Math.floor(usedFromApi));
+        try {
+          localStorage.setItem(LS_KEY, String(nextUsed));
+        } catch {}
+      } else {
+        let prev = 0;
+        try {
+          const raw = localStorage.getItem(LS_KEY);
+          prev = raw ? parseInt(raw, 10) || 0 : 0;
+        } catch {}
+        nextUsed = Math.max(0, prev + Math.max(0, inputLen | 0));
+        try {
+          localStorage.setItem(LS_KEY, String(nextUsed));
+        } catch {}
+      }
+
+      const detail = {
+        used_chars: nextUsed,
+        max_chars: typeof maxFromApi === "number" && Number.isFinite(maxFromApi) ? Math.floor(maxFromApi) : undefined,
+        // para layouts que sumen por incremento
+        delta_chars: Math.max(0, inputLen | 0),
+        source: "humanizer",
+      };
+
+      // 3) Emitimos varios eventos por compatibilidad (según cómo lo tengas en Layout)
+      window.dispatchEvent(new CustomEvent("premium_usage_update", { detail }));
+      window.dispatchEvent(new CustomEvent("premium-usage-update", { detail }));
+      window.dispatchEvent(new CustomEvent("premiumUsageUpdate", { detail }));
+
+      // 4) También exponemos en window por si el Layout lee de aquí
+      window.__PREMIUM_USAGE__ = { ...(window.__PREMIUM_USAGE__ || {}), ...detail };
+    } catch {}
+  };
+
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
@@ -154,20 +213,14 @@ export default function PremiumHumanizer() {
   const labelEnterText = tr("premiumHumanizer_enterText", "Escribe o pega tu texto aquí…");
 
   const labelChooseFileTitle = tr("premiumHumanizer_chooseFileTitle", "Elige tu archivo o carpeta");
-  const labelAcceptedFormats = tr(
-    "premiumHumanizer_acceptedFormats",
-    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
-  );
+  const labelAcceptedFormats = tr("premiumHumanizer_acceptedFormats", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
   const labelFolderHint = tr("premiumHumanizer_folderHint", "Aquí aparecerán tus textos o documentos subidos.");
 
   const labelPasteUrls = tr("premiumHumanizer_pasteUrls", "Pegar URLs*");
   const labelAddUrl = tr("premiumHumanizer_addUrls", "Añadir URLs");
   const labelSaveUrls = tr("premiumHumanizer_save", "Guardar");
   const labelCancel = tr("premiumHumanizer_cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "premiumHumanizer_urlsNoteVisible",
-    "Solo se importará el texto visible del sitio web."
-  );
+  const labelUrlsNoteVisible = tr("premiumHumanizer_urlsNoteVisible", "Solo se importará el texto visible del sitio web.");
   const labelUrlsNotePaywalled = tr("premiumHumanizer_urlsNotePaywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("premiumHumanizer_remove", "Quitar");
 
@@ -283,33 +336,6 @@ export default function PremiumHumanizer() {
     setCopiedFlash(false);
     setSavedToLibrary(false);
     clearAllMessages();
-  };
-
-  // ✅✅✅ UPDATE COUNTER (igual que lo que te ha funcionado en parafraseador)
-  const notifyPremiumUsage = (payload) => {
-    try {
-      const detail = payload || {};
-      window.dispatchEvent(new CustomEvent("premium-usage-updated", { detail }));
-    } catch {}
-    try {
-      localStorage.setItem("premium_usage_cache", JSON.stringify({ ...(payload || {}), ts: Date.now() }));
-    } catch {}
-  };
-
-  const refreshPremiumUsage = async (idToken) => {
-    try {
-      const r = await fetch("/api/premium-usage", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${idToken}` },
-      });
-      const data = await r.json().catch(() => ({}));
-      if (data?.ok) {
-        notifyPremiumUsage({
-          usedChars: Number(data.usedChars || 0),
-          limitChars: Number(data.limitChars || 0),
-        });
-      }
-    } catch {}
   };
 
   // ===== Atajos teclado =====
@@ -537,6 +563,8 @@ export default function PremiumHumanizer() {
       setErrorRaw("");
       setErrorKey("premiumHumanizer_errorMaxChars");
       setErrorFallback("Has superado el límite de caracteres permitido.");
+      setLimitType("chars");
+      setLimitRaw("");
       setLoading(false);
       return;
     }
@@ -586,7 +614,6 @@ export default function PremiumHumanizer() {
         documentsFiles.map((d) => `--- ${d.name} (${Math.round((d.size || 0) / 1024)} KB) ---`).join("\n")
       : "";
 
-    // ✅ + FR
     const langInstruction =
       outputLang === "es"
         ? "Idioma de salida: español (ISO: es). Escribe todo en español."
@@ -669,6 +696,12 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     });
     const cacheKey = await sha256Hex(cacheBase);
 
+    // ✅ inputLen para sumar contador SIEMPRE
+    const inputLen =
+      (textValue || "").length +
+      (urlsList || "").length +
+      (documentsText || []).reduce((acc, d) => acc + String(d?.text || "").length, 0);
+
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -700,29 +733,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         }),
       });
 
-      // ✅✅✅ PREMIUM LIMITS 429 (patrón único) + refresh contador
-      if (res.status === 429) {
-        let data = null;
-        try {
-          data = await res.json();
-        } catch {
-          data = null;
-        }
-
-        const limit = data?.limit || {};
-        const isChars = typeof limit?.max_chars === "number";
-        const isDaily = typeof limit?.daily_requests === "number";
-
-        if (isChars) setLimitType("chars");
-        else if (isDaily) setLimitType("daily");
-        else setLimitType("daily");
-
-        setLimitRaw(String(data?.message || ""));
-
-        setLoading(false);
-        return;
-      }
-
       if (!res.ok) {
         let errJson = null;
         try {
@@ -739,6 +749,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           return;
         }
 
+        // ✅✅✅ límites
         if (res.status === 413) {
           const backendMsg = errJson?.message || "";
           setLimitType("chars");
@@ -756,6 +767,23 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           return;
         }
 
+        if (res.status === 429) {
+          const backendMsg = errJson?.message || "";
+          setLimitType("daily");
+          setLimitRaw(backendMsg || "");
+          if (backendMsg) {
+            setErrorRaw(backendMsg);
+            setErrorKey("");
+            setErrorFallback("");
+          } else {
+            setErrorRaw("");
+            setErrorKey("premiumHumanizer_errorRateLimit");
+            setErrorFallback("Has alcanzado el límite de peticiones. Inténtalo más tarde.");
+          }
+          setLoading(false);
+          return;
+        }
+
         const txt = errJson ? JSON.stringify(errJson) : await res.text();
         setErrorRaw(`HTTP ${res.status}: ${txt}`);
         setErrorKey("");
@@ -765,6 +793,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
       }
 
       const data = await res.json();
+
+      // ✅✅✅ ACTUALIZA CONTADOR PREMIUM (como en Parafraseador)
+      bumpPremiumUsage(data, inputLen);
 
       const rawText =
         data?.text ??
@@ -794,16 +825,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         setErrorFallback("No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente.");
       } else {
         setResult(cleaned);
-      }
-
-      // ✅✅✅ refresca contador premium tras éxito (o si backend devuelve usage)
-      if (data?.usedChars != null && data?.limitChars != null) {
-        notifyPremiumUsage({
-          usedChars: Number(data.usedChars || 0),
-          limitChars: Number(data.limitChars || 0),
-        });
-      } else {
-        await refreshPremiumUsage(idToken);
       }
     } catch (err) {
       const raw = err?.message || "";
@@ -849,13 +870,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
             {/* Tabs */}
             <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
-              <TabBtn
-                active={sourceMode === "text"}
-                icon={FileText}
-                label={labelTabText}
-                onClick={() => setSourceMode("text")}
-                showDivider
-              />
+              <TabBtn active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
               <TabBtn
                 active={sourceMode === "document"}
                 icon={FileIcon}
@@ -863,13 +878,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                 onClick={() => setSourceMode("document")}
                 showDivider
               />
-              <TabBtn
-                active={sourceMode === "url"}
-                icon={UrlIcon}
-                label={labelTabUrl}
-                onClick={() => setSourceMode("url")}
-                showDivider={false}
-              />
+              <TabBtn active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
             </div>
 
             {/* Contenido (con overflow) */}
@@ -918,11 +927,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
                     <div className="mt-1 flex items-center justify-between">
                       <div className="text-xs" />
-                      <span
-                        className={`text-xs ${
-                          overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"
-                        }`}
-                      >
+                      <span className={`text-xs ${overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}`}>
                         {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
                       </span>
                     </div>
@@ -1103,12 +1108,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
               <div className="flex items-center gap-0 -ml-2">
                 <ModeTab active={mode === "basic"} label={modeLabels.basic} onClick={() => setMode("basic")} showDivider />
-                <ModeTab
-                  active={mode === "standard"}
-                  label={modeLabels.standard}
-                  onClick={() => setMode("standard")}
-                  showDivider
-                />
+                <ModeTab active={mode === "standard"} label={modeLabels.standard} onClick={() => setMode("standard")} showDivider />
                 <ModeTab active={mode === "advanced"} label={modeLabels.advanced} onClick={() => setMode("advanced")} />
               </div>
 
@@ -1121,13 +1121,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                       aria-label={tr("premiumHumanizer_outputLanguageAria", "Idioma de salida")}
                     >
                       <span className="truncate">
-                        {outputLang === "es"
-                          ? LBL_ES
-                          : outputLang === "en"
-                          ? LBL_EN
-                          : outputLang === "fr"
-                          ? LBL_FR
-                          : LBL_EUS}
+                        {outputLang === "es" ? LBL_ES : outputLang === "en" ? LBL_EN : outputLang === "fr" ? LBL_FR : LBL_EUS}
                       </span>
                       <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
@@ -1203,9 +1197,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                   onClick={handleClearLeft}
                   title={titleDeleteInput}
                   className={`h-9 w-9 flex items-center justify-center ${
-                    sourceMode === "text" && textValue
-                      ? "text-slate-600 hover:text-slate-800"
-                      : "text-slate-300 cursor-not-allowed"
+                    sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                   }`}
                   aria-label={ariaDeleteInput}
                   disabled={!(sourceMode === "text" && textValue)}
@@ -1220,7 +1212,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
               {/* ✅✅✅ BANNER reutilizado */}
               <ProLimitBanner visible={!!limitType} message={displayErrorMsg || displayLimitMsg} />
 
-              {/* Contenido normal (sin duplicar mensaje rojo cuando hay limitType) */}
               {(hasRealResult || loading || (displayErrorMsg && !limitType)) && (
                 <div className="px-6 pt-20 pb-28 max-w-3xl mx-auto">
                   {displayErrorMsg && !limitType && (
