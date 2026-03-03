@@ -20,9 +20,8 @@ export default function PremiumAiAssistant() {
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
-  // ✅ Contadores
-  const [spentChars, setSpentChars] = useState(0); // se va sumando mientras "gasta"
-  const inputChars = (input || "").length;
+  // ✅ contador interno (NO UI nueva aquí)
+  const [spentChars, setSpentChars] = useState(0);
 
   const typingTimerRef = useRef(null);
 
@@ -133,9 +132,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
 
     const out = extractAssistantText(data);
     if (!out)
-      throw new Error(
-        tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor.")
-      );
+      throw new Error(tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor."));
     return out;
   };
 
@@ -152,7 +149,8 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     }
 
     let i = 0;
-    const chunkSize = 6; // velocidad/fluidez
+    const chunkSize = 6;
+
     typingTimerRef.current = setInterval(() => {
       const nextChunk = safe.slice(i, i + chunkSize);
       if (!nextChunk) {
@@ -173,10 +171,9 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
         )
       );
 
-      // ✅ suma “gastado” conforme llega texto
+      // ✅ suma chars gastados conforme “sale” la respuesta
       setSpentChars((prev) => prev + nextChunk.length);
 
-      // mantiene el scroll abajo mientras “gasta”
       setTimeout(() => scrollToBottom(), 0);
     }, 16);
   };
@@ -190,20 +187,15 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     setInput("");
     setIsSending(true);
 
-    // ✅ suma “gastado” al enviar el mensaje del usuario
+    // ✅ suma lo escrito por el usuario al gastar
     setSpentChars((prev) => prev + text.length);
 
     const placeholderId = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", text: "", _id: placeholderId },
-    ]);
+    setMessages((prev) => [...prev, { role: "assistant", text: "", _id: placeholderId }]);
 
     try {
       const reply = await callApi(next);
-
-      // ✅ revela progresivo + suma chars mientras se “gasta”
       revealReplyAndSpend(placeholderId, reply);
     } catch (e) {
       if (typingTimerRef.current) clearInterval(typingTimerRef.current);
@@ -216,12 +208,10 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
         );
 
       setMessages((prev) =>
-        prev.map((m) =>
-          m._id === placeholderId ? { role: "assistant", text: errText } : m
-        )
+        prev.map((m) => (m._id === placeholderId ? { role: "assistant", text: errText } : m))
       );
 
-      // ✅ también cuenta el error como texto mostrado (si quieres que “gaste” siempre que sale texto)
+      // ✅ si se muestra error, también “gasta” texto mostrado (igual que todo lo que aparece)
       setSpentChars((prev) => prev + String(errText || "").length);
 
       setIsSending(false);
@@ -290,10 +280,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                       }
 
                       return (
-                        <div
-                          key={idx}
-                          className="w-full flex justify-start items-start gap-3"
-                        >
+                        <div key={idx} className="w-full flex justify-start items-start gap-3">
                           <div className="mt-0.5 h-10 w-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center overflow-hidden">
                             {avatarOk ? (
                               <img
@@ -328,19 +315,6 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                     className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
                   />
 
-                  {/* ✅ Contadores (input + gastados acumulados) */}
-                  <div className="hidden sm:flex items-center gap-3 text-[12px] text-slate-500 tabular-nums">
-                    <span>
-                      {tr("premiumAiAssistant_chars_input", "Input")}:{" "}
-                      {inputChars.toLocaleString("es-ES")}
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span>
-                      {tr("premiumAiAssistant_chars_spent", "Gastados")}:{" "}
-                      {spentChars.toLocaleString("es-ES")}
-                    </span>
-                  </div>
-
                   <button
                     type="button"
                     onClick={send}
@@ -353,18 +327,6 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                   >
                     <ArrowUp className="w-5 h-5" />
                   </button>
-                </div>
-
-                {/* ✅ Contadores en móvil */}
-                <div className="sm:hidden mt-2 flex items-center justify-between text-[12px] text-slate-500 tabular-nums px-1">
-                  <span>
-                    {tr("premiumAiAssistant_chars_input", "Input")}:{" "}
-                    {inputChars.toLocaleString("es-ES")}
-                  </span>
-                  <span>
-                    {tr("premiumAiAssistant_chars_spent", "Gastados")}:{" "}
-                    {spentChars.toLocaleString("es-ES")}
-                  </span>
                 </div>
               </div>
             </div>
