@@ -39,15 +39,15 @@ export default function PremiumSummary() {
 
   // ✅ Prompt input inferior (como en public)
   const [chatInput, setChatInput] = useState("");
+  const [promptLocalMsg, setPromptLocalMsg] = useState(""); // (solo para compatibilidad con tu onChange)
 
   // Resultado / carga / error
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Límite Premium (banner + mensaje rojo) -> FIX: guardar TIPO, no el texto
+  // ✅ Límite Premium (banner + mensaje rojo) -> guardar TIPO
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-
   const setCharsLimit = () => setLimitType("chars");
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
@@ -68,7 +68,7 @@ export default function PremiumSummary() {
   // Longitud del resumen
   const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "detallado"
 
-  // Idioma de salida (EUS/ES/EN/FR) — por defecto Euskera
+  // Idioma de salida (EUS/ES/EN/FR)
   const [outputLang, setOutputLang] = useState("EUS");
 
   // Track “resumen desactualizado”
@@ -177,7 +177,7 @@ export default function PremiumSummary() {
     "Liburutegian gordeta"
   );
 
-  // ✅ Tooltips (ahora con claves nuevas)
+  // ✅ Tooltips
   const tooltipCopy = tr("premiumSummary.copy", "Copiar");
   const tooltipCopied = tr("premiumSummary.copied", "Copiado");
   const tooltipPdf = tr("premiumSummary.pdf", "PDF");
@@ -327,6 +327,14 @@ export default function PremiumSummary() {
     clearRight();
   };
 
+  const handleChangeSourceMode = (mode) => {
+    if (mode === sourceMode) return;
+    setSourceMode(mode);
+    setUrlInputOpen(false);
+    setUrlsTextarea("");
+    clearRight();
+  };
+
   // ===== Reglas UX =====
   useEffect(() => {
     const sig = canonicalize(textValue);
@@ -347,7 +355,7 @@ export default function PremiumSummary() {
       const meta = e.metaKey || e.ctrlKey;
       if (meta && e.key.toLowerCase() === "enter") {
         e.preventDefault();
-        if (!loading) handleGenerate();
+        if (!loading) handleGenerate("");
       } else if (meta && e.key.toLowerCase() === "c") {
         if (result) {
           e.preventDefault();
@@ -359,16 +367,7 @@ export default function PremiumSummary() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [
-    loading,
-    result,
-    urlInputOpen,
-    textValue,
-    urlItems,
-    documents,
-    summaryLength,
-    outputLang,
-  ]);
+  }, [loading, result, urlInputOpen]);
 
   // URLs → reset resultado
   useEffect(() => {
@@ -471,8 +470,12 @@ export default function PremiumSummary() {
     setUrlItems((prev) => [...prev, ...newItems]);
     setUrlsTextarea("");
     setUrlInputOpen(false);
+    clearRight();
   };
-  const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
+  const removeUrl = (id) => {
+    setUrlItems((prev) => prev.filter((u) => u.id !== id));
+    clearRight();
+  };
 
   // ===== Validación =====
   const textIsValid = useMemo(() => {
@@ -566,7 +569,7 @@ export default function PremiumSummary() {
   };
 
   // ===== Generar =====
-  const handleGenerate = async () => {
+  const handleGenerate = async (extraPrompt = "") => {
     setLoading(true);
     setErrorMsg("");
     clearLimit();
@@ -640,10 +643,13 @@ export default function PremiumSummary() {
           .join("\n\n")
       : "";
 
+    const extraPromptClean = (extraPrompt || "").trim();
+
     const userContent = [
       strictExtractive
         ? `Resume exclusivamente con la información literal del TEXTO. Prohibido añadir conocimiento externo o inferencias. Si el TEXTO no aporta suficiente contenido, responde exactamente: "${tooShortMsg}".`
         : "Quiero un resumen profesional del siguiente contenido.",
+      extraPromptClean ? `\nINSTRUCCIONES DEL USUARIO (prioridad):\n${extraPromptClean}` : "",
       textValue ? `\nTEXTO:\n${textValue}` : "",
       urlsList
         ? `\nURLs (extrae solo lo visible; si no puedes, ignóralas):\n${urlsList}`
@@ -676,6 +682,7 @@ export default function PremiumSummary() {
       docNames,
       summaryLength,
       outputLang,
+      extraPrompt: extraPromptClean,
     });
     const cacheKey = await sha256Hex(cacheBase);
 
@@ -707,14 +714,12 @@ export default function PremiumSummary() {
       });
 
       if (!res.ok) {
-        // ✅ 413 = chars limit duro (payload demasiado grande)
         if (res.status === 413) {
           setCharsLimit();
           setLoading(false);
           return;
         }
 
-        // ✅ 401/403 = auth
         if (res.status === 401 || res.status === 403) {
           setLoading(false);
           throw new Error(
@@ -725,7 +730,6 @@ export default function PremiumSummary() {
           );
         }
 
-        // ✅ 429 = límite (daily o chars)
         if (res.status === 429) {
           let data = null;
           try {
@@ -739,7 +743,8 @@ export default function PremiumSummary() {
           const isDaily = typeof limit?.daily_requests === "number";
 
           if (isChars) setCharsLimit();
-          else setDailyLimit(); // fallback seguro
+          else if (isDaily) setDailyLimit();
+          else setDailyLimit();
 
           setLoading(false);
           return;
@@ -751,6 +756,14 @@ export default function PremiumSummary() {
       }
 
       const data = await res.json();
+
+      if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+        window.dispatchEvent(
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+          })
+        );
+      }
 
       const rawText =
         data?.text ??
@@ -796,6 +809,13 @@ export default function PremiumSummary() {
     }
   };
 
+  const handleGenerateWithPrompt = () => {
+    const p = (chatInput || "").trim();
+    if (!p) return;
+    setPromptLocalMsg("");
+    handleGenerate(p);
+  };
+
   // ===== Contador / barra =====
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
@@ -829,21 +849,21 @@ export default function PremiumSummary() {
                   active={sourceMode === "text"}
                   icon={FileText}
                   label={labelTabText}
-                  onClick={() => setSourceMode("text")}
+                  onClick={() => handleChangeSourceMode("text")}
                   showDivider
                 />
                 <TabBtn
                   active={sourceMode === "document"}
                   icon={FileIcon}
                   label={labelTabDocument}
-                  onClick={() => setSourceMode("document")}
+                  onClick={() => handleChangeSourceMode("document")}
                   showDivider
                 />
                 <TabBtn
                   active={sourceMode === "url"}
                   icon={UrlIcon}
                   label={labelTabUrl}
-                  onClick={() => setSourceMode("url")}
+                  onClick={() => handleChangeSourceMode("url")}
                   showDivider={false}
                 />
               </div>
@@ -868,7 +888,11 @@ export default function PremiumSummary() {
                   <div className="flex flex-col h-full min-h-0">
                     <textarea
                       value={textValue}
-                      onChange={(e) => setTextValue(e.target.value)}
+                      onChange={(e) => {
+                        setTextValue(e.target.value);
+                        if (errorMsg) setErrorMsg("");
+                        if (limitType) clearLimit();
+                      }}
                       placeholder={labelEnterText}
                       className="flex-1 min-h-0 w-full resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
                       aria-label={labelTabText}
@@ -974,6 +998,7 @@ export default function PremiumSummary() {
                         onClick={() => {
                           setUrlInputOpen(true);
                           clearLimit();
+                          if (errorMsg) setErrorMsg("");
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
                         aria-label={labelAddUrl}
@@ -1197,7 +1222,7 @@ export default function PremiumSummary() {
                 </div>
               </div>
 
-              {/* ✅ Banner Premium (reutiliza el componente) */}
+              {/* Banner Premium */}
               {limitType && (
                 <div className="px-6 pt-4">
                   <ProLimitBanner visible={!!limitType} message={limitMsg} />
@@ -1210,7 +1235,7 @@ export default function PremiumSummary() {
                   <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                     <Button
                       type="button"
-                      onClick={handleGenerate}
+                      onClick={() => handleGenerate("")}
                       disabled={loading || !hasValidInput}
                       className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
                       style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
@@ -1247,18 +1272,14 @@ export default function PremiumSummary() {
 
                           return (
                             <>
-                              {/* Toast verde encima */}
                               {savedToLibrary && (
                                 <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
                                   {librarySavedMessage}
                                 </p>
                               )}
 
-                              {/* Controles abajo derecha (POSICIÓN INTACTA) */}
                               <div className="absolute bottom-4 right-6 flex items-center gap-4">
-                                {/* SOLO ICONOS (POSICIÓN INTACTA) */}
                                 <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                  {/* Copiar con tooltip ARRIBA */}
                                   <button
                                     type="button"
                                     onClick={() => handleCopy(true)}
@@ -1275,7 +1296,6 @@ export default function PremiumSummary() {
                                     </span>
                                   </button>
 
-                                  {/* PDF con tooltip ARRIBA */}
                                   <button
                                     type="button"
                                     onClick={handleDownloadPdf}
@@ -1289,7 +1309,6 @@ export default function PremiumSummary() {
                                   </button>
                                 </div>
 
-                                {/* BOTÓN VERDE (NO SE MUEVE) */}
                                 <motion.button
                                   type="button"
                                   onClick={handleSaveSummary}
@@ -1319,9 +1338,8 @@ export default function PremiumSummary() {
                 )}
               </div>
 
-              {/* ✅ Prompt footer (misma posición visual que en public) */}
+              {/* Prompt footer */}
               <div className="absolute left-0 right-0 bottom-0 bg-white p-4">
-
                 <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <input
@@ -1335,16 +1353,14 @@ export default function PremiumSummary() {
                       aria-label={labelBottomInputPh}
                     />
 
-<Button
-  type="button"
-  className="h-10 rounded-full px-4 shrink-0 text-white hover:brightness-95 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
-  onClick={() => {}}
-  disabled={!chatInput.trim()}
->
-  {labelGenerateWithPrompt}
-</Button>
-
-
+                    <Button
+                      type="button"
+                      className="h-10 rounded-full px-4 shrink-0 text-white hover:brightness-95 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                      onClick={handleGenerateWithPrompt}
+                      disabled={!chatInput.trim() || loading || !hasValidInput}
+                    >
+                      {labelGenerateWithPrompt}
+                    </Button>
                   </div>
                 </div>
               </div>
