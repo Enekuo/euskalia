@@ -281,7 +281,15 @@ export default function PremiumTextCreator() {
     }
   }, [writeMode]);
 
-  const titleUpper = useMemo(() => (titleValue || "").trim().toUpperCase(), [titleValue]);
+  useEffect(() => {
+    if (writeMode !== "normal") return;
+    setTimeout(() => autoGrowNormal(), 0);
+  }, [paragraphs, titleValue, writeMode]);
+
+  const titleUpper = useMemo(
+    () => (titleValue || "").trim().toUpperCase(),
+    [titleValue]
+  );
 
   const fullExportText = useMemo(() => {
     const body = (result || "").trim();
@@ -307,7 +315,8 @@ export default function PremiumTextCreator() {
     if (!win) return;
 
     const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const pdfTitle = (titleValue || "").trim() || tr("premiumTextCreator.pdf_title", "Texto");
+    const pdfTitle =
+      (titleValue || "").trim() || tr("premiumTextCreator.pdf_title", "Texto");
 
     win.document.write(`
       <html>
@@ -322,7 +331,13 @@ export default function PremiumTextCreator() {
         </head>
         <body>
           <div class="box">
-            ${titleUpper ? `<h1>${titleUpper.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</h1>` : ""}
+            ${
+              titleUpper
+                ? `<h1>${titleUpper
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")}</h1>`
+                : ""
+            }
             ${safeBody.replace(/\n/g, "<br/>")}
           </div>
           <script>
@@ -339,6 +354,9 @@ export default function PremiumTextCreator() {
     setTitleValue("");
     setParagraphs([""]);
     clearRight();
+    if (writeMode === "normal") {
+      setTimeout(() => autoGrowNormal(), 0);
+    }
   };
 
   const handleSaveText = () => {
@@ -551,6 +569,19 @@ export default function PremiumTextCreator() {
 
       const data = await res.json();
 
+      // ✅ actualizar contador global (si backend lo devuelve)
+      if (
+        data?.ok &&
+        typeof data.usedChars === "number" &&
+        typeof data.limitChars === "number"
+      ) {
+        window.dispatchEvent(
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+          })
+        );
+      }
+
       const rawText =
         data?.text ??
         data?.content ??
@@ -620,6 +651,7 @@ export default function PremiumTextCreator() {
                         setWriteMode("normal");
                         setParagraphs((prev) => [prev?.[0] ?? ""]);
                         clearRight();
+                        setTimeout(() => autoGrowNormal(), 0);
                       }
                     }}
                     className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"

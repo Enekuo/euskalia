@@ -115,6 +115,16 @@ export default function PremiumEmailCreator() {
     "Argibideekin sortu"
   );
 
+  const labelBottomInputPh = tr(
+    "premiumEmailCreator.bottom_input_ph",
+    "Idatzi hemen argibideak (aukerakoa): tonua, helburua, CTA, estiloa…"
+  );
+
+  // Longitud labels
+  const LBL_SHORT = tr("premiumEmailCreator.length_short", "Breve");
+  const LBL_MED = tr("premiumEmailCreator.length_medium", "Medio");
+  const LBL_LONG = tr("premiumEmailCreator.length_long", "Detallado");
+
   // Texto formal o informal
   const [emailTone, setEmailTone] = useState("formal");
   const LBL_FORMAL = tr("premiumEmailCreator.tone_formal", "Formal");
@@ -821,6 +831,8 @@ export default function PremiumEmailCreator() {
             "INFORMACIÓN DEL USUARIO (puede estar en cualquier idioma):",
             `${(creativeInfo || "").trim()}`,
             "",
+            userInstructions ? userInstructions : "",
+            "",
             `REGLAS:\n${schemaRules}`,
             `${toneRule}`,
             `${lengthRule}`,
@@ -951,7 +963,7 @@ export default function PremiumEmailCreator() {
 
       let builtBody1 = buildBodyFromParts(safeParts);
 
-      // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
+      // 🔥 VALIDACIÓN POR PARTES
       const partsToCheck = [
         subject1,
         finalSaludo1,
@@ -1081,6 +1093,12 @@ export default function PremiumEmailCreator() {
     (emailParagraphs || []).some((p) => (p || "").trim()) ||
     !!chatInput ||
     !!creativeInfo;
+
+  const handleLengthChange = (mode) => {
+    if (mode === emailLength) return;
+    setEmailLength(mode);
+    clearRight();
+  };
 
   return (
     <>
@@ -1305,6 +1323,34 @@ export default function PremiumEmailCreator() {
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-2">
+                  {/* Longitud */}
+                  <LengthTab
+                    active={emailLength === "breve"}
+                    label={LBL_SHORT}
+                    onClick={() => handleLengthChange("breve")}
+                    showDivider
+                  />
+                  <LengthTab
+                    active={emailLength === "medio"}
+                    label={LBL_MED}
+                    onClick={() => handleLengthChange("medio")}
+                    showDivider
+                  />
+                  <LengthTab
+                    active={emailLength === "detallado"}
+                    label={LBL_LONG}
+                    onClick={() => handleLengthChange("detallado")}
+                    showDivider
+                  />
+
+                  {/* Divider visual */}
+                  <span
+                    aria-hidden
+                    className="self-center mx-1"
+                    style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
+                  />
+
+                  {/* Tono */}
                   <LengthTab
                     active={emailTone === "formal"}
                     label={LBL_FORMAL}
@@ -1601,6 +1647,33 @@ export default function PremiumEmailCreator() {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* ✅ Prompt footer */}
+              <div className="absolute left-0 right-0 bottom-0 bg-white p-4">
+                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
+                  <div className="flex items-center gap-2 px-4 py-2">
+                    <input
+                      value={chatInput}
+                      onChange={(e) => {
+                        setChatInput(e.target.value);
+                        clearRight();
+                      }}
+                      placeholder={labelBottomInputPh}
+                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
+                      aria-label={labelBottomInputPh}
+                    />
+
+                    <Button
+                      type="button"
+                      className="h-10 rounded-full px-4 shrink-0 text-white hover:brightness-95 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                      onClick={handleGenerate}
+                      disabled={!chatInput.trim() || loading || !hasValidInput}
+                    >
+                      {labelGenerateWithPrompt}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </section>
           </motion.section>
