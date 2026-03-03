@@ -20,6 +20,12 @@ export default function PremiumAiAssistant() {
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
+  // ✅ Contadores
+  const [spentChars, setSpentChars] = useState(0); // se va sumando mientras "gasta"
+  const inputChars = (input || "").length;
+
+  const typingTimerRef = useRef(null);
+
   const scrollToBottom = () => {
     const el = listRef.current;
     if (!el) return;
@@ -29,6 +35,12 @@ export default function PremiumAiAssistant() {
   useEffect(() => {
     scrollToBottom();
   }, [messages.length]);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+    };
+  }, []);
 
   // ✅ SYSTEM PROMPT INTELIGENTE (sin frase fija)
   const systemInstructionBase = useMemo(() => {
@@ -55,9 +67,11 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
   }, []);
 
   const newChat = () => {
+    if (typingTimerRef.current) clearInterval(typingTimerRef.current);
     setMessages([]);
     setInput("");
     setIsSending(false);
+    setSpentChars(0);
     setTimeout(() => {
       inputRef.current?.focus?.();
     }, 0);
@@ -119,8 +133,52 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
 
     const out = extractAssistantText(data);
     if (!out)
-      throw new Error(tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor."));
+      throw new Error(
+        tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor.")
+      );
     return out;
+  };
+
+  // ✅ “Gasto” progresivo: va sumando mientras se escribe la respuesta (typewriter)
+  const revealReplyAndSpend = (placeholderId, fullText) => {
+    if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+
+    const safe = String(fullText || "");
+    if (!safe) {
+      setMessages((prev) =>
+        prev.map((m) => (m._id === placeholderId ? { role: "assistant", text: "" } : m))
+      );
+      return;
+    }
+
+    let i = 0;
+    const chunkSize = 6; // velocidad/fluidez
+    typingTimerRef.current = setInterval(() => {
+      const nextChunk = safe.slice(i, i + chunkSize);
+      if (!nextChunk) {
+        clearInterval(typingTimerRef.current);
+        typingTimerRef.current = null;
+        setIsSending(false);
+        setTimeout(() => inputRef.current?.focus?.(), 0);
+        return;
+      }
+
+      i += nextChunk.length;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === placeholderId
+            ? { role: "assistant", text: safe.slice(0, i), _id: placeholderId }
+            : m
+        )
+      );
+
+      // ✅ suma “gastado” conforme llega texto
+      setSpentChars((prev) => prev + nextChunk.length);
+
+      // mantiene el scroll abajo mientras “gasta”
+      setTimeout(() => scrollToBottom(), 0);
+    }, 16);
   };
 
   const send = async () => {
@@ -132,35 +190,40 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     setInput("");
     setIsSending(true);
 
-    const placeholderId = `${Date.now()}_${Math.random()
-      .toString(16)
-      .slice(2)}`;
+    // ✅ suma “gastado” al enviar el mensaje del usuario
+    setSpentChars((prev) => prev + text.length);
+
+    const placeholderId = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
     setMessages((prev) => [
       ...prev,
-      { role: "assistant", text: "…", _id: placeholderId },
+      { role: "assistant", text: "", _id: placeholderId },
     ]);
 
     try {
       const reply = await callApi(next);
-      setMessages((prev) =>
-        prev.map((m) =>
-          m._id === placeholderId ? { role: "assistant", text: reply } : m
-        )
-      );
+
+      // ✅ revela progresivo + suma chars mientras se “gasta”
+      revealReplyAndSpend(placeholderId, reply);
     } catch (e) {
+      if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+
       const errText =
         (e && e.message) ||
         tr(
           "premiumAiAssistant_errorGeneric",
           "No se pudo generar la respuesta. Inténtalo de nuevo."
         );
+
       setMessages((prev) =>
         prev.map((m) =>
           m._id === placeholderId ? { role: "assistant", text: errText } : m
         )
       );
-    } finally {
+
+      // ✅ también cuenta el error como texto mostrado (si quieres que “gaste” siempre que sale texto)
+      setSpentChars((prev) => prev + String(errText || "").length);
+
       setIsSending(false);
       setTimeout(() => inputRef.current?.focus?.(), 0);
     }
@@ -265,6 +328,19 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                     className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
                   />
 
+                  {/* ✅ Contadores (input + gastados acumulados) */}
+                  <div className="hidden sm:flex items-center gap-3 text-[12px] text-slate-500 tabular-nums">
+                    <span>
+                      {tr("premiumAiAssistant_chars_input", "Input")}:{" "}
+                      {inputChars.toLocaleString("es-ES")}
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span>
+                      {tr("premiumAiAssistant_chars_spent", "Gastados")}:{" "}
+                      {spentChars.toLocaleString("es-ES")}
+                    </span>
+                  </div>
+
                   <button
                     type="button"
                     onClick={send}
@@ -277,6 +353,18 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                   >
                     <ArrowUp className="w-5 h-5" />
                   </button>
+                </div>
+
+                {/* ✅ Contadores en móvil */}
+                <div className="sm:hidden mt-2 flex items-center justify-between text-[12px] text-slate-500 tabular-nums px-1">
+                  <span>
+                    {tr("premiumAiAssistant_chars_input", "Input")}:{" "}
+                    {inputChars.toLocaleString("es-ES")}
+                  </span>
+                  <span>
+                    {tr("premiumAiAssistant_chars_spent", "Gastados")}:{" "}
+                    {spentChars.toLocaleString("es-ES")}
+                  </span>
                 </div>
               </div>
             </div>
