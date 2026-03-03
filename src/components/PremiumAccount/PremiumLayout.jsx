@@ -36,6 +36,19 @@ export default function PremiumLayout({ children }) {
   const location = useLocation();
   const pathname = location.pathname;
 
+  const showCharCounter =
+    pathname === "/cuenta-premium" ||
+    pathname === "/cuenta-premium/traductor" ||
+    pathname === "/cuenta-premium/resumen" ||
+    pathname === "/cuenta-premium/corrector" ||
+    pathname === "/cuenta-premium/parafraseador" ||
+    pathname === "/cuenta-premium/humanizador" ||
+    pathname === "/cuenta-premium/detector-ia" ||
+    pathname === "/cuenta-premium/assistant" ||
+    pathname === "/cuenta-premium/texto" ||
+    pathname === "/cuenta-premium/email" ||
+    pathname === "/cuenta-premium/convertidor";
+
   const [collapsed, setCollapsed] = useState(false);
 
   const [toolsOpen, setToolsOpen] = useState(
@@ -611,6 +624,30 @@ export default function PremiumLayout({ children }) {
             </button>
           </div>
         </header>
+
+        {showCharCounter && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: 72,
+              right: 32,
+            }}
+          >
+            <div
+              className="
+                h-8 px-3 rounded-full
+                flex items-center gap-2
+                text-white text-xs font-semibold
+                bg-gradient-to-r from-blue-600 to-cyan-500
+                shadow-sm
+              "
+            >
+              <Gem size={14} className="text-white" />
+              <span>12.450 / 20.000</span>
+              <span className="opacity-90 font-medium">caracteres</span>
+            </div>
+          </div>
+        )}
 
         <main className="flex-1 mt-16 px-8 py-8 border-l border-slate-200">
           {children}
