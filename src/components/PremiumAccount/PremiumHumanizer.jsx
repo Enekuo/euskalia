@@ -285,6 +285,33 @@ export default function PremiumHumanizer() {
     clearAllMessages();
   };
 
+  // ✅✅✅ UPDATE COUNTER (igual que lo que te ha funcionado en parafraseador)
+  const notifyPremiumUsage = (payload) => {
+    try {
+      const detail = payload || {};
+      window.dispatchEvent(new CustomEvent("premium-usage-updated", { detail }));
+    } catch {}
+    try {
+      localStorage.setItem("premium_usage_cache", JSON.stringify({ ...(payload || {}), ts: Date.now() }));
+    } catch {}
+  };
+
+  const refreshPremiumUsage = async (idToken) => {
+    try {
+      const r = await fetch("/api/premium-usage", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      const data = await r.json().catch(() => ({}));
+      if (data?.ok) {
+        notifyPremiumUsage({
+          usedChars: Number(data.usedChars || 0),
+          limitChars: Number(data.limitChars || 0),
+        });
+      }
+    } catch {}
+  };
+
   // ===== Atajos teclado =====
   useEffect(() => {
     const onKey = (e) => {
@@ -673,6 +700,29 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         }),
       });
 
+      // ✅✅✅ PREMIUM LIMITS 429 (patrón único) + refresh contador
+      if (res.status === 429) {
+        let data = null;
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        const limit = data?.limit || {};
+        const isChars = typeof limit?.max_chars === "number";
+        const isDaily = typeof limit?.daily_requests === "number";
+
+        if (isChars) setLimitType("chars");
+        else if (isDaily) setLimitType("daily");
+        else setLimitType("daily");
+
+        setLimitRaw(String(data?.message || ""));
+
+        setLoading(false);
+        return;
+      }
+
       if (!res.ok) {
         let errJson = null;
         try {
@@ -689,7 +739,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           return;
         }
 
-        // ✅✅✅ límites: banner + debajo mensaje rojo (pero sin guardar traducción)
         if (res.status === 413) {
           const backendMsg = errJson?.message || "";
           setLimitType("chars");
@@ -702,23 +751,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
             setErrorRaw("");
             setErrorKey("premiumHumanizer_errorMaxChars");
             setErrorFallback("Has superado el límite de caracteres permitido.");
-          }
-          setLoading(false);
-          return;
-        }
-
-        if (res.status === 429) {
-          const backendMsg = errJson?.message || "";
-          setLimitType("daily");
-          setLimitRaw(backendMsg || "");
-          if (backendMsg) {
-            setErrorRaw(backendMsg);
-            setErrorKey("");
-            setErrorFallback("");
-          } else {
-            setErrorRaw("");
-            setErrorKey("premiumHumanizer_errorRateLimit");
-            setErrorFallback("Has alcanzado el límite de peticiones. Inténtalo más tarde.");
           }
           setLoading(false);
           return;
@@ -762,6 +794,16 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         setErrorFallback("No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente.");
       } else {
         setResult(cleaned);
+      }
+
+      // ✅✅✅ refresca contador premium tras éxito (o si backend devuelve usage)
+      if (data?.usedChars != null && data?.limitChars != null) {
+        notifyPremiumUsage({
+          usedChars: Number(data.usedChars || 0),
+          limitChars: Number(data.limitChars || 0),
+        });
+      } else {
+        await refreshPremiumUsage(idToken);
       }
     } catch (err) {
       const raw = err?.message || "";

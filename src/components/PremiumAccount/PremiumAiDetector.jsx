@@ -43,62 +43,43 @@ export default function PremiumAiDetector() {
 
   // ✅✅✅ LIMITS (solo tipo, SIN guardar textos traducidos)
   const [limitType, setLimitType] = useState(""); // "" | "daily" | "chars"
+  const [limitRaw, setLimitRaw] = useState(""); // SOLO backend/raw (si viene)
 
-  // ✅ errores por tipo + mensaje raw del backend (si viene)
-  const [errorKind, setErrorKind] = useState(""); // "" | "limit_daily" | "limit_chars" | "not_logged" | "unauthorized" | "generic" | "network" | "text_too_short"
-  const [serverMsg, setServerMsg] = useState(""); // mensaje exacto backend (si existe)
+  // ✅ errores por clave + raw
+  const [errorRaw, setErrorRaw] = useState(""); // SOLO backend/raw (si viene)
+  const [errorKey, setErrorKey] = useState(""); // clave translations
+  const [errorFallback, setErrorFallback] = useState(""); // fallback
 
   const setDailyLimit = () => setLimitType("daily");
   const setCharsLimit = () => setLimitType("chars");
-
-  const clearLimit = () => setLimitType("");
+  const clearLimit = () => {
+    setLimitType("");
+    setLimitRaw("");
+  };
 
   const clearErrors = () => {
-    setErrorKind("");
-    setServerMsg("");
+    setErrorRaw("");
+    setErrorKey("");
+    setErrorFallback("");
   };
 
   // ✅ mensaje límite DERIVADO (NO en state)
   const limitMsg =
-    limitType === "chars"
-      ? tr("pro_limit_chars", "Has superado el límite máximo de caracteres para tu plan.")
+    limitRaw ||
+    (limitType === "chars"
+      ? tr(
+          "premium_limit_chars",
+          "Has superado el límite máximo de caracteres para tu plan Premium."
+        )
       : limitType === "daily"
-      ? tr("pro_limit_daily", "Has alcanzado tu límite diario. Vuelve mañana.")
-      : "";
-
-  // ✅ error final DERIVADO (prioridad: serverMsg si existe)
-  const errorMsg =
-    serverMsg ||
-    (errorKind === "text_too_short"
       ? tr(
-          "premiumAiDetector.text_too_short",
-          "El texto es demasiado corto para analizar (min. ~40 caracteres)."
+          "premium_limit_daily",
+          "Has alcanzado tu límite diario del plan Premium. Vuelve mañana."
         )
-      : errorKind === "limit_daily"
-      ? tr(
-          "premiumAiDetector.limit_daily",
-          "Has alcanzado el límite diario del detector IA. Vuelve mañana."
-        )
-      : errorKind === "limit_chars"
-      ? tr(
-          "premiumAiDetector.limit_chars",
-          "Has superado el límite máximo de caracteres para analizar."
-        )
-      : errorKind === "not_logged"
-      ? tr(
-          "premiumAiDetector.error_not_logged",
-          "Necesitas iniciar sesión para usar el Detector de IA."
-        )
-      : errorKind === "unauthorized"
-      ? tr(
-          "premiumAiDetector.error_unauthorized",
-          "Necesitas iniciar sesión para usar esta herramienta."
-        )
-      : errorKind === "generic"
-      ? tr("premiumAiDetector.error_generic", "No se pudo analizar el texto.")
-      : errorKind === "network"
-      ? tr("premiumAiDetector.error_network", "Error de red. Intenta de nuevo.")
       : "");
+
+  // ✅ error final DERIVADO (NO en state)
+  const errorMsg = errorRaw || (errorKey ? tr(errorKey, errorFallback) : "");
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -147,12 +128,12 @@ export default function PremiumAiDetector() {
       const token = user ? await user.getIdToken() : null;
 
       if (!token) {
-        setErrorKind("not_logged");
+        setErrorKey("premiumAiDetector.error_not_logged");
+        setErrorFallback("Necesitas iniciar sesión para usar el Detector de IA.");
         setLoading(false);
         return;
       }
 
-      
       const r = await fetch("/api/premium", {
         method: "POST",
         headers: {
@@ -162,23 +143,29 @@ export default function PremiumAiDetector() {
         body: JSON.stringify({ mode: "ai_detector", text: payload }),
       });
 
+      // ✅ intentamos JSON una sola vez (si no, {})
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
         // ✅ 413 => límite de caracteres
         if (r.status === 413) {
           setCharsLimit();
-          setServerMsg("");
-          setErrorKind("limit_chars");
+          setLimitRaw(String(data?.message || ""));
           setLoading(false);
           return;
         }
 
-        // ✅ 429 => límite diario
+        // ✅ 429 => límite (chars o daily) según backend.limit
         if (r.status === 429) {
-          setDailyLimit();
-          setServerMsg("");
-          setErrorKind("limit_daily");
+          const limit = data?.limit || {};
+          const isChars = typeof limit?.max_chars === "number";
+          const isDaily = typeof limit?.daily_requests === "number";
+
+          if (isChars) setCharsLimit();
+          else if (isDaily) setDailyLimit();
+          else setDailyLimit();
+
+          setLimitRaw(String(data?.message || ""));
           setLoading(false);
           return;
         }
@@ -187,8 +174,8 @@ export default function PremiumAiDetector() {
         if (r.status === 400) {
           const errCode = String(data?.error || "");
           if (errCode === "TEXT_TOO_SHORT") {
-            setServerMsg("");
-            setErrorKind("text_too_short");
+            setErrorKey("premiumAiDetector.text_too_short");
+            setErrorFallback("El texto es demasiado corto para analizar (min. ~40 caracteres).");
             setLoading(false);
             return;
           }
@@ -204,26 +191,37 @@ export default function PremiumAiDetector() {
             (low.includes("min") && (low.includes("40") || low.includes("~40")));
 
           if (looksTooShort) {
-            setServerMsg("");
-            setErrorKind("text_too_short");
+            setErrorKey("premiumAiDetector.text_too_short");
+            setErrorFallback("El texto es demasiado corto para analizar (min. ~40 caracteres).");
             setLoading(false);
             return;
           }
 
-          if (msg) setServerMsg(msg);
-          else setErrorKind("generic");
+          if (msg) {
+            setErrorRaw(msg);
+          } else {
+            setErrorKey("premiumAiDetector.error_generic");
+            setErrorFallback("No se pudo analizar el texto.");
+          }
 
           setLoading(false);
           return;
         }
 
-        if (r.status === 401) {
-          setErrorKind("unauthorized");
+        if (r.status === 401 || r.status === 403) {
+          setErrorKey("premiumAiDetector.error_unauthorized");
+          setErrorFallback("Necesitas iniciar sesión para usar esta herramienta.");
           setLoading(false);
           return;
         }
 
-        setErrorKind("generic");
+        const msg = String(data?.message || "");
+        if (msg) setErrorRaw(msg);
+        else {
+          setErrorKey("premiumAiDetector.error_generic");
+          setErrorFallback("No se pudo analizar el texto.");
+        }
+
         setLoading(false);
         return;
       }
@@ -235,7 +233,8 @@ export default function PremiumAiDetector() {
       });
     } catch (e) {
       console.error(e);
-      setErrorKind("network");
+      setErrorKey("premiumAiDetector.error_network");
+      setErrorFallback("Error de red. Intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -251,7 +250,6 @@ export default function PremiumAiDetector() {
     const payload = (text || "").trim();
     if (!payload) return;
 
-    
     navigate("/cuenta-premium/humanizador", {
       state: { text: payload },
     });
@@ -283,10 +281,17 @@ export default function PremiumAiDetector() {
             placeholder={tr("premiumAiDetector.placeholder", "Escribe o pega aquí el texto que quieres analizar...")}
           />
 
-          {/* ✅✅✅ BANNER (izquierda) */}
+          {/* ✅✅✅ BANNER (izquierda) - SIN EMPUJAR CONTENIDO */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
-            <ProLimitBanner visible={!!limitType} message={limitMsg} />
+            <ProLimitBanner visible={!!limitType} message={""} />
           </div>
+
+          {/* ✅ MENSAJE ROJO SOLO ABAJO (cuando hay límite) */}
+          {!!limitType && !loading && (
+            <div className="absolute left-7 right-7 top-[58%] -translate-y-1/2">
+              <p className="text-sm text-red-600 text-center">{limitMsg}</p>
+            </div>
+          )}
 
           {text.length === 0 && (
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center gap-8">
@@ -400,7 +405,10 @@ export default function PremiumAiDetector() {
 
           <div className="mt-6">
             <div className="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: result ? `${aiValue}%` : "0%" }} />
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: result ? `${aiValue}%` : "0%" }}
+              />
             </div>
           </div>
 
