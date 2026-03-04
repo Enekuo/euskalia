@@ -141,7 +141,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
       ],
     };
 
-    const res = await fetch("/api/pro", {
+    const res = await fetch("/api/premium", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
