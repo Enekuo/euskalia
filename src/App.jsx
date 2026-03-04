@@ -9,7 +9,7 @@ import RegisterPage from "@/pages/RegisterPage";
 import SupportPage from '@/pages/SupportPage';
 import AssistantPage from "@/pages/AssistantPage";
 import Resumen from "@/components/Resumen";
-import Corrector from "@/components/CorrectorGramatical";
+import CorrectorGramatical from "@/components/CorrectorGramatical";
 import LegalNoticePage from "@/components/Legal/LegalNoticePage";
 import PrivacyPolicyPage from "@/components/Legal/PrivacyPolicyPage";
 import TermsConditionsPage from "@/components/Legal/TermsConditionsPage";
