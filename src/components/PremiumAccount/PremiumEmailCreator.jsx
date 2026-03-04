@@ -40,6 +40,9 @@ export default function PremiumEmailCreator() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // ✅ CONTADOR "GASTADOS" (tokens o fallback)
+  const [spent, setSpent] = useState(0);
+
   // ✅ Límite Premium (banner + mensaje rojo)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const setCharsLimit = () => setLimitType("chars");
@@ -93,6 +96,43 @@ export default function PremiumEmailCreator() {
   const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 18000;
 
+  // ✅ INPUT COUNT (según modo)
+  const inputCount = useMemo(() => {
+    if (emailMode === "creative") {
+      const joined = `${creativeInfo || ""}\n${chatInput || ""}`;
+      return joined.length;
+    }
+
+    const joined = [
+      emailSaludo || "",
+      emailIntro || "",
+      ...(emailParagraphs || []),
+      emailFinalPhrase || "",
+      emailSaludo2 || "",
+      emailNombre || "",
+      chatInput || "",
+    ].join("\n");
+    return joined.length;
+  }, [
+    emailMode,
+    creativeInfo,
+    chatInput,
+    emailSaludo,
+    emailIntro,
+    emailParagraphs,
+    emailFinalPhrase,
+    emailSaludo2,
+    emailNombre,
+  ]);
+
+  const fmt = (n) => {
+    try {
+      return Number(n || 0).toLocaleString("es-ES");
+    } catch {
+      return String(n || 0);
+    }
+  };
+
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
     in: { opacity: 1, y: 0 },
@@ -114,16 +154,6 @@ export default function PremiumEmailCreator() {
     "premiumEmailCreator.generate_with_prompt",
     "Argibideekin sortu"
   );
-
-  const labelBottomInputPh = tr(
-    "premiumEmailCreator.bottom_input_ph",
-    "Idatzi hemen argibideak (aukerakoa): tonua, helburua, CTA, estiloa…"
-  );
-
-  // Longitud labels
-  const LBL_SHORT = tr("premiumEmailCreator.length_short", "Breve");
-  const LBL_MED = tr("premiumEmailCreator.length_medium", "Medio");
-  const LBL_LONG = tr("premiumEmailCreator.length_long", "Detallado");
 
   // Texto formal o informal
   const [emailTone, setEmailTone] = useState("formal");
@@ -571,6 +601,7 @@ export default function PremiumEmailCreator() {
     setEmailParagraphs([""]);
     setChatInput("");
     setCreativeInfo("");
+    setSpent(0); // ✅ reseteo de sesión (igual que suele hacerse en herramientas)
     clearRight();
   };
 
@@ -712,7 +743,7 @@ export default function PremiumEmailCreator() {
       data?.message?.content ??
       "";
 
-    return { kind: "ok", rawText };
+    return { kind: "ok", rawText, usage: data?.usage || null };
   };
 
   // ===== Generar =====
@@ -830,8 +861,6 @@ export default function PremiumEmailCreator() {
             "",
             "INFORMACIÓN DEL USUARIO (puede estar en cualquier idioma):",
             `${(creativeInfo || "").trim()}`,
-            "",
-            userInstructions ? userInstructions : "",
             "",
             `REGLAS:\n${schemaRules}`,
             `${toneRule}`,
@@ -963,7 +992,7 @@ export default function PremiumEmailCreator() {
 
       let builtBody1 = buildBodyFromParts(safeParts);
 
-      // 🔥 VALIDACIÓN POR PARTES
+      // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
       const partsToCheck = [
         subject1,
         finalSaludo1,
@@ -1066,6 +1095,14 @@ export default function PremiumEmailCreator() {
           setResult(builtBody2);
           setLastEmailSig(canonicalize(textValue));
           setIsOutdated(false);
+
+          // ✅ GASTADOS: suma solo si OK (retry final)
+          const spentNow2 =
+            (r2?.usage?.total_tokens || 0) > 0
+              ? r2.usage.total_tokens
+              : (basePrompt || "").length + (raw2 || "").length;
+          setSpent((p) => p + (spentNow2 || 0));
+
           setLoading(false);
           return;
         }
@@ -1075,6 +1112,13 @@ export default function PremiumEmailCreator() {
       setResult(builtBody1);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
+
+      // ✅ GASTADOS: suma solo si OK (primer intento)
+      const spentNow1 =
+        (r1?.usage?.total_tokens || 0) > 0
+          ? r1.usage.total_tokens
+          : (basePrompt || "").length + (raw1 || "").length;
+      setSpent((p) => p + (spentNow1 || 0));
     } catch (err) {
       setErrorMsg(
         err.message || tr("premiumEmailCreator.error_generic", "Error generando el email.")
@@ -1093,12 +1137,6 @@ export default function PremiumEmailCreator() {
     (emailParagraphs || []).some((p) => (p || "").trim()) ||
     !!chatInput ||
     !!creativeInfo;
-
-  const handleLengthChange = (mode) => {
-    if (mode === emailLength) return;
-    setEmailLength(mode);
-    clearRight();
-  };
 
   return (
     <>
@@ -1323,34 +1361,6 @@ export default function PremiumEmailCreator() {
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-2">
-                  {/* Longitud */}
-                  <LengthTab
-                    active={emailLength === "breve"}
-                    label={LBL_SHORT}
-                    onClick={() => handleLengthChange("breve")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={emailLength === "medio"}
-                    label={LBL_MED}
-                    onClick={() => handleLengthChange("medio")}
-                    showDivider
-                  />
-                  <LengthTab
-                    active={emailLength === "detallado"}
-                    label={LBL_LONG}
-                    onClick={() => handleLengthChange("detallado")}
-                    showDivider
-                  />
-
-                  {/* Divider visual */}
-                  <span
-                    aria-hidden
-                    className="self-center mx-1"
-                    style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
-                  />
-
-                  {/* Tono */}
                   <LengthTab
                     active={emailTone === "formal"}
                     label={LBL_FORMAL}
@@ -1375,6 +1385,27 @@ export default function PremiumEmailCreator() {
                 </div>
 
                 <div className="flex items-center gap-1">
+                  {/* ✅ contador compacto (igual de “zona” que otras herramientas: arriba derecha) */}
+                  <div className="hidden md:flex items-center mr-2">
+                    <div
+                      className="h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] flex items-center gap-2"
+                      style={{ color: "#475569" }}
+                      title="Input / Gastados"
+                    >
+                      <span style={{ color: BLUE, fontWeight: 600 }}>
+                        {fmt(inputCount)}
+                      </span>
+                      <span className="text-slate-300">/</span>
+                      <span>{fmt(MAX_CHARS)}</span>
+                      <span className="text-slate-400">caracteres</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="text-slate-500">
+                        {tr("premiumEmailCreator.spent_label", "Gastados")}:
+                      </span>
+                      <span style={{ color: "#0f172a", fontWeight: 600 }}>{fmt(spent)}</span>
+                    </div>
+                  </div>
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
@@ -1647,33 +1678,6 @@ export default function PremiumEmailCreator() {
                     )}
                   </div>
                 )}
-              </div>
-
-              {/* ✅ Prompt footer */}
-              <div className="absolute left-0 right-0 bottom-0 bg-white p-4">
-                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
-                  <div className="flex items-center gap-2 px-4 py-2">
-                    <input
-                      value={chatInput}
-                      onChange={(e) => {
-                        setChatInput(e.target.value);
-                        clearRight();
-                      }}
-                      placeholder={labelBottomInputPh}
-                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
-                      aria-label={labelBottomInputPh}
-                    />
-
-                    <Button
-                      type="button"
-                      className="h-10 rounded-full px-4 shrink-0 text-white hover:brightness-95 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
-                      onClick={handleGenerate}
-                      disabled={!chatInput.trim() || loading || !hasValidInput}
-                    >
-                      {labelGenerateWithPrompt}
-                    </Button>
-                  </div>
-                </div>
               </div>
             </section>
           </motion.section>
