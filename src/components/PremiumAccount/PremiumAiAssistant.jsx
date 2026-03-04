@@ -20,9 +20,6 @@ export default function PremiumAiAssistant() {
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
-  // ✅ Contadores (SIN UI nueva aquí)
-  const [spentChars, setSpentChars] = useState(0);
-
   const typingTimerRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -65,46 +62,28 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     `.trim();
   }, []);
 
-  // ✅ Enviar contadores al header (el pill “0/0 caracteres”)
-  const pushCountersToHeader = (inputChars, spent) => {
+  // ✅✅✅ CLAVE: actualizar el contador del HEADER (pill azul) EXACTAMENTE como en Corrector
+  const updatePremiumHeaderCounter = (data) => {
     try {
-      // 1) si tu layout expone un setter global, lo usamos
-      if (typeof window !== "undefined") {
-        if (typeof window.setPremiumCounters === "function") {
-          window.setPremiumCounters({ input: inputChars, spent });
-        } else if (window.__EUSKALIA_COUNTER__ && typeof window.__EUSKALIA_COUNTER__.set === "function") {
-          window.__EUSKALIA_COUNTER__.set({ input: inputChars, spent });
-        }
-
-        // 2) evento (por si el layout lo escucha)
+      if (
+        data?.ok &&
+        typeof data.usedChars === "number" &&
+        typeof data.limitChars === "number"
+      ) {
         window.dispatchEvent(
-          new CustomEvent("euskalia:premium-counters", {
-            detail: { input: inputChars, spent },
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
           })
         );
-
-        // 3) fallback: localStorage (por si el layout lee de aquí)
-        try {
-          localStorage.setItem("euskalia_premium_input", String(inputChars));
-          localStorage.setItem("euskalia_premium_spent", String(spent));
-        } catch {}
       }
     } catch {}
   };
-
-  // ✅ actualiza el pill del header en tiempo real
-  useEffect(() => {
-    const inputChars = (input || "").length;
-    pushCountersToHeader(inputChars, spentChars);
-  }, [input, spentChars]);
 
   const newChat = () => {
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
     setMessages([]);
     setInput("");
     setIsSending(false);
-    setSpentChars(0);
-    pushCountersToHeader(0, 0);
 
     setTimeout(() => {
       inputRef.current?.focus?.();
@@ -139,6 +118,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
           content: m.text,
         })),
       ],
+      mode: "ai_assistant",
     };
 
     const res = await fetch("/api/premium", {
@@ -155,6 +135,9 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
       data = await res.json();
     } catch {}
 
+    // ✅✅✅ Si viene ok + usedChars/limitChars, actualiza el header (igual que corrector)
+    updatePremiumHeaderCounter(data);
+
     if (!res.ok) {
       const msg =
         extractAssistantText(data) ||
@@ -167,18 +150,23 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
 
     const out = extractAssistantText(data);
     if (!out)
-      throw new Error(tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor."));
+      throw new Error(
+        tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor.")
+      );
+
     return out;
   };
 
-  // ✅ “Gasto” progresivo: va sumando mientras se escribe la respuesta
-  const revealReplyAndSpend = (placeholderId, fullText) => {
+  // ✅ typing (solo visual) — NO tocamos contadores aquí
+  const revealReply = (placeholderId, fullText) => {
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
 
     const safe = String(fullText || "");
     if (!safe) {
       setMessages((prev) =>
-        prev.map((m) => (m._id === placeholderId ? { role: "assistant", text: "" } : m))
+        prev.map((m) =>
+          m._id === placeholderId ? { role: "assistant", text: "" } : m
+        )
       );
       return;
     }
@@ -206,9 +194,6 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
         )
       );
 
-      // ✅ suma chars gastados conforme aparece
-      setSpentChars((prev) => prev + nextChunk.length);
-
       setTimeout(() => scrollToBottom(), 0);
     }, 16);
   };
@@ -220,9 +205,6 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     const next = [...messages, { role: "user", text }];
     setMessages(next);
 
-    // ✅ gasta lo que envía el usuario
-    setSpentChars((prev) => prev + text.length);
-
     setInput("");
     setIsSending(true);
 
@@ -232,7 +214,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
 
     try {
       const reply = await callApi(next);
-      revealReplyAndSpend(placeholderId, reply);
+      revealReply(placeholderId, reply);
     } catch (e) {
       if (typingTimerRef.current) clearInterval(typingTimerRef.current);
 
@@ -244,11 +226,10 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
         );
 
       setMessages((prev) =>
-        prev.map((m) => (m._id === placeholderId ? { role: "assistant", text: errText } : m))
+        prev.map((m) =>
+          m._id === placeholderId ? { role: "assistant", text: errText } : m
+        )
       );
-
-      // ✅ si se muestra error, también cuenta como “gastado” (porque aparece escrito)
-      setSpentChars((prev) => prev + String(errText || "").length);
 
       setIsSending(false);
       setTimeout(() => inputRef.current?.focus?.(), 0);
