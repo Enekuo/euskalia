@@ -1395,20 +1395,7 @@ export default function PremiumEmailCreator() {
                       }
                     }}
                   />
-
-                  {/* ✅ MISMO sitio/estilo que el resto: input/max + gastados (sin crear contador nuevo) */}
-                  <div className="ml-2 h-9 px-3 rounded-full border border-slate-200 bg-white text-[13px] text-slate-600 flex items-center gap-2">
-                    <span className="font-medium text-slate-700">
-                      {inputCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span>
-                      {tr("premiumEmailCreator.spent_label", "Gastados")}:{" "}
-                      <span className="font-medium text-slate-700">
-                        {spent.toLocaleString()}
-                      </span>
-                    </span>
-                  </div>
+                  
                 </div>
 
                 <div className="flex items-center gap-1">
