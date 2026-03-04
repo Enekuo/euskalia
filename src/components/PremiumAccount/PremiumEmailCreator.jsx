@@ -40,7 +40,7 @@ export default function PremiumEmailCreator() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ CONTADOR "GASTADOS" (tokens o fallback)
+  // ✅ CONTADOR "GASTADOS"
   const [spent, setSpent] = useState(0);
 
   // ✅ Límite Premium (banner + mensaje rojo)
@@ -99,11 +99,10 @@ export default function PremiumEmailCreator() {
   // ✅ INPUT COUNT (según modo)
   const inputCount = useMemo(() => {
     if (emailMode === "creative") {
-      const joined = `${creativeInfo || ""}\n${chatInput || ""}`;
-      return joined.length;
+      return `${creativeInfo || ""}${chatInput || ""}`.length;
     }
 
-    const joined = [
+    return [
       emailSaludo || "",
       emailIntro || "",
       ...(emailParagraphs || []),
@@ -111,8 +110,7 @@ export default function PremiumEmailCreator() {
       emailSaludo2 || "",
       emailNombre || "",
       chatInput || "",
-    ].join("\n");
-    return joined.length;
+    ].join("\n").length;
   }, [
     emailMode,
     creativeInfo,
@@ -125,13 +123,22 @@ export default function PremiumEmailCreator() {
     emailNombre,
   ]);
 
-  const fmt = (n) => {
-    try {
-      return Number(n || 0).toLocaleString("es-ES");
-    } catch {
-      return String(n || 0);
-    }
-  };
+  // ✅ Empuja SIEMPRE al contador global Premium (el azul del layout)
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("premium_usage_update", {
+        detail: {
+          used: inputCount,
+          max: MAX_CHARS,
+          spent,
+          // aliases por compatibilidad si tu layout usa otros nombres
+          input: inputCount,
+          limit: MAX_CHARS,
+          spentTokens: spent,
+        },
+      })
+    );
+  }, [inputCount, spent]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -601,7 +608,7 @@ export default function PremiumEmailCreator() {
     setEmailParagraphs([""]);
     setChatInput("");
     setCreativeInfo("");
-    setSpent(0); // ✅ reseteo de sesión (igual que suele hacerse en herramientas)
+    setSpent(0);
     clearRight();
   };
 
@@ -1096,7 +1103,7 @@ export default function PremiumEmailCreator() {
           setLastEmailSig(canonicalize(textValue));
           setIsOutdated(false);
 
-          // ✅ GASTADOS: suma solo si OK (retry final)
+          // ✅ GASTADOS: SOLO cuando la respuesta final queda
           const spentNow2 =
             (r2?.usage?.total_tokens || 0) > 0
               ? r2.usage.total_tokens
@@ -1113,7 +1120,7 @@ export default function PremiumEmailCreator() {
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
 
-      // ✅ GASTADOS: suma solo si OK (primer intento)
+      // ✅ GASTADOS: SOLO cuando la respuesta final queda
       const spentNow1 =
         (r1?.usage?.total_tokens || 0) > 0
           ? r1.usage.total_tokens
@@ -1385,27 +1392,6 @@ export default function PremiumEmailCreator() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  {/* ✅ contador compacto (igual de “zona” que otras herramientas: arriba derecha) */}
-                  <div className="hidden md:flex items-center mr-2">
-                    <div
-                      className="h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] flex items-center gap-2"
-                      style={{ color: "#475569" }}
-                      title="Input / Gastados"
-                    >
-                      <span style={{ color: BLUE, fontWeight: 600 }}>
-                        {fmt(inputCount)}
-                      </span>
-                      <span className="text-slate-300">/</span>
-                      <span>{fmt(MAX_CHARS)}</span>
-                      <span className="text-slate-400">caracteres</span>
-                      <span className="text-slate-300">•</span>
-                      <span className="text-slate-500">
-                        {tr("premiumEmailCreator.spent_label", "Gastados")}:
-                      </span>
-                      <span style={{ color: "#0f172a", fontWeight: 600 }}>{fmt(spent)}</span>
-                    </div>
-                  </div>
-
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
