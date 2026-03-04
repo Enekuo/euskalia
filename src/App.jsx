@@ -9,6 +9,7 @@ import RegisterPage from "@/pages/RegisterPage";
 import SupportPage from '@/pages/SupportPage';
 import AssistantPage from "@/pages/AssistantPage";
 import Resumen from "@/components/Resumen";
+import Corrector from "@/components/CorrectorGramatical";
 import LegalNoticePage from "@/components/Legal/LegalNoticePage";
 import PrivacyPolicyPage from "@/components/Legal/PrivacyPolicyPage";
 import TermsConditionsPage from "@/components/Legal/TermsConditionsPage";
@@ -56,6 +57,7 @@ import PremiumLibraryDetail from "@/components/PremiumAccount/PremiumLibraryDeta
 import PremiumTextCreator from "@/components/PremiumAccount/PremiumTextCreator";
 import PremiumEmailCreator from "@/components/PremiumAccount/PremiumEmailCreator";
 import PremiumAudioCreator from "@/components/PremiumAccount/PremiumAudioCreator";
+import CorrectorGramatical from './components/CorrectorGrammatical';
 
 
 
@@ -127,6 +129,7 @@ const seo =
             <Route path="/soporte" element={<SupportPage />} />
             <Route path="/chat-ia" element={<AssistantPage />} />
             <Route path="/resumen" element={<Resumen />} />
+            <Route path="/corrector" element={<CorrectorGramatical />} />
             <Route path="/aviso-legal" element={<LegalNoticePage />} />
             <Route path="/politica-de-privacidad" element={<PrivacyPolicyPage />} />
             <Route path="/terminos-condiciones" element={<TermsConditionsPage />} />
