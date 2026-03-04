@@ -40,9 +40,6 @@ export default function PremiumEmailCreator() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ CONTADOR "GASTADOS"
-  const [spent, setSpent] = useState(0);
-
   // ✅ Límite Premium (banner + mensaje rojo)
   const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const setCharsLimit = () => setLimitType("chars");
@@ -90,55 +87,14 @@ export default function PremiumEmailCreator() {
   const [emailSaludo2, setEmailSaludo2] = useState(""); // ✅ (5) Saludo / cierre
   const [emailNombre, setEmailNombre] = useState(""); // ✅ (6) Nombre
 
+  // ✅ Gastados (sesión de esta herramienta)
+  const [spent, setSpent] = useState(0);
+
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
   const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 18000;
-
-  // ✅ INPUT COUNT (según modo)
-  const inputCount = useMemo(() => {
-    if (emailMode === "creative") {
-      return `${creativeInfo || ""}${chatInput || ""}`.length;
-    }
-
-    return [
-      emailSaludo || "",
-      emailIntro || "",
-      ...(emailParagraphs || []),
-      emailFinalPhrase || "",
-      emailSaludo2 || "",
-      emailNombre || "",
-      chatInput || "",
-    ].join("\n").length;
-  }, [
-    emailMode,
-    creativeInfo,
-    chatInput,
-    emailSaludo,
-    emailIntro,
-    emailParagraphs,
-    emailFinalPhrase,
-    emailSaludo2,
-    emailNombre,
-  ]);
-
-  // ✅ Empuja SIEMPRE al contador global Premium (el azul del layout)
-  useEffect(() => {
-    window.dispatchEvent(
-      new CustomEvent("premium_usage_update", {
-        detail: {
-          used: inputCount,
-          max: MAX_CHARS,
-          spent,
-          // aliases por compatibilidad si tu layout usa otros nombres
-          input: inputCount,
-          limit: MAX_CHARS,
-          spentTokens: spent,
-        },
-      })
-    );
-  }, [inputCount, spent]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -193,7 +149,10 @@ export default function PremiumEmailCreator() {
   const labelSmall4 = tr("premiumEmailCreator.small_4", "5- Saludo"); // ✅ ahora es 5
   const labelSmall5 = tr("premiumEmailCreator.small_5", "6- Nombre"); // ✅ ahora es 6
 
-  const placeholderSaludo = tr("premiumEmailCreator.saludo_ph", "Escribe el saludo...");
+  const placeholderSaludo = tr(
+    "premiumEmailCreator.saludo_ph",
+    "Escribe el saludo..."
+  );
   const placeholderIntro = tr(
     "premiumEmailCreator.intro_ph",
     "Escribe la introducción..."
@@ -351,7 +310,8 @@ export default function PremiumEmailCreator() {
       /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
         s
       );
-    const enHits = /\b(the|and|to|for|i|you|please|regards|sincerely|dear)\b/.test(s);
+    const enHits =
+      /\b(the|and|to|for|i|you|please|regards|sincerely|dear)\b/.test(s);
     const frHits =
       /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour)\b/.test(s);
 
@@ -458,6 +418,36 @@ export default function PremiumEmailCreator() {
     emailNombre,
   ]);
 
+  // ===== Contador INPUT (según modo) =====
+  const inputCount = useMemo(() => {
+    const safeChat = (chatInput || "");
+    if (emailMode === "creative") {
+      return (creativeInfo || "").length + safeChat.length;
+    }
+
+    const pLen = (emailParagraphs || []).reduce((acc, p) => acc + String(p || "").length, 0);
+
+    return (
+      (emailSaludo || "").length +
+      (emailIntro || "").length +
+      pLen +
+      (emailFinalPhrase || "").length +
+      (emailSaludo2 || "").length +
+      (emailNombre || "").length +
+      safeChat.length
+    );
+  }, [
+    emailMode,
+    creativeInfo,
+    chatInput,
+    emailSaludo,
+    emailIntro,
+    emailParagraphs,
+    emailFinalPhrase,
+    emailSaludo2,
+    emailNombre,
+  ]);
+
   // ===== Limpieza del panel derecho =====
   const clearRight = () => {
     setResult("");
@@ -524,7 +514,7 @@ export default function PremiumEmailCreator() {
 
   const hasAnyInput = useMemo(() => {
     if (emailMode === "creative") {
-      return !!(creativeInfo || "").trim();
+      return !!(creativeInfo || "").trim() || !!(chatInput || "").trim();
     }
 
     const anyParagraph = (emailParagraphs || []).some((p) => (p || "").trim());
@@ -570,7 +560,9 @@ export default function PremiumEmailCreator() {
     const win = window.open("", "_blank");
     if (!win) return;
 
-    const safeSubject = (emailSubject || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const safeSubject = (emailSubject || "")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
     const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
     win.document.write(`
@@ -638,7 +630,9 @@ export default function PremiumEmailCreator() {
     const maxTitleLength = 90;
 
     let title =
-      titleBase || firstLine || tr("premiumEmailCreator.library_default_title", "Email");
+      titleBase ||
+      firstLine ||
+      tr("premiumEmailCreator.library_default_title", "Email");
     if (title.length > maxTitleLength) {
       title = title.slice(0, maxTitleLength).trimEnd() + "…";
     }
@@ -743,6 +737,16 @@ export default function PremiumEmailCreator() {
     }
 
     const data = await res.json();
+
+    // ✅✅✅ FIX: actualizar contador del header (igual que Corrector)
+    if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+      window.dispatchEvent(
+        new CustomEvent("premium-usage-update", {
+          detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+        })
+      );
+    }
+
     const rawText =
       data?.text ??
       data?.content ??
@@ -750,7 +754,16 @@ export default function PremiumEmailCreator() {
       data?.message?.content ??
       "";
 
-    return { kind: "ok", rawText, usage: data?.usage || null };
+    const usageTotal =
+      typeof data?.usage?.total_tokens === "number"
+        ? data.usage.total_tokens
+        : typeof data?.usage?.totalTokens === "number"
+        ? data.usage.totalTokens
+        : typeof data?.usage?.total === "number"
+        ? data.usage.total
+        : null;
+
+    return { kind: "ok", rawText, usageTotal };
   };
 
   // ===== Generar =====
@@ -760,13 +773,7 @@ export default function PremiumEmailCreator() {
     clearLimit();
     setSavedToLibrary(false);
 
-    if ((textValue || "").length > MAX_CHARS && emailMode === "template") {
-      setCharsLimit();
-      setLoading(false);
-      return;
-    }
-
-    if (emailMode === "creative" && (creativeInfo || "").length > MAX_CHARS) {
+    if (inputCount > MAX_CHARS) {
       setCharsLimit();
       setLoading(false);
       return;
@@ -869,6 +876,8 @@ export default function PremiumEmailCreator() {
             "INFORMACIÓN DEL USUARIO (puede estar en cualquier idioma):",
             `${(creativeInfo || "").trim()}`,
             "",
+            userInstructions ? userInstructions : "",
+            "",
             `REGLAS:\n${schemaRules}`,
             `${toneRule}`,
             `${lengthRule}`,
@@ -883,7 +892,9 @@ export default function PremiumEmailCreator() {
             `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
             `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
             `- (3) Párrafos/Notas:\n${
-              paragraphsBlock ? paragraphsBlock : "(vacío -> crea contenido mínimo coherente)"
+              paragraphsBlock
+                ? paragraphsBlock
+                : "(vacío -> crea contenido mínimo coherente)"
             }`,
             `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
             `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
@@ -1096,36 +1107,31 @@ export default function PremiumEmailCreator() {
 
           const builtBody2 = buildBodyFromParts(safeParts2);
 
+          // ✅✅✅ Gastados: suma SOLO el intento final aceptado
+          const spentNow2 =
+            typeof r2.usageTotal === "number" ? r2.usageTotal : basePrompt.length + raw2.length;
+          setSpent((p) => p + (spentNow2 || 0));
+
           setEmailSubject(
             subject2 || subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta")
           );
           setResult(builtBody2);
           setLastEmailSig(canonicalize(textValue));
           setIsOutdated(false);
-
-          // ✅ GASTADOS: SOLO cuando la respuesta final queda
-          const spentNow2 =
-            (r2?.usage?.total_tokens || 0) > 0
-              ? r2.usage.total_tokens
-              : (basePrompt || "").length + (raw2 || "").length;
-          setSpent((p) => p + (spentNow2 || 0));
-
           setLoading(false);
           return;
         }
       }
 
+      // ✅✅✅ Gastados: suma SOLO cuando el email queda bien (sin retry)
+      const spentNow1 =
+        typeof r1.usageTotal === "number" ? r1.usageTotal : basePrompt.length + raw1.length;
+      setSpent((p) => p + (spentNow1 || 0));
+
       setEmailSubject(subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
       setResult(builtBody1);
       setLastEmailSig(canonicalize(textValue));
       setIsOutdated(false);
-
-      // ✅ GASTADOS: SOLO cuando la respuesta final queda
-      const spentNow1 =
-        (r1?.usage?.total_tokens || 0) > 0
-          ? r1.usage.total_tokens
-          : (basePrompt || "").length + (raw1 || "").length;
-      setSpent((p) => p + (spentNow1 || 0));
     } catch (err) {
       setErrorMsg(
         err.message || tr("premiumEmailCreator.error_generic", "Error generando el email.")
@@ -1389,6 +1395,20 @@ export default function PremiumEmailCreator() {
                       }
                     }}
                   />
+
+                  {/* ✅ MISMO sitio/estilo que el resto: input/max + gastados (sin crear contador nuevo) */}
+                  <div className="ml-2 h-9 px-3 rounded-full border border-slate-200 bg-white text-[13px] text-slate-600 flex items-center gap-2">
+                    <span className="font-medium text-slate-700">
+                      {inputCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span>
+                      {tr("premiumEmailCreator.spent_label", "Gastados")}:{" "}
+                      <span className="font-medium text-slate-700">
+                        {spent.toLocaleString()}
+                      </span>
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-1">
