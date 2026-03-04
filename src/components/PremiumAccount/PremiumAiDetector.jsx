@@ -226,6 +226,15 @@ export default function PremiumAiDetector() {
         return;
       }
 
+      // ✅✅✅ FIX: actualizar contador del header (igual que Corrector/Parafraseador/Humanizador)
+      if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
+        window.dispatchEvent(
+          new CustomEvent("premium-usage-update", {
+            detail: { usedChars: data.usedChars, limitChars: data.limitChars },
+          })
+        );
+      }
+
       setResult({
         ai: data.ai,
         human: data.human,
