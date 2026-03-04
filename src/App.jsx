@@ -84,7 +84,7 @@ const seo =
         desc: "Euskalia es una plataforma de inteligencia artificial centrada en el euskera que permite traducir, resumir y mejorar textos, junto con otras funcionalidades basadas en IA.",
       };
 
-  return (
+  return ( 
     <>
 <Helmet>
   <title>{seo.title}</title>
