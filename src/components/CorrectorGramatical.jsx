@@ -1029,7 +1029,7 @@ export default function CorrectorGramatical() {
                     {dailyLimitReached
                       ? tr(
                           "grammarcorrector_daily_limit_reached",
-                          "Has superado el límite diario. 20 solicitudes al día."
+                          "Has superado el límite diario. 5 solicitudes al día."
                         )
                       : tr(
                           "grammarcorrector_limit_reached",

@@ -267,8 +267,155 @@ summary_daily_limit_reached: {
   EN: "You have exceeded the daily limit. 3 requests per day.",
   FR: "Vous avez dépassé la limite quotidienne. 3 requêtes par jour.",
 },
+// =========================
+  //   FREE GRAMMATICALCORRECTOR
+  // =========================
+  grammarcorrector: {
+  sources_title:        { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+  sources_tab_text:     { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
+  sources_tab_url:      { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
 
-  
+  enter_text_here_full: {
+    ES: "Escribe o pega aquí el texto que quieres corregir…",
+    EUS: "Idatzi edo itsatsi hemen zuzendu nahi duzun testua…",
+    EN: "Write or paste the text you want to correct here…",
+    FR: "Écris ou colle ici le texte que tu veux corriger…",
+  },
+
+  choose_file_title: {
+    ES: "Elige tu archivo o carpeta",
+    EUS: "Aukeratu zure fitxategia edo karpeta",
+    EN: "Choose your file or folder",
+    FR: "Choisis ton fichier ou dossier",
+  },
+ accepted_formats: {
+    ES: "Formatos admitidos: .pdf, .docx, .txt",
+    EUS: "Onartutako formatuak: .pdf, .docx, .txt",
+    EN: "Supported formats: .pdf, .docx, .txt",
+    FR: "Formats acceptés : .pdf, .docx, .txt",
+  },
+
+  folder_hint: {
+    ES: "Se permite un solo archivo por resultado.",
+    EUS: "Emaitza bakoitzeko fitxategi bakarra onartzen da.",
+    EN: "Only one file is allowed per result.",
+    FR: "Un seul fichier est autorisé par résultat.",
+  },
+
+  create_help_left: {
+    ES: "Aquí aparecerán los textos o documentos que quieras corregir. Puedes pegar texto, subir archivos de texto o añadir URLs.",
+    EUS: "Hemen agertuko dira zuzendu nahi dituzun testuak edo dokumentuak. Testua itsatsi, testu-fitxategiak igo edo URLak gehitu ditzakezu.",
+    EN: "The texts or documents you want to correct will appear here. You can paste text, upload text files, or add URLs.",
+    FR: "Les textes ou documents que tu veux corriger apparaîtront ici. Tu peux coller du texte, importer des fichiers texte ou ajouter des URL.",
+  },
+
+  paste_urls_label: { ES: "Pegar URL*", EUS: "Itsatsi URLa*", EN: "Paste URL*", FR: "Coller des URL*" },
+
+  add_url:  { ES: "Añadir URL", EUS: "Gehitu URLa", EN: "Add URL", FR: "Ajouter des URL" },
+  save_urls: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  cancel:   { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Annuler" },
+
+  paste_urls_placeholder: {
+    ES: "Introduce aquí una URL para analizar su contenido.",
+    EUS: "Sartu hemen URL bat haren edukia aztertzeko.",
+    EN: "Enter a URL here to analyze its content.",
+    FR: "Entrez une URL ici pour analyser son contenu.",
+ },
+
+  urls_note_visible: {
+    ES: "Solo se importará el texto visible del sitio web.",
+    EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
+    EN: "Only the visible text from the website will be imported.",
+    FR: "Seul le texte visible du site sera importé.",
+  },
+
+  urls_note_paywalled: {
+    ES: "No se admiten artículos de pago.",
+    EUS: "Ordainpeko artikuluak ez dira onartzen.",
+    EN: "Paywalled articles are not supported.",
+    FR: "Les articles payants ne sont pas pris en charge.",
+  },
+
+  remove: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
+
+  correct_button: { ES: "Corregir texto", EUS: "Zuzendu testua", EN: "Correct text", FR: "Corriger le texte" },
+
+  create_help_right: {
+    ES: "Elige la fuente del texto (escribir, subir documento o URL) y pulsa «Corregir texto».",
+    EUS: "Aukeratu testuaren iturria (idatzi, dokumentua igo edo URL) eta sakatu «Zuzendu testua».",
+    EN: "Choose the text source (type, upload a document, or URL) and click “Correct text”.",
+    FR: "Choisis la source du texte (écrire, importer un document ou des URL) puis clique sur « Corriger le texte ».",
+  },
+
+  view_changes: { ES: "Ver cambios", EUS: "Ikusi aldaketak", EN: "View changes", FR: "Voir les modifications" },
+  hide_changes: { ES: "Ocultar cambios", EUS: "Ezkutatu aldaketak", EN: "Hide changes", FR: "Masquer les modifications" },
+
+  output_language_aria: {
+    ES: "Idioma principal del texto",
+    EUS: "Testuaren hizkuntza nagusia",
+    EN: "Main language of the text",
+    FR: "Langue principale du texte",
+  },
+
+  clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
+
+  error_too_long: {
+    ES: "Has superado el límite máximo de caracteres.",
+    EUS: "Gehienezko karaktere-muga gainditu duzu.",
+    EN: "You have exceeded the maximum character limit.",
+    FR: "Tu as dépassé la limite maximale de caractères.",
+  },
+
+  error_need_input: {
+    ES: "Añade algo de texto, documentos o URLs antes de pedir la corrección.",
+    EUS: "Gehitu testua, dokumentuak edo URLak zuzenketa eskatu aurretik.",
+    EN: "Add some text, documents, or URLs before requesting the correction.",
+    FR: "Ajoute du texte, des documents ou des URL avant de demander la correction.",
+  },
+
+  error_limit: {
+    ES: "Has alcanzado el límite gratuito. Vuelve más tarde.",
+    EUS: "Doako muga lortu duzu. Saiatu berriro geroago.",
+    EN: "You’ve reached the free limit. Try again later.",
+    FR: "Tu as atteint la limite gratuite. Réessaie plus tard.",
+  },
+
+  error_no_text: {
+    ES: "No se recibió texto de la API.",
+    EUS: "Ez da testurik jaso API-tik.",
+    EN: "No text was received from the API.",
+    FR: "Aucun texte n’a été reçu de l’API.",
+  },
+
+  error_generic: {
+    ES: "Error realizando la corrección.",
+    EUS: "Errorea zuzenketa egitean.",
+    EN: "Error while performing the correction.",
+    FR: "Erreur lors de la correction.",
+  },
+
+  no_errors_message: {
+    ES: "¡Muy bien! No hemos detectado errores.",
+    EUS: "Oso ondo! Ez dugu akatsik aurkitu.",
+    EN: "Great! We didn’t detect any errors.",
+    FR: "Parfait ! Nous n’avons détecté aucune erreur.",
+  },
+},
+  grammarcorrector_daily_limit_reached: {
+  ES: "Has superado el límite diario. 5 solicitudes al día.",
+  EUS: "Eguneko muga gainditu duzu. 5 eskaera egunean.",
+  EN: "You have exceeded the daily limit. 5 requests per day.",
+  FR: "Vous avez dépassé la limite quotidienne. 5 requêtes par jour."
+},
+
+grammarcorrector_limit_reached: {
+  ES: "Límite máximo: {{count}} caracteres.",
+  EUS: "Gehienezko muga: {{count}} karaktere.",
+  EN: "Maximum limit: {{count}} characters.",
+  FR: "Limite maximale : {{count}} caractères."
+},
+
   // =========================
   //        COOKIES BANNER 
   // =========================
@@ -470,141 +617,6 @@ summary_daily_limit_reached: {
     },
   },
  
-  // =========================
-  //   FREE GRAMMATICALCORRECTOR
-  // =========================
-  grammarcorrector: {
-  sources_title:        { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
-  sources_tab_text:     { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
-  sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
-  sources_tab_url:      { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
-
-  enter_text_here_full: {
-    ES: "Escribe o pega aquí el texto que quieres corregir…",
-    EUS: "Idatzi edo itsatsi hemen zuzendu nahi duzun testua…",
-    EN: "Write or paste the text you want to correct here…",
-    FR: "Écris ou colle ici le texte que tu veux corriger…",
-  },
-
-  choose_file_title: {
-    ES: "Elige tu archivo o carpeta",
-    EUS: "Aukeratu zure fitxategia edo karpeta",
-    EN: "Choose your file or folder",
-    FR: "Choisis ton fichier ou dossier",
-  },
- accepted_formats: {
-    ES: "Formatos admitidos: .pdf, .docx, .txt",
-    EUS: "Onartutako formatuak: .pdf, .docx, .txt",
-    EN: "Supported formats: .pdf, .docx, .txt",
-    FR: "Formats acceptés : .pdf, .docx, .txt",
-  },
-
-  folder_hint: {
-    ES: "Se permite un solo archivo por resultado.",
-    EUS: "Emaitza bakoitzeko fitxategi bakarra onartzen da.",
-    EN: "Only one file is allowed per result.",
-    FR: "Un seul fichier est autorisé par résultat.",
-  },
-
-  create_help_left: {
-    ES: "Aquí aparecerán los textos o documentos que quieras corregir. Puedes pegar texto, subir archivos de texto o añadir URLs.",
-    EUS: "Hemen agertuko dira zuzendu nahi dituzun testuak edo dokumentuak. Testua itsatsi, testu-fitxategiak igo edo URLak gehitu ditzakezu.",
-    EN: "The texts or documents you want to correct will appear here. You can paste text, upload text files, or add URLs.",
-    FR: "Les textes ou documents que tu veux corriger apparaîtront ici. Tu peux coller du texte, importer des fichiers texte ou ajouter des URL.",
-  },
-
-  paste_urls_label: { ES: "Pegar URL*", EUS: "Itsatsi URLa*", EN: "Paste URL*", FR: "Coller des URL*" },
-
-  add_url:  { ES: "Añadir URL", EUS: "Gehitu URLa", EN: "Add URL", FR: "Ajouter des URL" },
-  save_urls: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
-  cancel:   { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Annuler" },
-
-  paste_urls_placeholder: {
-    ES: "Introduce aquí una URL para analizar su contenido.",
-    EUS: "Sartu hemen URL bat haren edukia aztertzeko.",
-    EN: "Enter a URL here to analyze its content.",
-    FR: "Entrez une URL ici pour analyser son contenu.",
- },
-
-  urls_note_visible: {
-    ES: "Solo se importará el texto visible del sitio web.",
-    EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.",
-    EN: "Only the visible text from the website will be imported.",
-    FR: "Seul le texte visible du site sera importé.",
-  },
-
-  urls_note_paywalled: {
-    ES: "No se admiten artículos de pago.",
-    EUS: "Ordainpeko artikuluak ez dira onartzen.",
-    EN: "Paywalled articles are not supported.",
-    FR: "Les articles payants ne sont pas pris en charge.",
-  },
-
-  remove: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Retirer" },
-
-  correct_button: { ES: "Corregir texto", EUS: "Zuzendu testua", EN: "Correct text", FR: "Corriger le texte" },
-
-  create_help_right: {
-    ES: "Elige la fuente del texto (escribir, subir documento o URL) y pulsa «Corregir texto».",
-    EUS: "Aukeratu testuaren iturria (idatzi, dokumentua igo edo URL) eta sakatu «Zuzendu testua».",
-    EN: "Choose the text source (type, upload a document, or URL) and click “Correct text”.",
-    FR: "Choisis la source du texte (écrire, importer un document ou des URL) puis clique sur « Corriger le texte ».",
-  },
-
-  view_changes: { ES: "Ver cambios", EUS: "Ikusi aldaketak", EN: "View changes", FR: "Voir les modifications" },
-  hide_changes: { ES: "Ocultar cambios", EUS: "Ezkutatu aldaketak", EN: "Hide changes", FR: "Masquer les modifications" },
-
-  output_language_aria: {
-    ES: "Idioma principal del texto",
-    EUS: "Testuaren hizkuntza nagusia",
-    EN: "Main language of the text",
-    FR: "Langue principale du texte",
-  },
-
-  clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
-
-  error_too_long: {
-    ES: "Has superado el límite máximo de caracteres.",
-    EUS: "Gehienezko karaktere-muga gainditu duzu.",
-    EN: "You have exceeded the maximum character limit.",
-    FR: "Tu as dépassé la limite maximale de caractères.",
-  },
-
-  error_need_input: {
-    ES: "Añade algo de texto, documentos o URLs antes de pedir la corrección.",
-    EUS: "Gehitu testua, dokumentuak edo URLak zuzenketa eskatu aurretik.",
-    EN: "Add some text, documents, or URLs before requesting the correction.",
-    FR: "Ajoute du texte, des documents ou des URL avant de demander la correction.",
-  },
-
-  error_limit: {
-    ES: "Has alcanzado el límite gratuito. Vuelve más tarde.",
-    EUS: "Doako muga lortu duzu. Saiatu berriro geroago.",
-    EN: "You’ve reached the free limit. Try again later.",
-    FR: "Tu as atteint la limite gratuite. Réessaie plus tard.",
-  },
-
-  error_no_text: {
-    ES: "No se recibió texto de la API.",
-    EUS: "Ez da testurik jaso API-tik.",
-    EN: "No text was received from the API.",
-    FR: "Aucun texte n’a été reçu de l’API.",
-  },
-
-  error_generic: {
-    ES: "Error realizando la corrección.",
-    EUS: "Errorea zuzenketa egitean.",
-    EN: "Error while performing the correction.",
-    FR: "Erreur lors de la correction.",
-  },
-
-  no_errors_message: {
-    ES: "¡Muy bien! No hemos detectado errores.",
-    EUS: "Oso ondo! Ez dugu akatsik aurkitu.",
-    EN: "Great! We didn’t detect any errors.",
-    FR: "Parfait ! Nous n’avons détecté aucune erreur.",
-  },
-},
 
   // =========================
   //        CHAT IA 
