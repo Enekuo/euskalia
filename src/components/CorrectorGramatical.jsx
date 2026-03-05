@@ -82,36 +82,36 @@ export default function CorrectorGramatical() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n (reutilizo las mismas keys que ya tienes en Premium para no inventar ahora) =====
-  const labelSources = tr("premiumGrammar.sources_title", "Fuentes");
-  const labelTabText = tr("premiumGrammar.sources_tab_text", "Texto");
-  const labelTabDocument = tr("premiumGrammar.sources_tab_document", "Documento");
-  const labelTabUrl = tr("premiumGrammar.sources_tab_url", "URL");
+  // ===== i18n (CLAVES NUEVAS grammarcorrector.*) =====
+  const labelSources = tr("grammarcorrector.sources_title", "Fuentes");
+  const labelTabText = tr("grammarcorrector.sources_tab_text", "Texto");
+  const labelTabDocument = tr("grammarcorrector.sources_tab_document", "Documento");
+  const labelTabUrl = tr("grammarcorrector.sources_tab_url", "URL");
   const labelEnterText = tr(
-    "premiumGrammar.enter_text_here_full",
+    "grammarcorrector.enter_text_here_full",
     "Escribe o pega aquí el texto que quieres corregir…"
   );
-  const labelChooseFileTitle = tr("premiumGrammar.choose_file_title", "Elige tu archivo o carpeta");
+  const labelChooseFileTitle = tr("grammarcorrector.choose_file_title", "Elige tu archivo o carpeta");
   const labelAcceptedFormats = tr(
-    "premiumGrammar.accepted_formats",
+    "grammarcorrector.accepted_formats",
     "Puedes añadir archivos de texto (.txt, .md) o documentos para corregir su contenido."
   );
-  const labelFolderHint = tr("premiumGrammar.folder_hint", "Aquí aparecerán tus textos o documentos subidos.");
-  const labelPasteUrls = tr("premiumGrammar.paste_urls_label", "Pegar URLs*");
-  const labelAddUrl = tr("premiumGrammar.add_url", "Añadir URLs");
-  const labelSaveUrls = tr("premiumGrammar.save_urls", "Guardar");
-  const labelCancel = tr("premiumGrammar.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("premiumGrammar.urls_note_visible", "Solo se importará el texto visible del sitio web.");
-  const labelUrlsNotePaywalled = tr("premiumGrammar.urls_note_paywalled", "No se admiten artículos de pago.");
-  const labelRemove = tr("premiumGrammar.remove", "Quitar");
-  const labelGenerateFromSources = tr("premiumGrammar.correct_button", "Corregir texto");
+  const labelFolderHint = tr("grammarcorrector.folder_hint", "Aquí aparecerán tus textos o documentos subidos.");
+  const labelPasteUrls = tr("grammarcorrector.paste_urls_label", "Pegar URLs*");
+  const labelAddUrl = tr("grammarcorrector.add_url", "Añadir URLs");
+  const labelSaveUrls = tr("grammarcorrector.save_urls", "Guardar");
+  const labelCancel = tr("grammarcorrector.cancel", "Cancelar");
+  const labelUrlsNoteVisible = tr("grammarcorrector.urls_note_visible", "Solo se importará el texto visible del sitio web.");
+  const labelUrlsNotePaywalled = tr("grammarcorrector.urls_note_paywalled", "No se admiten artículos de pago.");
+  const labelRemove = tr("grammarcorrector.remove", "Quitar");
+  const labelGenerateFromSources = tr("grammarcorrector.correct_button", "Corregir texto");
   const labelHelpRight = tr(
-    "premiumGrammar.create_help_right",
+    "grammarcorrector.create_help_right",
     "Elige la fuente del texto (escribir, subir documento o URLs) y pulsa «Corregir texto»."
   );
 
-  const labelViewChanges = tr("premiumGrammar.view_changes", "Ver cambios");
-  const labelHideChanges = tr("premiumGrammar.hide_changes", "Ocultar cambios");
+  const labelViewChanges = tr("grammarcorrector.view_changes", "Ver cambios");
+  const labelHideChanges = tr("grammarcorrector.hide_changes", "Ocultar cambios");
 
   // ✅ Idiomas (UI) -> mismas keys globales
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
@@ -126,7 +126,7 @@ export default function CorrectorGramatical() {
 
   // Ayuda izquierda
   const leftRaw = tr(
-    "premiumGrammar.create_help_left",
+    "grammarcorrector.create_help_left",
     "Aquí aparecerán los textos o documentos que quieras corregir. Puedes pegar texto, subir archivos de texto o añadir URLs."
   );
   const [leftTitle, leftBody] = useMemo(() => {
@@ -500,13 +500,13 @@ export default function CorrectorGramatical() {
     const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorMsg(tr("premiumGrammar.error_too_long", "Has superado el límite máximo de caracteres."));
+      setErrorMsg(tr("grammarcorrector.error_too_long", "Has superado el límite máximo de caracteres."));
       setLoading(false);
       return;
     }
 
     if (!validNow) {
-      setErrorMsg(tr("premiumGrammar.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección."));
+      setErrorMsg(tr("grammarcorrector.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección."));
       setLoading(false);
       return;
     }
@@ -585,14 +585,14 @@ export default function CorrectorGramatical() {
       });
 
       if (res.status === 429) {
-        setErrorMsg(tr("premiumGrammar.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde."));
+        setErrorMsg(tr("grammarcorrector.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde."));
         setLoading(false);
         return;
       }
 
       if (!res.ok) {
         if (res.status === 413) {
-          setErrorMsg(tr("premiumGrammar.error_too_long", "Has superado el límite máximo de caracteres."));
+          setErrorMsg(tr("grammarcorrector.error_too_long", "Has superado el límite máximo de caracteres."));
           setLoading(false);
           return;
         }
@@ -609,7 +609,7 @@ export default function CorrectorGramatical() {
         data?.message?.content ??
         "";
 
-      if (!rawText) throw new Error(tr("premiumGrammar.error_no_text", "No se recibió texto de la API."));
+      if (!rawText) throw new Error(tr("grammarcorrector.error_no_text", "No se recibió texto de la API."));
 
       const cleaned = rawText.replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
 
@@ -620,7 +620,7 @@ export default function CorrectorGramatical() {
       // ✅ activar modo cambios si hay diff
       setShowDiff(true);
     } catch (err) {
-      setErrorMsg(err?.message || tr("premiumGrammar.error_generic", "Error realizando la corrección."));
+      setErrorMsg(err?.message || tr("grammarcorrector.error_generic", "Error realizando la corrección."));
     } finally {
       setLoading(false);
     }
@@ -636,7 +636,7 @@ export default function CorrectorGramatical() {
 
   // ===== Render =====
   return (
-    <section className="w-full bg-[#F4F8FF] pt-10 pb-16">
+    <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
       <div className="max-w-7xl mx-auto w-full px-6">
         <motion.section
           className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
@@ -814,7 +814,7 @@ export default function CorrectorGramatical() {
                       <textarea
                         value={urlsTextarea}
                         onChange={(e) => setUrlsTextarea(e.target.value)}
-                        placeholder={tr("premiumGrammar.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
+                        placeholder={tr("grammarcorrector.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
                         className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                         aria-label={labelPasteUrls}
                         spellCheck={false}
@@ -906,7 +906,7 @@ export default function CorrectorGramatical() {
                     <button
                       type="button"
                       className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label={tr("premiumGrammar.output_language_aria", "Idioma principal del texto")}
+                      aria-label={tr("grammarcorrector.output_language_aria", "Idioma principal del texto")}
                     >
                       <span className="truncate">
                         {outputLang === "ES"
@@ -988,11 +988,11 @@ export default function CorrectorGramatical() {
                 <button
                   type="button"
                   onClick={handleClearLeft}
-                  title={tr("premiumGrammar.clear_input", "Eliminar")}
+                  title={tr("grammarcorrector.clear_input", "Eliminar")}
                   className={`h-8 w-8 flex items-center justify-center ${
                     sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                   }`}
-                  aria-label={tr("premiumGrammar.clear_input", "Eliminar")}
+                  aria-label={tr("grammarcorrector.clear_input", "Eliminar")}
                   disabled={!(sourceMode === "text" && textValue)}
                 >
                   <Trash className="w-4 h-4" />
@@ -1038,7 +1038,7 @@ export default function CorrectorGramatical() {
                             <span className="text-lg">✅</span>
                           </div>
                           <p className="text-sm font-medium text-emerald-800">
-                            {tr("premiumGrammar.no_errors_message", "¡Muy bien! No hemos detectado errores.")}
+                            {tr("grammarcorrector.no_errors_message", "¡Muy bien! No hemos detectado errores.")}
                           </p>
                         </div>
                       ) : (
