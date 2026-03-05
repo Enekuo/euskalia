@@ -636,7 +636,7 @@ export default function CorrectorGramatical() {
 
   // ===== Render =====
   return (
-    <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
+    <section className="w-full bg-[#F4F8FF] pt-10 pb-16">
       <div className="max-w-7xl mx-auto w-full px-6">
         <motion.section
           className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
