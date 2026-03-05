@@ -5,7 +5,7 @@ import crypto from "crypto";
 // ====== Configuración de caché ======
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
-// ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR) ======
+// ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR vs CORRECTOR) ======
 // Traductor
 const FREE_TRANSLATOR_MAX_CHARS    = Number(process.env.FREE_TRANSLATOR_MAX_CHARS || 5000);
 const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 20000);
@@ -16,14 +16,22 @@ const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS |
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
+// ✅ Corrector (NUEVO)
+const FREE_CORRECTOR_MAX_CHARS       = Number(process.env.FREE_CORRECTOR_MAX_CHARS || 12000);
+const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_TOKENS || 20000);
+const FREE_CORRECTOR_RPM             = Number(process.env.FREE_CORRECTOR_RPM || 6);
+
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 3);
 // ✅ límite de traducciones por día (solo traductor)
 const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 20);
+// ✅ límite de correcciones por día (solo corrector) (NUEVO)
+const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 5);
 
 // ✅ Modelos (para que PUBLIC pueda ser EXACTAMENTE igual que PRO)
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // ej: "gpt-4.1-mini"
 const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // opcional
+const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // opcional (NUEVO)
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -255,7 +263,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    // ✅✅✅ AÑADIDO (ÚNICO) PARA RESUMIDOR CON DOCUMENTOS
+    // ✅✅✅ AÑADIDO: soportar documentos (resumidor y corrector)
     if (Array.isArray(body?.documentsText) && body.documentsText.length > 0) {
       const docsInline =
         "\nDOCUMENTOS (texto extraído):\n" +
@@ -276,7 +284,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     }
     // ✅✅✅ FIN AÑADIDO
 
-    // ====== Identificar herramienta (Traductor vs Resumidor) ======
+    // ====== Identificar herramienta (Traductor vs Resumidor vs Corrector) ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
 
@@ -290,13 +298,24 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("traduc") || rawMode.includes("traduc") ||
       rawMode.includes("translate_text") || rawMode.includes("translate_urls");
 
-    let tool = isSummary ? "summary" : (isTranslator ? "translator" : "other");
+    const isCorrector =
+      rawTask.includes("correct") || rawMode.includes("correct") ||
+      rawTask.includes("grammar") || rawMode.includes("grammar") ||
+      rawTask.includes("corrector") || rawMode.includes("corrector") ||
+      rawTask.includes("ortograf") || rawMode.includes("ortograf") ||
+      rawTask.includes("gramat") || rawMode.includes("gramat");
+
+    let tool =
+      isSummary ? "summary" :
+      isTranslator ? "translator" :
+      isCorrector ? "corrector" :
+      "other";
 
     // ✅ FIX REAL: si llega como "other", inferimos por el contenido (porque tu frontend a veces no manda task/mode)
     if (tool === "other") {
       const sys = canonicalize(system || "");
       const user0 = canonicalize((messages || []).map(m => (m?.role === "user" ? m?.content : "")).join(" ").slice(0, 1500));
-      const hint = `${sys} ${user0}`.slice(0, 2000);
+      const hint = `${sys} ${user0}`.slice(0, 2500);
 
       const looksSummary =
         hint.includes("resumen") || hint.includes("resumir") || hint.includes("resume") || hint.includes("summarize") || hint.includes("summary");
@@ -304,14 +323,21 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       const looksTranslate =
         hint.includes("traduc") || hint.includes("traduce") || hint.includes("translate") || hint.includes("itzul") || hint.includes("translation");
 
-      if (looksSummary && !looksTranslate) tool = "summary";
-      else if (looksTranslate && !looksSummary) tool = "translator";
-      // si aparecen ambos o ninguno, se queda "other"
+      const looksCorrector =
+        hint.includes("corrector") || hint.includes("corrige") || hint.includes("corregir") ||
+        hint.includes("gramatica") || hint.includes("gramatica") || hint.includes("ortografia") ||
+        hint.includes("puntuacion") || hint.includes("estilo");
+
+      if (looksSummary && !looksTranslate && !looksCorrector) tool = "summary";
+      else if (looksTranslate && !looksSummary && !looksCorrector) tool = "translator";
+      else if (looksCorrector && !looksSummary && !looksTranslate) tool = "corrector";
+      // si aparecen varios, se queda "other"
     }
 
     // ✅ FORZAR MODELO POR HERRAMIENTA (esto hace PUBLIC = PRO si pones la env var igual)
     if (tool === "translator" && FREE_TRANSLATOR_MODEL) model = FREE_TRANSLATOR_MODEL;
     if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
+    if (tool === "corrector" && FREE_CORRECTOR_MODEL) model = FREE_CORRECTOR_MODEL;
 
     // ✅ Guardrail EUS (solo traductor y cuando destino sea eus)
     const dst = hasTranslate ? body.to : (body?.dst || null);
@@ -327,16 +353,19 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     // Límites según herramienta
     const MAX_CHARS =
       tool === "summary" ? FREE_SUMMARY_MAX_CHARS :
+      tool === "corrector" ? FREE_CORRECTOR_MAX_CHARS :
       tool === "translator" ? FREE_TRANSLATOR_MAX_CHARS :
       FREE_TRANSLATOR_MAX_CHARS;
 
     const DAILY_TOKENS =
       tool === "summary" ? FREE_SUMMARY_DAILY_TOKENS :
+      tool === "corrector" ? FREE_CORRECTOR_DAILY_TOKENS :
       tool === "translator" ? FREE_TRANSLATOR_DAILY_TOKENS :
       FREE_TRANSLATOR_DAILY_TOKENS;
 
     const RPM =
       tool === "summary" ? FREE_SUMMARY_RPM :
+      tool === "corrector" ? FREE_CORRECTOR_RPM :
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
@@ -344,7 +373,12 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     const ip  = getClientIp(req);
     const day = todayKey();
 
-    console.log("[DAILY_DEBUG]", { tool, ip, day, FREE_SUMMARY_DAILY_REQUESTS, FREE_TRANSLATOR_DAILY_REQUESTS });
+    console.log("[DAILY_DEBUG]", {
+      tool, ip, day,
+      FREE_SUMMARY_DAILY_REQUESTS,
+      FREE_TRANSLATOR_DAILY_REQUESTS,
+      FREE_CORRECTOR_DAILY_REQUESTS
+    });
 
     // 1) Máx. caracteres por request
     const totalChars =
@@ -381,6 +415,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     }
 
     // ✅✅✅ FIX: límites diarios por PETICIONES usando INCR (atómico) y con TTL
+
     // 3) Límite de resúmenes por día (solo resumidor)
     if (tool === "summary") {
       try {
@@ -426,6 +461,30 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
         console.log("[KV DAILY TRANSLATOR ERROR]", e?.message || e);
       }
     }
+
+    // 3c) Límite de correcciones por día (solo corrector) (NUEVO)
+    if (tool === "corrector") {
+      try {
+        const dailyCorrectorKey = `quota:corrector:reqs:${day}:${ip}`;
+        const usedReqs = await kv.incr(dailyCorrectorKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyCorrectorKey, 60 * 60 * 26);
+        }
+        if (usedReqs > FREE_CORRECTOR_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily corrector requests exceeded",
+            limit: { daily_corrector_requests: FREE_CORRECTOR_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del corrector (${FREE_CORRECTOR_DAILY_REQUESTS} correcciones/día). ` +
+              `Vuelve mañana o mejora de plan.`
+          });
+        }
+      } catch (e) {
+        console.log("[KV DAILY CORRECTOR ERROR]", e?.message || e);
+      }
+    }
+
     // ✅✅✅ FIN FIX diarios por peticiones
 
     // 4) Cuota diaria de tokens por IP
@@ -533,7 +592,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     return res.status(200).json({
       ok: true,
       provider: "openai",
-      content, 
+      content,
       usage,
       cached: false
     });

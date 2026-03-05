@@ -72,7 +72,7 @@ export default function CorrectorGramatical() {
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 12000;
+  const MAX_CHARS = 5000;
 
   const hasRealResult = !!(result && result.trim().length > 0);
 

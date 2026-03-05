@@ -513,9 +513,9 @@ summary_daily_limit_reached: {
     FR: "Les textes ou documents que tu veux corriger apparaîtront ici. Tu peux coller du texte, importer des fichiers texte ou ajouter des URL.",
   },
 
-  paste_urls_label: { ES: "Pegar URLs*", EUS: "Itsatsi URLak*", EN: "Paste URLs*", FR: "Coller des URL*" },
+  paste_urls_label: { ES: "Pegar URL*", EUS: "Itsatsi URLa*", EN: "Paste URL*", FR: "Coller des URL*" },
 
-  add_url:  { ES: "Añadir URLs", EUS: "Gehitu URLak", EN: "Add URLs", FR: "Ajouter des URL" },
+  add_url:  { ES: "Añadir URL", EUS: "Gehitu URLa", EN: "Add URL", FR: "Ajouter des URL" },
   save_urls: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
   cancel:   { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Annuler" },
 
