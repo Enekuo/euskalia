@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
+import UpgradeBanner from "@/components/UpgradeBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +40,9 @@ export default function CorrectorGramatical() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // ✅ Para que el “límite” se muestre como en el resto (banner + mensaje abajo)
+  const [limitReached, setLimitReached] = useState(false);
 
   // Modo de corrección fijo
   const CORRECTION_MODE = "standard";
@@ -101,7 +105,10 @@ export default function CorrectorGramatical() {
   const labelAddUrl = tr("grammarcorrector.add_url", "Añadir URLs");
   const labelSaveUrls = tr("grammarcorrector.save_urls", "Guardar");
   const labelCancel = tr("grammarcorrector.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("grammarcorrector.urls_note_visible", "Solo se importará el texto visible del sitio web.");
+  const labelUrlsNoteVisible = tr(
+    "grammarcorrector.urls_note_visible",
+    "Solo se importará el texto visible del sitio web."
+  );
   const labelUrlsNotePaywalled = tr("grammarcorrector.urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("grammarcorrector.remove", "Quitar");
   const labelGenerateFromSources = tr("grammarcorrector.correct_button", "Corregir texto");
@@ -301,6 +308,7 @@ export default function CorrectorGramatical() {
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
+    setLimitReached(false);
     setIsOutdated(false);
     setLoading(false);
     setShowDiff(false);
@@ -492,6 +500,7 @@ export default function CorrectorGramatical() {
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
+    setLimitReached(false);
     setShowDiff(false);
 
     const trimmed = (textValue || "").trim();
@@ -585,6 +594,7 @@ export default function CorrectorGramatical() {
       });
 
       if (res.status === 429) {
+        setLimitReached(true);
         setErrorMsg(tr("grammarcorrector.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde."));
         setLoading(false);
         return;
@@ -709,6 +719,7 @@ export default function CorrectorGramatical() {
                       setTextValue(e.target.value);
                       setShowDiff(false);
                       if (errorMsg) setErrorMsg("");
+                      if (limitReached) setLimitReached(false);
                     }}
                     placeholder={labelEnterText}
                     className="w-full flex-1 min-h-[280px] resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
@@ -814,7 +825,10 @@ export default function CorrectorGramatical() {
                       <textarea
                         value={urlsTextarea}
                         onChange={(e) => setUrlsTextarea(e.target.value)}
-                        placeholder={tr("grammarcorrector.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
+                        placeholder={tr(
+                          "grammarcorrector.paste_urls_placeholder",
+                          "Introduce aquí una o más URLs (separadas por línea)"
+                        )}
                         className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                         aria-label={labelPasteUrls}
                         spellCheck={false}
@@ -1000,8 +1014,20 @@ export default function CorrectorGramatical() {
               </div>
             </div>
 
+            {/* ✅ Banner + mensaje abajo cuando llega el límite (como el resto) */}
+            {limitReached && (
+              <div className="px-6 pt-6">
+                <div className="max-w-3xl mx-auto">
+                  <UpgradeBanner />
+                  <p className="mt-4 text-center text-sm text-red-600">
+                    {errorMsg || tr("grammarcorrector.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde.")}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Estado inicial (BOTÓN + AYUDA) */}
-            {!loading && !hasRealResult && !errorMsg && (
+            {!limitReached && !loading && !hasRealResult && !errorMsg && (
               <>
                 <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                   <Button
@@ -1022,7 +1048,7 @@ export default function CorrectorGramatical() {
             )}
 
             <div className="w-full">
-              {(hasRealResult || loading || errorMsg) && (
+              {!limitReached && (hasRealResult || loading || errorMsg) && (
                 <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
                   {errorMsg && (
                     <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
@@ -1059,7 +1085,7 @@ export default function CorrectorGramatical() {
             </div>
 
             {/* Barra inferior: solo copy + download */}
-            {hasRealResult && (
+            {hasRealResult && !limitReached && (
               <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                 <button
                   type="button"
