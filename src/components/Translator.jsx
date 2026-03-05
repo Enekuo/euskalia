@@ -13,6 +13,7 @@ import {
   Plus,
   X,
   Globe,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -119,7 +120,7 @@ export default function Translator() {
   // ✅ tipo de error para que el mensaje se actualice al cambiar idioma
   const [errType, setErrType] = useState(""); // "" | "chars" | "daily"
 
-  // ✅ LÍMITE DE CARACTERES (FIX robusto: quita llaves y soporta {count}, {{count}}, {3000}, etc.)
+  // ✅ LÍMITE DE CARACTERES
   const getLimitMsg = () => {
     const num = MAX_CHARS.toLocaleString("es-ES");
 
@@ -129,9 +130,8 @@ export default function Translator() {
       .replace(/\{\s*\d+\s*\}/g, num);
   };
 
-  // ✅ LÍMITE DIARIO (mismo banner, mensaje distinto)
+  // ✅ LÍMITE DIARIO
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
-
   const getDailyLimitMsg = () => t("translator_daily_limit_reached");
 
   const isLimitReached =
@@ -163,7 +163,6 @@ export default function Translator() {
     setErr(getLimitMsg());
   };
 
-  // ✅ LÍMITE DIARIO (mismo banner, pero mensaje distinto)
   const setDailyLimitError = (clearResult = true) => {
     if (clearResult) {
       setRightText("");
@@ -173,7 +172,6 @@ export default function Translator() {
     setErr(getDailyLimitMsg());
   };
 
-  // ✅ Re-traduce el error cuando cambia idioma (evita que se quede “pegado”)
   useEffect(() => {
     if (!errType) return;
 
@@ -189,7 +187,6 @@ export default function Translator() {
     }
   }, [language, uiLang, errType]);
 
-  // ✅ En TEXTO, cuando pasa de 3000, mostramos SIEMPRE el mensaje rojo (sin depender del backend)
   useEffect(() => {
     if (sourceMode !== "text") return;
 
@@ -202,7 +199,6 @@ export default function Translator() {
       return;
     }
 
-    // si baja a 3000 o menos, limpiamos SOLO si era el error de límite (y su tipo)
     if (isLimitErr(err)) {
       setErr("");
       setErrType("");
@@ -493,11 +489,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         if (isRefusal(out)) {
           setRightText("");
           setDetectedLangLabel("");
-          setErr(
-            uiLang === "EUS"
-              ? "Ezin izan da edukia itzuli."
-              : "No se pudo traducir el contenido."
-          );
+          setErr(uiLang === "EUS" ? "Ezin izan da edukia itzuli." : "No se pudo traducir el contenido.");
           return;
         }
 
@@ -547,10 +539,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
         const urls = urlItems.map((u) => u.url);
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nSi el contenido es muy largo, traduce lo más importante manteniendo formato.`;
+        const system = `${directionText(src, dst)}\n\nSi el contenido es muy largo, traduce lo más importante manteniendo formato.`;
 
         const res = await fetch("/api/public", {
           method: "POST",
@@ -594,11 +583,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           console.error("API /api/public (urls) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan dira URLak orain prozesatu."
-                : "No se pudieron procesar las URLs ahora mismo."
-            );
+            setErr(uiLang === "EUS" ? "Ezin izan dira URLak orain prozesatu." : "No se pudieron procesar las URLs ahora mismo.");
           return;
         }
 
@@ -608,11 +593,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         if (isRefusal(out)) {
           setRightText("");
           setDetectedLangLabel("");
-          setErr(
-            uiLang === "EUS"
-              ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin."
-              : "No se pudo traducir el contenido. Prueba con otra URL."
-          );
+          setErr(uiLang === "EUS" ? "Ezin izan da edukia itzuli. Saiatu beste URL batekin." : "No se pudo traducir el contenido. Prueba con otra URL.");
           return;
         }
 
@@ -629,11 +610,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           console.error("translate urls error:", e);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan dira URLak orain prozesatu."
-                : "No se pudieron procesar las URLs ahora mismo."
-            );
+            setErr(uiLang === "EUS" ? "Ezin izan dira URLak orain prozesatu." : "No se pudieron procesar las URLs ahora mismo.");
         }
       } finally {
         setLoading(false);
@@ -725,12 +702,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         setDailyLimitReached(false);
         setErr("");
 
-        const readable = documents.filter(({ file }) =>
-          isTextReadableExt(file?.name)
-        );
-        const unreadable = documents.filter(
-          ({ file }) => !isTextReadableExt(file?.name)
-        );
+        const readable = documents.filter(({ file }) => isTextReadableExt(file?.name));
+        const unreadable = documents.filter(({ file }) => !isTextReadableExt(file?.name));
 
         if (unreadable.length > 0 && readable.length === 0) {
           setRightText("");
@@ -743,9 +716,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           return;
         }
 
-        const contents = await Promise.all(
-          readable.map(({ file }) => readFileAsText(file))
-        );
+        const contents = await Promise.all(readable.map(({ file }) => readFileAsText(file)));
         const combinedFull = contents.join("\n\n---\n\n");
 
         if (combinedFull.length > MAX_CHARS) {
@@ -754,20 +725,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         }
 
         if (!combinedFull.trim()) {
-          setErr(
-            uiLang === "EUS"
-              ? "Ezin da dokumentuaren edukia irakurri."
-              : "No se ha podido leer el contenido del documento."
-          );
+          setErr(uiLang === "EUS" ? "Ezin da dokumentuaren edukia irakurri." : "No se ha podido leer el contenido del documento.");
           setRightText("");
           setDetectedLangLabel("");
           return;
         }
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con lo que se te pide. Mantén formato.`;
+        const system = `${directionText(src, dst)}\n\nResponde SOLO con lo que se te pide. Mantén formato.`;
 
         const res = await fetch("/api/public", {
           method: "POST",
@@ -813,11 +777,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           console.error("API /api/public (document) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan da dokumentua orain prozesatu."
-                : "No se ha podido procesar el documento ahora mismo."
-            );
+            setErr(uiLang === "EUS" ? "Ezin izan da dokumentua orain prozesatu." : "No se ha podido procesar el documento ahora mismo.");
           return;
         }
 
@@ -827,11 +787,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
         if (isRefusal(out)) {
           setRightText("");
           setDetectedLangLabel("");
-          setErr(
-            uiLang === "EUS"
-              ? "Ezin izan da edukia itzuli. Saiatu beste fitxategi batekin edo itsatsi testua."
-              : "No se pudo traducir el contenido. Prueba con otro archivo o pega el texto."
-          );
+          setErr(uiLang === "EUS" ? "Ezin izan da edukia itzuli. Saiatu beste fitxategi batekin edo itsatsi testua." : "No se pudo traducir el contenido. Prueba con otro archivo o pega el texto.");
           return;
         }
 
@@ -848,11 +804,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           console.error("translate document error:", e);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
-            setErr(
-              uiLang === "EUS"
-                ? "Ezin izan da dokumentua orain prozesatu."
-                : "No se ha podido procesar el documento ahora mismo."
-            );
+            setErr(uiLang === "EUS" ? "Ezin izan da dokumentua orain prozesatu." : "No se ha podido procesar el documento ahora mismo.");
         }
       } finally {
         setLoading(false);
@@ -881,11 +833,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
     if (!open) return null;
     return (
-      <div
-        className={`absolute top-full mt-2 z-50 ${
-          align === "right" ? "right-0" : "left-0"
-        }`}
-      >
+      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0" : "left-0"}`}>
         <div className="relative">
           <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
             <path d="M0,10 L10,0 L20,10" className="fill-white" />
@@ -1131,12 +1079,12 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     setUrlInputOpen(false);
   };
 
-  // ✅ FIX: SOLO UNA VEZ, COMPLETO (sin duplicados)
   const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
-  // ✅ Labels para los dos botones (izquierda)
+  // ✅ Labels para los 3 botones (izquierda)
   const labelToolTranslator = tr("public_tools_translator", uiLang === "EUS" ? "Itzultzailea" : "Traductor");
   const labelToolSummarizer = tr("public_tools_summarizer", uiLang === "EUS" ? "Laburtzailea" : "Resumidor");
+  const labelToolCorrector = tr("public_tools_corrector", uiLang === "EUS" ? "Zuzentzailea" : "Corrector");
 
   return (
     <>
@@ -1144,9 +1092,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
-      
-      
-          {/* ✅ Layout con columna izquierda para los 2 botones */}
+          {/* ✅ Layout con columna izquierda para los 3 botones */}
           <div className="relative">
             {/* ✅ BOTONES IZQUIERDA DEL TODO */}
             <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
@@ -1177,10 +1123,21 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
+
+              {/* Corrector (inactivo) */}
+              <button
+                type="button"
+                onClick={() => navigate("/corrector")}
+                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
+                className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              >
+                <Sparkles className="w-6 h-6 text-slate-700" />
+              </button>
+
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
+              </div>
             </div>
-
-
-
 
             {/* ✅ TU CARD ORIGINAL (igual) */}
             <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
@@ -1191,16 +1148,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       type="button"
                       onClick={() => setSourceMode("text")}
                       className={`inline-flex items-center gap-2 ${
-                        sourceMode === "text"
-                          ? "text-blue-600"
-                          : "text-slate-700 hover:text-slate-900"
+                        sourceMode === "text" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <FileText
-                        className={`w-4 h-4 ${
-                          sourceMode === "text" ? "text-blue-600" : "text-slate-500"
-                        }`}
-                      />
+                      <FileText className={`w-4 h-4 ${sourceMode === "text" ? "text-blue-600" : "text-slate-500"}`} />
                       <span>{labelTabText}</span>
                     </button>
 
@@ -1210,18 +1161,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       type="button"
                       onClick={() => setSourceMode("document")}
                       className={`inline-flex items-center gap-2 ${
-                        sourceMode === "document"
-                          ? "text-blue-600"
-                          : "text-slate-700 hover:text-slate-900"
+                        sourceMode === "document" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <FileIcon
-                        className={`w-4 h-4 ${
-                          sourceMode === "document"
-                            ? "text-blue-600"
-                            : "text-slate-500"
-                        }`}
-                      />
+                      <FileIcon className={`w-4 h-4 ${sourceMode === "document" ? "text-blue-600" : "text-slate-500"}`} />
                       <span>{labelTabDocument}</span>
                     </button>
 
@@ -1231,16 +1174,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       type="button"
                       onClick={() => setSourceMode("url")}
                       className={`inline-flex items-center gap-2 ${
-                        sourceMode === "url"
-                          ? "text-blue-600"
-                          : "text-slate-700 hover:text-slate-900"
+                        sourceMode === "url" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <UrlIcon
-                        className={`w-4 h-4 ${
-                          sourceMode === "url" ? "text-blue-600" : "text-slate-500"
-                        }`}
-                      />
+                      <UrlIcon className={`w-4 h-4 ${sourceMode === "url" ? "text-blue-600" : "text-slate-500"}`} />
                       <span>{labelTabUrl}</span>
                     </button>
 
@@ -1267,17 +1204,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           }}
                           className="inline-flex items-center gap-2 px-2 py-1 text-[13px] sm:text-[15px] font-medium text-slate-700 hover:text-slate-900 rounded-md"
                         >
-                          <span className="max-w-[150px] sm:max-w-none truncate">
-                            {srcButtonLabel}
-                          </span>
+                          <span className="max-w-[150px] sm:max-w-none truncate">{srcButtonLabel}</span>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                            <path
-                              d="M6 9l6 6 6-6"
-                              stroke="#334155"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
+                            <path d="M6 9l6 6 6-6" stroke="#334155" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </button>
 
@@ -1301,20 +1230,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M7 7h11M7 7l3-3M7 7l3 3"
-                            stroke="#475569"
-                            strokeWidth="1.7"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M17 17H6M17 17l-3-3M17 17l-3 3"
-                            stroke="#475569"
-                            strokeWidth="1.7"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
+                          <path d="M7 7h11M7 7l3-3M7 7l3 3" stroke="#475569" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M17 17H6M17 17l-3-3M17 17l-3 3" stroke="#475569" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </button>
 
@@ -1331,13 +1248,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                             {OPTIONS_DST.find((o) => o.value === dst)?.label}
                           </span>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                            <path
-                              d="M6 9l6 6 6-6"
-                              stroke="#334155"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
+                            <path d="M6 9l6 6 6-6" stroke="#334155" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </button>
 
@@ -1394,17 +1305,14 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           leftText.length > MAX_CHARS ? "text-red-500" : "text-slate-400"
                         }`}
                       >
-                        {leftText.length.toLocaleString("es-ES")} /{" "}
-                        {MAX_CHARS.toLocaleString("es-ES")}
+                        {leftText.length.toLocaleString("es-ES")} / {MAX_CHARS.toLocaleString("es-ES")}
                       </div>
                     </>
                   )}
 
                   {sourceMode === "document" && (
                     <div
-                      className={`h-full w-full flex flex-col relative min-h-0 ${
-                        dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
-                      }`}
+                      className={`h-full w-full flex flex-col relative min-h-0 ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
                       onDragEnter={onDragEnter}
                       onDragOver={onDragOver}
                       onDragLeave={onDragLeave}
@@ -1428,12 +1336,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
                           <Plus className="w-10 h-10 text-sky-600" />
                         </div>
-                        <div className="text-xl font-semibold text-slate-800">
-                          {labelChooseFileTitle}
-                        </div>
-                        <div className="mt-4 text-sm text-slate-500">
-                          {labelAcceptedFormats}
-                        </div>
+                        <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
+                        <div className="mt-4 text-sm text-slate-500">{labelAcceptedFormats}</div>
                         <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                       </button>
 
@@ -1441,21 +1345,14 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                         <div className="mt-4 flex-1 min-h-0">
                           <ul className="h-full overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-x-hidden">
                             {documents.map(({ id, file }) => (
-                              <li
-                                key={id}
-                                className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
-                              >
+                              <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
                                 <div className="min-w-0 flex items-center gap-3 flex-1">
                                   <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
                                     <FileIcon className="w-4 h-4" />
                                   </div>
                                   <div className="min-w-0 flex-1">
-                                    <span className="text-sm font-medium block truncate">
-                                      {file.name}
-                                    </span>
-                                    <span className="text-xs text-slate-500">
-                                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                                    </span>
+                                    <span className="text-sm font-medium block truncate">{file.name}</span>
+                                    <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
                                   </div>
                                 </div>
 
@@ -1499,10 +1396,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                           <textarea
                             value={urlsTextarea}
                             onChange={(e) => setUrlsTextarea(e.target.value)}
-                            placeholder={tr(
-                              "summary.paste_urls_placeholder",
-                              "Introduce aquí una o más URLs (separadas por línea)"
-                            )}
+                            placeholder={tr("summary.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
                             rows={2}
                             className="w-full min-h-[56px] sm:min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
                             aria-label={labelPasteUrls}
@@ -1570,11 +1464,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   <div className="flex-1 min-h-0 pb-8">
                     <textarea
                       ref={rightTA}
-                      value={
-                        loading && document.activeElement !== rightTA.current
-                          ? t("translator.loading")
-                          : rightText
-                      }
+                      value={loading && document.activeElement !== rightTA.current ? t("translator.loading") : rightText}
                       placeholder={t("translator.right_placeholder")}
                       readOnly
                       className={`w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto ${
@@ -1615,9 +1505,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   )}
 
                   {!!err && !isLimitReached && (
-                    <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">
-                      {err}
-                    </div>
+                    <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">{err}</div>
                   )}
 
                   <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
@@ -1627,15 +1515,11 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       aria-label={speaking ? t("translator.stop") : t("translator.listen")}
                       aria-pressed={speaking}
                       disabled={!hasRealResult}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        speaking ? "text-slate-900" : ""
-                      } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${speaking ? "text-slate-900" : ""} ${
+                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                      }`}
                     >
-                      {speaking ? (
-                        <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
-                      ) : (
-                        <Volume2 className="w-5 h-5" />
-                      )}
+                      {speaking ? <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" /> : <Volume2 className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {speaking ? t("translator.stop") : t("translator.listen")}
                       </span>
@@ -1646,9 +1530,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       onClick={handleCopy}
                       aria-label={t("translator.copy")}
                       disabled={!hasRealResult}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                      }`}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                     >
                       {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
@@ -1661,9 +1543,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       onClick={handleDownloadPdf}
                       aria-label={t("translator.pdf")}
                       disabled={!hasRealResult}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                      }`}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                     >
                       <FileDown className="w-5 h-5" />
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
@@ -1674,6 +1554,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
               </div>
             </div>
+
+            {/* cierre relative */}
           </div>
         </div>
       </section>
@@ -1688,4 +1570,3 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     </>
   );
 }
-
