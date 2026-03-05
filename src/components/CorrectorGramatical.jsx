@@ -41,8 +41,9 @@ export default function CorrectorGramatical() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Para que el “límite” se muestre como en el resto (banner + mensaje abajo)
-  const [limitReached, setLimitReached] = useState(false);
+  // ✅ Igual que Resumen: errores "limit" se pintan con banner + mensaje abajo
+  const [errorKind, setErrorKind] = useState(null); // null | "limit"
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   // Modo de corrección fijo
   const CORRECTION_MODE = "standard";
@@ -105,10 +106,7 @@ export default function CorrectorGramatical() {
   const labelAddUrl = tr("grammarcorrector.add_url", "Añadir URLs");
   const labelSaveUrls = tr("grammarcorrector.save_urls", "Guardar");
   const labelCancel = tr("grammarcorrector.cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr(
-    "grammarcorrector.urls_note_visible",
-    "Solo se importará el texto visible del sitio web."
-  );
+  const labelUrlsNoteVisible = tr("grammarcorrector.urls_note_visible", "Solo se importará el texto visible del sitio web.");
   const labelUrlsNotePaywalled = tr("grammarcorrector.urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("grammarcorrector.remove", "Quitar");
   const labelGenerateFromSources = tr("grammarcorrector.correct_button", "Corregir texto");
@@ -157,10 +155,7 @@ export default function CorrectorGramatical() {
         <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
         <span className="truncate">{label}</span>
         {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
-          />
+          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
         )}
       </button>
       {showDivider && (
@@ -205,7 +200,6 @@ export default function CorrectorGramatical() {
     const dmp = new diff_match_patch();
     const diffs = dmp.diff_main(original || "", corrected || "");
     dmp.diff_cleanupSemantic(diffs);
-
     return diffs.map(([op, text]) => ({ op, text }));
   };
 
@@ -308,7 +302,8 @@ export default function CorrectorGramatical() {
   const clearRight = () => {
     setResult("");
     setErrorMsg("");
-    setLimitReached(false);
+    setErrorKind(null);
+    setDailyLimitReached(false);
     setIsOutdated(false);
     setLoading(false);
     setShowDiff(false);
@@ -500,7 +495,8 @@ export default function CorrectorGramatical() {
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
-    setLimitReached(false);
+    setErrorKind(null);
+    setDailyLimitReached(false);
     setShowDiff(false);
 
     const trimmed = (textValue || "").trim();
@@ -508,14 +504,18 @@ export default function CorrectorGramatical() {
     const textOk = trimmed.length >= 1 && words.length >= 1;
     const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
+    // ✅ Límite de caracteres (como Resumen): banner + mensaje abajo (NO caja roja arriba)
     if ((textValue || "").length > MAX_CHARS) {
-      setErrorMsg(tr("grammarcorrector.error_too_long", "Has superado el límite máximo de caracteres."));
+      setErrorKind("limit");
+      setDailyLimitReached(false);
       setLoading(false);
       return;
     }
 
     if (!validNow) {
-      setErrorMsg(tr("grammarcorrector.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección."));
+      setErrorMsg(
+        tr("grammarcorrector.error_need_input", "Añade algo de texto, documentos o URLs antes de pedir la corrección.")
+      );
       setLoading(false);
       return;
     }
@@ -593,16 +593,16 @@ export default function CorrectorGramatical() {
         }),
       });
 
-      if (res.status === 429) {
-        setLimitReached(true);
-        setErrorMsg(tr("grammarcorrector.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde."));
-        setLoading(false);
-        return;
-      }
-
       if (!res.ok) {
         if (res.status === 413) {
-          setErrorMsg(tr("grammarcorrector.error_too_long", "Has superado el límite máximo de caracteres."));
+          setErrorKind("limit");
+          setDailyLimitReached(false);
+          setLoading(false);
+          return;
+        }
+        if (res.status === 429) {
+          setErrorKind("limit");
+          setDailyLimitReached(true);
           setLoading(false);
           return;
         }
@@ -719,7 +719,10 @@ export default function CorrectorGramatical() {
                       setTextValue(e.target.value);
                       setShowDiff(false);
                       if (errorMsg) setErrorMsg("");
-                      if (limitReached) setLimitReached(false);
+                      if (errorKind) {
+                        setErrorKind(null);
+                        setDailyLimitReached(false);
+                      }
                     }}
                     placeholder={labelEnterText}
                     className="w-full flex-1 min-h-[280px] resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
@@ -1014,103 +1017,116 @@ export default function CorrectorGramatical() {
               </div>
             </div>
 
-            {/* ✅ Banner + mensaje abajo cuando llega el límite (como el resto) */}
-            {limitReached && (
-              <div className="px-6 pt-6">
-                <div className="max-w-3xl mx-auto">
+            {/* ✅ LIMIT (igual que Resumen): banner centrado + mensaje abajo */}
+            {errorKind === "limit" ? (
+              <div className="h-full w-full relative flex items-center justify-center px-6">
+                <div className="w-full max-w-3xl space-y-3">
                   <UpgradeBanner />
-                  <p className="mt-4 text-center text-sm text-red-600">
-                    {errorMsg || tr("grammarcorrector.error_limit", "Has alcanzado el límite gratuito. Vuelve más tarde.")}
-                  </p>
+                </div>
+
+                <div className="absolute left-6 right-6 bottom-20 z-10">
+                  <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                    {dailyLimitReached
+                      ? tr(
+                          "grammarcorrector_daily_limit_reached",
+                          "Has superado el límite diario. 20 solicitudes al día."
+                        )
+                      : tr(
+                          "grammarcorrector_limit_reached",
+                          `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+                        ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+                  </div>
                 </div>
               </div>
-            )}
-
-            {/* Estado inicial (BOTÓN + AYUDA) */}
-            {!limitReached && !loading && !hasRealResult && !errorMsg && (
+            ) : (
               <>
-                <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
-                  <Button
-                    type="button"
-                    onClick={handleGenerate}
-                    disabled={loading || !hasValidInput}
-                    className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                  >
-                    {labelGenerateFromSources}
-                  </Button>
-                </div>
-
-                <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "43%" }}>
-                  <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
-                </div>
-              </>
-            )}
-
-            <div className="w-full">
-              {!limitReached && (hasRealResult || loading || errorMsg) && (
-                <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
-                  {errorMsg && (
-                    <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                      {errorMsg}
+                {/* Estado inicial (BOTÓN + AYUDA) */}
+                {!loading && !hasRealResult && !errorMsg && (
+                  <>
+                    <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                      <Button
+                        type="button"
+                        onClick={handleGenerate}
+                        disabled={loading || !hasValidInput}
+                        className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                      >
+                        {labelGenerateFromSources}
+                      </Button>
                     </div>
-                  )}
 
-                  {hasRealResult && (
-                    <>
-                      {!hasDiff ? (
-                        <div className="mt-6 flex flex-col items-center text-center gap-2">
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                            <span className="text-lg">✅</span>
-                          </div>
-                          <p className="text-sm font-medium text-emerald-800">
-                            {tr("grammarcorrector.no_errors_message", "¡Muy bien! No hemos detectado errores.")}
-                          </p>
+                    <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "43%" }}>
+                      <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                    </div>
+                  </>
+                )}
+
+                <div className="w-full">
+                  {(hasRealResult || loading || errorMsg) && (
+                    <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
+                      {errorMsg && (
+                        <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                          {errorMsg}
                         </div>
-                      ) : (
-                        <article className="prose prose-slate max-w-none">{renderResult()}</article>
                       )}
-                    </>
-                  )}
 
-                  {loading && !hasRealResult && (
-                    <div className="space-y-3 animate-pulse">
-                      <div className="h-4 bg-slate-200 rounded" />
-                      <div className="h-4 bg-slate-200 rounded w-11/12" />
-                      <div className="h-4 bg-slate-200 rounded w-10/12" />
+                      {hasRealResult && (
+                        <>
+                          {!hasDiff ? (
+                            <div className="mt-6 flex flex-col items-center text-center gap-2">
+                              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <span className="text-lg">✅</span>
+                              </div>
+                              <p className="text-sm font-medium text-emerald-800">
+                                {tr("grammarcorrector.no_errors_message", "¡Muy bien! No hemos detectado errores.")}
+                              </p>
+                            </div>
+                          ) : (
+                            <article className="prose prose-slate max-w-none">{renderResult()}</article>
+                          )}
+                        </>
+                      )}
+
+                      {loading && !hasRealResult && (
+                        <div className="space-y-3 animate-pulse">
+                          <div className="h-4 bg-slate-200 rounded" />
+                          <div className="h-4 bg-slate-200 rounded w-11/12" />
+                          <div className="h-4 bg-slate-200 rounded w-10/12" />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            {/* Barra inferior: solo copy + download */}
-            {hasRealResult && !limitReached && (
-              <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
-                <button
-                  type="button"
-                  onClick={() => handleCopy(true)}
-                  aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-                  className="group relative p-2 rounded-md hover:bg-slate-100"
-                >
-                  {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
-                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                    {copiedFlash ? tooltipCopied : tooltipCopy}
-                  </span>
-                </button>
+                {/* Barra inferior: solo copy + download */}
+                {hasRealResult && (
+                  <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(true)}
+                      aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                      className="group relative p-2 rounded-md hover:bg-slate-100"
+                    >
+                      {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {copiedFlash ? tooltipCopied : tooltipCopy}
+                      </span>
+                    </button>
 
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  aria-label={tooltipPdf}
-                  className="group relative p-2 rounded-md hover:bg-slate-100"
-                >
-                  <FileDown className="w-5 h-5" />
-                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                    {tooltipPdf}
-                  </span>
-                </button>
-              </div>
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      aria-label={tooltipPdf}
+                      className="group relative p-2 rounded-md hover:bg-slate-100"
+                    >
+                      <FileDown className="w-5 h-5" />
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {tooltipPdf}
+                      </span>
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         </motion.section>
