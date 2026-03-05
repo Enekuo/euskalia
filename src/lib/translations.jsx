@@ -600,7 +600,7 @@ summary_daily_limit_reached: {
 
   no_errors_message: {
     ES: "¡Muy bien! No hemos detectado errores.",
-    EUS: "Oso ondo! Ez dugu akatsik antzeman.",
+    EUS: "Oso ondo! Ez dugu akatsik aurkitu.",
     EN: "Great! We didn’t detect any errors.",
     FR: "Parfait ! Nous n’avons détecté aucune erreur.",
   },
