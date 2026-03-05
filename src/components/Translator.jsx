@@ -14,6 +14,7 @@ import {
   X,
   Globe,
   Sparkles,
+  PenLine,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -1131,7 +1132,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
                 className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
               >
-                <Sparkles className="w-6 h-6 text-slate-700" />
+                <PenLine className="w-6 h-6 text-slate-700" />
               </button>
 
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
