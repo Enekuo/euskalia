@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe } from "lucide-react";
+import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe, PenLine } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -37,6 +37,7 @@ export default function Resumen() {
 
   const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
   const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
+  const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -470,48 +471,48 @@ export default function Resumen() {
     clearRight();
   };
 
-const PremiumPromptNote = () => (
-  <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-none">
-    <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
-      {tr("summary.premium_prompt_title", "Funtzioa hau Premium planean bakarrik")}
+  const PremiumPromptNote = () => (
+    <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-none">
+      <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
+        {tr("summary.premium_prompt_title", "Funtzioa hau Premium planean bakarrik")}
+      </div>
+
+      <p className="text-sm text-slate-700 mt-2 leading-6">
+        {tr(
+          "summary.premium_prompt_body",
+          "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana."
+        )}
+      </p>
+
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+        <Link
+          to="/pricing"
+          className="
+            inline-flex items-center justify-center gap-2
+            rounded-full text-white font-medium shadow-sm
+            hover:brightness-95
+            whitespace-nowrap
+            px-4 h-9 text-sm
+            sm:px-5 sm:h-9 sm:text-sm
+          "
+          style={{ backgroundColor: "#2563eb" }}
+        >
+          <span className="text-yellow-400">✨</span>
+          <span>Premium plana probatu</span>
+        </Link>
+
+        <button
+          onClick={() => setShowPremiumNote(false)}
+          className="
+            h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white
+            w-full sm:w-auto
+          "
+        >
+          {tr("summary.premium_prompt_close", "Ulertuta")}
+        </button>
+      </div>
     </div>
-
-    <p className="text-sm text-slate-700 mt-2 leading-6">
-      {tr(
-        "summary.premium_prompt_body",
-        "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana."
-      )}
-    </p>
-
-    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-      <Link
-        to="/pricing"
-        className="
-          inline-flex items-center justify-center gap-2
-          rounded-full text-white font-medium shadow-sm
-          hover:brightness-95
-          whitespace-nowrap
-          px-4 h-9 text-sm
-          sm:px-5 sm:h-9 sm:text-sm
-        "
-        style={{ backgroundColor: "#2563eb" }}
-      >
-        <span className="text-yellow-400">✨</span>
-        <span>Premium plana probatu</span>
-      </Link>
-
-      <button
-        onClick={() => setShowPremiumNote(false)}
-        className="
-          h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white
-          w-full sm:w-auto
-        "
-      >
-        {tr("summary.premium_prompt_close", "Ulertuta")}
-      </button>
-    </div>
-  </div>
-);
+  );
 
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
@@ -740,7 +741,7 @@ const PremiumPromptNote = () => (
 
   return (
     <>
-    <h1 className="sr-only">Resumidor de euskera online</h1>
+      <h1 className="sr-only">Resumidor de euskera online</h1>
       <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
@@ -773,113 +774,213 @@ const PremiumPromptNote = () => (
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
+
+              {/* Corrector (inactivo) */}
+              <button
+                type="button"
+                onClick={() => navigate("/corrector")}
+                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
+                className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              >
+                <PenLine className="w-6 h-6 text-slate-700" />
+              </button>
+
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
+              </div>
             </div>
 
-          <motion.section
-            className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-          >
-            {/* ===== Panel Fuentes (izquierda) ===== */}
-            <aside className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-              {/* Título */}
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="text-sm font-medium text-slate-700">{labelSources}</div>
-              </div>
+            <motion.section
+              className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={{ duration: 0.3 }}
+            >
+              {/* ===== Panel Fuentes (izquierda) ===== */}
+              <aside className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
+                {/* Título */}
+                <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+                  <div className="text-sm font-medium text-slate-700">{labelSources}</div>
+                </div>
 
-              {/* Tabs */}
-              <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
-                <TabBtn active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
-                <TabBtn active={sourceMode === "document"} icon={FileIcon} label={labelTabDocument} onClick={() => setSourceMode("document")} showDivider />
-                <TabBtn active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
-              </div>
+                {/* Tabs */}
+                <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
+                  <TabBtn active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
+                  <TabBtn active={sourceMode === "document"} icon={FileIcon} label={labelTabDocument} onClick={() => setSourceMode("document")} showDivider />
+                  <TabBtn active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
+                </div>
 
-              {/* Contenido */}
-              <div className="flex-1 overflow-hidden p-3 min-h-0">
-                {!sourceMode && (
-                  <div className="h-full w-full flex items-center justify-center">
-                    <div className="text-center px-2">
-                      <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-slate-200/70 flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-slate-500" />
-                      </div>
-                      <p className="text-[15px] font-semibold text-slate-600">{leftTitle}</p>
-                      {leftBody && <p className="mt-1 text-[13px] leading-6 text-slate-500">{leftBody}</p>}
-                    </div>
-                  </div>
-                )}
-
-                {sourceMode === "text" && (
-                  <div className="flex flex-col h-full">
-                    <textarea
-                      value={textValue}
-                      onChange={(e) => setTextValue(e.target.value)}
-                      placeholder={labelEnterText}
-                      className="w-full h-[360px] md:h-[520px] resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
-                      aria-label={labelTabText}
-                    />
-                    {/* Contador + barra */}
-                    <div className="mt-2">
-                      <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
-                      </div>
-                      <div className="mt-1 text-right text-xs">
-                        <span className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
-                          {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
-                        </span>
+                {/* Contenido */}
+                <div className="flex-1 overflow-hidden p-3 min-h-0">
+                  {!sourceMode && (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div className="text-center px-2">
+                        <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-slate-200/70 flex items-center justify-center">
+                          <FileText className="w-6 h-6 text-slate-500" />
+                        </div>
+                        <p className="text-[15px] font-semibold text-slate-600">{leftTitle}</p>
+                        {leftBody && <p className="mt-1 text-[13px] leading-6 text-slate-500">{leftBody}</p>}
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {sourceMode === "document" && (
-                  <div
-                    className={`h-full w-full flex flex-col relative min-h-0 ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
-                    onDragEnter={onDragEnter}
-                    onDragOver={onDragOver}
-                    onDragLeave={onDragLeave}
-                    onDrop={onDrop}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="hidden"
-                      accept=".docx,.txt,.md,.pdf,.ppt,.pptx,.doc,.csv,.json,.xml,.epub,.vtt,.srt,.rtf,.html,.htm,.jpg,.jpeg,.png"
-                      onChange={onFiles}
-                    />
-                    <button
-                      type="button"
-                      onClick={triggerPick}
-                      className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-10 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label={labelChooseFileTitle}
-                      title={labelChooseFileTitle}
+                  {sourceMode === "text" && (
+                    <div className="flex flex-col h-full">
+                      <textarea
+                        value={textValue}
+                        onChange={(e) => setTextValue(e.target.value)}
+                        placeholder={labelEnterText}
+                        className="w-full h-[360px] md:h-[520px] resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
+                        aria-label={labelTabText}
+                      />
+                      {/* Contador + barra */}
+                      <div className="mt-2">
+                        <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
+                        </div>
+                        <div className="mt-1 text-right text-xs">
+                          <span className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
+                            {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {sourceMode === "document" && (
+                    <div
+                      className={`h-full w-full flex flex-col relative min-h-0 ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
+                      onDragEnter={onDragEnter}
+                      onDragOver={onDragOver}
+                      onDragLeave={onDragLeave}
+                      onDrop={onDrop}
                     >
-                      <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
-                        <Plus className="w-10 h-10 text-sky-600" />
-                      </div>
-                      <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
-                      <div className="mt-4 text-sm text-slate-500">{labelAcceptedFormats}</div>
-                      <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
-                    </button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        accept=".docx,.txt,.md,.pdf,.ppt,.pptx,.doc,.csv,.json,.xml,.epub,.vtt,.srt,.rtf,.html,.htm,.jpg,.jpeg,.png"
+                        onChange={onFiles}
+                      />
+                      <button
+                        type="button"
+                        onClick={triggerPick}
+                        className="w-full rounded-2xl border border-dashed border-slate-300 bg-white/40 hover:bg-slate-50 transition px-6 py-10 text-center shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                        aria-label={labelChooseFileTitle}
+                        title={labelChooseFileTitle}
+                      >
+                        <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
+                          <Plus className="w-10 h-10 text-sky-600" />
+                        </div>
+                        <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
+                        <div className="mt-4 text-sm text-slate-500">{labelAcceptedFormats}</div>
+                        <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
+                      </button>
 
-                    {documents.length > 0 && (
-                      <div className="mt-4 flex-1 min-h-0">
-                        <ul className="h-full overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-x-hidden">
-                          {documents.map(({ id, file }) => (
-                            <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
+                      {documents.length > 0 && (
+                        <div className="mt-4 flex-1 min-h-0">
+                          <ul className="h-full overflow-y-auto divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-x-hidden">
+                            {documents.map(({ id, file }) => (
+                              <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
+                                <div className="min-w-0 flex items-center gap-3 flex-1">
+                                  <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
+                                    <FileIcon className="w-4 h-4" />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <span className="text-sm font-medium block truncate">{file.name}</span>
+                                    <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => removeDocument(id)}
+                                  className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
+                                  title={labelRemove}
+                                  aria-label={labelRemove}
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {sourceMode === "url" && (
+                    <div className="h-full w-full flex flex-col">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-600">
+                          <UrlIcon className="w-4 h-4" />
+                          {labelPasteUrls}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setUrlInputOpen(true)}
+                          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
+                          aria-label={labelAddUrl}
+                          title={labelAddUrl}
+                        >
+                          <Plus className="w-4 h-4 text-sky-500" />
+                          {labelAddUrl}
+                        </button>
+                      </div>
+
+                      {urlInputOpen && (
+                        <div className="mb-4 rounded-xl border border-slate-300 p-3 bg-white">
+                          <textarea
+                            value={urlsTextarea}
+                            onChange={(e) => setUrlsTextarea(e.target.value)}
+                            placeholder={tr("summary.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
+                            className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
+                            aria-label={labelPasteUrls}
+                          />
+                          <div className="mt-2 flex items-center gap-2">
+                            <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
+                              {labelSaveUrls}
+                            </Button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUrlsTextarea("");
+                                setUrlInputOpen(false);
+                              }}
+                              className="h-9 px-3 rounded-md border border-slate-300 hover:bg-slate-50 text-sm"
+                            >
+                              {labelCancel}
+                            </button>
+                          </div>
+                          <div className="mt-6 text-xs text-slate-500">
+                            • {labelUrlsNoteVisible}
+                            <br />• {labelUrlsNotePaywalled}
+                          </div>
+                        </div>
+                      )}
+
+                      {urlItems.length > 0 && (
+                        <ul className="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
+                          {urlItems.map(({ id, url, host }) => (
+                            <li key={id} className="flex items-center justify-between gap-3 px-3 py-2">
                               <div className="min-w-0 flex items-center gap-3 flex-1">
                                 <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                  <FileIcon className="w-4 h-4" />
+                                  <UrlIcon className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-sm font-medium block truncate">{file.name}</span>
-                                  <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                  <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-sm font-medium block truncate text-sky-600 hover:underline"
+                                    title={url}
+                                  >
+                                    {host} — {url}
+                                  </a>
                                 </div>
                               </div>
                               <button
-                                onClick={() => removeDocument(id)}
+                                onClick={() => removeUrl(id)}
                                 className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
                                 title={labelRemove}
                                 aria-label={labelRemove}
@@ -889,333 +990,247 @@ const PremiumPromptNote = () => (
                             </li>
                           ))}
                         </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {sourceMode === "url" && (
-                  <div className="h-full w-full flex flex-col">
-                    <div className="mb-3 flex items-center justify-between">
-                      <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <UrlIcon className="w-4 h-4" />
-                        {labelPasteUrls}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setUrlInputOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/40 shadow-sm transition-colors"
-                        aria-label={labelAddUrl}
-                        title={labelAddUrl}
-                      >
-                        <Plus className="w-4 h-4 text-sky-500" />
-                        {labelAddUrl}
-                      </button>
+                      )}
                     </div>
+                  )}
+                </div>
+              </aside>
 
-                    {urlInputOpen && (
-                      <div className="mb-4 rounded-xl border border-slate-300 p-3 bg-white">
-                        <textarea
-                          value={urlsTextarea}
-                          onChange={(e) => setUrlsTextarea(e.target.value)}
-                          placeholder={tr("summary.paste_urls_placeholder", "Introduce aquí una o más URLs (separadas por línea)")}
-                          className="w-full min-h-[140px] rounded-md border border-slate-200 bg-transparent p-2 outline-none text-[15px] leading-6 placeholder:text-slate-400"
-                          aria-label={labelPasteUrls}
-                        />
-                        <div className="mt-2 flex items-center gap-2">
-                          <Button type="button" onClick={addUrlsFromTextarea} className="h-9">
-                            {labelSaveUrls}
-                          </Button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setUrlsTextarea("");
-                              setUrlInputOpen(false);
-                            }}
-                            className="h-9 px-3 rounded-md border border-slate-300 hover:bg-slate-50 text-sm"
-                          >
-                            {labelCancel}
-                          </button>
-                        </div>
-                        <div className="mt-6 text-xs text-slate-500">
-                          • {labelUrlsNoteVisible}
-                          <br />• {labelUrlsNotePaywalled}
-                        </div>
+              {/* ===== Panel Derecho ===== */}
+              <section className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
+                {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
+                <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
+                  <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
+                    <LengthTab active={summaryLength === "breve"} label={LBL_SHORT} onClick={() => handleLengthChange("breve")} showDivider />
+                    <LengthTab active={summaryLength === "medio"} label={LBL_MED} onClick={() => handleLengthChange("medio")} showDivider />
+                    <LengthTab active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
+                  </div>
+
+                  <div className="flex items-center justify-end gap-4">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="h-9 min-w-[120px] sm:min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800
+                                     flex items-center justify-between hover:border-slate-400
+                                     shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                          aria-label="Idioma de salida"
+                        >
+                          <span className="truncate">
+                            {outputLang === "eus" ? LBL_EUS : outputLang === "es" ? LBL_ES : outputLang === "en" ? LBL_EN : LBL_FR}
+                          </span>
+                          <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                          </svg>
+                        </button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (outputLang !== "eus") {
+                              setOutputLang("eus");
+                              clearRight();
+                            }
+                          }}
+                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                        >
+                          {LBL_EUS}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (outputLang !== "es") {
+                              setOutputLang("es");
+                              clearRight();
+                            }
+                          }}
+                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                        >
+                          {LBL_ES}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (outputLang !== "en") {
+                              setOutputLang("en");
+                              clearRight();
+                            }
+                          }}
+                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                        >
+                          {LBL_EN}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (outputLang !== "fr") {
+                              setOutputLang("fr");
+                              clearRight();
+                            }
+                          }}
+                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
+                        >
+                          {LBL_FR}
+                        </DropdownMenuItem>
+                        <DropdownMenuArrow className="fill-white" />
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(true)}
+                      title="Copiar resultado"
+                      className={`h-9 w-9 flex items-center justify-center ${
+                        result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      }`}
+                      aria-label="Copiar resultado"
+                      disabled={!result}
+                    >
+                      {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleClearLeft}
+                      title="Eliminar texto de la izquierda y resultado"
+                      className={`h-9 w-9 flex items-center justify-center ${
+                        sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                      }`}
+                      aria-label="Eliminar texto de la izquierda y resultado"
+                      disabled={!(sourceMode === "text" && textValue)}
+                    >
+                      <Trash className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ✅ Zona de contenido con scroll interno (barra lateral) */}
+                <div className="flex-1 overflow-y-auto">
+                  {!loading && !result && !errorKind && (
+                    <div className="relative h-full">
+                      <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                        <Button
+                          type="button"
+                          onClick={handleGenerate}
+                          disabled={loading || !hasValidInput}
+                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                        >
+                          {labelGenerateFromSources}
+                        </Button>
                       </div>
-                    )}
 
-                    {urlItems.length > 0 && (
-                      <ul className="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
-                        {urlItems.map(({ id, url, host }) => (
-                          <li key={id} className="flex items-center justify-between gap-3 px-3 py-2">
-                            <div className="min-w-0 flex items-center gap-3 flex-1">
-                              <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                <UrlIcon className="w-4 h-4" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-sm font-medium block truncate text-sky-600 hover:underline"
-                                  title={url}
+                      <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
+                        <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {(result || errorMsg || loading || errorKind) && (
+                    <>
+                      {/* ✅ LIMIT centrado */}
+                      {errorKind === "limit" ? (
+                        <div className="h-full w-full relative flex items-center justify-center px-3 sm:px-6">
+                          <div className="w-full max-w-3xl space-y-3">
+                            <UpgradeBanner />
+                          </div>
+
+                          <div className="absolute left-6 sm:left-8 right-6 sm:right-8 bottom-20 z-10">
+                            <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                              {dailyLimitReached
+                                ? tr(
+                                    "summary_daily_limit_reached",
+                                    "Has superado el límite diario. 20 solicitudes al día."
+                                  )
+                                : tr(
+                                    "summary_limit_reached",
+                                    `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+                                  ).replace("{{count}}", MAX_CHARS.toLocaleString())}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto">
+                          {errorMsg && !errorKind && (
+                            <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                              {errorMsg}
+                            </div>
+                          )}
+
+                          {isOutdated && !loading && result && (
+                            <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                              <span className="truncate">
+                                {tr("summary.outdated_notice", "El texto ha cambiado. Actualiza el resumen.")}
+                              </span>
+                              <div className="shrink-0 flex items-center gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={handleGenerate}
+                                  className="h-8 px-3 rounded-full text-[13px]"
+                                  style={{ backgroundColor: "#2563eb", color: "#fff" }}
                                 >
-                                  {host} — {url}
-                                </a>
+                                  {tr("summary.outdated_update", "Actualizar")}
+                                </Button>
+                                <button
+                                  type="button"
+                                  onClick={() => setIsOutdated(false)}
+                                  className="h-8 w-8 rounded-md hover:bg-amber-100 text-amber-700"
+                                  title={tr("summary.outdated_close", "Ocultar aviso")}
+                                  aria-label={tr("summary.outdated_close", "Ocultar aviso")}
+                                >
+                                  ×
+                                </button>
                               </div>
                             </div>
-                            <button
-                              onClick={() => removeUrl(id)}
-                              className="shrink-0 p-1.5 rounded-md hover:bg-slate-100"
-                              title={labelRemove}
-                              aria-label={labelRemove}
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                )}
-              </div>
-            </aside>
+                          )}
 
-            {/* ===== Panel Derecho ===== */}
-            <section className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
-              {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
-              <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
-                  <LengthTab active={summaryLength === "breve"} label={LBL_SHORT} onClick={() => handleLengthChange("breve")} showDivider />
-                  <LengthTab active={summaryLength === "medio"} label={LBL_MED} onClick={() => handleLengthChange("medio")} showDivider />
-                  <LengthTab active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
+                          {result && (
+                            <article className="prose prose-slate max-w-none mt-10">
+                              <p className="whitespace-normal">{result}</p>
+                            </article>
+                          )}
+
+                          {loading && !result && (
+                            <div className="space-y-3 animate-pulse">
+                              <div className="h-4 bg-slate-200 rounded" />
+                              <div className="h-4 bg-slate-200 rounded w-11/12" />
+                              <div className="h-4 bg-slate-200 rounded w-10/12" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-end gap-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="h-9 min-w-[120px] sm:min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800
-                                   flex items-center justify-between hover:border-slate-400
-                                   shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                        aria-label="Idioma de salida"
-                      >
-                        <span className="truncate">
-                          {outputLang === "eus" ? LBL_EUS : outputLang === "es" ? LBL_ES : outputLang === "en" ? LBL_EN : LBL_FR}
-                        </span>
-                        <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
-                        </svg>
-                      </button>
-                    </DropdownMenuTrigger>
+                {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
+                <div className="bg-white p-4">
+                  {showPremiumNote && (
+                    <div className="mx-auto max-w-4xl mb-3">
+                      <PremiumPromptNote />
+                    </div>
+                  )}
 
-                    <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (outputLang !== "eus") {
-                            setOutputLang("eus");
-                            clearRight();
-                          }
-                        }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
-                      >
-                        {LBL_EUS}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (outputLang !== "es") {
-                            setOutputLang("es");
-                            clearRight();
-                          }
-                        }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
-                      >
-                        {LBL_ES}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (outputLang !== "en") {
-                            setOutputLang("en");
-                            clearRight();
-                          }
-                        }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
-                      >
-                        {LBL_EN}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (outputLang !== "fr") {
-                            setOutputLang("fr");
-                            clearRight();
-                          }
-                        }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
-                      >
-                        {LBL_FR}
-                      </DropdownMenuItem>
-                      <DropdownMenuArrow className="fill-white" />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(true)}
-                    title="Copiar resultado"
-                    className={`h-9 w-9 flex items-center justify-center ${
-                      result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
-                    }`}
-                    aria-label="Copiar resultado"
-                    disabled={!result}
-                  >
-                    {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleClearLeft}
-                    title="Eliminar texto de la izquierda y resultado"
-                    className={`h-9 w-9 flex items-center justify-center ${
-                      sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
-                    }`}
-                    aria-label="Eliminar texto de la izquierda y resultado"
-                    disabled={!(sourceMode === "text" && textValue)}
-                  >
-                    <Trash className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* ✅ Zona de contenido con scroll interno (barra lateral) */}
-              <div className="flex-1 overflow-y-auto">
-                {!loading && !result && !errorKind && (
-                  <div className="relative h-full">
-                    <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                  <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
+                    <div className="flex items-center gap-2 px-4 py-2">
+                      <input
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value.slice(0, MAX_CHARS))}
+                        placeholder={labelBottomInputPh}
+                        className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
+                        aria-label={labelBottomInputPh}
+                      />
                       <Button
                         type="button"
-                        onClick={handleGenerate}
-                        disabled={loading || !hasValidInput}
-                        className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                        className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
+                        style={{ backgroundColor: "#93c5fd", color: "#ffffff" }}
+                        onClick={() => setShowPremiumNote(true)}
                       >
-                        {labelGenerateFromSources}
+                        {labelGenerateWithPrompt}
                       </Button>
                     </div>
-
-                    <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
-                      <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
-                    </div>
-                  </div>
-                )}
-
-                {(result || errorMsg || loading || errorKind) && (
-                  <>
-                    {/* ✅ LIMIT centrado */}
-{errorKind === "limit" ? (
-  <div className="h-full w-full relative flex items-center justify-center px-3 sm:px-6">
-    <div className="w-full max-w-3xl space-y-3">
-      <UpgradeBanner />
-    </div>
-
-    <div className="absolute left-6 sm:left-8 right-6 sm:right-8 bottom-20 z-10">
-      <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
-        {dailyLimitReached
-          ? tr(
-              "summary_daily_limit_reached",
-              "Has superado el límite diario. 20 solicitudes al día."
-            )
-          : tr(
-              "summary_limit_reached",
-              `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
-            ).replace("{{count}}", MAX_CHARS.toLocaleString())}
-      </div>
-    </div>
-  </div>
-                    ) : (
-                      <div className="px-3 sm:px-6 pt-16 pb-6 max-w-3xl mx-auto">
-                        {errorMsg && !errorKind && (
-                          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                            {errorMsg}
-                          </div>
-                        )}
-
-                        {isOutdated && !loading && result && (
-                          <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                            <span className="truncate">
-                              {tr("summary.outdated_notice", "El texto ha cambiado. Actualiza el resumen.")}
-                            </span>
-                            <div className="shrink-0 flex items-center gap-2">
-                              <Button
-                                type="button"
-                                onClick={handleGenerate}
-                                className="h-8 px-3 rounded-full text-[13px]"
-                                style={{ backgroundColor: "#2563eb", color: "#fff" }}
-                              >
-                                {tr("summary.outdated_update", "Actualizar")}
-                              </Button>
-                              <button
-                                type="button"
-                                onClick={() => setIsOutdated(false)}
-                                className="h-8 w-8 rounded-md hover:bg-amber-100 text-amber-700"
-                                title={tr("summary.outdated_close", "Ocultar aviso")}
-                                aria-label={tr("summary.outdated_close", "Ocultar aviso")}
-                              >
-                                ×
-                              </button>
-                            </div>
-                          </div>
-                        )}
-
-                        {result && (
-                          <article className="prose prose-slate max-w-none mt-10">
-                            <p className="whitespace-normal">{result}</p>
-                          </article>
-                        )}
-
-                        {loading && !result && (
-                          <div className="space-y-3 animate-pulse">
-                            <div className="h-4 bg-slate-200 rounded" />
-                            <div className="h-4 bg-slate-200 rounded w-11/12" />
-                            <div className="h-4 bg-slate-200 rounded w-10/12" />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-              {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
-              <div className="bg-white p-4">
-                {showPremiumNote && (
-                  <div className="mx-auto max-w-4xl mb-3">
-                    <PremiumPromptNote />
-                  </div>
-                )}
-
-                <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
-                  <div className="flex items-center gap-2 px-4 py-2">
-                    <input
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value.slice(0, MAX_CHARS))}
-                      placeholder={labelBottomInputPh}
-                      className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
-                      aria-label={labelBottomInputPh}
-                    />
-                    <Button
-                      type="button"
-                      className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
-                      style={{ backgroundColor: "#93c5fd", color: "#ffffff" }}
-                      onClick={() => setShowPremiumNote(true)}
-                    >
-                      {labelGenerateWithPrompt}
-                    </Button>
                   </div>
                 </div>
-              </div>
-            </section>
-          </motion.section>
+              </section>
+            </motion.section>
           </div>
         </div>
       </section>
