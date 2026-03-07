@@ -36,6 +36,8 @@ correctorSubtitle: {
   EN: "Correct texts",
   FR: "Corrige les textes"
 },
+
+
   },
 
   resourcesMenu: {

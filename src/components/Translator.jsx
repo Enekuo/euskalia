@@ -1111,7 +1111,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 {tr("toolsMenu.translatorTitle", labelToolTranslator)}
               </div>
 
-              {/* Resumidor (inactivo) */}
+              {/* Resumidor  */}
               <button
                 type="button"
                 onClick={() => navigate("/resumen")}
@@ -1125,7 +1125,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
 
-              {/* Corrector (inactivo) */}
+              {/* Corrector */}
               <button
                 type="button"
                 onClick={() => navigate("/corrector")}
