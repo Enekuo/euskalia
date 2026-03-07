@@ -1251,9 +1251,9 @@ export default function PremiumSummary() {
               )}
 
               {/* Resultado / errores / loader */}
-                   <div className="w-full h-[calc(600px-44px-88px)] overflow-y-auto">
+                <div className="w-full">
                    {(result || errorMsg || loading) && (
-                   <div className="px-6 pt-24 pb-28 max-w-3xl mx-auto min-h-full">
+                    <div className="px-6 pt-24 max-w-3xl mx-auto">
                     {errorMsg && (
                       <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                         {errorMsg}
