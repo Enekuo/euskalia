@@ -23,6 +23,19 @@ export const translations = {
     translatorSubtitle: { ES: "Euskera ↔ Español", EUS: "Euskara ↔ Gaztelania",EN: "Basque ↔ Spanish", FR: "Basque ↔ Espagnol" },
     summaryTitle:       { ES: "Resumidor",         EUS: "Laburtzailea",        EN: "Summarizer",        FR: "Résumé IA" },
     summarySubtitle:    { ES: "Resúmenes con IA",  EUS: "Laburpenak IA-rekin",  EN: "AI summaries",     FR: "Résumés par IA" },
+    correctorTitle: {
+  ES: "Corrector",
+  EUS: "Zuzentzailea",
+  EN: "Corrector",
+  FR: "Correcteur"
+},
+
+correctorSubtitle: {
+  ES: "Corrige textos",
+  EUS: "Testuak zuzendu",
+  EN: "Correct texts",
+  FR: "Corrige les textes"
+},
   },
 
   resourcesMenu: {
