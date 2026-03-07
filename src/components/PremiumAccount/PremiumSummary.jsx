@@ -1262,7 +1262,7 @@ export default function PremiumSummary() {
 
                     {result && (
                       <>
-                        <article className="prose prose-slate max-w-none max-h-[260px] overflow-y-auto pr-2">
+                        <article className="prose prose-slate max-w-none max-h-[300px] overflow-y-auto pr-2">
                           <p className="whitespace-normal">{result}</p>
                         </article>
 
