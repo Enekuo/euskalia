@@ -10,6 +10,7 @@ import {
   FileText,
   LifeBuoy,
   MessageSquare,
+  SpellCheck,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/translations";
@@ -90,28 +91,34 @@ export default function Header() {
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
   };
 
-  // ✅ Título dinámico en el header (solo para herramientas públicas)
   const pathname = location?.pathname || "/";
   const headerToolTitle =
     pathname === "/" || pathname.startsWith("/traductor")
       ? t("toolsMenu.translatorTitle")
       : pathname.startsWith("/resumen")
       ? t("toolsMenu.summaryTitle")
+      : pathname.startsWith("/corrector")
+      ? t("toolsMenu.correctorTitle")
       : "";
 
-  // ✅ AHORA CON CLAVES
   const tools = [
     {
       name: t("toolsMenu.translatorTitle"),
       subtitle: t("toolsMenu.translatorSubtitle"),
-      icon: <Languages size={16} className="mr-2 text-slate-500" />,
+      icon: <Languages size={16} className="text-slate-500" />,
       path: "/",
     },
     {
       name: t("toolsMenu.summaryTitle"),
       subtitle: t("toolsMenu.summarySubtitle"),
-      icon: <FileText size={16} className="mr-2 text-slate-500" />,
+      icon: <FileText size={16} className="text-slate-500" />,
       path: "/resumen",
+    },
+    {
+      name: t("toolsMenu.correctorTitle"),
+      subtitle: t("toolsMenu.correctorSubtitle"),
+      icon: <SpellCheck size={16} className="text-slate-500" />,
+      path: "/corrector",
     },
   ];
 
@@ -124,7 +131,7 @@ export default function Header() {
           className="w-full text-left flex items-center p-2 text-[14px] font-medium text-slate-800 rounded-lg hover:bg-slate-100"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 mr-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 shrink-0 mr-3">
             {item.icon}
           </span>
           <div className="flex flex-col">
@@ -195,7 +202,6 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-8 flex items-center">
-            
             <img
               src="/Favicon imagen.png"
               alt=""
@@ -206,7 +212,7 @@ export default function Header() {
             />
 
             <img
-              src="/Imagen favicon.png" 
+              src="/Imagen favicon.png"
               alt="Euskalia"
               className="h-11 mr-2"
               onError={(e) => {
@@ -218,9 +224,7 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* NAV DESKTOP */}
           <nav className="hidden lg:flex items-center gap-1">
-            {/* Herramientas */}
             <DropdownMenu open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0">
@@ -247,7 +251,6 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Recursos */}
             <DropdownMenu
               open={isResourcesMenuOpen}
               onOpenChange={setIsResourcesMenuOpen}
@@ -277,7 +280,6 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Prezioak */}
             <Link
               to="/pricing"
               className="flex items-center text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md"
@@ -287,7 +289,6 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* ✅ TÍTULO EN EL CENTRO (desktop) */}
         <div className="hidden lg:flex flex-1 items-center justify-center">
           {headerToolTitle ? (
             <div className="text-sm font-semibold text-slate-500">
@@ -296,7 +297,6 @@ export default function Header() {
           ) : null}
         </div>
 
-        {/* DERECHA (desktop) */}
         <div className="hidden lg:flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -340,7 +340,6 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* MOBILE RIGHT: selector visible + hamburger */}
         <div className="lg:hidden flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -383,7 +382,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ===== Mobile Drawer ===== */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div

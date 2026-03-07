@@ -1201,8 +1201,6 @@ export default function CorrectorGramatical() {
           </div>
         </div>
       </section>
-
-      {/* ✅ Landing page debajo (igual que Resumen) */}
       <BenefitsSection />
       <ToolsSection />
       <FeaturesSection />
