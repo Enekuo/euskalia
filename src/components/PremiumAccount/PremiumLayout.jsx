@@ -90,7 +90,6 @@ export default function PremiumLayout({ children }) {
     pathname === "/cuenta-premium/email" ||
     pathname === "/cuenta-premium/convertidor";
 
-  // ===== TÍTULO DINÁMICO EN HEADER (6 HERRAMIENTAS + 3 MODO CREADOR + ASISTENTE) =====
   const headerTitle = useMemo(() => {
     if (pathname === "/cuenta-premium/traductor") {
       return tr("premiumHeader_translator", "Traductor");
@@ -110,8 +109,6 @@ export default function PremiumLayout({ children }) {
     if (pathname === "/cuenta-premium/humanizador") {
       return tr("premiumHeader_humanizer", "Humanizador");
     }
-
-    // ✅ MODO CREADOR (3 herramientas)
     if (pathname === "/cuenta-premium/texto") {
       return tr("premiumHeader_creatorText", "Creador de texto");
     }
@@ -121,16 +118,12 @@ export default function PremiumLayout({ children }) {
     if (pathname === "/cuenta-premium/convertidor") {
       return tr("premiumHeader_creatorAudio", "Convertidor de audio");
     }
-
-    // ✅ ASISTENTE DE IA
     if (pathname === "/cuenta-premium/assistant") {
       return tr("premiumHeader_aiAssistant", "Asistente de IA");
     }
-
     return null;
   }, [pathname, tr]);
 
-  // ===== USER (avatar Google) =====
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -163,16 +156,17 @@ export default function PremiumLayout({ children }) {
   const avatarInitial = useMemo(() => firstInitial(user), [user]);
   const avatarPhoto = user?.photoURL || "";
 
-  const [premiumUsedChars, setPremiumUsedChars] = useState(0);
-  const [premiumLimitChars, setPremiumLimitChars] = useState(0);
+  // ✅ CAMBIO: null mientras carga para no mostrar 0/0 falso
+  const [premiumUsedChars, setPremiumUsedChars] = useState(null);
+  const [premiumLimitChars, setPremiumLimitChars] = useState(null);
 
+  // ✅ CAMBIO: esperar a que user esté cargado
   useEffect(() => {
     const run = async () => {
       try {
-        const u = auth.currentUser;
-        if (!u) return;
+        if (!user) return;
 
-        const idToken = await u.getIdToken();
+        const idToken = await user.getIdToken();
         const r = await fetch("/api/premium-usage", {
           method: "GET",
           headers: {
@@ -189,9 +183,8 @@ export default function PremiumLayout({ children }) {
     };
 
     run();
-  }, []);
+  }, [user]);
 
-  // ✅✅✅ NUEVO: escuchar updates desde cualquier herramienta (CustomEvent) + compatibilidad total
   useEffect(() => {
     const pickNumber = (v) => {
       if (typeof v === "number" && Number.isFinite(v)) return v;
@@ -205,7 +198,6 @@ export default function PremiumLayout({ children }) {
     const onUpdate = (e) => {
       const d = e?.detail || {};
 
-      // used
       const used =
         pickNumber(d.usedChars) ??
         pickNumber(d.used_chars) ??
@@ -213,7 +205,6 @@ export default function PremiumLayout({ children }) {
         pickNumber(d.used_chars_total) ??
         null;
 
-      // limit/max
       const limit =
         pickNumber(d.limitChars) ??
         pickNumber(d.limit_chars) ??
@@ -224,7 +215,6 @@ export default function PremiumLayout({ children }) {
       if (used !== null) setPremiumUsedChars(used);
       if (limit !== null) setPremiumLimitChars(limit);
 
-      // fallback: si no viene used, al menos actualizamos desde localStorage (por herramientas que solo guardan)
       if (used === null) {
         try {
           const raw1 = localStorage.getItem("premium_used_chars");
@@ -236,7 +226,6 @@ export default function PremiumLayout({ children }) {
       }
     };
 
-    // escuchamos TODOS los nombres típicos
     window.addEventListener("premium-usage-update", onUpdate);
     window.addEventListener("premium_usage_update", onUpdate);
     window.addEventListener("premiumUsageUpdate", onUpdate);
@@ -248,15 +237,16 @@ export default function PremiumLayout({ children }) {
     };
   }, []);
 
+  // ✅ CAMBIO: mientras carga, mostrar ...
   const formatDot = (n) => {
-    const x = Number(n || 0);
-    if (!Number.isFinite(x)) return "0";
+    if (n === null || n === undefined) return "...";
+    const x = Number(n);
+    if (!Number.isFinite(x)) return "...";
     return Math.round(x).toLocaleString("es-ES");
   };
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex">
-      {/* ✅ LOGO FIJO */}
       <div
         className="fixed top-0 left-0 h-16 bg-white flex items-center z-[60]"
         style={{ width: collapsed ? 64 : 192 }}
@@ -272,7 +262,6 @@ export default function PremiumLayout({ children }) {
         </div>
       </div>
 
-      {/* ========== SIDEBAR FIJO ========== */}
       <aside
         className={`
           fixed top-0 left-0 h-screen
@@ -300,7 +289,6 @@ export default function PremiumLayout({ children }) {
               {showText && <span>Home</span>}
             </button>
 
-            {/* Herramientas */}
             <div className="space-y-1">
               <button
                 onClick={() => setToolsOpen((v) => !v)}
@@ -438,7 +426,6 @@ export default function PremiumLayout({ children }) {
               )}
             </div>
 
-            {/* Biblioteca */}
             <button
               onClick={() => navigate("/cuenta-premium/biblioteca")}
               className={`
@@ -457,7 +444,6 @@ export default function PremiumLayout({ children }) {
               )}
             </button>
 
-            {/* Assistente de IA */}
             <button
               onClick={() => navigate("/cuenta-premium/assistant")}
               className={`
@@ -476,7 +462,6 @@ export default function PremiumLayout({ children }) {
               )}
             </button>
 
-            {/* Modo Creador (NUEVO) */}
             <div className="space-y-1">
               <button
                 onClick={() => setCreatorOpen((v) => !v)}
@@ -545,7 +530,6 @@ export default function PremiumLayout({ children }) {
 
           <div className="flex-1" />
 
-          {/* BLOQUE FINAL */}
           <div className="space-y-1 text-sm mb-2">
             <button
               onClick={() => navigate("/cuenta-premium/sugerencias")}
@@ -600,7 +584,6 @@ export default function PremiumLayout({ children }) {
             </button>
           </div>
 
-          {/* Contraer */}
           <button
             onClick={() => setCollapsed((v) => !v)}
             className={`
@@ -621,7 +604,6 @@ export default function PremiumLayout({ children }) {
         </div>
       </aside>
 
-      {/* ========== COLUMNA DERECHA ========== */}
       <div className={`flex-1 flex flex-col transition-all ${collapsed ? "ml-16" : "ml-48"}`}>
         <header
           className="h-16 px-8 flex items-center justify-between bg-white border-b border-slate-200 fixed top-0 right-0 z-40"
@@ -640,12 +622,10 @@ export default function PremiumLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* ✅ SOLO EL DIAMANTE con degradado */}
             <div className="h-9 w-9 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-cyan-500">
               <Gem size={18} className="text-white" />
             </div>
 
-            {/* ✅ SOLO EL BOTÓN PREMIUM con degradado */}
             <button
               className="
                 h-9 px-4 rounded-full
