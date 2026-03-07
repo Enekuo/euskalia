@@ -1273,7 +1273,7 @@ export default function PremiumSummary() {
                           return (
                             <>
                               {savedToLibrary && (
-                                <p className="absolute bottom-[84px] right-6 text-xs text-emerald-600">
+                                <p className="absolute bottom-[120px] right-6 text-xs text-emerald-600">
                                   {librarySavedMessage}
                                 </p>
                               )}
