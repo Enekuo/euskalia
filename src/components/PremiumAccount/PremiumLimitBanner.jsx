@@ -6,7 +6,6 @@ import { useTranslation } from "@/lib/translations";
 
 export default function PremiumLimitBanner({
   visible = true,
-  message = "",
   used = 0,
   limit = 0,
   className = "",
@@ -35,7 +34,7 @@ export default function PremiumLimitBanner({
     if (visible) {
       setIsClosed(false);
     }
-  }, [visible, message, safeUsed, safeLimit]);
+  }, [visible, safeUsed, safeLimit]);
 
   const handleContact = () => {
     try {
@@ -116,7 +115,6 @@ export default function PremiumLimitBanner({
 
             <p className="mt-1 text-sm text-gray-600">
               {description ||
-                message ||
                 tr(
                   "premium_limit_banner_description",
                   "Has usado todos los caracteres disponibles. Si necesitas más capacidad, puedes solicitar una ampliación personalizada contactando con soporte."
