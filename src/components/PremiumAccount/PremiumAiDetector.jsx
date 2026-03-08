@@ -295,13 +295,6 @@ export default function PremiumAiDetector() {
             <PremiumLimitBanner visible={!!limitType} message={""} />
           </div>
 
-          {/* ✅ MENSAJE ROJO SOLO ABAJO (cuando hay límite) */}
-          {!!limitType && !loading && (
-            <div className="absolute left-7 right-7 top-[58%] -translate-y-1/2">
-              <p className="text-sm text-red-600 text-center">{limitMsg}</p>
-            </div>
-          )}
-
           {text.length === 0 && (
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center gap-8">
               <button
