@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
 import { useLocation, Link } from "react-router-dom";
+import { auth } from "@/lib/firebase";
 
 const NAVBAR_H = 88;
 
@@ -30,6 +31,24 @@ const SupportPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle");
+
+  useEffect(() => {
+    const fromPremiumLimitBanner = location.state?.fromPremiumLimitBanner;
+    const prefill = location.state?.supportPrefill;
+
+    if (!fromPremiumLimitBanner) return;
+
+    const userEmail = auth?.currentUser?.email || "";
+
+    setForm((prev) => ({
+      ...prev,
+      email: userEmail,
+      subject: prefill?.subject || "Solicitud de ampliación",
+      message:
+        prefill?.message ||
+        "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias.",
+    }));
+  }, [location.state]);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
