@@ -6,8 +6,8 @@ import admin from "firebase-admin";
 // ====== Configuración de límites (via ENV con defaults sensatos) ======
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 * 14);
 
-// ✅ NUEVO: LÍMITE GLOBAL MENSUAL PREMIUM (por UID)
-const PREMIUM_MONTHLY_CHARS = Number(process.env.PREMIUM_MONTHLY_CHARS || 2000000);
+// ✅ NUEVO: LÍMITE GLOBAL MENSUAL PREMIUM (por UID)                   //2000000//
+const PREMIUM_MONTHLY_CHARS = Number(process.env.PREMIUM_MONTHLY_CHARS || 291000);
 
 // TTL para el contador mensual (lo dejamos ~62 días para cubrir cambios de mes y evitar expiraciones raras)
 const PREMIUM_MONTHLY_TTL_SECONDS = Number(process.env.PREMIUM_MONTHLY_TTL_SECONDS || 60 * 60 * 24 * 62);
