@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Crown, LifeBuoy, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 
 export default function PremiumLimitBanner({
+  visible = true,
+  message = "",
   used = 0,
   limit = 0,
   className = "",
@@ -28,6 +30,12 @@ export default function PremiumLimitBanner({
 
   const safeUsed = Number.isFinite(Number(used)) ? Number(used) : 0;
   const safeLimit = Number.isFinite(Number(limit)) ? Number(limit) : 0;
+
+  useEffect(() => {
+    if (visible) {
+      setIsClosed(false);
+    }
+  }, [visible, message, safeUsed, safeLimit]);
 
   const handleContact = () => {
     try {
@@ -69,7 +77,7 @@ export default function PremiumLimitBanner({
     }
   };
 
-  if (isClosed) return null;
+  if (!visible || isClosed) return null;
 
   return (
     <div
@@ -85,14 +93,14 @@ export default function PremiumLimitBanner({
       </button>
 
       <div className="flex flex-col gap-4 pr-10 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-start gap-3 min-w-0">
+        <div className="flex min-w-0 items-start gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100">
             <Crown className="h-5 w-5 text-amber-600" />
           </div>
 
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+              <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
                 {title ||
                   tr(
                     "premium_limit_banner_title",
@@ -108,6 +116,7 @@ export default function PremiumLimitBanner({
 
             <p className="mt-1 text-sm text-gray-600">
               {description ||
+                message ||
                 tr(
                   "premium_limit_banner_description",
                   "Has usado todos los caracteres disponibles. Si necesitas más capacidad, puedes solicitar una ampliación personalizada contactando con soporte."
@@ -124,10 +133,7 @@ export default function PremiumLimitBanner({
             >
               <LifeBuoy className="mr-2 h-4 w-4" />
               {buttonText ||
-                tr(
-                  "premium_limit_banner_button",
-                  "Solicitar ampliación"
-                )}
+                tr("premium_limit_banner_button", "Solicitar ampliación")}
             </Button>
           </div>
         )}
