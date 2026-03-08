@@ -1055,13 +1055,6 @@ MODO CREATIVO:
               </>
             )}
 
-            {/* ✅ MENSAJE SOLO ABAJO */}
-            {!!limitType && !loading && !result && !errorMsg && (
-              <div className="absolute bottom-10 left-0 right-0 px-6">
-                <p className="text-sm text-red-600 text-center">{limitMsg}</p>
-              </div>
-            )}
-
             {/* Resultado / errores / loader */}
             <div className="w-full">
               {(result || errorMsg || loading) && (
