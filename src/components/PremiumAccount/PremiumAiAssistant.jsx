@@ -3,6 +3,7 @@ import { Sparkles, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 
 export default function PremiumAiAssistant() {
   const { t } = useTranslation();
@@ -17,10 +18,15 @@ export default function PremiumAiAssistant() {
   const [messages, setMessages] = useState([]);
   const [avatarOk, setAvatarOk] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
   const typingTimerRef = useRef(null);
+
+  const clearLimit = () => setLimitType("");
+  const setCharsLimit = () => setLimitType("chars");
+  const setDailyLimit = () => setLimitType("daily");
 
   const scrollToBottom = () => {
     const el = listRef.current;
@@ -38,7 +44,6 @@ export default function PremiumAiAssistant() {
     };
   }, []);
 
-  // ✅ SYSTEM PROMPT INTELIGENTE (sin frase fija)
   const systemInstructionBase = useMemo(() => {
     return `
 Eres el Asistente de IA de Euskalia.
@@ -62,7 +67,6 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     `.trim();
   }, []);
 
-  // ✅✅✅ CLAVE: actualizar el contador del HEADER (pill azul) EXACTAMENTE como en Corrector
   const updatePremiumHeaderCounter = (data) => {
     try {
       if (
@@ -84,6 +88,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     setMessages([]);
     setInput("");
     setIsSending(false);
+    clearLimit();
 
     setTimeout(() => {
       inputRef.current?.focus?.();
@@ -135,10 +140,23 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
       data = await res.json();
     } catch {}
 
-    // ✅✅✅ Si viene ok + usedChars/limitChars, actualiza el header (igual que corrector)
     updatePremiumHeaderCounter(data);
 
     if (!res.ok) {
+      if (res.status === 413) {
+        const err = new Error("PREMIUM_LIMIT_CHARS");
+        err.code = "PREMIUM_LIMIT_CHARS";
+        throw err;
+      }
+
+      if (res.status === 429) {
+        const limit = data?.limit || {};
+        const isChars = typeof limit?.max_chars === "number";
+        const err = new Error(isChars ? "PREMIUM_LIMIT_CHARS" : "PREMIUM_LIMIT_DAILY");
+        err.code = isChars ? "PREMIUM_LIMIT_CHARS" : "PREMIUM_LIMIT_DAILY";
+        throw err;
+      }
+
       const msg =
         extractAssistantText(data) ||
         tr(
@@ -149,15 +167,15 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     }
 
     const out = extractAssistantText(data);
-    if (!out)
+    if (!out) {
       throw new Error(
         tr("premiumAiAssistant_errorEmpty", "Respuesta vacía del servidor.")
       );
+    }
 
     return out;
   };
 
-  // ✅ typing (solo visual) — NO tocamos contadores aquí
   const revealReply = (placeholderId, fullText) => {
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
 
@@ -202,6 +220,8 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
     const text = (input || "").trim();
     if (!text || isSending) return;
 
+    clearLimit();
+
     const next = [...messages, { role: "user", text }];
     setMessages(next);
 
@@ -217,6 +237,22 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
       revealReply(placeholderId, reply);
     } catch (e) {
       if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+
+      if (e?.code === "PREMIUM_LIMIT_CHARS" || e?.message === "PREMIUM_LIMIT_CHARS") {
+        setCharsLimit();
+        setMessages((prev) => prev.filter((m) => m._id !== placeholderId));
+        setIsSending(false);
+        setTimeout(() => inputRef.current?.focus?.(), 0);
+        return;
+      }
+
+      if (e?.code === "PREMIUM_LIMIT_DAILY" || e?.message === "PREMIUM_LIMIT_DAILY") {
+        setDailyLimit();
+        setMessages((prev) => prev.filter((m) => m._id !== placeholderId));
+        setIsSending(false);
+        setTimeout(() => inputRef.current?.focus?.(), 0);
+        return;
+      }
 
       const errText =
         (e && e.message) ||
@@ -269,8 +305,14 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
 
           <div className="px-6 pt-3 pb-0">
             <div className="mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col">
-              <div ref={listRef} className="flex-1 overflow-auto px-4 py-4">
-                {messages.length === 0 ? (
+              <div ref={listRef} className="relative flex-1 overflow-auto px-4 py-4">
+                {!!limitType && (
+                  <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 z-20">
+                    <PremiumLimitBanner visible={true} />
+                  </div>
+                )}
+
+                {messages.length === 0 && !limitType ? (
                   <div className="h-full w-full flex items-center justify-center">
                     <div className="text-center px-4">
                       <div className="text-[40px] font-extrabold tracking-tight text-slate-900">
@@ -282,7 +324,7 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className={`space-y-4 ${limitType ? "opacity-0 pointer-events-none" : ""}`}>
                     {messages.map((m, idx) => {
                       const isUser = m.role === "user";
 
@@ -326,7 +368,10 @@ No uses listas. No des ejemplos innecesarios. Mantén respuestas claras y útile
                   <input
                     ref={inputRef}
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      if (limitType) clearLimit();
+                    }}
                     onKeyDown={onKeyDown}
                     placeholder={tr("premiumAiAssistant_placeholder", "Escribe aquí…")}
                     className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
