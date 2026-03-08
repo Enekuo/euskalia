@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FileDown, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -925,7 +925,7 @@ export default function PremiumTextCreator() {
               {/* Banner Premium */}
               {limitType && (
                 <div className="px-6 pt-4">
-                  <ProLimitBanner visible={!!limitType} message={limitMsg} />
+                  <PremiumLimitBanner visible={!!limitType} message={limitMsg} />
                 </div>
               )}
 
