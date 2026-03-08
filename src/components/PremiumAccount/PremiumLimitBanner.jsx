@@ -39,10 +39,15 @@ export default function PremiumLimitBanner({
   const handleContact = () => {
     try {
       if (supportMode === "mailto") {
-        const subject = encodeURIComponent("Solicitud de ampliación");
+        const subject = encodeURIComponent(
+          tr("support_prefill_extension_subject", "Solicitud de ampliación")
+        );
 
         const body = encodeURIComponent(
-          "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias."
+          tr(
+            "support_prefill_extension_message",
+            "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias."
+          )
         );
 
         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
@@ -57,11 +62,6 @@ export default function PremiumLimitBanner({
       navigate(to, {
         state: {
           fromPremiumLimitBanner: true,
-          supportPrefill: {
-            subject: "Solicitud de ampliación",
-            message:
-              "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias.",
-          },
         },
       });
     } catch (error) {
