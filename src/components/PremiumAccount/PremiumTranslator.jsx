@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 import {
   Volume2,
   Copy as CopyIcon,
@@ -1704,7 +1704,7 @@ export default function PremiumTranslator() {
 
               {/* DERECHA */}
               <div className="p-8 md:p-10 relative">
-                <ProLimitBanner visible={!!limitType} message={displayErr || limitMsg} />
+                <PremiumLimitBanner visible={!!limitType} message={displayErr || limitMsg} />
 
                 <textarea
                   ref={rightTA}
