@@ -30,7 +30,6 @@ export default function PremiumHumanizer() {
 
   const { t, language } = useTranslation?.() || { t: () => null, language: "ES" };
 
-  // ✅ FIX: si t devuelve la propia clave (cuando falta traducción), usamos fallback
   const tr = (k, f) => {
     const v = typeof t === "function" ? t(k) : null;
     if (!v) return f;
@@ -38,10 +37,8 @@ export default function PremiumHumanizer() {
     return v;
   };
 
-  // ✅✅✅ Usage sync (contador header Premium)
   const bumpPremiumUsage = (data, inputLen = 0) => {
     try {
-      // 1) Si backend devuelve algo de uso/límites, lo intentamos leer
       const usedFromApi =
         data?.usage?.used_chars ??
         data?.usage?.usedChars ??
@@ -58,7 +55,6 @@ export default function PremiumHumanizer() {
         data?.plan?.max_chars ??
         null;
 
-      // 2) Fallback: acumulamos localmente por inputLen (para que SIEMPRE sume)
       const LS_KEY = "premium_used_chars";
       let nextUsed = 0;
 
@@ -81,38 +77,34 @@ export default function PremiumHumanizer() {
 
       const detail = {
         used_chars: nextUsed,
-        max_chars: typeof maxFromApi === "number" && Number.isFinite(maxFromApi) ? Math.floor(maxFromApi) : undefined,
-        // para layouts que sumen por incremento
+        max_chars:
+          typeof maxFromApi === "number" && Number.isFinite(maxFromApi)
+            ? Math.floor(maxFromApi)
+            : undefined,
         delta_chars: Math.max(0, inputLen | 0),
         source: "humanizer",
       };
 
-      // 3) Emitimos varios eventos por compatibilidad (según cómo lo tengas en Layout)
       window.dispatchEvent(new CustomEvent("premium_usage_update", { detail }));
       window.dispatchEvent(new CustomEvent("premium-usage-update", { detail }));
       window.dispatchEvent(new CustomEvent("premiumUsageUpdate", { detail }));
 
-      // 4) También exponemos en window por si el Layout lee de aquí
       window.__PREMIUM_USAGE__ = { ...(window.__PREMIUM_USAGE__ || {}), ...detail };
     } catch {}
   };
 
-  // ===== Estado =====
-  const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
+  const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
 
-  // Resultado / carga / error
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ error "raw" (backend) + error por clave (para que cambie con idioma)
-  const [errorRaw, setErrorRaw] = useState(""); // SOLO backend/raw
-  const [errorKey, setErrorKey] = useState(""); // clave translations
-  const [errorFallback, setErrorFallback] = useState(""); // fallback
+  const [errorRaw, setErrorRaw] = useState("");
+  const [errorKey, setErrorKey] = useState("");
+  const [errorFallback, setErrorFallback] = useState("");
 
-  // ✅✅✅ LIMITES (NO guardar traducción en state)
-  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
-  const [limitRaw, setLimitRaw] = useState(""); // SOLO backend/raw (opcional)
+  const [limitType, setLimitType] = useState("");
+  const [limitRaw, setLimitRaw] = useState("");
 
   const clearAllMessages = () => {
     setLimitType("");
@@ -122,39 +114,36 @@ export default function PremiumHumanizer() {
     setErrorFallback("");
   };
 
-  // ✅ Mensajes "display" derivados (se traducen al vuelo)
   const displayErrorMsg = errorRaw || (errorKey ? tr(errorKey, errorFallback) : "");
 
   const displayLimitMsg =
     limitRaw ||
     (limitType === "chars"
-      ? tr("premium_limit_chars", "Has superado el límite máximo de caracteres para tu plan Premium.")
+      ? tr(
+          "premium_limit_chars",
+          "Has superado el límite máximo de caracteres para tu plan Premium."
+        )
       : limitType === "daily"
-      ? tr("premium_limit_daily", "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.")
+      ? tr(
+          "premium_limit_daily",
+          "Has alcanzado tu límite diario del plan Premium. Vuelve mañana."
+        )
       : "");
 
-  // Niveles (3)
-  const [mode, setMode] = useState("standard"); // basic | standard | advanced
-
-  // Idioma de salida
+  const [mode, setMode] = useState("standard");
   const [outputLang, setOutputLang] = useState("eus");
 
-  // Documentos
-  const [documents, setDocuments] = useState([]); // [{id,file}]
-  const [documentsText, setDocumentsText] = useState([]); // [{id,name,text}]
-  const [documentsFiles, setDocumentsFiles] = useState([]); // [{id,name,mime,size,base64,tooLarge?}]
+  const [documents, setDocuments] = useState([]);
+  const [documentsText, setDocumentsText] = useState([]);
+  const [documentsFiles, setDocumentsFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  // URLs
   const [urlInputOpen, setUrlInputOpen] = useState(false);
   const [urlsTextarea, setUrlsTextarea] = useState("");
-  const [urlItems, setUrlItems] = useState([]); // [{id,url,host}]
+  const [urlItems, setUrlItems] = useState([]);
 
-  // Copia: flash de tic azul
   const [copiedFlash, setCopiedFlash] = useState(false);
-
-  // Guardado en biblioteca (mensaje)
   const [savedToLibrary, setSavedToLibrary] = useState(false);
 
   useEffect(() => {
@@ -171,7 +160,6 @@ export default function PremiumHumanizer() {
     }
   }, [location?.state?.text]);
 
-  // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
@@ -185,7 +173,6 @@ export default function PremiumHumanizer() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== Helpers =====
   const hasAnyText = (s) => String(s || "").trim().length > 0;
 
   const isRefusal = (s) => {
@@ -202,29 +189,75 @@ export default function PremiumHumanizer() {
     );
   };
 
-  // ✅ Resultado real = texto no vacío
+  const looksLikeBadHumanizerOutput = (s) => {
+    const x = String(s || "").toLowerCase().trim();
+    if (!x) return true;
+
+    return (
+      x.includes("nivel básico") ||
+      x.includes("nivel estandar") ||
+      x.includes("nivel estándar") ||
+      x.includes("nivel avanzado") ||
+      x.includes("basic level") ||
+      x.includes("standard level") ||
+      x.includes("advanced level") ||
+      x.includes("objectif :") ||
+      x.includes("objective:") ||
+      x.includes("objetivo:") ||
+      x.includes("prohibido:") ||
+      x.includes("forbidden:") ||
+      x.includes("résultat :") ||
+      x.includes("resultado:") ||
+      x.includes("result:") ||
+      x.includes("devuelve solo el texto") ||
+      x.includes("humaniza el contenido") ||
+      x.includes("idioma de salida") ||
+      x.includes("output language") ||
+      x.includes("irteerako hizkuntza") ||
+      x.includes("aquí tienes") ||
+      x.includes("here is") ||
+      x.includes("voici") ||
+      x.startsWith("1.") ||
+      x.startsWith("- ") ||
+      x.startsWith("•")
+    );
+  };
+
   const hasRealResult = useMemo(() => hasAnyText(result), [result]);
 
-  // ===== Textos (CLAVES NUEVAS PREMIUM) =====
   const labelSources = tr("premiumHumanizer_sources", "Fuentes");
   const labelTabText = tr("premiumHumanizer_tabText", "Texto");
   const labelTabDocument = tr("premiumHumanizer_tabDocument", "Documento");
   const labelTabUrl = tr("premiumHumanizer_tabUrl", "URL");
   const labelEnterText = tr("premiumHumanizer_enterText", "Escribe o pega tu texto aquí…");
 
-  const labelChooseFileTitle = tr("premiumHumanizer_chooseFileTitle", "Elige tu archivo o carpeta");
-  const labelAcceptedFormats = tr("premiumHumanizer_acceptedFormats", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
-  const labelFolderHint = tr("premiumHumanizer_folderHint", "Aquí aparecerán tus textos o documentos subidos.");
+  const labelChooseFileTitle = tr(
+    "premiumHumanizer_chooseFileTitle",
+    "Elige tu archivo o carpeta"
+  );
+  const labelAcceptedFormats = tr(
+    "premiumHumanizer_acceptedFormats",
+    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
+  );
+  const labelFolderHint = tr(
+    "premiumHumanizer_folderHint",
+    "Aquí aparecerán tus textos o documentos subidos."
+  );
 
   const labelPasteUrls = tr("premiumHumanizer_pasteUrls", "Pegar URLs*");
   const labelAddUrl = tr("premiumHumanizer_addUrls", "Añadir URLs");
   const labelSaveUrls = tr("premiumHumanizer_save", "Guardar");
   const labelCancel = tr("premiumHumanizer_cancel", "Cancelar");
-  const labelUrlsNoteVisible = tr("premiumHumanizer_urlsNoteVisible", "Solo se importará el texto visible del sitio web.");
-  const labelUrlsNotePaywalled = tr("premiumHumanizer_urlsNotePaywalled", "No se admiten artículos de pago.");
+  const labelUrlsNoteVisible = tr(
+    "premiumHumanizer_urlsNoteVisible",
+    "Solo se importará el texto visible del sitio web."
+  );
+  const labelUrlsNotePaywalled = tr(
+    "premiumHumanizer_urlsNotePaywalled",
+    "No se admiten artículos de pago."
+  );
   const labelRemove = tr("premiumHumanizer_remove", "Quitar");
 
-  // ✅ Idiomas (CLAVES COMUNES ya existentes)
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
@@ -237,12 +270,21 @@ export default function PremiumHumanizer() {
   );
 
   const labelSaveButton = tr("premiumHumanizer_saveButton", "Guardar");
-  const librarySavedMessage = tr("premiumHumanizer_savedToLibrary", "Guardado en biblioteca");
+  const librarySavedMessage = tr(
+    "premiumHumanizer_savedToLibrary",
+    "Guardado en biblioteca"
+  );
 
   const ariaCopyResult = tr("premiumHumanizer_copyResultAria", "Copiar resultado");
-  const ariaDeleteInput = tr("premiumHumanizer_deleteInputAria", "Eliminar texto de entrada y resultado");
+  const ariaDeleteInput = tr(
+    "premiumHumanizer_deleteInputAria",
+    "Eliminar texto de entrada y resultado"
+  );
   const titleCopyResult = tr("premiumHumanizer_copyResultTitle", "Copiar resultado");
-  const titleDeleteInput = tr("premiumHumanizer_deleteInputTitle", "Eliminar texto de entrada y resultado");
+  const titleDeleteInput = tr(
+    "premiumHumanizer_deleteInputTitle",
+    "Eliminar texto de entrada y resultado"
+  );
 
   const labelUrlTextareaPlaceholder = tr(
     "premiumHumanizer_urlTextareaPlaceholder",
@@ -253,11 +295,15 @@ export default function PremiumHumanizer() {
   const labelCopy = tr("premiumHumanizer_copy", "Copiar");
   const labelCopied = tr("premiumHumanizer_copied", "Copiado");
 
-  // Ayuda izquierda
-  const leftTitle = tr("premiumHumanizer_leftTitle", "Aquí aparecerán tus textos o documentos subidos.");
-  const leftBody = tr("premiumHumanizer_leftBody", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
+  const leftTitle = tr(
+    "premiumHumanizer_leftTitle",
+    "Aquí aparecerán tus textos o documentos subidos."
+  );
+  const leftBody = tr(
+    "premiumHumanizer_leftBody",
+    "Puedes añadir archivos PDF, texto copiado, enlaces web…"
+  );
 
-  // ===== Tabs Fuentes (izquierda) =====
   const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
     <div className="relative flex-1 min-w-0 flex items-stretch">
       <button
@@ -268,10 +314,16 @@ export default function PremiumHumanizer() {
         aria-pressed={active}
         aria-label={label}
       >
-        <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
+        <Icon
+          className="w-[18px] h-[18px] shrink-0"
+          style={{ color: active ? BLUE : GRAY_ICON }}
+        />
         <span className="truncate">{label}</span>
         {active && (
-          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
+          <span
+            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
+            style={{ backgroundColor: BLUE }}
+          />
         )}
       </button>
 
@@ -285,7 +337,6 @@ export default function PremiumHumanizer() {
     </div>
   );
 
-  // ===== Tabs Niveles (derecha) — MISMA LETRA SIEMPRE =====
   const ModeTab = ({ active, label, onClick, showDivider }) => (
     <div className="relative flex items-stretch">
       <button
@@ -299,11 +350,20 @@ export default function PremiumHumanizer() {
         <span>{label}</span>
 
         {active && (
-          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
+          <span
+            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
+            style={{ backgroundColor: BLUE }}
+          />
         )}
       </button>
 
-      {showDivider && <span aria-hidden className="self-center" style={{ width: 1, height: 22, backgroundColor: DIVIDER }} />}
+      {showDivider && (
+        <span
+          aria-hidden
+          className="self-center"
+          style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
+        />
+      )}
     </div>
   );
 
@@ -313,7 +373,6 @@ export default function PremiumHumanizer() {
     advanced: tr("premiumHumanizer_modeAdvanced", "Avanzado"),
   };
 
-  // ===== Utils =====
   const parseUrlsFromText = (text) => {
     const raw = text
       .split(/[\s\n]+/)
@@ -338,7 +397,6 @@ export default function PremiumHumanizer() {
     clearAllMessages();
   };
 
-  // ===== Atajos teclado =====
   useEffect(() => {
     const onKey = (e) => {
       const meta = e.metaKey || e.ctrlKey;
@@ -358,13 +416,11 @@ export default function PremiumHumanizer() {
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, hasRealResult, urlInputOpen]);
 
-  // URLs / docs / nivel / idioma cambian => limpia derecha
   useEffect(() => {
     clearRight();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlItems.length, documents.length, documentsText.length, documentsFiles.length, mode, outputLang]);
 
-  // ===== Documentos =====
   const readTextFromFiles = async (items) => {
     const results = await Promise.all(
       items.map(
@@ -406,7 +462,8 @@ export default function PremiumHumanizer() {
               const base64 = dataUrl.includes(",") ? dataUrl.split(",")[1] : null;
               resolve({ id, name, mime, size, base64, tooLarge: false });
             };
-            fr.onerror = () => resolve({ id, name, mime, size, base64: null, tooLarge: false });
+            fr.onerror = () =>
+              resolve({ id, name, mime, size, base64: null, tooLarge: false });
             fr.readAsDataURL(file);
           })
       )
@@ -452,7 +509,6 @@ export default function PremiumHumanizer() {
     clearRight();
   };
 
-  // ===== URLs =====
   const addUrlsFromTextarea = () => {
     const parsed = parseUrlsFromText(urlsTextarea);
     if (!parsed.length) return;
@@ -472,14 +528,12 @@ export default function PremiumHumanizer() {
     clearRight();
   };
 
-  // ===== Validación =====
   const textIsValid = useMemo(() => {
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     return trimmed.length >= 20 && words.length >= 5;
   }, [textValue]);
 
-  // ✅ para documentos: basta con que haya algo de texto (muchos docs son cortos)
   const docsTextHasAny = useMemo(() => {
     return (documentsText || []).some((d) => hasAnyText(d?.text));
   }, [documentsText]);
@@ -488,9 +542,9 @@ export default function PremiumHumanizer() {
     return (documentsFiles || []).some((d) => !!d?.base64 && !d?.tooLarge);
   }, [documentsFiles]);
 
-  const hasValidInput = textIsValid || urlItems.length > 0 || docsTextHasAny || docsFilesIsValid;
+  const hasValidInput =
+    textIsValid || urlItems.length > 0 || docsTextHasAny || docsFilesIsValid;
 
-  // ===== Acciones derecha =====
   const handleCopy = async (flash = false) => {
     if (!hasRealResult) return;
     try {
@@ -535,7 +589,6 @@ export default function PremiumHumanizer() {
     setSavedToLibrary(false);
   }, [hasRealResult]);
 
-  // ===== Helper: cache key (sha-256) =====
   const sha256Hex = async (input) => {
     try {
       const enc = new TextEncoder().encode(input);
@@ -548,7 +601,6 @@ export default function PremiumHumanizer() {
     }
   };
 
-  // ===== Generar =====
   const handleGenerate = async () => {
     setLoading(true);
     setResult("");
@@ -573,19 +625,22 @@ export default function PremiumHumanizer() {
     if (tooLargeCount > 0) {
       setErrorRaw("");
       setErrorKey("premiumHumanizer_errorFileTooLarge");
-      setErrorFallback("Uno o más archivos son demasiado grandes para procesarlos aquí. Prueba con un archivo más pequeño.");
+      setErrorFallback(
+        "Uno o más archivos son demasiado grandes para procesarlos aquí. Prueba con un archivo más pequeño."
+      );
       setLoading(false);
       return;
     }
 
-    // ✅ Caso clave: has subido documento pero NO hay texto extraído ni base64 válido
     const userHasDocs = documents.length > 0;
     const canReadDocs = docsTextHasAny || docsFilesIsValid;
 
     if (userHasDocs && !canReadDocs && !textOk && urlItems.length === 0) {
       setErrorRaw("");
       setErrorKey("premiumHumanizer_errorDocUnreadable");
-      setErrorFallback("No se ha podido leer el documento. Prueba con otro archivo o pega el texto directamente.");
+      setErrorFallback(
+        "No se ha podido leer el documento. Prueba con otro archivo o pega el texto directamente."
+      );
       setLoading(false);
       return;
     }
@@ -611,7 +666,9 @@ export default function PremiumHumanizer() {
 
     const docsBinaryHint = (documentsFiles || []).length
       ? `\nDOCUMENTOS ADJUNTOS (para extracción):\n` +
-        documentsFiles.map((d) => `--- ${d.name} (${Math.round((d.size || 0) / 1024)} KB) ---`).join("\n")
+        documentsFiles
+          .map((d) => `--- ${d.name} (${Math.round((d.size || 0) / 1024)} KB) ---`)
+          .join("\n")
       : "";
 
     const langInstruction =
@@ -680,7 +737,13 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
     const systemBase =
       "Eres un asistente experto en humanizar textos. " +
-      "Tu objetivo es que suenen naturales y humanos, sin inventar hechos ni añadir información.";
+      "Tu única tarea es devolver el texto final humanizado. " +
+      "Debes responder únicamente con la versión final reescrita del texto. " +
+      "Nunca expliques lo que haces. " +
+      "Nunca devuelvas instrucciones, títulos, etiquetas, niveles, listas, viñetas, notas, advertencias ni comentarios. " +
+      "Nunca escribas frases como 'Nivel estándar', 'Objetivo', 'Prohibido', 'Resultado', 'Aquí tienes', ni similares. " +
+      "No inventes datos ni añadas información nueva. " +
+      "Mantén el significado original y entrega solo el texto humanizado final.";
 
     const messages = [
       { role: "system", content: systemBase },
@@ -696,42 +759,56 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     });
     const cacheKey = await sha256Hex(cacheBase);
 
-    // ✅ inputLen para sumar contador SIEMPRE
     const inputLen =
       (textValue || "").length +
       (urlsList || "").length +
       (documentsText || []).reduce((acc, d) => acc + String(d?.text || "").length, 0);
 
-    try {
-      const user = auth.currentUser;
-      if (!user) {
-        setErrorRaw("");
-        setErrorKey("premiumHumanizer_errorAuthRequired");
-        setErrorFallback("Necesitas iniciar sesión para usar Premium.");
-        setLoading(false);
-        return;
+    const requestHumanizedText = async (retry = false) => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error(
+          tr("premiumHumanizer_errorAuthRequired", "Necesitas iniciar sesión para usar Premium.")
+        );
       }
 
-      const idToken = await user.getIdToken();
+      const idToken = await currentUser.getIdToken();
 
-      const res = await fetch("/api/premium", {
+      const retryMessages = retry
+        ? [
+            {
+              role: "system",
+              content:
+                systemBase +
+                " RESPUESTA OBLIGATORIA: solo texto final humanizado. " +
+                "Si devuelves instrucciones, títulos, listas o explicaciones, la respuesta será inválida.",
+            },
+            ...messages.slice(1),
+          ]
+        : messages;
+
+      return await fetch("/api/premium", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
-          messages,
+          messages: retryMessages,
           mode: "humanize",
           humanizeLevel: mode,
           outputLang,
-          cacheKey,
+          cacheKey: retry ? null : cacheKey,
           documentsText,
           documentsFiles,
           language: outputLang,
           uiLanguage: language,
         }),
       });
+    };
+
+    try {
+      const res = await requestHumanizedText(false);
 
       if (!res.ok) {
         let errJson = null;
@@ -749,7 +826,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           return;
         }
 
-        // ✅✅✅ límites
         if (res.status === 413) {
           const backendMsg = errJson?.message || "";
           setLimitType("chars");
@@ -794,7 +870,6 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
       const data = await res.json();
 
-      // ✅✅✅ ACTUALIZA CONTADOR PREMIUM (como en Parafraseador)
       bumpPremiumUsage(data, inputLen);
 
       const rawText =
@@ -817,14 +892,62 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
         .replace(/\n{3,}/g, "\n\n")
         .trim();
 
-      // ✅ Si el modelo rechaza, lo tratamos como error y NO como resultado
-      if (isRefusal(cleaned)) {
+      let finalText = cleaned;
+
+      if (looksLikeBadHumanizerOutput(finalText)) {
+        const retryRes = await requestHumanizedText(true);
+
+        if (retryRes.ok) {
+          const retryData = await retryRes.json();
+
+          const retryRaw =
+            retryData?.text ??
+            retryData?.content ??
+            retryData?.choices?.[0]?.message?.content ??
+            retryData?.message?.content ??
+            "";
+
+          const retryCleaned = String(retryRaw || "")
+            .replace(/\r/g, "")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
+
+          if (
+            !looksLikeBadHumanizerOutput(retryCleaned) &&
+            !isRefusal(retryCleaned)
+          ) {
+            finalText = retryCleaned;
+          } else {
+            setResult("");
+            setErrorRaw("");
+            setErrorKey("premiumHumanizer_errorBadOutput");
+            setErrorFallback(
+              "La IA ha devuelto instrucciones en vez del texto humanizado. Vuelve a intentarlo."
+            );
+            setLoading(false);
+            return;
+          }
+        } else {
+          setResult("");
+          setErrorRaw("");
+          setErrorKey("premiumHumanizer_errorBadOutput");
+          setErrorFallback(
+            "La IA ha devuelto instrucciones en vez del texto humanizado. Vuelve a intentarlo."
+          );
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (isRefusal(finalText)) {
         setResult("");
         setErrorRaw("");
         setErrorKey("premiumHumanizer_errorRefusal");
-        setErrorFallback("No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente.");
+        setErrorFallback(
+          "No se pudo procesar el contenido. Prueba con otro archivo o pega el texto directamente."
+        );
       } else {
-        setResult(cleaned);
+        setResult(finalText);
       }
     } catch (err) {
       const raw = err?.message || "";
@@ -842,13 +965,16 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
     }
   };
 
-  // ===== Contador =====
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
   const overLimit = charCount >= MAX_CHARS;
 
-  const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
+  const barClass = overLimit
+    ? "bg-red-500"
+    : nearLimit
+    ? "bg-amber-500"
+    : "bg-sky-500";
 
   return (
     <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
@@ -861,16 +987,19 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
           variants={pageVariants}
           transition={{ duration: 0.3 }}
         >
-          {/* ===== Panel Fuentes (izquierda) — ALTURA FIJA ===== */}
           <aside className="h-[540px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-            {/* Título */}
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
               <div className="text-sm font-medium text-slate-700">{labelSources}</div>
             </div>
 
-            {/* Tabs */}
             <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
-              <TabBtn active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
+              <TabBtn
+                active={sourceMode === "text"}
+                icon={FileText}
+                label={labelTabText}
+                onClick={() => setSourceMode("text")}
+                showDivider
+              />
               <TabBtn
                 active={sourceMode === "document"}
                 icon={FileIcon}
@@ -878,10 +1007,15 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                 onClick={() => setSourceMode("document")}
                 showDivider
               />
-              <TabBtn active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
+              <TabBtn
+                active={sourceMode === "url"}
+                icon={UrlIcon}
+                label={labelTabUrl}
+                onClick={() => setSourceMode("url")}
+                showDivider={false}
+              />
             </div>
 
-            {/* Contenido (con overflow) */}
             <div className="flex-1 overflow-hidden p-3">
               {!sourceMode && (
                 <div className="h-full w-full flex items-center justify-center">
@@ -890,7 +1024,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                       <FileText className="w-6 h-6 text-slate-500" />
                     </div>
                     <p className="text-[15px] font-semibold text-slate-600">{leftTitle}</p>
-                    {leftBody && <p className="mt-1 text-[13px] leading-6 text-slate-500">{leftBody}</p>}
+                    {leftBody && (
+                      <p className="mt-1 text-[13px] leading-6 text-slate-500">{leftBody}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -927,7 +1063,15 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
                     <div className="mt-1 flex items-center justify-between">
                       <div className="text-xs" />
-                      <span className={`text-xs ${overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}`}>
+                      <span
+                        className={`text-xs ${
+                          overLimit
+                            ? "text-red-600"
+                            : nearLimit
+                            ? "text-amber-600"
+                            : "text-slate-500"
+                        }`}
+                      >
                         {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
                       </span>
                     </div>
@@ -937,7 +1081,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
               {sourceMode === "document" && (
                 <div
-                  className={`h-full w-full flex flex-col relative min-h-0 ${dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""}`}
+                  className={`h-full w-full flex flex-col relative min-h-0 ${
+                    dragActive ? "ring-2 ring-sky-400 rounded-2xl" : ""
+                  }`}
                   onDragEnter={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -980,7 +1126,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center">
                       <Plus className="w-10 h-10 text-sky-600" />
                     </div>
-                    <div className="text-xl font-semibold text-slate-800">{labelChooseFileTitle}</div>
+                    <div className="text-xl font-semibold text-slate-800">
+                      {labelChooseFileTitle}
+                    </div>
                     <div className="mt-4 text-sm text-slate-500">{labelAcceptedFormats}</div>
                     <div className="mt-1 text-xs text-slate-400">{labelFolderHint}</div>
                   </button>
@@ -989,14 +1137,21 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1">
                       <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 overflow-hidden bg-white">
                         {documents.map(({ id, file }) => (
-                          <li key={id} className="flex items-center justify-between gap-3 px-3 py-2 bg-white">
+                          <li
+                            key={id}
+                            className="flex items-center justify-between gap-3 px-3 py-2 bg-white"
+                          >
                             <div className="min-w-0 flex items-center gap-3 flex-1">
                               <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
                                 <FileIcon className="w-4 h-4" />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <span className="text-sm font-medium block truncate">{file.name}</span>
-                                <span className="text-xs text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                <span className="text-sm font-medium block truncate">
+                                  {file.name}
+                                </span>
+                                <span className="text-xs text-slate-500">
+                                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </span>
                               </div>
                             </div>
                             <button
@@ -1068,7 +1223,10 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                   {urlItems.length > 0 && (
                     <ul className="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
                       {urlItems.map(({ id, url, host }) => (
-                        <li key={id} className="flex items-center justify-between gap-3 px-3 py-2">
+                        <li
+                          key={id}
+                          className="flex items-center justify-between gap-3 px-3 py-2"
+                        >
                           <div className="min-w-0 flex items-center gap-3 flex-1">
                             <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
                               <UrlIcon className="w-4 h-4" />
@@ -1102,14 +1260,26 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
             </div>
           </aside>
 
-          {/* ===== Panel Derecho — ALTURA FIJA + barra inferior ===== */}
           <section className="relative h-[540px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-            {/* Barra superior */}
             <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
               <div className="flex items-center gap-0 -ml-2">
-                <ModeTab active={mode === "basic"} label={modeLabels.basic} onClick={() => setMode("basic")} showDivider />
-                <ModeTab active={mode === "standard"} label={modeLabels.standard} onClick={() => setMode("standard")} showDivider />
-                <ModeTab active={mode === "advanced"} label={modeLabels.advanced} onClick={() => setMode("advanced")} />
+                <ModeTab
+                  active={mode === "basic"}
+                  label={modeLabels.basic}
+                  onClick={() => setMode("basic")}
+                  showDivider
+                />
+                <ModeTab
+                  active={mode === "standard"}
+                  label={modeLabels.standard}
+                  onClick={() => setMode("standard")}
+                  showDivider
+                />
+                <ModeTab
+                  active={mode === "advanced"}
+                  label={modeLabels.advanced}
+                  onClick={() => setMode("advanced")}
+                />
               </div>
 
               <div className="flex items-center gap-1">
@@ -1118,18 +1288,35 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     <button
                       type="button"
                       className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
-                      aria-label={tr("premiumHumanizer_outputLanguageAria", "Idioma de salida")}
+                      aria-label={tr(
+                        "premiumHumanizer_outputLanguageAria",
+                        "Idioma de salida"
+                      )}
                     >
                       <span className="truncate">
-                        {outputLang === "es" ? LBL_ES : outputLang === "en" ? LBL_EN : outputLang === "fr" ? LBL_FR : LBL_EUS}
+                        {outputLang === "es"
+                          ? LBL_ES
+                          : outputLang === "en"
+                          ? LBL_EN
+                          : outputLang === "fr"
+                          ? LBL_FR
+                          : LBL_EUS}
                       </span>
-                      <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <svg
+                        className="w-4 h-4 text-slate-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
                         <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
                       </svg>
                     </button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
+                  <DropdownMenuContent
+                    align="end"
+                    className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
+                  >
                     <DropdownMenuItem
                       onClick={() => {
                         if (outputLang !== "es") {
@@ -1184,12 +1371,18 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                   onClick={() => handleCopy(true)}
                   title={titleCopyResult}
                   className={`h-9 w-9 flex items-center justify-center ${
-                    hasRealResult ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                    hasRealResult
+                      ? "text-slate-600 hover:text-slate-800"
+                      : "text-slate-300 cursor-not-allowed"
                   }`}
                   aria-label={ariaCopyResult}
                   disabled={!hasRealResult}
                 >
-                  {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
+                  {copiedFlash ? (
+                    <Check className="w-4 h-4" style={{ color: BLUE }} />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </button>
 
                 <button
@@ -1197,7 +1390,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                   onClick={handleClearLeft}
                   title={titleDeleteInput}
                   className={`h-9 w-9 flex items-center justify-center ${
-                    sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
+                    sourceMode === "text" && textValue
+                      ? "text-slate-600 hover:text-slate-800"
+                      : "text-slate-300 cursor-not-allowed"
                   }`}
                   aria-label={ariaDeleteInput}
                   disabled={!(sourceMode === "text" && textValue)}
@@ -1207,10 +1402,11 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
               </div>
             </div>
 
-            {/* ===== CONTENIDO SCROLLEABLE ===== */}
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              {/* ✅✅✅ BANNER reutilizado */}
-              <ProLimitBanner visible={!!limitType} message={displayErrorMsg || displayLimitMsg} />
+              <ProLimitBanner
+                visible={!!limitType}
+                message={displayErrorMsg || displayLimitMsg}
+              />
 
               {(hasRealResult || loading || (displayErrorMsg && !limitType)) && (
                 <div className="px-6 pt-20 pb-28 max-w-3xl mx-auto">
@@ -1240,7 +1436,10 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
 
               {!loading && !hasRealResult && !displayErrorMsg && !limitType && (
                 <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 z-10"
+                    style={{ top: "30%" }}
+                  >
                     <Button
                       type="button"
                       onClick={handleGenerate}
@@ -1252,17 +1451,23 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     </Button>
                   </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 text-center px-6"
+                    style={{ top: "40%" }}
+                  >
+                    <p className="text-sm leading-6 text-slate-600 max-w-xl">
+                      {labelHelpRight}
+                    </p>
                   </div>
                 </>
               )}
             </div>
 
-            {/* Barra inferior: copiar, descargar, guardar — SOLO si hay resultado REAL */}
             {hasRealResult && (
               <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
-                {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
+                {savedToLibrary && (
+                  <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>
+                )}
 
                 <div className="flex items-center gap-4">
                   <button
@@ -1282,7 +1487,9 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
                     onClick={() => {
                       if (!hasRealResult) return;
                       try {
-                        const blob = new Blob([(result || "").trim()], { type: "text/plain;charset=utf-8" });
+                        const blob = new Blob([(result || "").trim()], {
+                          type: "text/plain;charset=utf-8",
+                        });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement("a");
                         a.href = url;
