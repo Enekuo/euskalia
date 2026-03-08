@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe, PenLine } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,6 @@ export default function Resumen() {
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
   const [textValue, setTextValue] = useState("");
-  const [chatInput, setChatInput] = useState("");
 
   // Resultado / carga / error
   const [result, setResult] = useState("");
@@ -50,7 +49,7 @@ export default function Resumen() {
   const [errorMsg, setErrorMsg] = useState("");
   const [errorKind, setErrorKind] = useState(null); // null | "limit"
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
-  const [showPremiumNote, setShowPremiumNote] = useState(false);
+  
 
   // Longitud del resumen
   const [summaryLength, setSummaryLength] = useState("breve"); // "breve" | "medio" | "detallado"
@@ -110,11 +109,6 @@ export default function Resumen() {
     "summary.create_help_right",
     "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
   );
-  const labelBottomInputPh = tr(
-    "summary.bottom_input_ph",
-    "Idatzi hemen ikuspegia (aukerakoa): tonua, luzera, puntu garrantzitsuak…"
-  );
-  const labelGenerateWithPrompt = tr("summary.generate_with_prompt", "Argibideekin sortu");
 
   // ✅ SOLO 1 DOC
   const labelOnlyOneDoc = tr("summary.only_one_document", "Solo se admite un documento por resumen.");
@@ -471,49 +465,6 @@ export default function Resumen() {
     clearRight();
   };
 
-  const PremiumPromptNote = () => (
-    <div className="rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-none">
-      <div className="text-[16px] sm:text-[17px] font-semibold text-slate-900">
-        {tr("summary.premium_prompt_title", "Funtzioa hau Premium planean bakarrik")}
-      </div>
-
-      <p className="text-sm text-slate-700 mt-2 leading-6">
-        {tr(
-          "summary.premium_prompt_body",
-          "«Sortu» botoiak prompt bat erabiltzen du: laburpena zure nahien arabera doitzen duen jarraibidea (tonoa, gakoak, fokua…). Plan Doanean testua itsatsi eta ohiko laburpena sor dezakezu. Prompt aurreratuak erabiltzeko, probatu Premium plana."
-        )}
-      </p>
-
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-        <Link
-          to="/pricing"
-          className="
-            inline-flex items-center justify-center gap-2
-            rounded-full text-white font-medium shadow-sm
-            hover:brightness-95
-            whitespace-nowrap
-            px-4 h-9 text-sm
-            sm:px-5 sm:h-9 sm:text-sm
-          "
-          style={{ backgroundColor: "#2563eb" }}
-        >
-          <span className="text-yellow-400">✨</span>
-          <span>Premium plana probatu</span>
-        </Link>
-
-        <button
-          onClick={() => setShowPremiumNote(false)}
-          className="
-            h-9 px-4 rounded-full border border-slate-300 text-sm hover:bg-white
-            w-full sm:w-auto
-          "
-        >
-          {tr("summary.premium_prompt_close", "Ulertuta")}
-        </button>
-      </div>
-    </div>
-  );
-
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
     try {
@@ -606,7 +557,7 @@ export default function Resumen() {
       textValue ? `\nTEXTO:\n${textValue}` : "",
       urlsList ? `\nURLs (extrae solo lo visible; si no puedes, ignóralas):\n${urlsList}` : "",
       docsInline,
-      chatInput ? `\nENFOQUE OPCIONAL: ${chatInput}` : "",
+      
       `\nREQUISITO DE FORMATO: ${formattingRules}`,
       `\nREQUISITO DE LONGITUD (${summaryLength.toUpperCase()}): ${lengthRule}`,
       `\n${langInstruction}`,
@@ -1201,34 +1152,7 @@ export default function Resumen() {
                   )}
                 </div>
 
-                {/* ✅ Footer fijo dentro del panel (ya NO tapa nada) */}
-                <div className="bg-white p-4">
-                  {showPremiumNote && (
-                    <div className="mx-auto max-w-4xl mb-3">
-                      <PremiumPromptNote />
-                    </div>
-                  )}
-
-                  <div className="mx-auto max-w-4xl px-3 sm:px-0 rounded-full border border-slate-300 bg-white shadow-sm focus-within:ring-2 focus-within:ring-sky-400/40">
-                    <div className="flex items-center gap-2 px-4 py-2">
-                      <input
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value.slice(0, MAX_CHARS))}
-                        placeholder={labelBottomInputPh}
-                        className="flex-1 bg-transparent outline-none text-sm md:text-base placeholder:text-slate-400"
-                        aria-label={labelBottomInputPh}
-                      />
-                      <Button
-                        type="button"
-                        className="h-10 rounded-full px-4 shrink-0 hover:brightness-95"
-                        style={{ backgroundColor: "#93c5fd", color: "#ffffff" }}
-                        onClick={() => setShowPremiumNote(true)}
-                      >
-                        {labelGenerateWithPrompt}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+            
               </section>
             </motion.section>
           </div>
