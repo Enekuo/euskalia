@@ -14,7 +14,7 @@ export default function PremiumLimitBanner({
   buttonText,
   hideButton = false,
   supportMode = "internal", // "internal" | "mailto" | "external"
-  to = "/soporte",
+  to = "/cuenta-premium/soporte",
   email = "soporte@euskalia.ai",
   externalUrl = "",
 }) {
