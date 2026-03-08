@@ -43,12 +43,17 @@ const SupportPage = () => {
     setForm((prev) => ({
       ...prev,
       email: userEmail,
-      subject: prefill?.subject || "Solicitud de ampliación",
+      subject:
+        prefill?.subject ||
+        t("support_prefill_extension_subject", "Solicitud de ampliación"),
       message:
         prefill?.message ||
-        "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias.",
+        t(
+          "support_prefill_extension_message",
+          "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias."
+        ),
     }));
-  }, [location.state]);
+  }, [location.state, t]);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -104,7 +109,6 @@ const SupportPage = () => {
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}
           <div>
-            {/* HEADER */}
             <section className="rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6">
               <div className="flex items-start gap-4">
                 <div className="flex-1">
@@ -116,7 +120,6 @@ const SupportPage = () => {
                   </p>
                 </div>
 
-                {/* Mascota móvil a la derecha */}
                 <div className="md:hidden shrink-0">
                   <img
                     src="/olondo.mascota.png"
@@ -128,7 +131,6 @@ const SupportPage = () => {
               </div>
             </section>
 
-            {/* ❌ ESTE BLOQUE NO SALE EN MÓVIL */}
             <div className="hidden md:block">
               <p className="mt-6 text-sm font-semibold tracking-wider text-blue-600">
                 {t("support_kicker", "Nola lagun diezazukegu?")}
@@ -138,7 +140,6 @@ const SupportPage = () => {
               </p>
             </div>
 
-            {/* Mascota desktop */}
             <div className="hidden md:flex mt-6">
               <img
                 src="/olondo.mascota.png"
@@ -164,7 +165,6 @@ const SupportPage = () => {
                 className="hidden"
               />
 
-              {/* Posta elektronikoa */}
               <div>
                 <label className="text-sm font-medium">
                   {t("support_form_email_label", "Posta elektronikoa")}
@@ -180,7 +180,6 @@ const SupportPage = () => {
                 />
               </div>
 
-              {/* Gaia */}
               <div>
                 <label className="text-sm font-medium">
                   {t("support_form_subject_label", "Gaia")}
@@ -195,7 +194,6 @@ const SupportPage = () => {
                 />
               </div>
 
-              {/* Mezua */}
               <div>
                 <label className="text-sm font-medium">
                   {t("support_form_message_label", "Mezua")}

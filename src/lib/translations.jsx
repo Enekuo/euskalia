@@ -6841,6 +6841,57 @@ premiumAiAssistant_errorEmpty: {
   EN: "Empty response from the server.",
   FR: "Réponse vide du serveur.",
 },
+// =========================
+//    PREMIUM LIMITBANNER
+// =========================
+premium_limit_banner_title: {
+  ES: "Has alcanzado el límite de tu plan Premium",
+  EUS: "Zure Premium planaren muga lortu duzu",
+  EN: "You have reached your Premium plan limit",
+  FR: "Vous avez atteint la limite de votre forfait Premium",
+},
+
+premium_limit_banner_badge: {
+  ES: "Premium",
+  EUS: "Premium",
+  EN: "Premium",
+  FR: "Premium",
+},
+
+premium_limit_banner_description: {
+  ES: "Has usado todos los caracteres disponibles. Si necesitas más capacidad, puedes solicitar una ampliación personalizada contactando con soporte.",
+  EUS: "Eskuragarri dituzun karaktere guztiak erabili dituzu. Edukiera handiagoa behar baduzu, laguntzarekin harremanetan jarrita handitze pertsonalizatua eska dezakezu.",
+  EN: "You have used all available characters. If you need more capacity, you can request a custom extension by contacting support.",
+  FR: "Vous avez utilisé tous les caractères disponibles. Si vous avez besoin de plus de capacité, vous pouvez demander une extension personnalisée en contactant le support.",
+},
+
+premium_limit_banner_button: {
+  ES: "Solicitar ampliación",
+  EUS: "Handitzea eskatu",
+  EN: "Request extension",
+  FR: "Demander une extension",
+},
+
+premium_limit_banner_close: {
+  ES: "Cerrar aviso",
+  EUS: "Abisua itxi",
+  EN: "Close notice",
+  FR: "Fermer l’avis",
+},
+
+support_prefill_extension_subject: {
+  ES: "Solicitud de ampliación",
+  EUS: "Handitze eskaera",
+  EN: "Extension request",
+  FR: "Demande d’extension",
+},
+
+support_prefill_extension_message: {
+  ES: "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias.",
+  EUS: "Kaixo, nire Premium planeko karaktere-mugara iritsi naiz eta handitze bat eskatu nahi dut. Eskerrik asko.",
+  EN: "Hello, I have reached the character limit of my Premium plan and I would like to request an extension. Thank you.",
+  FR: "Bonjour, j’ai atteint la limite de caractères de mon forfait Premium et je souhaite demander une extension. Merci.",
+},
 
 }
 
