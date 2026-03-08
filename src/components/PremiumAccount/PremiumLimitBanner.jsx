@@ -1,5 +1,5 @@
-import React from "react";
-import { Crown, LifeBuoy } from "lucide-react";
+import React, { useState } from "react";
+import { Crown, LifeBuoy, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
@@ -19,6 +19,7 @@ export default function PremiumLimitBanner({
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isClosed, setIsClosed] = useState(false);
 
   const tr = (key, fallback = "") => {
     const val = typeof t === "function" ? t(key) : null;
@@ -68,11 +69,22 @@ export default function PremiumLimitBanner({
     }
   };
 
+  if (isClosed) return null;
+
   return (
     <div
-      className={`w-full rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-white to-yellow-50 p-4 sm:p-5 shadow-sm ${className}`}
+      className={`relative w-full rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-white to-yellow-50 p-4 sm:p-5 shadow-sm ${className}`}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <button
+        type="button"
+        onClick={() => setIsClosed(true)}
+        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-amber-100 hover:text-slate-700"
+        aria-label={tr("premium_limit_banner_close", "Cerrar aviso")}
+      >
+        <X className="h-4 w-4" />
+      </button>
+
+      <div className="flex flex-col gap-4 pr-10 md:flex-row md:items-center md:justify-between">
         <div className="flex items-start gap-3 min-w-0">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100">
             <Crown className="h-5 w-5 text-amber-600" />
