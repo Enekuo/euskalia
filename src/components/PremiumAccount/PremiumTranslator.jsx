@@ -1702,107 +1702,117 @@ export default function PremiumTranslator() {
                 )}
               </div>
 
-              {/* DERECHA */}
-              <div className="p-8 md:p-10 relative">
-                <PremiumLimitBanner visible={!!limitType} message={displayErr || limitMsg} />
+{/* DERECHA */}
+<div className="p-8 md:p-10 relative">
+  {!!limitType && (
+    <div className="absolute left-8 right-8 top-8 z-20">
+      <PremiumLimitBanner visible={true} />
+    </div>
+  )}
 
-                <textarea
-                  ref={rightTA}
-                  value={loading && document.activeElement !== rightTA.current ? labelLoading : rightText}
-                  placeholder={labelRightPlaceholder}
-                  readOnly
-                  className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${
-                    loading ? "italic text-slate-500" : ""
-                  } ${HIDE_SCROLLBAR}`}
-                />
+  <textarea
+    ref={rightTA}
+    value={
+      !!limitType
+        ? ""
+        : loading && document.activeElement !== rightTA.current
+        ? labelLoading
+        : rightText
+    }
+    placeholder={!!limitType ? "" : labelRightPlaceholder}
+    readOnly
+    className={`w-full ${FIXED_PANEL_H} resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium ${
+      loading ? "italic text-slate-500" : ""
+    } ${HIDE_SCROLLBAR}`}
+  />
 
-                {showTranslateButton && (
-                  <div className="absolute left-8 right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
-                    <button
-                      type="button"
-                      onClick={handleTranslateClick}
-                      disabled={!leftText.trim() || loading}
-                      className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
-                        !leftText.trim() || loading
-                          ? "bg-blue-600 opacity-50 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                    >
-                      {labelTranslateBtn}
-                    </button>
-                  </div>
-                )}
+  {showTranslateButton && !limitType && (
+    <div className="absolute left-8 right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
+      <button
+        type="button"
+        onClick={handleTranslateClick}
+        disabled={!leftText.trim() || loading}
+        className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
+          !leftText.trim() || loading
+            ? "bg-blue-600 opacity-50 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
+      >
+        {labelTranslateBtn}
+      </button>
+    </div>
+  )}
 
-                {displayErr && !limitType && (
-                  <div className="absolute bottom-4 left-8 text-sm text-red-500">{displayErr}</div>
-                )}
+  {displayErr && !limitType && (
+    <div className="absolute bottom-4 left-8 text-sm text-red-500">{displayErr}</div>
+  )}
 
-                <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
-                  {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
+  <div className="absolute bottom-4 right-6 flex flex-col items-end gap-1 text-slate-500">
+    {savedToLibrary && <p className="text-xs text-emerald-600 mb-1">{librarySavedMessage}</p>}
 
-                  <div className="flex items-center gap-4">
-                    <button
-                      type="button"
-                      onClick={handleSpeakToggle}
-                      aria-label={speaking ? labelStop : labelListen}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        speaking ? "text-slate-900" : ""
-                      } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
-                      disabled={!hasRealResult}
-                    >
-                      {speaking ? (
-                        <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
-                      ) : (
-                        <Volume2 className="w-5 h-5" />
-                      )}
-                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                        {speaking ? labelStop : labelListen}
-                      </span>
-                    </button>
+    <div className="flex items-center gap-4">
+      <button
+        type="button"
+        onClick={handleSpeakToggle}
+        aria-label={speaking ? labelStop : labelListen}
+        className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+          speaking ? "text-slate-900" : ""
+        } ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+        disabled={!hasRealResult}
+      >
+        {speaking ? (
+          <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
+        ) : (
+          <Volume2 className="w-5 h-5" />
+        )}
+        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+          {speaking ? labelStop : labelListen}
+        </span>
+      </button>
 
-                    <button
-                      type="button"
-                      onClick={handleCopy}
-                      aria-label={labelCopy}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                      }`}
-                      disabled={!hasRealResult}
-                    >
-                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
-                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                        {copied ? labelCopied : labelCopy}
-                      </span>
-                    </button>
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={labelCopy}
+        className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+          hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+        }`}
+        disabled={!hasRealResult}
+      >
+        {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+          {copied ? labelCopied : labelCopy}
+        </span>
+      </button>
 
-                    <button
-                      type="button"
-                      onClick={handleDownloadPdf}
-                      aria-label={labelPdf}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${
-                        hasRealResult ? "" : "opacity-40 cursor-not-allowed"
-                      }`}
-                      disabled={!hasRealResult}
-                    >
-                      <FileDown className="w-5 h-5" />
-                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                        {labelPdf}
-                      </span>
-                    </button>
+      <button
+        type="button"
+        onClick={handleDownloadPdf}
+        aria-label={labelPdf}
+        className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+          hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+        }`}
+        disabled={!hasRealResult}
+      >
+        <FileDown className="w-5 h-5" />
+        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+          {labelPdf}
+        </span>
+      </button>
 
-                    {canSave && (
-                      <button
-                        type="button"
-                        onClick={handleSaveTranslation}
-                        className="inline-flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:brightness-95 active:scale-[0.98] transition-all"
-                        style={{ backgroundColor: "#22c55e" }}
-                      >
-                        {labelSaveTranslation}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+      {canSave && (
+        <button
+          type="button"
+          onClick={handleSaveTranslation}
+          className="inline-flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:brightness-95 active:scale-[0.98] transition-all"
+          style={{ backgroundColor: "#22c55e" }}
+        >
+          {labelSaveTranslation}
+        </button>
+      )}
+    </div>
+  </div>
+</div>
             </div>
           </div>
         </div>
