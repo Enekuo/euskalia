@@ -6,14 +6,12 @@ import { useTranslation } from "@/lib/translations";
 
 export default function PremiumLimitBanner({
   used = 0,
-  limit = 18000,
+  limit = 0,
   className = "",
   title,
   description,
   buttonText,
   hideButton = false,
-
-  // soporte
   supportMode = "internal", // "internal" | "mailto" | "external"
   to = "/soporte",
   email = "soporte@euskalia.ai",
@@ -28,9 +26,7 @@ export default function PremiumLimitBanner({
   };
 
   const safeUsed = Number.isFinite(Number(used)) ? Number(used) : 0;
-  const safeLimit = Number.isFinite(Number(limit)) ? Number(limit) : 18000;
-  const progress =
-    safeLimit > 0 ? Math.min((safeUsed / safeLimit) * 100, 100) : 0;
+  const safeLimit = Number.isFinite(Number(limit)) ? Number(limit) : 0;
 
   const handleContact = () => {
     try {
@@ -105,24 +101,6 @@ export default function PremiumLimitBanner({
                   "Has usado todos los caracteres disponibles. Si necesitas más capacidad, puedes solicitar una ampliación personalizada contactando con soporte."
                 )}
             </p>
-
-            <div className="mt-3">
-              <div className="mb-1 flex items-center justify-between gap-3 text-xs sm:text-sm">
-                <span className="text-gray-500">
-                  {tr("premium_limit_banner_usage", "Uso actual")}
-                </span>
-                <span className="font-medium text-gray-800">
-                  {safeUsed.toLocaleString()} / {safeLimit.toLocaleString()}
-                </span>
-              </div>
-
-              <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-amber-500 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
