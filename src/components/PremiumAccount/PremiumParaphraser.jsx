@@ -12,7 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -1032,7 +1032,7 @@ MODO CREATIVO:
             </div>
 
             {/* ✅✅✅ BANNER PREMIUM (SIN MENSAJE ARRIBA) */}
-            <ProLimitBanner visible={!!limitType} message={""} />
+            <PremiumLimitBanner visible={!!limitType} message={""} />
 
             {/* Estado inicial */}
             {!loading && !result && !errorMsg && !limitType && (

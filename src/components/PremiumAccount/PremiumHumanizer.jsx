@@ -23,7 +23,7 @@ import { addLibraryDoc } from "@/proLibraryStore";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { auth } from "@/lib/firebase";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 
 export default function PremiumHumanizer() {
   const location = useLocation();
@@ -1403,7 +1403,7 @@ NIVEL ESTÁNDAR (equilibrado, el mejor por defecto):
             </div>
 
             <div className="absolute inset-x-0 top-11 bottom-0 overflow-y-auto">
-              <ProLimitBanner
+              <PremiumLimitBanner
                 visible={!!limitType}
                 message={displayErrorMsg || displayLimitMsg}
               />

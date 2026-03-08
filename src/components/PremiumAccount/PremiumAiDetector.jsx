@@ -3,7 +3,7 @@ import { Clipboard, UploadCloud, Trash2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
-import ProLimitBanner from "@/components/ProAccount/ProLimitBanner";
+import PremiumLimitBanner from "@/components/PremiumAccount/PremiumLimitBanner";
 
 export default function PremiumAiDetector() {
   const { t, language } = useTranslation();
@@ -292,7 +292,7 @@ export default function PremiumAiDetector() {
 
           {/* ✅✅✅ BANNER (izquierda) - SIN EMPUJAR CONTENIDO */}
           <div className="absolute left-7 right-7 top-[52%] -translate-y-1/2">
-            <ProLimitBanner visible={!!limitType} message={""} />
+            <PremiumLimitBanner visible={!!limitType} message={""} />
           </div>
 
           {/* ✅ MENSAJE ROJO SOLO ABAJO (cuando hay límite) */}
