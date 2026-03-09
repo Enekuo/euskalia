@@ -138,68 +138,6 @@ export default function PremiumTextCreator() {
       .replace(/[ \t]{2,}/g, " ")
       .trim();
 
-  const trimToBudget = (text, budget) => {
-    const s = normalizeText(text);
-    if (!budget || budget <= 0) return "";
-    if (s.length <= budget) return s;
-
-    let cut = s.slice(0, budget);
-
-    // intenta cortar en frontera de palabra
-    const lastSpace = cut.lastIndexOf(" ");
-    if (lastSpace > 40) cut = cut.slice(0, lastSpace);
-
-    // limpia puntuación final rara
-    cut = cut.replace(/[.,;:–—-]*$/, "").trim();
-
-    // añade elipsis si recortamos
-    return cut ? cut + "…" : "…";
-  };
-
-  // ✅ NUEVO: en modo "Por párrafos", repartimos el presupuesto de caracteres
-  // entre párrafos para que no se queden los primeros demasiado largos.
-  const splitAndBalanceParagraphs = (raw, expectedCount, totalBudget) => {
-    const s = normalizeText(raw);
-    if (!s) return "";
-
-    // separa por líneas en blanco
-    let parts = s
-      .split(/\n\s*\n+/g)
-      .map((p) => normalizeText(p))
-      .filter(Boolean);
-
-    // si viene como 1 bloque, intentamos partir suavemente en frases
-    if (parts.length <= 1 && expectedCount > 1) {
-      const single = parts[0] || s;
-      const sentences = single.split(/(?<=[.!?])\s+/g).filter(Boolean);
-      parts = [];
-      let cur = "";
-      for (const sen of sentences) {
-        const next = (cur ? cur + " " : "") + sen;
-        parts.push(next);
-        cur = "";
-      }
-      if (!parts.length) parts = [single];
-    }
-
-    if (expectedCount <= 1) expectedCount = 1;
-
-    if (parts.length > expectedCount) {
-      const head = parts.slice(0, expectedCount - 1);
-      const tail = parts.slice(expectedCount - 1).join("\n\n");
-      parts = [...head, tail];
-    } else if (parts.length < expectedCount) {
-      while (parts.length < expectedCount) parts.push("");
-    }
-
-    const base = Math.floor((totalBudget || 0) / expectedCount);
-    const rem = Math.max(0, (totalBudget || 0) - base * expectedCount);
-    const budgets = Array.from({ length: expectedCount }, (_, i) => base + (i < rem ? 1 : 0));
-
-    const out = parts.map((p, i) => trimToBudget(p, budgets[i]));
-    return out.join("\n\n").trim();
-  };
-
   const buildBrief = () => {
     const tTitle = (titleValue || "").trim();
     const ps = (paragraphs || [])
@@ -454,8 +392,6 @@ export default function PremiumTextCreator() {
         ? (paragraphs || []).filter((p) => (p || "").trim().length > 0).length || 1
         : 0;
 
-    const lengthRuleChars = `Longitud objetivo TOTAL: aproximadamente ${targetChars} caracteres (tolerancia ±15%).`;
-
     const systemBase =
       "Eres un asistente que escribe textos originales y coherentes a partir de un briefing. " +
       "No resumas: crea contenido nuevo. " +
@@ -463,23 +399,32 @@ export default function PremiumTextCreator() {
       "Evita listas y viñetas salvo que el usuario las pida explícitamente. " +
       "Entrega el resultado en párrafos. No inventes datos concretos si no aparecen o no se deducen del briefing.";
 
+    const lengthInstruction =
+      `La longitud objetivo del texto completo es de aproximadamente ${targetChars} caracteres. ` +
+      `Debes ADAPTAR la redacción desde el inicio a esa longitud. ` +
+      `No escribas de más para que luego haya que cortar. ` +
+      `No devuelvas un texto excesivamente más largo que la longitud solicitada. ` +
+      `Margen permitido: ±10%.`;
+
     const paragraphModeRule =
       writeMode === "paragraphs"
         ? `MODO POR PÁRRAFOS (OBLIGATORIO):
 - Devuelve EXACTAMENTE ${expectedParagraphsCount} párrafos en la salida, separados por una línea en blanco.
 - Cada párrafo de salida corresponde 1:1 con cada párrafo del usuario (mismo orden). No mezcles contenido entre párrafos.
-- REPARTO DE LONGITUD: la longitud objetivo (${targetChars} caracteres) es TOTAL. Distribuye los caracteres de forma equilibrada entre los ${expectedParagraphsCount} párrafos (aprox. ${Math.max(
-            1,
-            Math.floor(targetChars / expectedParagraphsCount)
-          )} caracteres por párrafo, con pequeñas variaciones).
-- MUY IMPORTANTE: NO te detengas cuando un párrafo alcance su cuota; continúa escribiendo en el siguiente hasta completar un texto completo.`
-        : `MODO NORMAL: puedes estructurar el texto libremente en varios párrafos coherentes. La longitud objetivo (${targetChars}) es TOTAL.`;
+- La longitud objetivo (${targetChars} caracteres) es TOTAL para todo el texto.
+- Reparte la longitud de forma equilibrada entre los ${expectedParagraphsCount} párrafos, con pequeñas variaciones naturales.
+- No dejes un primer párrafo muy largo y los demás demasiado cortos.
+- No cortes frases ni cierres en falso.`
+        : `MODO NORMAL:
+- Puedes estructurar el texto libremente en varios párrafos coherentes.
+- La longitud objetivo (${targetChars} caracteres) es TOTAL para todo el texto.
+- Ajusta la extensión del contenido desde el principio para acercarte a esa longitud sin necesidad de recortes posteriores.`;
 
     const userContent = [
       "Quiero que redactes un texto completo basándote en este briefing.",
       brief ? `\nBRIEFING:\n${brief}` : "",
       `\nREGLA DE ESTRUCTURA:\n${paragraphModeRule}`,
-      `\nREQUISITO DE LONGITUD:\n${lengthRuleChars}`,
+      `\nREGLA DE LONGITUD:\n${lengthInstruction}`,
       `\n${langInstruction}`,
     ].join("");
 
@@ -598,20 +543,9 @@ export default function PremiumTextCreator() {
       const cleaned = normalizeText(rawText);
 
       // ✅ CAMBIO CLAVE:
-      // - En NORMAL: recorte global.
-      // - En POR PÁRRAFOS: reparto de presupuesto por párrafo.
-      let finalText = "";
-      if (writeMode === "paragraphs") {
-        finalText = splitAndBalanceParagraphs(
-          cleaned,
-          expectedParagraphsCount || 1,
-          targetChars
-        );
-      } else {
-        finalText = trimToBudget(cleaned, targetChars);
-      }
-
-      setResult(finalText);
+      // NO recortamos el texto después.
+      // La IA debe haberlo generado ya adaptado a targetChars.
+      setResult(cleaned);
     } catch (err) {
       setErrorMsg(
         err.message || tr("premiumTextCreator.error_generic", "Error generando el texto.")
@@ -784,7 +718,7 @@ export default function PremiumTextCreator() {
                   <input
                     type="range"
                     min={300}
-                    max={20000}
+                    max={18000}
                     step={100}
                     value={targetChars}
                     onChange={(e) => {
