@@ -5156,6 +5156,34 @@ premiumHome: {
     EN: "Make your text sound more natural, clear and fluent.",
     FR: "Rendez votre texte plus naturel, clair et fluide.",
   },
+cardTextCreator_title: {
+  ES: "Creador de texto",
+  EUS: "Testu sortzailea",
+  EN: "Text creator",
+  FR: "Créateur de texte",
+},
+
+cardTextCreator_desc: {
+  ES: "Genera cualquier tipo de contenido siguiendo tus instrucciones.",
+  EUS: "Sortu edozein motatako edukia zure jarraibideak jarraituz.",
+  EN: "Generate any type of content following your instructions.",
+  FR: "Générez tout type de contenu en suivant vos instructions.",
+},
+
+cardEmailCreator_title: {
+  ES: "Creador de email",
+  EUS: "Email sortzailea",
+  EN: "Email creator",
+  FR: "Créateur d'email",
+},
+
+cardEmailCreator_desc: {
+  ES: "Redacta emails profesionales personalizados en segundos.",
+  EUS: "Idatzi email profesional pertsonalizatuak segundo gutxitan.",
+  EN: "Write professional personalized emails in seconds.",
+  FR: "Rédigez des emails professionnels personnalisés en quelques secondes.",
+},
+
 },
 
 // =========================

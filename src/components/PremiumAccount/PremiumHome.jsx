@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FileText, CheckCircle2, Globe, Brain, Search } from "lucide-react";
+import {
+  FileText,
+  CheckCircle2,
+  Globe,
+  Brain,
+  Search,
+  Sparkles,
+  Mail,
+} from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
@@ -212,6 +220,63 @@ export default function PremiumHome() {
             )}
           </p>
         </div>
+
+        {/* CREADOR DE TEXTO */}
+        <div
+          onClick={() => navigate("/cuenta-premium/creador-texto")}
+          className="
+            bg-white rounded-2xl shadow-sm border border-slate-200 p-6 min-h-[190px]
+            cursor-pointer transform transition
+            hover:shadow-md hover:-translate-y-0.5
+            hover:bg-[#F8FBFF] hover:border-2 hover:border-[#93C5FD]
+          "
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+            style={{ background: "linear-gradient(90deg, #2563eb 0%, #06b6d4 100%)" }}
+          >
+            <Sparkles className="h-6 w-6 text-white" />
+          </div>
+
+          <h3 className="text-lg font-semibold text-slate-800 mb-1">
+            {tr("premiumHome.cardTextCreator_title", "Creador de texto")}
+          </h3>
+          <p className="text-sm text-slate-500">
+            {tr(
+              "premiumHome.cardTextCreator_desc",
+              "Genera cualquier tipo de contenido siguiendo tus instrucciones."
+            )}
+          </p>
+        </div>
+
+        {/* CREADOR DE EMAIL */}
+        <div
+          onClick={() => navigate("/cuenta-premium/creador-email")}
+          className="
+            bg-white rounded-2xl shadow-sm border border-slate-200 p-6 min-h-[190px]
+            cursor-pointer transform transition
+            hover:shadow-md hover:-translate-y-0.5 hover:border-slate-300
+            hover:bg-[#FFF7ED] hover:border-2 hover:border-[#FDBA74]
+          "
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+            style={{ background: "linear-gradient(90deg, #f97316 0%, #f59e0b 100%)" }}
+          >
+            <Mail className="h-6 w-6 text-white" />
+          </div>
+
+          <h3 className="text-lg font-semibold text-slate-800 mb-1">
+            {tr("premiumHome.cardEmailCreator_title", "Creador de email")}
+          </h3>
+          <p className="text-sm text-slate-500">
+            {tr(
+              "premiumHome.cardEmailCreator_desc",
+              "Redacta emails profesionales personalizados en segundos."
+            )}
+          </p>
+        </div>
+
       </section>
     </>
   );
