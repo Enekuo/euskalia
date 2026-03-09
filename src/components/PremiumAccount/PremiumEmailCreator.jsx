@@ -527,16 +527,33 @@ export default function PremiumEmailCreator() {
     chatInput,
   ]);
 
-  const creativeFilledCount = useMemo(() => {
-    return [(creativeInfo || "").trim(), (chatInput || "").trim()].filter(Boolean).length;
-  }, [creativeInfo, chatInput]);
+const creativeMainText = useMemo(() => {
+  return `${(creativeInfo || "").trim()} ${(chatInput || "").trim()}`.trim();
+}, [creativeInfo, chatInput]);
 
-  const hasEnoughInfoWithoutConfirm = useMemo(() => {
-    if (emailMode === "creative") {
-      return creativeFilledCount >= 1;
-    }
-    return templateFilledCount >= 2;
-  }, [emailMode, creativeFilledCount, templateFilledCount]);
+const creativeFilledCount = useMemo(() => {
+  return [(creativeInfo || "").trim(), (chatInput || "").trim()].filter(Boolean).length;
+}, [creativeInfo, chatInput]);
+
+const creativeHasEnoughMeaningfulInfo = useMemo(() => {
+  const text = creativeMainText;
+  if (!text) return false;
+
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length < 12) return false;
+
+  const words = clean.split(" ").filter(Boolean);
+  if (words.length < 3) return false;
+
+  return true;
+}, [creativeMainText]);
+
+const hasEnoughInfoWithoutConfirm = useMemo(() => {
+  if (emailMode === "creative") {
+    return creativeHasEnoughMeaningfulInfo;
+  }
+  return templateFilledCount >= 2;
+}, [emailMode, creativeHasEnoughMeaningfulInfo, templateFilledCount]);
 
   const closeMissingInfoConfirm = () => {
     setShowMissingInfoConfirm(false);
@@ -926,6 +943,12 @@ export default function PremiumEmailCreator() {
       { role: "user", content: basePrompt },
     ];
 
+const shouldUseCache =
+  emailMode === "creative"
+    ? creativeHasEnoughMeaningfulInfo
+    : templateFilledCount >= 2;
+
+
     const cacheBase = JSON.stringify({
       mode: emailMode,
       creativeInfo,
@@ -940,7 +963,7 @@ export default function PremiumEmailCreator() {
       emailSaludo2,
       emailNombre,
     });
-    const cacheKey = await sha256Hex(cacheBase);
+    const cacheKey = shouldUseCache ? await sha256Hex(cacheBase) : null;
 
     try {
       let r1 = await fetchEmailOnce(messages1, emailLength, cacheKey);
