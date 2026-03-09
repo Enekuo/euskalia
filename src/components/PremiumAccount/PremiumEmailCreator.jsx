@@ -17,31 +17,25 @@ import { auth } from "@/lib/firebase";
 export default function PremiumEmailCreator() {
   const { t } = useTranslation();
 
-  // ✅ evita que se muestre la clave literal si falta traducción
   const tr = (key, fallback) => {
     const val = t(key);
     return !val || val === key ? fallback : val;
   };
 
-  // ===== Estado =====
-  const [sourceMode, setSourceMode] = useState(null); // null | "text"
+  const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
 
-  // ✅ Prompt input inferior
   const [chatInput, setChatInput] = useState("");
 
-  // ✅ Modo: plantilla vs creativo
-  const [emailMode, setEmailMode] = useState("template"); // "template" | "creative"
+  const [emailMode, setEmailMode] = useState("template");
   const [creativeInfo, setCreativeInfo] = useState("");
 
-  // Resultado / carga / error
   const [result, setResult] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Límite Premium (banner + mensaje rojo)
-  const [limitType, setLimitType] = useState(""); // "" | "chars" | "daily"
+  const [limitType, setLimitType] = useState("");
   const setCharsLimit = () => setLimitType("chars");
   const setDailyLimit = () => setLimitType("daily");
   const clearLimit = () => setLimitType("");
@@ -59,38 +53,27 @@ export default function PremiumEmailCreator() {
         )
       : "";
 
-  // Longitud del email
-  const [emailLength, setEmailLength] = useState("breve"); // "breve" | "medio" | "detallado"
-
-  // Idioma de salida (EUS/ES/EN/FR)
+  const [emailLength, setEmailLength] = useState("breve");
   const [outputLang, setOutputLang] = useState("EUS");
-
-  // Track “email desactualizado”
   const [lastEmailSig, setLastEmailSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
-
-  // URLs (se mantiene por atajos Escape)
   const [urlInputOpen, setUrlInputOpen] = useState(false);
-
-  // Copia: flash de tic azul
   const [copiedFlash, setCopiedFlash] = useState(false);
-
-  // Estado y timer para mensaje "Guardado en biblioteca"
   const [savedToLibrary, setSavedToLibrary] = useState(false);
   const savedTimerRef = useRef(null);
 
-  // ✅ inputs del creador (plantilla)
   const [emailSaludo, setEmailSaludo] = useState("");
   const [emailIntro, setEmailIntro] = useState("");
-  const [emailParagraphs, setEmailParagraphs] = useState([""]); // mínimo 1
-  const [emailFinalPhrase, setEmailFinalPhrase] = useState(""); // ✅ (4) Frase final (opcional usuario, SIEMPRE la crea la IA)
-  const [emailSaludo2, setEmailSaludo2] = useState(""); // ✅ (5) Saludo / cierre
-  const [emailNombre, setEmailNombre] = useState(""); // ✅ (6) Nombre
+  const [emailParagraphs, setEmailParagraphs] = useState([""]);
+  const [emailFinalPhrase, setEmailFinalPhrase] = useState("");
+  const [emailSaludo2, setEmailSaludo2] = useState("");
+  const [emailNombre, setEmailNombre] = useState("");
 
-  // ✅ Gastados (sesión de esta herramienta)
   const [spent, setSpent] = useState(0);
 
-  // ===== Estilos / constantes =====
+  const [showMissingInfoConfirm, setShowMissingInfoConfirm] = useState(false);
+  const [pendingGenerateMode, setPendingGenerateMode] = useState(null);
+
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
   const DIVIDER = "#e5e7eb";
@@ -102,7 +85,6 @@ export default function PremiumEmailCreator() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n =====
   const labelSources = tr("premiumEmailCreator.sources_title", "Iturriak");
 
   const labelGenerateFromSources = tr(
@@ -118,36 +100,31 @@ export default function PremiumEmailCreator() {
     "Argibideekin sortu"
   );
 
-  // Texto formal o informal
   const [emailTone, setEmailTone] = useState("formal");
   const LBL_FORMAL = tr("premiumEmailCreator.tone_formal", "Formal");
   const LBL_INFORMAL = tr("premiumEmailCreator.tone_informal", "Informal");
 
-  // Etiquetas de idioma
   const LBL_EUS = tr("premiumEmailCreator.output_language_eus", "Euskara");
   const LBL_ES = tr("premiumEmailCreator.output_language_es", "Gaztelania");
   const LBL_EN = tr("premiumEmailCreator.output_language_en", "Ingelesa");
   const LBL_FR = tr("premiumEmailCreator.output_language_fr", "Français");
 
-  // ✅ Botón guardar + toast (verde)
   const labelSaveEmail = tr("premiumEmailCreator.save_button_label", "Gorde");
   const librarySavedMessage = tr(
     "premiumEmailCreator.library_saved_toast",
     "Liburutegian gordeta"
   );
 
-  // ✅ Tooltips
   const tooltipCopy = tr("premiumEmailCreator.copy", "Copiar");
   const tooltipCopied = tr("premiumEmailCreator.copied", "Copiado");
   const tooltipPdf = tr("premiumEmailCreator.pdf", "PDF");
 
-  // ✅ Labels del creador (RENÚMEROS: frase final=4, saludo=5, nombre=6)
   const labelSmall1 = tr("premiumEmailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("premiumEmailCreator.small_2", "2- Introducción");
   const labelBig3 = tr("premiumEmailCreator.big_3", "3- Párrafo");
-  const labelFinal = tr("premiumEmailCreator.final_phrase", "4- Frase final"); // ✅ ahora es 4
-  const labelSmall4 = tr("premiumEmailCreator.small_4", "5- Saludo"); // ✅ ahora es 5
-  const labelSmall5 = tr("premiumEmailCreator.small_5", "6- Nombre"); // ✅ ahora es 6
+  const labelFinal = tr("premiumEmailCreator.final_phrase", "4- Frase final");
+  const labelSmall4 = tr("premiumEmailCreator.small_4", "5- Saludo");
+  const labelSmall5 = tr("premiumEmailCreator.small_5", "6- Nombre");
 
   const placeholderSaludo = tr(
     "premiumEmailCreator.saludo_ph",
@@ -179,7 +156,6 @@ export default function PremiumEmailCreator() {
     "Eliminar párrafo"
   );
 
-  // ✅ Botones modo
   const labelModeTemplate = tr("premiumEmailCreator.mode_template", "Plantilla");
   const labelModeCreative = tr("premiumEmailCreator.mode_creative", "Creativo");
   const placeholderCreative = tr(
@@ -187,7 +163,6 @@ export default function PremiumEmailCreator() {
     "Escribe aquí toda la información: a quién va dirigido, objetivo, contexto, puntos clave, tono, si quieres CTA, etc..."
   );
 
-  // ===== Tabs =====
   const LengthTab = ({ active, label, onClick, showDivider }) => (
     <div className="relative flex items-stretch">
       <button
@@ -216,7 +191,6 @@ export default function PremiumEmailCreator() {
     </div>
   );
 
-  // ===== Utils =====
   const canonicalize = (s) =>
     (s || "")
       .normalize("NFD")
@@ -289,7 +263,6 @@ export default function PremiumEmailCreator() {
     };
   };
 
-  // ✅ fallback saludo por idioma (parche definitivo)
   const defaultGreetingByLang = (lang, tone) => {
     const informal = tone === "informal";
     if (lang === "ES") return informal ? "Hola," : "Estimado/a,";
@@ -322,7 +295,6 @@ export default function PremiumEmailCreator() {
     return false;
   };
 
-  // ✅ SALUDO: siempre correcto en el idioma + intenta conservar destinatario si el usuario lo pone
   const ensureSaludoHasAddressee = (generatedSaludo, userSaludo, lang, tone) => {
     const gen0 = String(generatedSaludo || "").trim();
     const usr0 = String(userSaludo || "").trim();
@@ -392,7 +364,6 @@ export default function PremiumEmailCreator() {
     return baseNoPunct ? baseNoPunct + "," : base;
   };
 
-  // ===== construir textValue desde inputs (solo plantilla) =====
   useEffect(() => {
     if (emailMode !== "template") return;
 
@@ -418,7 +389,6 @@ export default function PremiumEmailCreator() {
     emailNombre,
   ]);
 
-  // ===== Contador INPUT (según modo) =====
   const inputCount = useMemo(() => {
     const safeChat = (chatInput || "");
     if (emailMode === "creative") {
@@ -448,7 +418,6 @@ export default function PremiumEmailCreator() {
     emailNombre,
   ]);
 
-  // ===== Limpieza del panel derecho =====
   const clearRight = () => {
     setResult("");
     setEmailSubject("");
@@ -459,7 +428,6 @@ export default function PremiumEmailCreator() {
     setSavedToLibrary(false);
   };
 
-  // ===== Reglas UX =====
   useEffect(() => {
     const sig = canonicalize(textValue);
     if (sig.length === 0) {
@@ -473,7 +441,6 @@ export default function PremiumEmailCreator() {
     }
   }, [textValue, lastEmailSig]);
 
-  // Atajos de teclado
   useEffect(() => {
     const onKey = (e) => {
       const meta = e.metaKey || e.ctrlKey;
@@ -499,7 +466,6 @@ export default function PremiumEmailCreator() {
     };
   }, []);
 
-  // ===== Validación =====
   const paragraphMinOk = useMemo(() => {
     if (emailMode !== "template") return true;
     const paras = emailParagraphs || [];
@@ -541,7 +507,42 @@ export default function PremiumEmailCreator() {
 
   const hasValidInput = hasAnyInput && paragraphMinOk;
 
-  // ===== Acciones =====
+  const templateFilledCount = useMemo(() => {
+    return [
+      (emailSaludo || "").trim(),
+      (emailIntro || "").trim(),
+      ...(emailParagraphs || []).map((p) => (p || "").trim()).filter(Boolean),
+      (emailFinalPhrase || "").trim(),
+      (emailSaludo2 || "").trim(),
+      (emailNombre || "").trim(),
+      (chatInput || "").trim(),
+    ].filter(Boolean).length;
+  }, [
+    emailSaludo,
+    emailIntro,
+    emailParagraphs,
+    emailFinalPhrase,
+    emailSaludo2,
+    emailNombre,
+    chatInput,
+  ]);
+
+  const creativeFilledCount = useMemo(() => {
+    return [(creativeInfo || "").trim(), (chatInput || "").trim()].filter(Boolean).length;
+  }, [creativeInfo, chatInput]);
+
+  const hasEnoughInfoWithoutConfirm = useMemo(() => {
+    if (emailMode === "creative") {
+      return creativeFilledCount >= 1;
+    }
+    return templateFilledCount >= 2;
+  }, [emailMode, creativeFilledCount, templateFilledCount]);
+
+  const closeMissingInfoConfirm = () => {
+    setShowMissingInfoConfirm(false);
+    setPendingGenerateMode(null);
+  };
+
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
@@ -738,7 +739,6 @@ export default function PremiumEmailCreator() {
 
     const data = await res.json();
 
-    // ✅✅✅ FIX: actualizar contador del header (igual que Corrector)
     if (data?.ok && typeof data.usedChars === "number" && typeof data.limitChars === "number") {
       window.dispatchEvent(
         new CustomEvent("premium-usage-update", {
@@ -766,8 +766,7 @@ export default function PremiumEmailCreator() {
     return { kind: "ok", rawText, usageTotal };
   };
 
-  // ===== Generar =====
-  const handleGenerate = async () => {
+  const handleGenerate = async (forceContinue = false) => {
     setLoading(true);
     setErrorMsg("");
     clearLimit();
@@ -798,6 +797,13 @@ export default function PremiumEmailCreator() {
         )
       );
       setLoading(false);
+      return;
+    }
+
+    if (!forceContinue && !hasEnoughInfoWithoutConfirm) {
+      setLoading(false);
+      setPendingGenerateMode(emailMode);
+      setShowMissingInfoConfirm(true);
       return;
     }
 
@@ -854,16 +860,12 @@ export default function PremiumEmailCreator() {
       '  - EN formal: "Dear ...,"\n' +
       '  - FR formal: "Madame, Monsieur,"\n' +
       "- intro: un párrafo.\n" +
-      "- paragraphs: array de párrafos (uno por cada idea del usuario).\n" +
-      "- finalPhrase: una frase final (SIEMPRE debes crearla aunque el usuario no la escriba).\n" +
-      "- closing: SOLO cierre (ej: '" +
-      defaultClosing +
-      "') (sin nombre).\n" +
-      "- name: SOLO el nombre (ej: '" +
-      finalName +
-      "').\n" +
+      "- paragraphs: array de párrafos.\n" +
+      "- finalPhrase: una frase final.\n" +
+      "- closing: SOLO cierre (sin nombre).\n" +
+      "- name: SOLO el nombre.\n" +
       "REGLA: si el usuario escribe en otro idioma, tú lo REESCRIBES al idioma de salida.\n" +
-      "REGLA: no copies literal, interpreta y mejora las frases.";
+      "REGLA: no copies literal, interpreta y mejora SOLO cuando el modo lo permita.";
 
     const basePrompt =
       emailMode === "creative"
@@ -871,7 +873,8 @@ export default function PremiumEmailCreator() {
             "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
             "",
             "MODO: CREATIVO",
-            "El usuario solo aporta información general. Tú debes inferir todas las partes del email (saludo, intro, párrafos, frase final, cierre y nombre si falta).",
+            "Si faltan datos, puedes completar los huecos de forma natural y coherente.",
+            "Puedes inferir las partes que falten del email (saludo, intro, párrafos, frase final, cierre y nombre si falta).",
             "",
             "INFORMACIÓN DEL USUARIO (puede estar en cualquier idioma):",
             `${(creativeInfo || "").trim()}`,
@@ -886,19 +889,23 @@ export default function PremiumEmailCreator() {
             "IMPORTANTE: TODO debe salir en el idioma del selector, sin mezcla.",
           ].join("\n")
         : [
-            "El usuario escribe rápido y suelto. Interpreta y crea un email perfecto, con frases buenas y coherentes.",
+            "Eres un redactor experto de emails.",
+            "",
+            "MODO: PLANTILLA",
+            "Debes construir el email SOLO con la información escrita por el usuario.",
+            "NO inventes datos.",
+            "NO completes huecos con contenido nuevo.",
+            "NO añadas contexto, motivos, detalles o explicaciones que el usuario no haya dado.",
+            "Si un campo está vacío, déjalo resuelto de la forma más neutra posible y mínima, SIN inventar contexto adicional.",
+            "No reutilices contenido anterior ni supongas información no escrita en esta solicitud.",
             "",
             "DATOS DEL USUARIO (pueden estar en cualquier idioma):",
-            `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío -> crea uno)"}`,
-            `- (2) Intro: ${(emailIntro || "").trim() || "(vacío -> crea una)"}`,
-            `- (3) Párrafos/Notas:\n${
-              paragraphsBlock
-                ? paragraphsBlock
-                : "(vacío -> crea contenido mínimo coherente)"
-            }`,
-            `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío -> crea una)"}`,
-            `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío -> usa uno adecuado)"}`,
-            `- (6) Nombre: ${(emailNombre || "").trim() || `(vacío -> usa "${finalName}")`}`,
+            `- (1) Saludo: ${(emailSaludo || "").trim() || "(vacío)"}`,
+            `- (2) Intro: ${(emailIntro || "").trim() || "(vacío)"}`,
+            `- (3) Párrafos/Notas:\n${paragraphsBlock ? paragraphsBlock : "(vacío)"}`,
+            `- (4) Frase final: ${(emailFinalPhrase || "").trim() || "(vacío)"}`,
+            `- (5) Cierre: ${(emailSaludo2 || "").trim() || "(vacío)"}`,
+            `- (6) Nombre: ${(emailNombre || "").trim() || "(vacío)"}`,
             "",
             userInstructions ? userInstructions : "",
             "",
@@ -985,11 +992,9 @@ export default function PremiumEmailCreator() {
       const finalClosing =
         (emailSaludo2 || "").trim() || parts1.closing || defaultClosing;
 
-      // ✅ Frase final: opcional usuario, pero SIEMPRE la IA la crea
       const finalFinalPhrase =
         (emailFinalPhrase || "").trim() || parts1.finalPhrase || defaultFinalPhrase;
 
-      // ✅ Saludo SIEMPRE correcto (idioma + coma + destinatario si existe)
       const finalSaludo1 = ensureSaludoHasAddressee(
         parts1.saludo,
         emailSaludo,
@@ -1010,7 +1015,6 @@ export default function PremiumEmailCreator() {
 
       let builtBody1 = buildBodyFromParts(safeParts);
 
-      // 🔥 NUEVA VALIDACIÓN POR PARTES (para detectar saludo mal idioma)
       const partsToCheck = [
         subject1,
         finalSaludo1,
@@ -1107,7 +1111,6 @@ export default function PremiumEmailCreator() {
 
           const builtBody2 = buildBodyFromParts(safeParts2);
 
-          // ✅✅✅ Gastados: suma SOLO el intento final aceptado
           const spentNow2 =
             typeof r2.usageTotal === "number" ? r2.usageTotal : basePrompt.length + raw2.length;
           setSpent((p) => p + (spentNow2 || 0));
@@ -1123,7 +1126,6 @@ export default function PremiumEmailCreator() {
         }
       }
 
-      // ✅✅✅ Gastados: suma SOLO cuando el email queda bien (sin retry)
       const spentNow1 =
         typeof r1.usageTotal === "number" ? r1.usageTotal : basePrompt.length + raw1.length;
       setSpent((p) => p + (spentNow1 || 0));
@@ -1163,12 +1165,10 @@ export default function PremiumEmailCreator() {
             variants={pageVariants}
             transition={{ duration: 0.3 }}
           >
-            {/* ===== Panel Izquierdo ===== */}
             <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
 
-                {/* ✅ Botones: Creativo / Plantilla */}
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -1231,7 +1231,7 @@ export default function PremiumEmailCreator() {
                     <div className="mt-2">
                       <Button
                         type="button"
-                        onClick={handleGenerate}
+                        onClick={() => handleGenerate()}
                         disabled={loading || !hasValidInput}
                         className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
                         style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
@@ -1242,7 +1242,6 @@ export default function PremiumEmailCreator() {
                   </>
                 ) : (
                   <>
-                    {/* 1 */}
                     <div className="mb-5">
                       <div className="text-sm font-semibold text-slate-800 mb-2">
                         {labelSmall1}
@@ -1259,7 +1258,6 @@ export default function PremiumEmailCreator() {
                       />
                     </div>
 
-                    {/* 2 */}
                     <div className="mb-5">
                       <div className="text-sm font-semibold text-slate-800 mb-2">
                         {labelSmall2}
@@ -1276,7 +1274,6 @@ export default function PremiumEmailCreator() {
                       />
                     </div>
 
-                    {/* 3 */}
                     <div className="mb-3 flex items-center justify-between">
                       <div className="text-sm font-semibold text-slate-800">{labelBig3}</div>
                       <button
@@ -1315,7 +1312,6 @@ export default function PremiumEmailCreator() {
                       ))}
                     </div>
 
-                    {/* ✅ 4 - Frase final */}
                     <div className="mb-5">
                       <div className="text-sm font-semibold text-slate-800 mb-2">
                         {labelFinal}
@@ -1332,7 +1328,6 @@ export default function PremiumEmailCreator() {
                       />
                     </div>
 
-                    {/* ✅ 5 - Saludo */}
                     <div className="mb-5">
                       <div className="text-sm font-semibold text-slate-800 mb-2">
                         {labelSmall4}
@@ -1349,7 +1344,6 @@ export default function PremiumEmailCreator() {
                       />
                     </div>
 
-                    {/* ✅ 6 - Nombre */}
                     <div className="mb-4">
                       <div className="text-sm font-semibold text-slate-800 mb-2">
                         {labelSmall5}
@@ -1370,7 +1364,6 @@ export default function PremiumEmailCreator() {
               </div>
             </aside>
 
-            {/* ===== Panel Derecho ===== */}
             <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-2">
@@ -1395,7 +1388,6 @@ export default function PremiumEmailCreator() {
                       }
                     }}
                   />
-                  
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -1531,7 +1523,7 @@ export default function PremiumEmailCreator() {
                   >
                     <Button
                       type="button"
-                      onClick={handleGenerate}
+                      onClick={() => handleGenerate()}
                       disabled={loading || !hasValidInput}
                       className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
                       style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
@@ -1676,6 +1668,54 @@ export default function PremiumEmailCreator() {
           </motion.section>
         </div>
       </section>
+
+      {showMissingInfoConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="text-[18px] font-semibold text-slate-900 mb-3">
+              {tr(
+                "premiumEmailCreator.missing_info_title",
+                "No hay información suficiente"
+              )}
+            </h3>
+
+            <p className="text-[14px] leading-6 text-slate-600 mb-6">
+              {pendingGenerateMode === "creative"
+                ? tr(
+                    "premiumEmailCreator.missing_info_creative_text",
+                    "No hay información suficiente. ¿Deseas continuar? En modo Creativo se completarán los huecos inventando lo necesario de forma coherente."
+                  )
+                : tr(
+                    "premiumEmailCreator.missing_info_template_text",
+                    "No hay información suficiente. ¿Deseas continuar? En modo Plantilla solo se creará el email con la información disponible, sin inventar nada."
+                  )}
+            </p>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeMissingInfoConfirm}
+                className="h-10 px-5 rounded-full border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                {tr("premiumEmailCreator.missing_info_no", "No")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMissingInfoConfirm(false);
+                  setPendingGenerateMode(null);
+                  handleGenerate(true);
+                }}
+                className="h-10 px-5 rounded-full text-white hover:brightness-95"
+                style={{ backgroundColor: "#2563eb" }}
+              >
+                {tr("premiumEmailCreator.missing_info_yes", "Sí")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
