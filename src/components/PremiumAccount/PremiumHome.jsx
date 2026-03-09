@@ -223,7 +223,7 @@ export default function PremiumHome() {
 
         {/* CREADOR DE TEXTO */}
         <div
-          onClick={() => navigate("/cuenta-premium/creador-texto")}
+          onClick={() => navigate("/cuenta-premium/texto")}
           className="
             bg-white rounded-2xl shadow-sm border border-slate-200 p-6 min-h-[190px]
             cursor-pointer transform transition
@@ -251,7 +251,7 @@ export default function PremiumHome() {
 
         {/* CREADOR DE EMAIL */}
         <div
-          onClick={() => navigate("/cuenta-premium/creador-email")}
+          onClick={() => navigate("/cuenta-premium/email")}
           className="
             bg-white rounded-2xl shadow-sm border border-slate-200 p-6 min-h-[190px]
             cursor-pointer transform transition
