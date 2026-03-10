@@ -234,25 +234,24 @@ export default function PremiumLibrary() {
       };
     }
 
-    if (kind === "text-template") {
-      return {
-        bg: "#EAF3FF",
-        border: "#D9E7FF",
-        iconSrc: "/Library2.jpg",
-        labelPrefix: tr("library_prefix_text_template", "Texto:"),
-        iconSize: 56,
-      };
-    }
-
-    if (kind === "gmail-template") {
-      return {
-        bg: "#EAF3FF",
-        border: "#D9E7FF",
-        iconSrc: "/Library2.jpg",
-        labelPrefix: tr("library_prefix_gmail_template", "Gmail:"),
-        iconSize: 56,
-      };
-    }
+if (kind === "text-template") {
+  return {
+    bg: "#EAF3FF",
+    border: "#D9E7FF",
+    iconSrc: "/Library2.jpg",
+    labelPrefix: tr("library_prefix_text_template", "Texto:"),
+    iconSize: 56,
+  };
+}
+if (kind === "gmail-template") {
+  return {
+    bg: "#FFF7ED",
+    border: "#FDBA74",
+    iconSrc: "/Library2.jpg",
+    labelPrefix: tr("library_prefix_gmail_template", "Gmail:"),
+    iconSize: 56,
+  };
+}
 
     if (kind === "corrector") {
       return {
