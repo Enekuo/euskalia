@@ -308,7 +308,7 @@ export default function PremiumTextCreator() {
     addLibraryDoc({
       kind: "text",
       title: niceTitle,
-      content: fullExportText || result,
+      content: fullExportText || result, 
     });
 
     setSavedToLibrary(true);
