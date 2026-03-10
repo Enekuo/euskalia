@@ -656,7 +656,7 @@ const hasEnoughInfoWithoutConfirm = useMemo(() => {
     }
 
     addLibraryDoc({
-      kind: "email-template",
+      kind: "gmail-template",
       title,
       content: `Asunto: ${emailSubject}\n\n${result}`,
     });
