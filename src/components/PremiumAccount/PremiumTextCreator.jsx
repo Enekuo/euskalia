@@ -306,7 +306,7 @@ export default function PremiumTextCreator() {
       tr("premiumTextCreator.library_default_title", "Texto generado");
 
     addLibraryDoc({
-      kind: "text",
+      kind: "text-template",
       title: niceTitle,
       content: fullExportText || result, 
     });
