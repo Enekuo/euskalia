@@ -71,7 +71,6 @@ function cleanAiTitle(raw) {
   t = t.replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
   t = t.replace(/\s+/g, " ").trim();
   t = t.replace(/\s*[.。]+$/g, "").trim();
-  // evita títulos demasiado largos desde origen
   if (t.length > 60) t = t.slice(0, 60).trim();
   return t;
 }
@@ -83,6 +82,8 @@ function fallbackTitleByKind(kind) {
   if (kind === "paraphraser") return "Parafrasea";
   if (kind === "ai-detector") return "IA analisia";
   if (kind === "humanizer") return "Gizatiartua";
+  if (kind === "text-template") return "Texto";
+  if (kind === "gmail-template") return "Gmail";
   return "Dokumentua";
 }
 
@@ -107,12 +108,15 @@ async function generateTitleWithAI({ content, kind }) {
       ? "This is an AI detector analysis."
       : kind === "humanizer"
       ? "This is a humanized rewrite."
+      : kind === "text-template"
+      ? "This is a text creation."
+      : kind === "gmail-template"
+      ? "This is an email creation."
       : "This is a document.";
 
   const system =
     "You are a professional title generator. Return ONLY the title. No quotes, no colon, no explanations.";
 
-  // ✅ fuerza título MUY corto para evitar recortes
   const userPrompt = `Create a short, clear title (max 4 words) that describes the content.
 Write the title in the SAME LANGUAGE as the content.
 Do not start with words like "Text", "Translation" or "Summary".
@@ -156,10 +160,11 @@ export function addLibraryDoc({ kind, title, content }) {
   const createdAt = new Date().toISOString();
   const createdAtLabel = formatDateLabel(createdAt);
 
-  // Ahora aceptamos también: paraphraser / ai-detector / humanizer
   const safeKind =
     kind === "translation"
       ? "translation"
+      : kind === "summary"
+      ? "summary"
       : kind === "corrector"
       ? "corrector"
       : kind === "paraphraser"
@@ -168,15 +173,21 @@ export function addLibraryDoc({ kind, title, content }) {
       ? "ai-detector"
       : kind === "humanizer"
       ? "humanizer"
+      : kind === "text-template"
+      ? "text-template"
+      : kind === "gmail-template"
+      ? "gmail-template"
       : "summary";
 
-  // ✅ Guardado inmediato con título temporal (siempre)
-  const initialTitle = fallbackTitleByKind(safeKind);
+  const initialTitle = clipTitle(
+    title || fallbackTitleByKind(safeKind),
+    35
+  );
 
   const doc = {
     id,
     kind: safeKind,
-    title: clipTitle(initialTitle, 35),
+    title: initialTitle,
     content: String(content || ""),
     createdAt,
     createdAtLabel,
@@ -185,7 +196,6 @@ export function addLibraryDoc({ kind, title, content }) {
   docs = [doc, ...docs];
   emit();
 
-  // ✅ SIEMPRE mejorar título con IA (sin bloquear el guardado)
   ;(async () => {
     const aiTitle = await generateTitleWithAI({
       content: doc.content,
