@@ -6544,6 +6544,12 @@ premiumTextCreator: {
   error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso API-tik.", EN: "No text was received from the API.", FR: "Aucun texte n’a été reçu depuis l’API." },
   error_generic: { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
 },
+library_prefix_text_template: {
+  ES: "Texto:",
+  EUS: "Testua:",
+  EN: "Text:",
+  FR: "Texte:",
+},
 
 // =========================
 // PREMIUM CREADOR DE EMAIL
@@ -6869,6 +6875,14 @@ premiumAiAssistant_errorEmpty: {
   EN: "Empty response from the server.",
   FR: "Réponse vide du serveur.",
 },
+library_prefix_gmail_template: {
+  ES: "Email:",
+  EUS: "Emaila:",
+  EN: "Email:",
+  FR: "Email :",
+},
+
+
 // =========================
 //    PREMIUM LIMITBANNER
 // =========================

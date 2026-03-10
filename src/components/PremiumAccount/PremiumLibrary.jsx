@@ -239,7 +239,7 @@ export default function PremiumLibrary() {
         bg: "#EAF3FF",
         border: "#D9E7FF",
         iconSrc: "/Library2.jpg",
-        labelPrefix: "Texto:",
+        labelPrefix: tr("library_prefix_text_template", "Texto:"),
         iconSize: 56,
       };
     }
@@ -249,7 +249,7 @@ export default function PremiumLibrary() {
         bg: "#EAF3FF",
         border: "#D9E7FF",
         iconSrc: "/Library2.jpg",
-        labelPrefix: "Gmail:",
+        labelPrefix: tr("library_prefix_gmail_template", "Gmail:"),
         iconSize: 56,
       };
     }
