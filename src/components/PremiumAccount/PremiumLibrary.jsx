@@ -706,14 +706,19 @@ return (
                               navigate(`/cuenta-premium/biblioteca/${doc.id}`)
                             }
                           >
-                            <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
-                              <img
-                                src={iconSrc}
-                                alt=""
-                                width={40}
-                                height={40}
-                                className="block select-none"
-                              />
+                            <div
+  className="inline-flex items-center justify-center rounded-xl bg-white"
+  style={{ width: 56, height: 56 }}
+>
+  <img
+    src={iconSrc}
+    alt=""
+    width={40}
+    height={40}
+    className="block select-none object-contain"
+    draggable={false}
+  />
+
                               <h3
                                 className="mt-6 text-[18px] leading-[24px] pr-4"
                                 style={{
