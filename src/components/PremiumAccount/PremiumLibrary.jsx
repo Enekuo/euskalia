@@ -236,583 +236,620 @@ export default function PremiumLibrary() {
 
 if (kind === "text-template") {
   return {
-    bg: "linear-gradient(90deg, #2563eb 0%, #06b6d4 100%)",
-    border: "#2563eb",
+    bg: "linear-gradient(90deg, #38CFE0 0%, #2563EB 55%, #243BEE 100%)",
+    border: "transparent",
     iconSrc: "/Library2.jpg",
     labelPrefix: tr("library_prefix_text_template", "Texto:"),
     iconSize: 56,
     textColor: "#FFFFFF",
-    subTextColor: "rgba(255,255,255,0.92)",
-    dateColor: "rgba(255,255,255,0.88)",
-    menuColor: "rgba(255,255,255,0.9)",
+    subTextColor: "#FFFFFF",
+    dateColor: "#FFFFFF",
+    menuColor: "#FFFFFF",
   };
 }
 
 if (kind === "gmail-template") {
   return {
-    bg: "linear-gradient(90deg, #f97316 0%, #f59e0b 100%)",
-    border: "#f97316",
+    bg: "linear-gradient(90deg, #F6C232 0%, #FF8A00 55%, #FF5A1F 100%)",
+    border: "transparent",
     iconSrc: "/Library2.jpg",
     labelPrefix: tr("library_prefix_gmail_template", "Email:"),
     iconSize: 56,
     textColor: "#FFFFFF",
-    subTextColor: "rgba(255,255,255,0.92)",
-    dateColor: "rgba(255,255,255,0.88)",
-    menuColor: "rgba(255,255,255,0.9)",
+    subTextColor: "#FFFFFF",
+    dateColor: "#FFFFFF",
+    menuColor: "#FFFFFF",
   };
 }
 
-    if (kind === "corrector") {
-      return {
-        bg: "#E6F9EE",
-        border: "#C6EED9",
-        iconSrc: "/Library3.png",
-        labelPrefix: tr("library_prefix_corrector", "Zuzenketa:"),
-        iconSize: 80,
-      };
-    }
-
-    if (kind === "paraphraser") {
-      return {
-        bg: "#FFF3E6",
-        border: "#FFD8B8",
-        iconSrc: "/Library4.png",
-        labelPrefix: tr("library_prefix_paraphraser", "Parafraseoa:"),
-        iconSize: 56,
-      };
-    }
-
-    return {
-      bg: "#F0FDF4",
-      border: "#CFF5DB",
-      iconSrc: "/Library5.png",
-      labelPrefix: tr("library_prefix_humanizer", "Humanizatua:"),
-      iconSize: 56,
-    };
+if (kind === "corrector") {
+  return {
+    bg: "#E6F9EE",
+    border: "#C6EED9",
+    iconSrc: "/Library3.png",
+    labelPrefix: tr("library_prefix_corrector", "Zuzenketa:"),
+    iconSize: 80,
   };
+}
 
-  const formatDateLabel = (doc) => {
-    if (doc.createdAtLabel) return doc.createdAtLabel;
-    if (doc.createdAt) {
-      try {
-        return new Date(doc.createdAt)
-          .toLocaleDateString("es-ES", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })
-          .replace(".", "");
-      } catch {
-        return "";
-      }
-    }
-    return "";
+if (kind === "paraphraser") {
+  return {
+    bg: "#FFF3E6",
+    border: "#FFD8B8",
+    iconSrc: "/Library4.png",
+    labelPrefix: tr("library_prefix_paraphraser", "Parafraseoa:"),
+    iconSize: 56,
   };
+}
 
-  // ===== Datos carpeta abierta =====
-  const currentFolder =
-    type === "folders" && viewFolderId
-      ? folders.find((f) => f.id === viewFolderId)
-      : null;
+return {
+  bg: "#F0FDF4",
+  border: "#CFF5DB",
+  iconSrc: "/Library5.png",
+  labelPrefix: tr("library_prefix_humanizer", "Humanizatua:"),
+  iconSize: 56,
+};
+};
 
-  const folderDocs =
-    currentFolder && currentFolder.docIds && currentFolder.docIds.length
-      ? docs.filter((d) => currentFolder.docIds.includes(d.id))
-      : [];
+const formatDateLabel = (doc) => {
+  if (doc.createdAtLabel) return doc.createdAtLabel;
+  if (doc.createdAt) {
+    try {
+      return new Date(doc.createdAt)
+        .toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+        .replace(".", "");
+    } catch {
+      return "";
+    }
+  }
+  return "";
+};
 
-  // ===== Render =====
-  return (
-    <>
-      <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
-        <div className="mx-auto w-full px-6">
-          {/* CUADRO DE LAS TARJETAS EN BLANCO */}
-          <div className="rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm p-8">
-            {/* Filtros arriba */}
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-3">
-                {[
-                  { id: "all", label: tr("library_filter_all", "Todos") },
-                  { id: "text", label: tr("library_filter_texts", "Textos") },
-                  {
-                    id: "summary",
-                    label: tr("library_filter_summaries", "Resúmenes"),
-                  },
-                  {
-                    id: "corrections",
-                    label: tr("library_filter_corrections", "Zuzenketak"),
-                  },
-                  {
-                    id: "paraphraser",
-                    label: tr("library_filter_paraphrases", "Parafraseos"),
-                  },
-                  {
-                    id: "humanizer",
-                    label: tr("library_filter_humanizer", "Humanizador"),
-                  },
-                  {
-                    id: "folders",
-                    label: tr("library_filter_folders", "Mis carpetas"),
-                  },
-                ].map(({ id, label }) => {
-                  const active = type === id;
+// ===== Datos carpeta abierta =====
+const currentFolder =
+  type === "folders" && viewFolderId
+    ? folders.find((f) => f.id === viewFolderId)
+    : null;
 
-                  const btnBase =
-                    "group relative overflow-hidden rounded-full text-sm px-4 py-2 transition-colors duration-150 hover:shadow-sm";
-                  const textCls = active
-                    ? "relative z-10 text-[#1A73E8]"
-                    : "relative z-10 text-slate-700 group-hover:text-slate-900";
-                  const bgBase =
-                    "absolute inset-0 rounded-full scale-100 transition-transform duration-150 will-change-transform";
-                  const bgCls = active
-                    ? `${bgBase} bg-[#E8F0FE] group-hover:scale-[1.08] group-hover:bg-[#E3EEFF]`
-                    : `${bgBase} bg-transparent group-hover:bg-[#F5F7FA] group-hover:scale-[1.08]`;
+const folderDocs =
+  currentFolder && currentFolder.docIds && currentFolder.docIds.length
+    ? docs.filter((d) => currentFolder.docIds.includes(d.id))
+    : [];
 
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => {
-                        setType(id);
-                        setViewFolderId(null);
-                      }}
-                      className={btnBase}
-                      aria-pressed={active}
-                      style={{ backfaceVisibility: "hidden" }}
-                    >
-                      <span className={bgCls} aria-hidden="true" />
-                      <span className={textCls}>{label}</span>
-                    </button>
-                  );
-                })}
-              </div>
+// ===== Render =====
+return (
+  <>
+    <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
+      <div className="mx-auto w-full px-6">
+        {/* CUADRO DE LAS TARJETAS EN BLANCO */}
+        <div className="rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm p-8">
+          {/* Filtros arriba */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              {[
+                { id: "all", label: tr("library_filter_all", "Todos") },
+                { id: "text", label: tr("library_filter_texts", "Textos") },
+                {
+                  id: "summary",
+                  label: tr("library_filter_summaries", "Resúmenes"),
+                },
+                {
+                  id: "corrections",
+                  label: tr("library_filter_corrections", "Zuzenketak"),
+                },
+                {
+                  id: "paraphraser",
+                  label: tr("library_filter_paraphrases", "Parafraseos"),
+                },
+                {
+                  id: "humanizer",
+                  label: tr("library_filter_humanizer", "Humanizador"),
+                },
+                {
+                  id: "folders",
+                  label: tr("library_filter_folders", "Mis carpetas"),
+                },
+              ].map(({ id, label }) => {
+                const active = type === id;
 
-              {type === "folders" && (
-                <button
-                  onClick={openFolderModal}
-                  className="ml-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-                >
-                  <Plus className="w-4 h-4" />
-                  {tr("library_create_folder", "Crear carpeta")}
-                </button>
-              )}
+                const btnBase =
+                  "group relative overflow-hidden rounded-full text-sm px-4 py-2 transition-colors duration-150 hover:shadow-sm";
+                const textCls = active
+                  ? "relative z-10 text-[#1A73E8]"
+                  : "relative z-10 text-slate-700 group-hover:text-slate-900";
+                const bgBase =
+                  "absolute inset-0 rounded-full scale-100 transition-transform duration-150 will-change-transform";
+                const bgCls = active
+                  ? `${bgBase} bg-[#E8F0FE] group-hover:scale-[1.08] group-hover:bg-[#E3EEFF]`
+                  : `${bgBase} bg-transparent group-hover:bg-[#F5F7FA] group-hover:scale-[1.08]`;
+
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => {
+                      setType(id);
+                      setViewFolderId(null);
+                    }}
+                    className={btnBase}
+                    aria-pressed={active}
+                    style={{ backfaceVisibility: "hidden" }}
+                  >
+                    <span className={bgCls} aria-hidden="true" />
+                    <span className={textCls}>{label}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* ===== TARJETAS NORMALES ===== */}
-            {(type === "all" ||
-              type === "text" ||
-              type === "summary" ||
-              type === "corrections" ||
-              type === "paraphraser" ||
-              type === "humanizer") && (
-              <div className="flex flex-wrap gap-[38px]">
-                {/* Crear nuevo */}
-                <button
-                  type="button"
-                  onClick={handleCreateTemplate}
-                  className="rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition"
-                  style={{ width: 280, height: 196, borderRadius: 16 }}
-                >
-                  <div className="h-full w-full flex flex-col items-center justify-center">
-                    <div
-                      className="flex items-center justify-center rounded-full bg-indigo-50"
-                      style={{ width: 70, height: 70 }}
-                    >
-                      <Plus
-                        className="text-indigo-600"
-                        style={{ width: 21, height: 21 }}
-                      />
-                    </div>
-                    <span className="mt-4 text-[20px] leading-6 text-slate-900">
-                      {createAction.label}
-                    </span>
+            {type === "folders" && (
+              <button
+                onClick={openFolderModal}
+                className="ml-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+                {tr("library_create_folder", "Crear carpeta")}
+              </button>
+            )}
+          </div>
+
+          {/* ===== TARJETAS NORMALES ===== */}
+          {(type === "all" ||
+            type === "text" ||
+            type === "summary" ||
+            type === "corrections" ||
+            type === "paraphraser" ||
+            type === "humanizer") && (
+            <div className="flex flex-wrap gap-[38px]">
+              {/* Crear nuevo */}
+              <button
+                type="button"
+                onClick={handleCreateTemplate}
+                className="rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition"
+                style={{ width: 280, height: 196, borderRadius: 16 }}
+              >
+                <div className="h-full w-full flex flex-col items-center justify-center">
+                  <div
+                    className="flex items-center justify-center rounded-full bg-indigo-50"
+                    style={{ width: 70, height: 70 }}
+                  >
+                    <Plus
+                      className="text-indigo-600"
+                      style={{ width: 21, height: 21 }}
+                    />
                   </div>
-                </button>
+                  <span className="mt-4 text-[20px] leading-6 text-slate-900">
+                    {createAction.label}
+                  </span>
+                </div>
+              </button>
 
-                {/* Tarjetas documento */}
-                {docs
-                  .filter((doc) => {
-                    const k = normalizeKind(doc.kind);
-                    if (type === "text") {
-                      return k === "translation" || k === "text-template" || k === "gmail-template";
-                    }
-                    if (type === "summary") return k === "summary";
-                    if (type === "corrections") return k === "corrector";
-                    if (type === "paraphraser") return k === "paraphraser";
-                    if (type === "humanizer") return k === "humanizer";
-                    return true;
-                  })
-                  .map((doc) => {
-                    const nk = normalizeKind(doc.kind);
-                    const { bg, border, iconSrc, labelPrefix, iconSize } =
-                      getDocVisual({ kind: nk });
-                    const dateLabel = formatDateLabel(doc);
+              {/* Tarjetas documento */}
+              {docs
+                .filter((doc) => {
+                  const k = normalizeKind(doc.kind);
+                  if (type === "text") {
+                    return k === "translation" || k === "text-template" || k === "gmail-template";
+                  }
+                  if (type === "summary") return k === "summary";
+                  if (type === "corrections") return k === "corrector";
+                  if (type === "paraphraser") return k === "paraphraser";
+                  if (type === "humanizer") return k === "humanizer";
+                  return true;
+                })
+                .map((doc) => {
+                  const nk = normalizeKind(doc.kind);
+                  const {
+                    bg,
+                    border,
+                    iconSrc,
+                    labelPrefix,
+                    iconSize,
+                    textColor,
+                    subTextColor,
+                    dateColor,
+                    menuColor,
+                  } = getDocVisual({ kind: nk });
+                  const dateLabel = formatDateLabel(doc);
 
-                    return (
-                      <div
-                        key={doc.id}
-                        className="relative shadow-sm hover:shadow-md transition cursor-pointer"
-                        style={{
-                          width: 280,
-                          height: 196,
-                          borderRadius: 16,
-                          background: bg,
-                          border: `1px solid ${border}`,
+                  return (
+                    <div
+                      key={doc.id}
+                      className="relative shadow-sm hover:shadow-md transition cursor-pointer"
+                      style={{
+                        width: 280,
+                        height: 196,
+                        borderRadius: 16,
+                        background: bg,
+                        border: border === "transparent" ? "none" : `1px solid ${border}`,
+                      }}
+                      onClick={() => navigate(`/cuenta-premium/biblioteca/${doc.id}`)}
+                    >
+                      {/* Menú (3 puntos) */}
+                      <button
+                        ref={menuBtnRef}
+                        aria-label="Opciones"
+                        className="absolute top-3 right-3 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-white/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMenuOpenFor((prev) =>
+                            prev === doc.id ? null : doc.id
+                          );
                         }}
-                        onClick={() => navigate(`/cuenta-premium/biblioteca/${doc.id}`)}
+                        type="button"
                       >
-                        {/* Menú (3 puntos) */}
-                        <button
-                          ref={menuBtnRef}
-                          aria-label="Opciones"
-                          className="absolute top-3 right-3 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-white/60"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setMenuOpenFor((prev) =>
-                              prev === doc.id ? null : doc.id
-                            );
-                          }}
-                          type="button"
+                        <MoreVertical
+                          className="w-5 h-5"
+                          style={{ color: menuColor || "#475569" }}
+                        />
+                      </button>
+
+                      {menuOpenFor === doc.id && (
+                        <div
+                          ref={menuRef}
+                          className="absolute z-10 top-1/2 -translate-y-1/2 left-[calc(100%-100px)] w-[220px] rounded-xl border border-slate-200 bg-white shadow-lg py-2"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <MoreVertical className="w-5 h-5 text-slate-600" />
-                        </button>
-
-                        {menuOpenFor === doc.id && (
-                          <div
-                            ref={menuRef}
-                            className="absolute z-10 top-1/2 -translate-y-1/2 left-[calc(100%-100px)] w-[220px] rounded-xl border border-slate-200 bg-white shadow-lg py-2"
-                            onClick={(e) => e.stopPropagation()}
+                          <button
+                            className="w-full flex items-center gap-3 px-3 py-2 text-slate-800 hover:bg-slate-50"
+                            onClick={() => {
+                              openEditModal(doc);
+                            }}
                           >
-                            <button
-                              className="w-full flex items-center gap-3 px-3 py-2 text-slate-800 hover:bg-slate-50"
-                              onClick={() => {
-                                openEditModal(doc);
-                              }}
-                            >
-                              <Pencil className="w-5 h-5 text-slate-600" />
-                              <span>
-                                {tr("library_doc_edit_title", "Editar título")}
-                              </span>
-                            </button>
-                            <button
-                              className="w-full flex items-center gap-3 px-3 py-2 text-slate-800 hover:bg-slate-50"
-                              onClick={() => handleDeleteDoc(doc.id)}
-                            >
-                              <Trash2 className="w-5 h-5 text-slate-600" />
-                              <span>
-                                {tr("library_doc_delete", "Eliminar documento")}
-                              </span>
-                            </button>
-                          </div>
-                        )}
+                            <Pencil className="w-5 h-5 text-slate-600" />
+                            <span>
+                              {tr("library_doc_edit_title", "Editar título")}
+                            </span>
+                          </button>
+                          <button
+                            className="w-full flex items-center gap-3 px-3 py-2 text-slate-800 hover:bg-slate-50"
+                            onClick={() => handleDeleteDoc(doc.id)}
+                          >
+                            <Trash2 className="w-5 h-5 text-slate-600" />
+                            <span>
+                              {tr("library_doc_delete", "Eliminar documento")}
+                            </span>
+                          </button>
+                        </div>
+                      )}
 
-                        {/* Contenido tarjeta */}
-                        {nk === "paraphraser" ? (
-                          <div className="h-full w-full px-5 pt-2 pb-6 flex flex-col">
-                            <div className="h-[96px] w-full flex items-center justify-start">
+                      {/* Contenido tarjeta */}
+                      {nk === "paraphraser" ? (
+                        <div className="h-full w-full px-5 pt-2 pb-6 flex flex-col">
+                          <div className="h-[96px] w-full flex items-center justify-start">
+                            <img
+                              src={iconSrc}
+                              alt=""
+                              className="block select-none w-[90px] h-[90px] object-contain -ml-4"
+                              draggable={false}
+                            />
+                          </div>
+                          <h3
+                            className="-mt-4 text-[18px] leading-[24px] pr-4"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <span className="font-semibold text-slate-900">
+                              {labelPrefix}
+                            </span>{" "}
+                            <span className="font-normal text-slate-700">
+                              {doc.title || tr("library_untitled", "Sin título")}
+                            </span>
+                          </h3>
+                          {dateLabel && (
+                            <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+                              {dateLabel}
+                            </p>
+                          )}
+                        </div>
+                      ) : nk === "humanizer" ? (
+                        <div className="h-full w-full px-5 pt-7 pb-6 flex flex-col">
+                          <img
+                            src={iconSrc}
+                            alt=""
+                            width={100}
+                            height={100}
+                            className="block select-none -mt-2 -mb-4 -ml-6"
+                            draggable={false}
+                          />
+                          <h3
+                            className="mt-5 text-[18px] leading-[24px] pr-4"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <span className="font-semibold text-slate-900">
+                              {labelPrefix}
+                            </span>{" "}
+                            <span className="font-normal text-slate-700">
+                              {doc.title || tr("library_untitled", "Sin título")}
+                            </span>
+                          </h3>
+                          {dateLabel && (
+                            <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+                              {dateLabel}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
+                          <img
+                            src={iconSrc}
+                            alt=""
+                            width={iconSize || 40}
+                            height={iconSize || 40}
+                            className={`block select-none ${
+                              nk === "corrector" ? "-mt-1 -ml-3" : "-mt-2 -mb-4"
+                            }`}
+                          />
+                          <h3
+                            className={`${
+                              nk === "corrector"
+                                ? "mt-3"
+                                : nk === "translation"
+                                ? "mt-6"
+                                : nk === "summary" || nk === "text-template" || nk === "gmail-template"
+                                ? "mt-7"
+                                : nk === "humanizer"
+                                ? "mt-2"
+                                : "mt-8"
+                            } text-[18px] leading-[24px] pr-4`}
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <span
+                              className="font-semibold"
+                              style={{ color: textColor || "#0f172a" }}
+                            >
+                              {labelPrefix}
+                            </span>{" "}
+                            <span
+                              className="font-normal"
+                              style={{ color: subTextColor || "#334155" }}
+                            >
+                              {doc.title || tr("library_untitled", "Sin título")}
+                            </span>
+                          </h3>
+                          {dateLabel && (
+                            <p
+                              className="mt-auto text-[14px] leading-[20px]"
+                              style={{ color: dateColor || "#334155" }}
+                            >
+                              {dateLabel}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          )}
+
+          {/* ===== MIS CARPETAS ===== */}
+          {type === "folders" && (
+            <>
+              {/* Vista carpeta abierta */}
+              {currentFolder && (
+                <>
+                  <div className="mb-4 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setViewFolderId(null)}
+                      className="text-sm text-sky-700 hover:text-sky-900"
+                    >
+                      ← {tr("folder_back", "Volver a mis carpetas")}
+                    </button>
+                    <span className="text-sm text-slate-500">/</span>
+                    <span className="text-base font-semibold text-slate-900 truncate">
+                      {currentFolder.name}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteFolder(currentFolder.id, currentFolder.name)}
+                      className="ml-auto inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                      aria-label={tr("folder_delete", "Eliminar carpeta")}
+                      title={tr("folder_delete", "Eliminar carpeta")}
+                    >
+                      <Trash2 className="w-4 h-4 text-slate-600" />
+                      {tr("folder_delete", "Eliminar carpeta")}
+                    </button>
+                  </div>
+
+                  {folderDocs.length === 0 ? (
+                    <p className="text-sm text-slate-500">
+                      {tr("folder_empty", "Esta carpeta todavía no tiene documentos.")}
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-[38px]">
+                      {folderDocs.map((doc) => {
+                        const nk = normalizeKind(doc.kind);
+                        const {
+                          bg,
+                          border,
+                          iconSrc,
+                          labelPrefix,
+                          textColor,
+                          subTextColor,
+                          dateColor,
+                        } = getDocVisual({ kind: nk });
+                        const dateLabel = formatDateLabel(doc);
+
+                        return (
+                          <div
+                            key={doc.id}
+                            className="relative shadow-sm hover:shadow-md transition cursor-pointer"
+                            style={{
+                              width: 280,
+                              height: 196,
+                              borderRadius: 16,
+                              background: bg,
+                              border: border === "transparent" ? "none" : `1px solid ${border}`,
+                            }}
+                            onClick={() =>
+                              navigate(`/cuenta-premium/biblioteca/${doc.id}`)
+                            }
+                          >
+                            <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
                               <img
                                 src={iconSrc}
                                 alt=""
-                                className="block select-none w-[90px] h-[90px] object-contain -ml-4"
-                                draggable={false}
+                                width={40}
+                                height={40}
+                                className="block select-none"
                               />
-                            </div>
-                            <h3
-                              className="-mt-4 text-[18px] leading-[24px] pr-4"
-                              style={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <span className="font-semibold text-slate-900">
-                                {labelPrefix}
-                              </span>{" "}
-                              <span className="font-normal text-slate-700">
-                                {doc.title || tr("library_untitled", "Sin título")}
-                              </span>
-                            </h3>
-                            {dateLabel && (
-                              <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                {dateLabel}
-                              </p>
-                            )}
-                          </div>
-                        ) : nk === "humanizer" ? (
-                          <div className="h-full w-full px-5 pt-7 pb-6 flex flex-col">
-                            <img
-                              src={iconSrc}
-                              alt=""
-                              width={100}
-                              height={100}
-                              className="block select-none -mt-2 -mb-4 -ml-6"
-                              draggable={false}
-                            />
-                            <h3
-                              className="mt-5 text-[18px] leading-[24px] pr-4"
-                              style={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <span className="font-semibold text-slate-900">
-                                {labelPrefix}
-                              </span>{" "}
-                              <span className="font-normal text-slate-700">
-                                {doc.title || tr("library_untitled", "Sin título")}
-                              </span>
-                            </h3>
-                            {dateLabel && (
-                              <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                {dateLabel}
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
-                            <img
-                              src={iconSrc}
-                              alt=""
-                              width={iconSize || 40}
-                              height={iconSize || 40}
-                              className={`block select-none ${
-                                nk === "corrector" ? "-mt-1 -ml-3" : "-mt-2 -mb-4"
-                              }`}
-                            />
-                            <h3
-                              className={`${
-                                nk === "corrector"
-                                  ? "mt-3"
-                                  : nk === "translation"
-                                  ? "mt-6"
-                                  : nk === "summary" || nk === "text-template" || nk === "gmail-template"
-                                  ? "mt-7"
-                                  : nk === "humanizer"
-                                  ? "mt-2"
-                                  : "mt-8"
-                              } text-[18px] leading-[24px] pr-4`}
-                              style={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <span className="font-semibold text-slate-900">
-                                {labelPrefix}
-                              </span>{" "}
-                              <span className="font-normal text-slate-700">
-                                {doc.title || tr("library_untitled", "Sin título")}
-                              </span>
-                            </h3>
-                            {dateLabel && (
-                              <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                {dateLabel}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
-
-            {/* ===== MIS CARPETAS ===== */}
-            {type === "folders" && (
-              <>
-                {/* Vista carpeta abierta */}
-                {currentFolder && (
-                  <>
-                    <div className="mb-4 flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setViewFolderId(null)}
-                        className="text-sm text-sky-700 hover:text-sky-900"
-                      >
-                        ← {tr("folder_back", "Volver a mis carpetas")}
-                      </button>
-                      <span className="text-sm text-slate-500">/</span>
-                      <span className="text-base font-semibold text-slate-900 truncate">
-                        {currentFolder.name}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteFolder(currentFolder.id, currentFolder.name)}
-                        className="ml-auto inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
-                        aria-label={tr("folder_delete", "Eliminar carpeta")}
-                        title={tr("folder_delete", "Eliminar carpeta")}
-                      >
-                        <Trash2 className="w-4 h-4 text-slate-600" />
-                        {tr("folder_delete", "Eliminar carpeta")}
-                      </button>
-                    </div>
-
-                    {folderDocs.length === 0 ? (
-                      <p className="text-sm text-slate-500">
-                        {tr("folder_empty", "Esta carpeta todavía no tiene documentos.")}
-                      </p>
-                    ) : (
-                      <div className="flex flex-wrap gap-[38px]">
-                        {folderDocs.map((doc) => {
-                          const nk = normalizeKind(doc.kind);
-                          const { bg, border, iconSrc, labelPrefix } =
-                            getDocVisual({ kind: nk });
-                          const dateLabel = formatDateLabel(doc);
-
-                          return (
-                            <div
-                              key={doc.id}
-                              className="relative shadow-sm hover:shadow-md transition cursor-pointer"
-                              style={{
-                                width: 280,
-                                height: 196,
-                                borderRadius: 16,
-                                background: bg,
-                                border: `1px solid ${border}`,
-                              }}
-                              onClick={() =>
-                                navigate(`/cuenta-premium/biblioteca/${doc.id}`)
-                              }
-                            >
-                              <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
-                                <img
-                                  src={iconSrc}
-                                  alt=""
-                                  width={40}
-                                  height={40}
-                                  className="block select-none"
-                                />
-                                <h3
-                                  className="mt-6 text-[18px] leading-[24px] pr-4"
-                                  style={{
-                                    display: "-webkit-box", 
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    overflow: "hidden",
-                                  }}
+                              <h3
+                                className="mt-6 text-[18px] leading-[24px] pr-4"
+                                style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <span
+                                  className="font-semibold"
+                                  style={{ color: textColor || "#0f172a" }}
                                 >
-                                  <span className="font-semibold text-slate-900">
-                                    {labelPrefix}
-                                  </span>{" "}
-                                  <span className="font-normal text-slate-700">
-                                    {doc.title || tr("library_untitled", "Sin título")}
-                                  </span>
-                                </h3>
-                                {dateLabel && (
-                                  <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                    {dateLabel}
-                                  </p>
-                                )}
-                              </div>
+                                  {labelPrefix}
+                                </span>{" "}
+                                <span
+                                  className="font-normal"
+                                  style={{ color: subTextColor || "#334155" }}
+                                >
+                                  {doc.title || tr("library_untitled", "Sin título")}
+                                </span>
+                              </h3>
+                              {dateLabel && (
+                                <p
+                                  className="mt-auto text-[14px] leading-[20px]"
+                                  style={{ color: dateColor || "#334155" }}
+                                >
+                                  {dateLabel}
+                                </p>
+                              )}
                             </div>
-                          );
-                        })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Lista vertical de carpetas */}
+              {!currentFolder && (
+                <div className="flex flex-col gap-3 w-full max-w-xl">
+                  {folders.length === 0 && (
+                    <div className="rounded-xl border border-dashed border-slate-300 p-6 text-slate-500">
+                      {tr("library_no_folders", "Aún no tienes carpetas. Crea la primera.")}
+                    </div>
+                  )}
+
+                  {folders.map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setViewFolderId(f.id)}
+                      className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm hover:shadow-md hover:border-sky-200 transition text-left"
+                    >
+                      <div className="flex items-center gap-2 text-slate-700 min-w-0">
+                        <Folder className="w-5 h-5 text-sky-500" />
+                        <span className="font-medium truncate">{f.name}</span>
                       </div>
-                    )}
-                  </>
-                )}
 
-                {/* Lista vertical de carpetas */}
-                {!currentFolder && (
-                  <div className="flex flex-col gap-3 w-full max-w-xl">
-                    {folders.length === 0 && (
-                      <div className="rounded-xl border border-dashed border-slate-300 p-6 text-slate-500">
-                        {tr("library_no_folders", "Aún no tienes carpetas. Crea la primera.")}
+                      <div className="flex items-center gap-3 shrink-0">
+                        <p className="text-xs text-slate-500">
+                          {new Date(f.createdAt).toLocaleString()}
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteFolder(f.id, f.name);
+                          }}
+                          className="h-9 w-9 inline-flex items-center justify-center rounded-full hover:bg-slate-100"
+                          aria-label={tr("folder_delete", "Eliminar carpeta")}
+                          title={tr("folder_delete", "Eliminar carpeta")}
+                        >
+                          <Trash2 className="w-5 h-5 text-slate-500" />
+                        </button>
                       </div>
-                    )}
-
-                    {folders.map((f) => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setViewFolderId(f.id)}
-                        className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm hover:shadow-md hover:border-sky-200 transition text-left"
-                      >
-                        <div className="flex items-center gap-2 text-slate-700 min-w-0">
-                          <Folder className="w-5 h-5 text-sky-500" />
-                          <span className="font-medium truncate">{f.name}</span>
-                        </div>
-
-                        <div className="flex items-center gap-3 shrink-0">
-                          <p className="text-xs text-slate-500">
-                            {new Date(f.createdAt).toLocaleString()}
-                          </p>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleDeleteFolder(f.id, f.name);
-                            }}
-                            className="h-9 w-9 inline-flex items-center justify-center rounded-full hover:bg-slate-100"
-                            aria-label={tr("folder_delete", "Eliminar carpeta")}
-                            title={tr("folder_delete", "Eliminar carpeta")}
-                          >
-                            <Trash2 className="w-5 h-5 text-slate-500" />
-                          </button>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* MODAL Crear carpeta */}
-      {isFolderModalOpen && (
+    {/* MODAL Crear carpeta */}
+    {isFolderModalOpen && (
+      <div
+        className="fixed inset-0 z-[60] flex items-center justify-center"
+        role="dialog"
+        aria-modal="true"
+      >
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="absolute inset-0 bg-black/45"
-            onClick={closeFolderModal}
-          />
-          <div className="relative w-full max-w-lg bg-white rounded-[18px] border border-slate-200 shadow-[0_24px_80px_rgba(2,6,23,0.22)]">
-            <div className="px-6 pt-5 pb-3 flex items-center justify-between">
-              <h3 className="text-[18px] leading-6 font-semibold text-slate-900">
-                {tr("folder_modal_title", "Crear nueva carpeta")}
-              </h3>
-              <button
-                onClick={closeFolderModal}
-                className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500"
-                aria-label={tr("close", "Cerrar")}
+          className="absolute inset-0 bg-black/45"
+          onClick={closeFolderModal}
+        />
+        <div className="relative w-full max-w-lg bg-white rounded-[18px] border border-slate-200 shadow-[0_24px_80px_rgba(2,6,23,0.22)]">
+          <div className="px-6 pt-5 pb-3 flex items-center justify-between">
+            <h3 className="text-[18px] leading-6 font-semibold text-slate-900">
+              {tr("folder_modal_title", "Crear nueva carpeta")}
+            </h3>
+            <button
+              onClick={closeFolderModal}
+              className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500"
+              aria-label={tr("close", "Cerrar")}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="px-6 pb-5">
-              <label className="block text-sm font_medium text-slate-700 mb-1">
-                {tr("folder_modal_label", "Nombre de la carpeta")}
-              </label>
-              <input
-                autoFocus
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                placeholder={tr("folder_modal_placeholder", "Ponle un nombre…")}
-                className="w-full rounded-[10px] border border-slate-300 bg-white px-3 py-2 text-[14px] leading-[22px] outline-none focus:ring-2 focus:ring-sky-500"
-              />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="px-6 pb-5">
+            <label className="block text-sm font_medium text-slate-700 mb-1">
+              {tr("folder_modal_label", "Nombre de la carpeta")}
+            </label>
+            <input
+              autoFocus
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
+              placeholder={tr("folder_modal_placeholder", "Ponle un nombre…")}
+              className="w-full rounded-[10px] border border-slate-300 bg-white px-3 py-2 text-[14px] leading-[22px] outline-none focus:ring-2 focus:ring-sky-500"
+            />
 
               <div className="mt-4">
                 <p className="text-xs font-medium text-slate-600 mb-2">
