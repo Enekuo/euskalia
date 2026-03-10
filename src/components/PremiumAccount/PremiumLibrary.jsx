@@ -84,6 +84,37 @@ export default function PremiumLibrary() {
     navigate(createAction.href);
   };
 
+  // ===== Crear automáticamente las 2 plantillas nuevas =====
+  useEffect(() => {
+    if (!Array.isArray(docs)) return;
+
+    const hasTextTemplate = docs.some((doc) => {
+      const k = String(doc?.kind || "").toLowerCase().trim();
+      return k === "text-template";
+    });
+
+    const hasGmailTemplate = docs.some((doc) => {
+      const k = String(doc?.kind || "").toLowerCase().trim();
+      return k === "gmail-template";
+    });
+
+    if (!hasTextTemplate) {
+      addLibraryDoc({
+        kind: "text-template",
+        title: "Plantilla para texto",
+        content: "",
+      });
+    }
+
+    if (!hasGmailTemplate) {
+      addLibraryDoc({
+        kind: "gmail-template",
+        title: "Plantilla para gmail",
+        content: "",
+      });
+    }
+  }, [docs]);
+
   // ===== Menú contextual por documento =====
   const [menuOpenFor, setMenuOpenFor] = useState(null); // id
   const menuRef = useRef(null);
@@ -203,11 +234,15 @@ export default function PremiumLibrary() {
     // humanizer
     if (k === "humanizer" || k === "humanize" || k === "humanizador") return "humanizer";
 
+    // nuevas plantillas
+    if (k === "text-template") return "text-template";
+    if (k === "gmail-template") return "gmail-template";
+
     return k || "translation";
   };
 
   const getDocVisual = (doc) => {
-    // translation | summary | corrector | paraphraser | humanizer
+    // translation | summary | corrector | paraphraser | humanizer | text-template | gmail-template
     const kind = normalizeKind(doc?.kind);
 
     if (kind === "translation") {
@@ -226,6 +261,26 @@ export default function PremiumLibrary() {
         border: "#D9E7FF",
         iconSrc: "/Library2.jpg",
         labelPrefix: tr("library_prefix_summary", "Laburpena:"),
+        iconSize: 56,
+      };
+    }
+
+    if (kind === "text-template") {
+      return {
+        bg: "#EAF3FF",
+        border: "#D9E7FF",
+        iconSrc: "/Library2.jpg",
+        labelPrefix: "Texto:",
+        iconSize: 56,
+      };
+    }
+
+    if (kind === "gmail-template") {
+      return {
+        bg: "#EAF3FF",
+        border: "#D9E7FF",
+        iconSrc: "/Library2.jpg",
+        labelPrefix: "Gmail:",
         iconSize: 56,
       };
     }
@@ -400,7 +455,9 @@ export default function PremiumLibrary() {
                 {docs
                   .filter((doc) => {
                     const k = normalizeKind(doc.kind);
-                    if (type === "text") return k === "translation";
+                    if (type === "text") {
+                      return k === "translation" || k === "text-template" || k === "gmail-template";
+                    }
                     if (type === "summary") return k === "summary";
                     if (type === "corrections") return k === "corrector";
                     if (type === "paraphraser") return k === "paraphraser";
@@ -433,9 +490,7 @@ export default function PremiumLibrary() {
                           className="absolute top-3 right-3 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-white/60"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setMenuOpenFor((prev) =>
-                              prev === doc.id ? null : doc.id
-                            );
+                            setMenuOpenFor((prev) => (prev === doc.id ? null : doc.id));
                           }}
                           type="button"
                         >
@@ -553,7 +608,7 @@ export default function PremiumLibrary() {
                                   ? "mt-3"
                                   : nk === "translation"
                                   ? "mt-6"
-                                  : nk === "summary"
+                                  : nk === "summary" || nk === "text-template" || nk === "gmail-template"
                                   ? "mt-7"
                                   : nk === "humanizer"
                                   ? "mt-2"
@@ -625,8 +680,7 @@ export default function PremiumLibrary() {
                       <div className="flex flex-wrap gap-[38px]">
                         {folderDocs.map((doc) => {
                           const nk = normalizeKind(doc.kind);
-                          const { bg, border, iconSrc, labelPrefix } =
-                            getDocVisual({ kind: nk });
+                          const { bg, border, iconSrc, labelPrefix } = getDocVisual({ kind: nk });
                           const dateLabel = formatDateLabel(doc);
 
                           return (
