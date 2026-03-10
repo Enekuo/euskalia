@@ -237,7 +237,7 @@ export default function PremiumLibrary() {
 if (kind === "text-template") {
   return {
     bg: "#EAF3FF",
-    border: "#D9E7FF",
+    border: "#2563EB",
     iconSrc: "/Library2.jpg",
     labelPrefix: tr("library_prefix_text_template", "Texto:"),
     iconSize: 56,
