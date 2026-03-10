@@ -84,37 +84,6 @@ export default function PremiumLibrary() {
     navigate(createAction.href);
   };
 
-  // ===== Crear automáticamente las 2 plantillas nuevas =====
-  useEffect(() => {
-    if (!Array.isArray(docs)) return;
-
-    const hasTextTemplate = docs.some((doc) => {
-      const k = String(doc?.kind || "").toLowerCase().trim();
-      return k === "text-template";
-    });
-
-    const hasGmailTemplate = docs.some((doc) => {
-      const k = String(doc?.kind || "").toLowerCase().trim();
-      return k === "gmail-template";
-    });
-
-    if (!hasTextTemplate) {
-      addLibraryDoc({
-        kind: "text-template",
-        title: "Plantilla para texto",
-        content: "",
-      });
-    }
-
-    if (!hasGmailTemplate) {
-      addLibraryDoc({
-        kind: "gmail-template",
-        title: "Plantilla para gmail",
-        content: "",
-      });
-    }
-  }, [docs]);
-
   // ===== Menú contextual por documento =====
   const [menuOpenFor, setMenuOpenFor] = useState(null); // id
   const menuRef = useRef(null);
@@ -490,7 +459,9 @@ export default function PremiumLibrary() {
                           className="absolute top-3 right-3 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-white/60"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setMenuOpenFor((prev) => (prev === doc.id ? null : doc.id));
+                            setMenuOpenFor((prev) =>
+                              prev === doc.id ? null : doc.id
+                            );
                           }}
                           type="button"
                         >
@@ -680,7 +651,8 @@ export default function PremiumLibrary() {
                       <div className="flex flex-wrap gap-[38px]">
                         {folderDocs.map((doc) => {
                           const nk = normalizeKind(doc.kind);
-                          const { bg, border, iconSrc, labelPrefix } = getDocVisual({ kind: nk });
+                          const { bg, border, iconSrc, labelPrefix } =
+                            getDocVisual({ kind: nk });
                           const dateLabel = formatDateLabel(doc);
 
                           return (
