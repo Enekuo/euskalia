@@ -236,20 +236,29 @@ export default function PremiumLibrary() {
 
 if (kind === "text-template") {
   return {
-    bg: "#EAF3FF",
-    border: "#2563EB",
+    bg: "linear-gradient(90deg, #2563eb 0%, #06b6d4 100%)",
+    border: "#2563eb",
     iconSrc: "/Library2.jpg",
     labelPrefix: tr("library_prefix_text_template", "Texto:"),
     iconSize: 56,
+    textColor: "#FFFFFF",
+    subTextColor: "rgba(255,255,255,0.92)",
+    dateColor: "rgba(255,255,255,0.88)",
+    menuColor: "rgba(255,255,255,0.9)",
   };
 }
+
 if (kind === "gmail-template") {
   return {
-    bg: "#FFF7ED",
-    border: "#FDBA74",
+    bg: "linear-gradient(90deg, #f97316 0%, #f59e0b 100%)",
+    border: "#f97316",
     iconSrc: "/Library2.jpg",
-    labelPrefix: tr("library_prefix_gmail_template", "Gmail:"),
+    labelPrefix: tr("library_prefix_gmail_template", "Email:"),
     iconSize: 56,
+    textColor: "#FFFFFF",
+    subTextColor: "rgba(255,255,255,0.92)",
+    dateColor: "rgba(255,255,255,0.88)",
+    menuColor: "rgba(255,255,255,0.9)",
   };
 }
 
@@ -446,7 +455,7 @@ if (kind === "gmail-template") {
                           width: 280,
                           height: 196,
                           borderRadius: 16,
-                          backgroundColor: bg,
+                          background: bg,
                           border: `1px solid ${border}`,
                         }}
                         onClick={() => navigate(`/cuenta-premium/biblioteca/${doc.id}`)}
@@ -662,7 +671,7 @@ if (kind === "gmail-template") {
                                 width: 280,
                                 height: 196,
                                 borderRadius: 16,
-                                backgroundColor: bg,
+                                background: bg,
                                 border: `1px solid ${border}`,
                               }}
                               onClick={() =>
