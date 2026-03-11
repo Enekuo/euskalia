@@ -929,7 +929,7 @@ return (
               >
                 {tr("folder_modal_save", "Guardar")}
               </button>
-            </div>
+            </div> 
           </div>
         </div>
       )}
