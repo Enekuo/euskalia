@@ -238,7 +238,7 @@ if (kind === "text-template") {
   return {
     bg: "linear-gradient(90deg, #38CFE0 0%, #2563EB 55%, #243BEE 100%)",
     border: "transparent",
-    iconSrc: "/Library2.jpg",
+    iconSrc: "/Librarytexto.jpg",
     labelPrefix: tr("library_prefix_text_template", "Texto:"),
     iconSize: 56,
     textColor: "#FFFFFF",
