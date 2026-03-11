@@ -252,7 +252,7 @@ if (kind === "gmail-template") {
   return {
     bg: "linear-gradient(90deg, #F6C232 0%, #FF8A00 55%, #FF5A1F 100%)",
     border: "transparent",
-    iconSrc: "/Library2.jpg",
+    iconSrc: "/Librarygmail.png",
     labelPrefix: tr("library_prefix_gmail_template", "Email:"),
     iconSize: 56,
     textColor: "#FFFFFF",
