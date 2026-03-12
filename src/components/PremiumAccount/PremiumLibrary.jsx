@@ -240,7 +240,7 @@ if (kind === "text-template") {
     border: "transparent",
     iconSrc: "/Librarytexto.png",
     labelPrefix: tr("library_prefix_text_template", "Texto:"),
-    iconSize: 76,
+    iconSize: 82,
     textColor: "#FFFFFF",
     subTextColor: "#FFFFFF",
     dateColor: "#FFFFFF",
