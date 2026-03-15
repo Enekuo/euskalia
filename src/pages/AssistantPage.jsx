@@ -5,10 +5,14 @@ import { useTranslation } from "@/lib/translations";
 
 export default function AssistantPage() {
   const { t } = useTranslation();
-  const tr = (k) => t(k) || k;
+  const tr = (k, f = "") => {
+    const val = typeof t === "function" ? t(k) : null;
+    return !val || val === k ? f : val;
+  };
 
   const [messages, setMessages] = useState([]); // { role: "user" | "assistant", content: string }
   const [input, setInput] = useState("");
+  const [systemError, setSystemError] = useState("");
   const inputRef = useRef(null);
 
   // Mantener el foco en el input al entrar en la página
@@ -16,9 +20,47 @@ export default function AssistantPage() {
     inputRef.current?.focus();
   }, []);
 
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case "DAILY_REQUEST_LIMIT":
+        return tr(
+          "assistant_error_daily_limit",
+          "Has alcanzado el límite diario de mensajes para el chat público."
+        );
+      case "CHAR_LIMIT_EXCEEDED":
+        return tr(
+          "assistant_error_char_limit",
+          "El mensaje supera el límite de caracteres permitido para el chat público."
+        );
+      case "RATE_LIMIT":
+        return tr(
+          "assistant_error_rate_limit",
+          "Estás enviando mensajes demasiado rápido. Inténtalo de nuevo en unos segundos."
+        );
+      case "DAILY_TOKEN_LIMIT":
+        return tr(
+          "assistant_error_token_limit",
+          "Has alcanzado el límite diario de uso del chat público."
+        );
+      case "EMPTY_MESSAGE":
+        return tr(
+          "assistant_error_empty",
+          "No se ha enviado ningún mensaje válido."
+        );
+      default:
+        return tr(
+          "assistant_error_generic",
+          "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
+        );
+    }
+  };
+
   const handleSend = async () => {
     const text = input.trim();
     if (!text) return;
+
+    // limpiar aviso anterior antes de un nuevo intento
+    setSystemError("");
 
     // Mensaje del usuario
     const userMsg = { role: "user", content: text };
@@ -46,15 +88,17 @@ export default function AssistantPage() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const backendMessage =
-          data?.message ||
-          "Arazo bat egon da erantzuna sortzerakoan. Saiatu berriro pixka batean edo galdetu zuzenean euskarri atalean.";
+        const backendErrorCode = data?.error || "";
+        const backendMessage = getErrorMessage(backendErrorCode);
         throw new Error(backendMessage);
       }
 
       const assistantText =
         data?.content ||
-        "Une honetan ezin izan da erantzuna sortu. Saiatu berriro edo galdetu laguntza atalean.";
+        tr(
+          "assistant_error_generic",
+          "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
+        );
 
       const assistantMsg = {
         role: "assistant",
@@ -63,19 +107,20 @@ export default function AssistantPage() {
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (error) {
-      const errorMsg = {
-        role: "assistant",
-        content:
-          error?.message ||
-          "Arazo bat egon da erantzuna sortzerakoan. Saiatu berriro pixka batean edo galdetu zuzenean euskarri atalean.",
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      setSystemError(
+        error?.message ||
+          tr(
+            "assistant_error_generic",
+            "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
+          )
+      );
     }
   };
 
   const handleNewChat = () => {
     setMessages([]);
     setInput("");
+    setSystemError("");
 
     setTimeout(() => {
       inputRef.current?.focus();
@@ -95,7 +140,7 @@ export default function AssistantPage() {
                      hover:bg-slate-50 hover:shadow-md transition"
         >
           <Plus className="w-4 h-4" />
-          {tr("assistant_new_chat")}
+          {tr("assistant_new_chat", "Nuevo chat")}
         </button>
       </div>
 
@@ -114,7 +159,7 @@ export default function AssistantPage() {
             </div>
 
             <h1 className="text-2xl md:text-3xl font-semibold text-slate-900">
-              {tr("assistant_title")}
+              {tr("assistant_title", "Asistente de IA")}
             </h1>
           </div>
         )}
@@ -140,6 +185,15 @@ export default function AssistantPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* AVISO DEL SISTEMA */}
+        {systemError && (
+          <div className="w-full max-w-3xl mb-3">
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm md:text-base text-red-700">
+              {systemError}
+            </div>
           </div>
         )}
 
@@ -182,7 +236,7 @@ export default function AssistantPage() {
                     handleSend();
                   }
                 }}
-                placeholder={tr("assistant_placeholder")}
+                placeholder={tr("assistant_placeholder", "Escribe tu mensaje")}
                 className="flex-1 min-w-0 bg-transparent outline-none text-[15px] placeholder:text-slate-400 px-1"
               />
 
@@ -198,7 +252,7 @@ export default function AssistantPage() {
                   text-xs sm:text-sm
                 "
               >
-                {tr("assistant_send")}
+                {tr("assistant_send", "Enviar")}
               </button>
             </div>
           </form>

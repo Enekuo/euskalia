@@ -661,6 +661,48 @@ grammarcorrector_limit_reached: {
     EN: "Send",
     FR: "Envoyer",
   },
+assistant_error_daily_limit: {
+  ES: "Has alcanzado el límite diario de mensajes para el chat público.",
+  EUS: "Txat publikoan eguneroko mezuen muga lortu duzu.",
+  EN: "You have reached the daily message limit for the public chat.",
+  FR: "Vous avez atteint la limite quotidienne de messages pour le chat public."
+},
+
+assistant_error_char_limit: {
+  ES: "El mensaje supera el límite de caracteres permitido para el chat público.",
+  EUS: "Mezuak txat publikoarentzat onartutako karaktere muga gainditzen du.",
+  EN: "The message exceeds the character limit for the public chat.",
+  FR: "Le message dépasse la limite de caractères autorisée pour le chat public."
+},
+
+assistant_error_rate_limit: {
+  ES: "Estás enviando mensajes demasiado rápido. Inténtalo de nuevo en unos segundos.",
+  EUS: "Mezuak azkarregi bidaltzen ari zara. Saiatu berriro segundo batzuk barru.",
+  EN: "You are sending messages too quickly. Please try again in a few seconds.",
+  FR: "Vous envoyez des messages trop rapidement. Réessayez dans quelques secondes."
+},
+
+assistant_error_token_limit: {
+  ES: "Has alcanzado el límite diario de uso del chat público.",
+  EUS: "Txat publikoaren eguneroko erabilera-mugara iritsi zara.",
+  EN: "You have reached the daily usage limit for the public chat.",
+  FR: "Vous avez atteint la limite quotidienne d'utilisation du chat public."
+},
+
+assistant_error_empty: {
+  ES: "No se ha enviado ningún mensaje válido.",
+  EUS: "Ez da baliozko mezurik bidali.",
+  EN: "No valid message was sent.",
+  FR: "Aucun message valide n'a été envoyé."
+},
+
+assistant_error_generic: {
+  ES: "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde.",
+  EUS: "Errore bat gertatu da erantzuna sortzerakoan. Saiatu berriro pixka batean.",
+  EN: "An error occurred while generating the response. Please try again later.",
+  FR: "Une erreur est survenue lors de la génération de la réponse. Veuillez réessayer plus tard."
+},
+
 
   /* === Aviso de funcionalidad no implementada === */
   not_implemented_title:    { ES: "Esta función no está implementada aún", EUS: "Funtzio hau oraindik ez dago ezarrita", EN: "This feature is not implemented yet", FR: "Cette fonctionnalité n’est pas encore implémentée" },
