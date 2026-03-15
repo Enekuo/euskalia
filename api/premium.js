@@ -281,16 +281,30 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: "Missing OPENAI_API_KEY" });
     }
 
-    // ✅ PREMIUM: exigir token válido y obtener UID
-    const uid = await getUidFromRequest(req);
-    if (!uid) {
-      return res.status(401).json({
-        ok: false,
-        error: "Unauthorized",
-        message: "Necesitas iniciar sesión para usar el plan Premium."
-      });
-    }
+// ✅ PREMIUM: exigir token válido y obtener UID
+const uid = await getUidFromRequest(req);
 
+if (!uid) {
+  return res.status(401).json({
+    ok: false,
+    error: "Unauthorized",
+    message: "Necesitas iniciar sesión para usar el plan Premium."
+  });
+}
+
+// 🔎 comprobar si el usuario es PREMIUM
+const db = admin.firestore();
+
+const premiumUser = await db.collection("paidEmailsPremium").doc(uid).get();
+
+if (!premiumUser.exists) {
+  return res.status(403).json({
+    ok: false,
+    error: "PREMIUM_REQUIRED",
+    message: "Esta herramienta requiere plan Premium."
+  });
+}
+    
     // Leer body seguro
     const raw = await new Promise((resolve, reject) => {
       let data = "";
