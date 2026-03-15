@@ -663,7 +663,7 @@ grammarcorrector_limit_reached: {
   },
 assistant_error_daily_limit: {
   ES: "Has alcanzado el límite diario de mensajes para el chat público.",
-  EUS: "Txat publikoan eguneroko mezuen muga lortu duzu.",
+  EUS: "Txat publikoan eguneroko mezuen mugara iritsi zara.",
   EN: "You have reached the daily message limit for the public chat.",
   FR: "Vous avez atteint la limite quotidienne de messages pour le chat public."
 },
