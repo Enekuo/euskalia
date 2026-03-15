@@ -1683,43 +1683,49 @@ registerPage_login: {
     // ===== PLAN PREMIUM+ 
 
     premium1: {
-    ES: "Límites de caracteres casi ilimitados.",
-    EUS: "Karaktere-kopurua ia mugarik gabe",
-    EN: "Almost unlimited character limits.",
-    FR: "Limites de caractères presque illimitées.",
-  },
-  premium2: {
-  ES: "Todas las herramientas disponibles.",
-  EUS: "Tresna guztiak erabilgarri.",
-  EN: "All tools available.",
-  FR: "Tous les outils disponibles.",
-  },
-  premium3: {
-  ES: "Herramientas premium: creador de texto y convertidor de audio.",
-  EUS: "Premium tresnak: testu-sortzailea eta entzumen-bihurgailua.",
-  EN: "Premium tools: text creator and audio converter.",
-  FR: "Outils premium : créateur de texte et convertisseur audio.",
- },
-  premium4: {
-    ES: "Prompts activos integrados en las herramientas.",
-    EUS: "Prompt-ak aktibatuta tresnetan.",
-    EN: "Active prompts integrated into the tools.",
-    FR: "Prompts actifs intégrés aux outils.",
-  },
-  premium5: {
-    ES: "Chat de IA + asistente personal.",
-    EUS: "IA txata + laguntzaile pertsonala.",
-    EN: "AI chat + personal assistant.",
-    FR: "Chat IA + assistant personnel.",
-  },
-  premium6: {
-    ES: "Prioridad en la cola y velocidad máxima, incluso en horas punta.",
-    EUS: "Lehentasuna ilaran eta abiadura azkarrena, puntako orduetan ere.",
-    EN: "Priority in the queue and maximum speed, even at peak hours.",
-    FR: "Priorité dans la file et vitesse maximale, même aux heures de pointe.",
+  ES: "Hasta 4.000.000 de caracteres mensuales para usar libremente en todas las herramientas.",
+  EUS: "4.000.000 karaktere arte hilean, tresna guztietan erabiltzeko.",
+  EN: "Up to 4,000,000 characters per month to use freely across all tools.",
+  FR: "Jusqu'à 4 000 000 de caractères par mois à utiliser librement dans tous les outils.",
+},
+
+premium2: {
+  ES: "Acceso completo a todas las herramientas de Euskalia.",
+  EUS: "Euskaliako tresna guztietarako sarbide osoa.",
+  EN: "Full access to all Euskalia tools.",
+  FR: "Accès complet à tous les outils Euskalia.",
+},
+
+premium3: {
+  ES: "Herramientas avanzadas: creador de textos y creador de emails.",
+  EUS: "Tresna aurreratuak: testu-sortzailea eta email-sortzailea.",
+  EN: "Advanced tools: text creator and email creator.",
+  FR: "Outils avancés : créateur de textes et créateur d’emails.",
+},
+
+premium4: {
+  ES: "Prompts inteligentes integrados en resumidor para obtener mejores resultados.",
+  EUS: "Prompt adimentsuak esartuta laburbiltzailean emaitza hobeak lortzeko.",
+  EN: "Smart prompts integrated in the summarizer for better results.",
+  FR: "Prompts intelligents intégrés dans le résumeur pour de meilleurs résultats.",
+},
+
+premium5: {
+  ES: "Asistente de inteligencia artificial para ayudarte con cualquier necesidad o problema relacionado.",
+  EUS: "Adimen artifizialeko laguntzailea, edozein behar edo arazoarekin laguntzeko.",
+  EN: "Artificial intelligence assistant to help you with any related need or problem.",
+  FR: "Assistant d'intelligence artificielle pour vous aider avec tout besoin ou problème lié.",
+},
+
+premium6: {
+  ES: "Prioridad en los servidores y máxima velocidad incluso en horas de alta demanda.",
+  EUS: "Lehentasuna zerbitzarietan eta abiadura azkarrena eskari handiko orduetan ere.",
+  EN: "Priority on servers and maximum speed even during high demand.",
+  FR: "Priorité sur les serveurs et vitesse maximale même en période de forte demande.",
+},
     },
   },
-},
+
 
   // =========================
   //       PAYING PAGES
