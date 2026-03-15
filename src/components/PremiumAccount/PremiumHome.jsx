@@ -253,7 +253,7 @@ export default function PremiumHome() {
         <div
           onClick={() => navigate("/cuenta-premium/email")}
           className="
-            bg-white rounded-2xl shadow-sm border border-slate-200 p-6 min-h-[190px]
+            bg-white rounded-2xl shadow-sm border border-[#FDBA74] p-6 min-h-[190px]
             cursor-pointer transform transition
             hover:shadow-md hover:-translate-y-0.5 hover:border-slate-300
             hover:bg-[#FFF7ED] hover:border-2 hover:border-[#FDBA74]
