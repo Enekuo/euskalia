@@ -1,3 +1,4 @@
+// Chat de IA //
 import React, { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
@@ -42,11 +43,15 @@ export default function AssistantPage() {
         }),
       });
 
+      const data = await res.json().catch(() => null);
+
       if (!res.ok) {
-        throw new Error("Error en la respuesta del asistente");
+        const backendMessage =
+          data?.message ||
+          "Arazo bat egon da erantzuna sortzerakoan. Saiatu berriro pixka batean edo galdetu zuzenean euskarri atalean.";
+        throw new Error(backendMessage);
       }
 
-      const data = await res.json();
       const assistantText =
         data?.content ||
         "Une honetan ezin izan da erantzuna sortu. Saiatu berriro edo galdetu laguntza atalean.";
@@ -61,6 +66,7 @@ export default function AssistantPage() {
       const errorMsg = {
         role: "assistant",
         content:
+          error?.message ||
           "Arazo bat egon da erantzuna sortzerakoan. Saiatu berriro pixka batean edo galdetu zuzenean euskarri atalean.",
       };
       setMessages((prev) => [...prev, errorMsg]);
