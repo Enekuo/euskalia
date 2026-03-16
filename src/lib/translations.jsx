@@ -1725,14 +1725,14 @@ premium6: {
 },
     },
 
-    pricing_premium_cta: {
+    premium_cta: {
   ES: "Empezar Premium",
   EUS: "Hasi Premium",
   EN: "Start Premium",
   FR: "Commencer Premium",
 },
 
-pricing_badge_premium: {
+badge_premium: {
   ES: "Más completo",
   EUS: "Osoena",
   EN: "Most complete",
