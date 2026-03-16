@@ -2,8 +2,11 @@ import React from "react";
 import { useTranslation } from "@/lib/translations";
 import { Gem, CheckCircle } from "lucide-react";
 
-const LEMON_CHECKOUT_URL =
+const LEMON_PRO_CHECKOUT_URL =
   "https://euskalia.lemonsqueezy.com/checkout/buy/14a2f3b2-08bd-4b2b-a044-17c880f7cc57";
+
+const LEMON_PREMIUM_CHECKOUT_URL =
+  "https://euskalia.lemonsqueezy.com/checkout/buy/c2752141-57a6-4d9f-89bb-edf6e79e44c1";
 
 export default function PricingPage() {
   const { t } = useTranslation();
@@ -49,41 +52,47 @@ export default function PricingPage() {
         "pricing.features.premium5",
         "pricing.features.premium6",
       ],
-      buttonKey: "pricing.premium_cta_soon",
+      buttonKey: "pricing.premium_cta",
       icon: <Gem className="h-8 w-8 mb-4" style={{ color: "#2563eb" }} />,
       borderColor: "border-[#2563eb]",
       priceColor: "text-[#2563eb]",
       checkColor: "text-[#2563eb]",
       tint: "bg-gradient-to-br from-[#dbeafe] to-[#bfdbfe]",
       glow: true,
-      buttonGradient: "",
+      buttonGradient:
+        "bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] hover:from-[#1d4ed8] hover:to-[#1e40af]",
       badgeKey: "pricing.badge_soon",
-      disabled: true,
+      disabled: false,
     },
   ];
 
   const handlePlanClick = async (planId) => {
-    if (planId !== "pro") return;
+    const fallbackUrl =
+      planId === "premium" ? LEMON_PREMIUM_CHECKOUT_URL : LEMON_PRO_CHECKOUT_URL;
 
     try {
       const r = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ plan: planId }),
       });
 
       const data = await r.json().catch(() => null);
 
       if (!r.ok || !data?.url) {
         alert("Checkout API falló. Abro el checkout fijo (fallback).");
-        window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
+        if (fallbackUrl && !fallbackUrl.includes("PON_AQUI")) {
+          window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+        }
         return;
       }
 
       window.location.href = data.url;
     } catch (e) {
       alert("No se pudo llamar a /api/create-checkout. Abro el checkout fijo (fallback).");
-      window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
+      if (fallbackUrl && !fallbackUrl.includes("PON_AQUI")) {
+        window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+      }
     }
   };
 

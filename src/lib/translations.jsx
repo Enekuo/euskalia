@@ -1724,6 +1724,20 @@ premium6: {
   FR: "Priorité sur les serveurs et vitesse maximale même en période de forte demande.",
 },
     },
+
+    pricing_premium_cta: {
+  ES: "Empezar Premium",
+  EUS: "Hasi Premium",
+  EN: "Start Premium",
+  FR: "Commencer Premium",
+},
+
+pricing_badge_premium: {
+  ES: "Más completo",
+  EUS: "Osoena",
+  EN: "Most complete",
+  FR: "Le plus complet",
+},
   },
 
 

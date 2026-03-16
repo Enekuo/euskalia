@@ -7,20 +7,36 @@ export default async function handler(req, res) {
   try {
     const apiKey = process.env.LEMON_API_KEY;
     const storeId = process.env.LEMON_STORE_ID;
-    const variantId = process.env.LEMON_VARIANT_ID;
+    const proVariantId = process.env.LEMON_VARIANT_ID;
+    const premiumVariantId = process.env.LEMON_PREMIUM_VARIANT_ID;
 
-    if (!apiKey || !storeId || !variantId) {
+    if (!apiKey || !storeId || !proVariantId || !premiumVariantId) {
       return res.status(500).json({
         error: "Missing env vars",
         missing: {
           LEMON_API_KEY: !apiKey,
           LEMON_STORE_ID: !storeId,
-          LEMON_VARIANT_ID: !variantId,
+          LEMON_VARIANT_ID: !proVariantId,
+          LEMON_PREMIUM_VARIANT_ID: !premiumVariantId,
         },
       });
     }
 
-    const { email } = (req.body && typeof req.body === "object") ? req.body : {};
+    const { email, plan } =
+      req.body && typeof req.body === "object" ? req.body : {};
+
+    let variantId = null;
+
+    if (plan === "premium") {
+      variantId = premiumVariantId;
+    } else if (plan === "pro") {
+      variantId = proVariantId;
+    } else {
+      return res.status(400).json({
+        error: "Invalid plan",
+        message: "Plan must be 'pro' or 'premium'",
+      });
+    }
 
     const payload = {
       data: {
@@ -28,13 +44,15 @@ export default async function handler(req, res) {
         attributes: {
           test_mode: true,
           product_options: {
-            // ✅ redirect tras pago OK
             redirect_url: "https://euskaliaweb.com/pago-correcto",
-            // ✅ opcional: para que solo se vea esta variante
             enabled_variants: [Number(variantId)],
           },
-          // ✅ opcional: prefill email si lo envías desde el front
-          ...(email ? { checkout_data: { email } } : {}),
+          checkout_data: {
+            ...(email ? { email } : {}),
+            custom: {
+              plan,
+            },
+          },
         },
         relationships: {
           store: {
@@ -68,12 +86,19 @@ export default async function handler(req, res) {
     }
 
     const url = data?.data?.attributes?.url;
+
     if (!url) {
-      return res.status(500).json({ error: "No checkout url returned", data });
+      return res.status(500).json({
+        error: "No checkout url returned",
+        data,
+      });
     }
 
     return res.status(200).json({ url });
   } catch (err) {
-    return res.status(500).json({ error: "Server error", message: String(err?.message || err) });
+    return res.status(500).json({
+      error: "Server error",
+      message: String(err?.message || err),
+    });
   }
 }
