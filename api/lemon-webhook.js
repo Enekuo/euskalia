@@ -20,7 +20,6 @@ function initFirebaseAdmin() {
   });
 }
 
-// Lee RAW body (necesario para validar la firma)
 async function readRawBody(req) {
   return await new Promise((resolve, reject) => {
     let data = "";
@@ -31,13 +30,16 @@ async function readRawBody(req) {
 }
 
 function verifySignature({ rawBody, signature, secret }) {
-  // Lemon: HMAC-SHA256(rawBody, secret) -> hex, enviado en header X-Signature :contentReference[oaicite:2]{index=2}
-  const digestHex = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  const digestHex = crypto
+    .createHmac("sha256", secret)
+    .update(rawBody)
+    .digest("hex");
+
   const sigHex = String(signature || "").trim();
 
-  // Comparación segura por bytes (hex)
   const digest = Buffer.from(digestHex, "hex");
   const sig = Buffer.from(sigHex, "hex");
+
   if (digest.length !== sig.length) return false;
   return crypto.timingSafeEqual(digest, sig);
 }
@@ -54,6 +56,30 @@ function pickEmail(payload) {
     .toLowerCase();
 }
 
+function pickVariantId(payload) {
+  const attrs = payload?.data?.attributes || {};
+
+  return String(
+    attrs?.variant_id ||
+      payload?.data?.relationships?.variant?.data?.id ||
+      ""
+  ).trim();
+}
+
+function resolvePlanFromVariant(variantId) {
+  const proVariantId = String(process.env.LEMON_VARIANT_ID || "").trim();
+  const premiumVariantId = String(process.env.LEMON_PREMIUM_VARIANT_ID || "").trim();
+
+  if (variantId && variantId === proVariantId) return "pro";
+  if (variantId && variantId === premiumVariantId) return "premium";
+  return null;
+}
+
+function getCollectionName(plan) {
+  if (plan === "premium") return "paidEmailsPremium";
+  return "paidEmails";
+}
+
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
@@ -65,7 +91,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "missing_lemon_webhook_secret" });
     }
 
-    // Header real: X-Signature :contentReference[oaicite:3]{index=3}
     const signature = req.headers["x-signature"];
     const rawBody = await readRawBody(req);
 
@@ -81,19 +106,28 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "missing_email_in_payload" });
     }
 
-    const eventName = String(payload?.meta?.event_name || "").trim(); // ej: subscription_cancelled :contentReference[oaicite:4]{index=4}
-    const now = admin.firestore.FieldValue.serverTimestamp();
+    const variantId = pickVariantId(payload);
+    const plan = resolvePlanFromVariant(variantId);
+
+    if (!plan) {
+      console.warn("LEMON WEBHOOK: unknown variant id", variantId);
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        reason: "unknown_variant",
+      });
+    }
+
+    const eventName = String(payload?.meta?.event_name || "").trim();
 
     initFirebaseAdmin();
     const db = admin.firestore();
+    const now = admin.firestore.FieldValue.serverTimestamp();
 
-    // Status por evento (simple y realista para empezar test mode)
     let status = "paid";
     if (eventName === "subscription_cancelled") status = "cancelled";
     if (eventName === "subscription_expired") status = "expired";
-    // OJO: en Lemon, "cancelled" puede estar en gracia hasta que expire. :contentReference[oaicite:5]{index=5}
 
-    // Guarda también IDs útiles para debug / futuro
     const attrs = payload?.data?.attributes || {};
     const lemon = {
       eventName: eventName || null,
@@ -107,20 +141,33 @@ export default async function handler(req, res) {
       productId: attrs?.product_id || null,
     };
 
+    const targetCollection = getCollectionName(plan);
+    const otherCollection =
+      targetCollection === "paidEmails" ? "paidEmailsPremium" : "paidEmails";
+
     await db
-      .collection("paidEmails")
+      .collection(targetCollection)
       .doc(email)
       .set(
         {
           status,
+          plan,
           email,
           updatedAt: now,
           lemon,
-        }, 
+        },
         { merge: true }
       );
 
-    return res.status(200).json({ ok: true });
+    // Limpieza por si el usuario cambia de plan
+    await db.collection(otherCollection).doc(email).delete().catch(() => {});
+
+    return res.status(200).json({
+      ok: true,
+      plan,
+      status,
+      collection: targetCollection,
+    });
   } catch (err) {
     console.error("LEMON WEBHOOK ERROR:", err);
     return res.status(500).json({ error: "server_error" });
