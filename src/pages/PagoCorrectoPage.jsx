@@ -69,8 +69,13 @@ export default function PagoCorrectoPage() {
                   return;
                 }
 
-                // 🔁 Si el backend pone custom claims (pro: true), refresca el token
+                // 🔁 Si el backend pone custom claims, refresca el token
                 await user.getIdToken(true);
+
+                if (data?.plan === "premium") {
+                  window.location.href = "/cuenta-premium";
+                  return;
+                }
 
                 window.location.href = "/cuenta-pro";
               } catch (e) {

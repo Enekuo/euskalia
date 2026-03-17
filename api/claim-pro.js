@@ -51,8 +51,19 @@ export default async function handler(req, res) {
 
     const db = admin.firestore();
 
-    const paidSnap = await db.collection("paidEmails").doc(email).get();
-    if (!paidSnap.exists) {
+    const premiumSnap = await db.collection("paidEmailsPremium").doc(email).get();
+    const proSnap = await db.collection("paidEmails").doc(email).get();
+
+    let paidSnap = null;
+    let plan = null;
+
+    if (premiumSnap.exists) {
+      paidSnap = premiumSnap;
+      plan = "premium";
+    } else if (proSnap.exists) {
+      paidSnap = proSnap;
+      plan = "pro";
+    } else {
       return res.status(403).json({
         error: "email_not_paid",
         message: "Entra con el mismo email con el que realizaste el pago.",
@@ -61,6 +72,7 @@ export default async function handler(req, res) {
 
     const data = paidSnap.data() || {};
     const status = String(data.status || "").toLowerCase();
+
     if (status && status !== "paid" && status !== "active") {
       return res.status(403).json({
         error: "payment_not_active",
@@ -68,16 +80,21 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ AQUÍ está la clave: activar Pro de verdad
-    const plan = data.plan || "pro";
-
     await admin.auth().setCustomUserClaims(uid, {
-      pro: true,
+      pro: plan === "pro",
+      premium: plan === "premium",
       plan,
       paidEmail: email,
     });
 
-    return res.status(200).json({ ok: true, uid, email, pro: true, plan });
+    return res.status(200).json({
+      ok: true,
+      uid,
+      email,
+      plan,
+      pro: plan === "pro",
+      premium: plan === "premium",
+    });
   } catch (err) {
     console.error("CLAIM PRO ERROR:", err);
     return res.status(500).json({ error: "server_error" });
