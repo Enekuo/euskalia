@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       data: {
         type: "checkouts",
         attributes: {
-          test_mode: true,
+          test_mode: false,
           product_options: {
             redirect_url: "https://euskaliaweb.com/pago-correcto",
             enabled_variants: [Number(variantId)],
