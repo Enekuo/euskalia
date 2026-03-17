@@ -79,13 +79,14 @@ export default function PricingPage() {
 
       const data = await r.json().catch(() => null);
 
-      if (!r.ok || !data?.url) {
-        alert("Checkout API falló. Abro el checkout fijo (fallback).");
-        if (fallbackUrl && !fallbackUrl.includes("PON_AQUI")) {
-          window.open(fallbackUrl, "_blank", "noopener,noreferrer");
-        }
-        return;
-      }
+if (!r.ok || !data?.url) {
+  console.error("CHECKOUT ERROR:", data);
+  alert(JSON.stringify(data, null, 2));
+  if (fallbackUrl && !fallbackUrl.includes("PON_AQUI")) {
+    window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+  }
+  return;
+}
 
       window.location.href = data.url;
     } catch (e) {
