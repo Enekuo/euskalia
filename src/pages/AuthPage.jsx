@@ -11,37 +11,44 @@ export default function AuthPage() {
   const tr = (k, f) => (typeof t === "function" ? t(k) : null) || f;
 
   const navigate = useNavigate();
-  const REDIRECT_TO = "/cuenta-pro";
-
   const [allowedToRender, setAllowedToRender] = useState(false);
 
-  const isPaidEmail = async (email) => {
+  const getUserPlan = async (email) => {
     const id = (email || "").trim().toLowerCase();
-    if (!id) return false;
+    if (!id) return null;
 
-    const ref = doc(db, "paidEmails", id);
-    const snap = await getDoc(ref);
-    return snap.exists();
+    const premiumRef = doc(db, "paidEmailsPremium", id);
+    const premiumSnap = await getDoc(premiumRef);
+    if (premiumSnap.exists()) return "premium";
+
+    const proRef = doc(db, "paidEmails", id);
+    const proSnap = await getDoc(proRef);
+    if (proSnap.exists()) return "pro";
+
+    return null;
   };
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       try {
-        // ✅ Si no hay usuario, mostramos la pantalla de login normal
+        // Si no hay usuario, mostramos la pantalla de login
         if (!user) {
           setAllowedToRender(true);
           return;
         }
 
-        // ✅ Si hay usuario, comprobamos si es Pro
-        const ok = await isPaidEmail(user.email);
+        const plan = await getUserPlan(user.email);
 
-        if (ok) {
-          navigate(REDIRECT_TO, { replace: true });
+        if (plan === "premium") {
+          navigate("/cuenta-premium", { replace: true });
           return;
         }
 
-        // ✅ Si no es Pro, cerramos sesión y fuera
+        if (plan === "pro") {
+          navigate("/cuenta-pro", { replace: true });
+          return;
+        }
+
         await signOut(auth).catch(() => {});
         navigate("/pricing", { replace: true });
       } catch (e) {
@@ -61,14 +68,20 @@ export default function AuthPage() {
       const res = await signInWithPopup(auth, googleProvider);
       const email = res?.user?.email;
 
-      const ok = await isPaidEmail(email);
-      if (!ok) {
-        await signOut(auth).catch(() => {});
-        navigate("/pricing", { replace: true });
+      const plan = await getUserPlan(email);
+
+      if (plan === "premium") {
+        navigate("/cuenta-premium", { replace: true });
         return;
       }
 
-      navigate(REDIRECT_TO, { replace: true });
+      if (plan === "pro") {
+        navigate("/cuenta-pro", { replace: true });
+        return;
+      }
+
+      await signOut(auth).catch(() => {});
+      navigate("/pricing", { replace: true });
     } catch (e) {
       console.error("Google login error:", e);
       navigate("/pricing", { replace: true });
