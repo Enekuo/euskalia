@@ -17,13 +17,23 @@ export default function AuthPage() {
     const id = (email || "").trim().toLowerCase();
     if (!id) return null;
 
-    const premiumRef = doc(db, "paidEmailsPremium", id);
-    const premiumSnap = await getDoc(premiumRef);
-    if (premiumSnap.exists()) return "premium";
+    // 1) Intentar Premium, pero sin romper todo si falla
+    try {
+      const premiumRef = doc(db, "paidEmailsPremium", id);
+      const premiumSnap = await getDoc(premiumRef);
+      if (premiumSnap.exists()) return "premium";
+    } catch (e) {
+      console.error("Premium plan check error:", e);
+    }
 
-    const proRef = doc(db, "paidEmails", id);
-    const proSnap = await getDoc(proRef);
-    if (proSnap.exists()) return "pro";
+    // 2) Intentar Pro aunque Premium haya fallado
+    try {
+      const proRef = doc(db, "paidEmails", id);
+      const proSnap = await getDoc(proRef);
+      if (proSnap.exists()) return "pro";
+    } catch (e) {
+      console.error("Pro plan check error:", e);
+    }
 
     return null;
   };
@@ -31,7 +41,7 @@ export default function AuthPage() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       try {
-        // Si no hay usuario, mostramos la pantalla de login
+        // Si no hay usuario, mostrar pantalla de login
         if (!user) {
           setAllowedToRender(true);
           return;
