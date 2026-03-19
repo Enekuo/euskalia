@@ -17,23 +17,19 @@ export default function AuthPage() {
     const id = (email || "").trim().toLowerCase();
     if (!id) return null;
 
-    console.log("CHECKING PLAN FOR:", id);
-
-    // 1) Intentar Premium, pero sin romper Pro si falla
+    // 1) Intentar Premium, pero sin romper todo si falla
     try {
       const premiumRef = doc(db, "paidEmailsPremium", id);
       const premiumSnap = await getDoc(premiumRef);
-      console.log("PREMIUM EXISTS?", premiumSnap.exists(), "FOR", id);
       if (premiumSnap.exists()) return "premium";
     } catch (e) {
       console.error("Premium plan check error:", e);
     }
 
-    // 2) Intentar Pro aunque Premium falle
+    // 2) Intentar Pro aunque Premium haya fallado
     try {
       const proRef = doc(db, "paidEmails", id);
       const proSnap = await getDoc(proRef);
-      console.log("PRO EXISTS?", proSnap.exists(), "FOR", id);
       if (proSnap.exists()) return "pro";
     } catch (e) {
       console.error("Pro plan check error:", e);
@@ -51,10 +47,7 @@ export default function AuthPage() {
           return;
         }
 
-        console.log("AUTH STATE USER:", user.email);
-
         const plan = await getUserPlan(user.email);
-        console.log("AUTH STATE DETECTED PLAN:", plan);
 
         if (plan === "premium") {
           navigate("/cuenta-premium", { replace: true });
@@ -85,10 +78,7 @@ export default function AuthPage() {
       const res = await signInWithPopup(auth, googleProvider);
       const email = res?.user?.email;
 
-      console.log("LOGGED EMAIL:", email);
-
       const plan = await getUserPlan(email);
-      console.log("LOGIN DETECTED PLAN:", plan);
 
       if (plan === "premium") {
         navigate("/cuenta-premium", { replace: true });
