@@ -31,8 +31,6 @@ const PRO_AI_DETECTOR_DAILY_REQUESTS = Number(process.env.PRO_AI_DETECTOR_DAILY_
 const PRO_HUMANIZER_MAX_CHARS        = Number(process.env.PRO_HUMANIZER_MAX_CHARS || 20000);
 const PRO_HUMANIZER_DAILY_REQUESTS   = Number(process.env.PRO_HUMANIZER_DAILY_REQUESTS || 6);
 
-
-
 function getProLimits(tool) {
   if (tool === "translator") {
     return { maxChars: PRO_TRANSLATOR_MAX_CHARS, dailyReqs: PRO_TRANSLATOR_DAILY_REQUESTS };
@@ -73,9 +71,9 @@ function initFirebaseAdmin() {
 
   // Vercel suele guardar la private key con \n escapados
   privateKey = (privateKey || "")
-  .replace(/\\n/g, "\n")
-  .replace(/\r\n/g, "\n");
-  
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n");
+
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId,
@@ -94,13 +92,18 @@ function getBearerToken(req) {
   return parts[1].trim();
 }
 
-async function getUidFromRequest(req) {
+// ✅ ahora devolvemos uid + email
+async function getUserFromRequest(req) {
   initFirebaseAdmin();
   const token = getBearerToken(req);
   if (!token) return null;
+
   try {
     const decoded = await admin.auth().verifyIdToken(token);
-    return decoded?.uid || null;
+    const uid = decoded?.uid || null;
+    const email = (decoded?.email || "").trim().toLowerCase();
+
+    return { uid, email };
   } catch {
     return null;
   }
@@ -258,30 +261,33 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: "Missing OPENAI_API_KEY" });
     }
 
-// ✅ PRO: exigir token válido y obtener UID
-const uid = await getUidFromRequest(req);
+    // ✅ PRO: exigir token válido y obtener UID + EMAIL
+    const user = await getUserFromRequest(req);
 
-if (!uid) {
-  return res.status(401).json({
-    ok: false,
-    error: "Unauthorized",
-    message: "Necesitas iniciar sesión para usar el plan Pro."
-  });
-}
+    if (!user?.uid || !user?.email) {
+      return res.status(401).json({
+        ok: false,
+        error: "Unauthorized",
+        message: "Necesitas iniciar sesión para usar el plan Pro."
+      });
+    }
 
-// 🔎 comprobar si el usuario es PRO o PREMIUM
-const db = admin.firestore();
+    const uid = user.uid;
+    const email = user.email;
 
-const proUser = await db.collection("paidEmails").doc(uid).get();
-const premiumUser = await db.collection("paidEmailsPremium").doc(uid).get();
+    // 🔎 comprobar si el usuario es PRO o PREMIUM
+    const db = admin.firestore();
 
-if (!proUser.exists && !premiumUser.exists) {
-  return res.status(403).json({
-    ok: false,
-    error: "PRO_REQUIRED",
-    message: "Esta herramienta requiere plan Pro."
-  });
-}
+    const proUser = await db.collection("paidEmails").doc(email).get();
+    const premiumUser = await db.collection("paidEmailsPremium").doc(email).get();
+
+    if (!proUser.exists && !premiumUser.exists) {
+      return res.status(403).json({
+        ok: false,
+        error: "PRO_REQUIRED",
+        message: "Esta herramienta requiere plan Pro."
+      });
+    }
 
     // Leer body seguro
     const raw = await new Promise((resolve, reject) => {
@@ -313,15 +319,13 @@ if (!proUser.exists && !premiumUser.exists) {
         return res.status(400).json({ ok: false, error: "Missing text" });
       }
 
-    
       const trimmed = text.trim();
-         if (trimmed.length < 40) {
-           return res.status(400).json({
-             ok: false,
-             error: "TEXT_TOO_SHORT"
-          });
-        }
-
+      if (trimmed.length < 40) {
+        return res.status(400).json({
+          ok: false,
+          error: "TEXT_TOO_SHORT"
+        });
+      }
 
       // ====== LÍMITES PLAN PRO (por UID) también para detector ======
       const day = todayKey();
@@ -662,15 +666,13 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
           await kv.expire(dailyReqKey, 60 * 60 * 26);
         }
 
-      if (usedReqs > PRO_DAILY_REQS_TOOL) {
-  return res.status(429).json({
-    ok: false,
-    error: "PRO_DAILY_LIMIT_REACHED",
-    limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
-  });
-}
-
-
+        if (usedReqs > PRO_DAILY_REQS_TOOL) {
+          return res.status(429).json({
+            ok: false,
+            error: "PRO_DAILY_LIMIT_REACHED",
+            limit: { daily_requests: PRO_DAILY_REQS_TOOL, used: usedReqs, tool },
+          });
+        }
       } catch {
         // si KV falla, no bloqueamos
       }
