@@ -24,18 +24,16 @@ export default function AuthPage() {
     return snap.exists();
   };
 
-  // ✅ BLOQUEO: esta página no es pública
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       try {
-        // Si no hay usuario logueado, fuera -> pricing
+        // ✅ Si no hay usuario, mostramos la pantalla de login normal
         if (!user) {
-          setAllowedToRender(false);
-          navigate("/pricing", { replace: true });
+          setAllowedToRender(true);
           return;
         }
 
-        // Si hay usuario, comprobamos si es Pro por paidEmails
+        // ✅ Si hay usuario, comprobamos si es Pro
         const ok = await isPaidEmail(user.email);
 
         if (ok) {
@@ -43,7 +41,7 @@ export default function AuthPage() {
           return;
         }
 
-        // Si no es Pro, cerramos sesión y fuera
+        // ✅ Si no es Pro, cerramos sesión y fuera
         await signOut(auth).catch(() => {});
         navigate("/pricing", { replace: true });
       } catch (e) {
@@ -51,7 +49,6 @@ export default function AuthPage() {
         await signOut(auth).catch(() => {});
         navigate("/pricing", { replace: true });
       } finally {
-        // Solo renderizamos la pantalla de login si ya hay sesión (pero en realidad aquí casi nunca se verá)
         setAllowedToRender(true);
       }
     });
@@ -59,7 +56,6 @@ export default function AuthPage() {
     return () => unsub();
   }, [navigate]);
 
-  // ✅ Login con Google + comprobar paidEmails + redirect
   const handleGoogleLogin = async () => {
     try {
       const res = await signInWithPopup(auth, googleProvider);
@@ -79,7 +75,6 @@ export default function AuthPage() {
     }
   };
 
-  // Si no está permitido renderizar, no mostramos nada
   if (!allowedToRender) return null;
 
   return (
