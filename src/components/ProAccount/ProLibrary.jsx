@@ -291,7 +291,7 @@ export default function ProLibrary() {
   // ===== Render =====
   return (
     <>
-      <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
+      <div className="text-red-600 text-3xl font-bold">PRUEBA BIBLIOTECA
         <div className="mx-auto w-full px-6">
           {/* CUADRO DE LAS TARJETAS EN BLANCO */}
           <div className="rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm p-8">
@@ -730,7 +730,7 @@ export default function ProLibrary() {
             )}
           </div>
         </div>
-      </section>
+       </div>
 
       {/* MODAL Crear carpeta */}
       {isFolderModalOpen && (
