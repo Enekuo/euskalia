@@ -509,8 +509,8 @@ export default function ProLibrary() {
                             <img
                               src={iconSrc}
                               alt=""
-                              width={160}
-                              height={160}
+                              width={100}
+                              height={100}
                               className="block select-none -mt-2 -mb-4 -ml-6"
                               draggable={false}
                             />
