@@ -505,35 +505,39 @@ export default function ProLibrary() {
                             )}
                           </div>
                         ) : nk === "humanizer" ? (
-                          <div className="h-full w-full px-5 pt-7 pb-6 flex flex-col">
-                           <img
-  src={iconSrc}
-  alt=""
-  className="block select-none w-[88px] h-[88px] -mt-1 -mb-2 -ml-2 object-contain"
-  draggable={false}
-/>
-                            <h3
-                              className="mt-5 text-[18px] leading-[24px] pr-4"
-                              style={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
-                              }}
-                            > 
-                              <span className="font-semibold text-slate-900">
-                                {labelPrefix}
-                              </span>{" "}
-                              <span className="font-normal text-slate-700">
-                                {doc.title || tr("library_untitled", "Sin título")}
-                              </span>
-                            </h3>
-                            {dateLabel && (
-                              <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                {dateLabel}
-                              </p>
-                            )}
-                          </div>
+                    <div className="h-full w-full px-5 pt-5 pb-6 flex flex-col">
+    <div className="h-[82px] w-full flex items-start">
+      <img
+        src={iconSrc}
+        alt=""
+        className="block select-none w-[88px] h-[88px] -ml-2 object-contain"
+        draggable={false}
+      />
+    </div>
+
+    <h3
+      className="mt-1 text-[18px] leading-[24px] pr-4"
+      style={{
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
+        overflow: "hidden",
+      }}
+    >
+      <span className="font-semibold text-slate-900">
+        {labelPrefix}
+      </span>{" "}
+      <span className="font-normal text-slate-700">
+        {doc.title || tr("library_untitled", "Sin título")}
+      </span>
+    </h3>
+
+    {dateLabel && (
+      <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+        {dateLabel}
+      </p>
+    )}
+  </div>
                         ) : (
                           <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
                             <img
