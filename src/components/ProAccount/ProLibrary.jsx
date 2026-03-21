@@ -253,7 +253,7 @@ export default function ProLibrary() {
     return {
       bg: "#F0FDF4",
       border: "#CFF5DB",
-      iconSrc: "/Library5.png",
+      iconSrc: "/Library5.svg",
       labelPrefix: tr("library_prefix_humanizer", "Humanizatua:"),
       iconSize: 56,
     };
@@ -291,7 +291,7 @@ export default function ProLibrary() {
   // ===== Render =====
   return (
     <>
-      <div className="text-red-600 text-3xl font-bold">PRUEBA BIBLIOTECA
+      <section className="w-full bg-[#F4F8FF] pt-4 pb-16"></section>
         <div className="mx-auto w-full px-6">
           {/* CUADRO DE LAS TARJETAS EN BLANCO */}
           <div className="rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm p-8">
@@ -506,14 +506,12 @@ export default function ProLibrary() {
                           </div>
                         ) : nk === "humanizer" ? (
                           <div className="h-full w-full px-5 pt-7 pb-6 flex flex-col">
-                            <img
-                              src={iconSrc}
-                              alt=""
-                              width={160}
-                              height={160}
-                              className="block select-none -mt-2 -mb-4 -ml-6"
-                              draggable={false}
-                            />
+                           <img
+  src={iconSrc}
+  alt=""
+  className="block select-none w-[88px] h-[88px] -mt-1 -mb-2 -ml-2 object-contain"
+  draggable={false}
+/>
                             <h3
                               className="mt-5 text-[18px] leading-[24px] pr-4"
                               style={{
@@ -730,7 +728,8 @@ export default function ProLibrary() {
             )}
           </div>
         </div>
-       </div>
+       
+       section
 
       {/* MODAL Crear carpeta */}
       {isFolderModalOpen && (
