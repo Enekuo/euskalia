@@ -250,12 +250,22 @@ export default function ProLibrary() {
       };
     }
 
+    if (kind === "humanizer") {
+      return {
+        bg: "#F0FDF4",
+        border: "#CFF5DB",
+        iconSrc: "/Library5.png",
+        labelPrefix: tr("library_prefix_humanizer", "Humanizatua:"),
+        iconSize: 56,
+      };
+    }
+
     return {
-      bg: "#F0FDF4",
-      border: "#CFF5DB",
-      iconSrc: "/Library5.png",
-      labelPrefix: tr("library_prefix_humanizer", "Humanizatua:"),
-      iconSize: 56,
+      bg: "#FFF7E0",
+      border: "#FFE2A8",
+      iconSrc: "/Library1.png",
+      labelPrefix: tr("library_prefix_translation", "Itzulpena:"),
+      iconSize: 60,
     };
   };
 
@@ -291,7 +301,7 @@ export default function ProLibrary() {
   // ===== Render =====
   return (
     <>
-      <section className="w-full bg-[#F4F8FF] pt-4 pb-16"></section>
+      <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
         <div className="mx-auto w-full px-6">
           {/* CUADRO DE LAS TARJETAS EN BLANCO */}
           <div className="rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm p-8">
@@ -505,39 +515,39 @@ export default function ProLibrary() {
                             )}
                           </div>
                         ) : nk === "humanizer" ? (
-                    <div className="h-full w-full px-5 pt-5 pb-6 flex flex-col">
-    <div className="h-[82px] w-full flex items-start">
-      <img
-        src={iconSrc}
-        alt=""
-        className="block select-none w-[72px] h-[72px] -ml-2 object-contain"
-        draggable={false} 
-      />
-    </div>
+                          <div className="h-full w-full px-5 pt-5 pb-6 flex flex-col">
+                            <div className="h-[82px] w-full flex items-start">
+                              <img
+                                src={iconSrc}
+                                alt=""
+                                className="block select-none w-[72px] h-[72px] -ml-2 object-contain"
+                                draggable={false}
+                              />
+                            </div>
 
-    <h3
-      className="mt-1 text-[18px] leading-[24px] pr-4"
-      style={{
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        overflow: "hidden",
-      }}
-    >
-      <span className="font-semibold text-slate-900">
-        {labelPrefix}
-      </span>{" "}
-      <span className="font-normal text-slate-700">
-        {doc.title || tr("library_untitled", "Sin título")}
-      </span>
-    </h3>
+                            <h3
+                              className="mt-1 text-[18px] leading-[24px] pr-4"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <span className="font-semibold text-slate-900">
+                                {labelPrefix}
+                              </span>{" "}
+                              <span className="font-normal text-slate-700">
+                                {doc.title || tr("library_untitled", "Sin título")}
+                              </span>
+                            </h3>
 
-    {dateLabel && (
-      <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-        {dateLabel}
-      </p>
-    )}
-  </div>
+                            {dateLabel && (
+                              <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+                                {dateLabel}
+                              </p>
+                            )}
+                          </div>
                         ) : (
                           <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
                             <img
@@ -627,7 +637,7 @@ export default function ProLibrary() {
                       <div className="flex flex-wrap gap-[38px]">
                         {folderDocs.map((doc) => {
                           const nk = normalizeKind(doc.kind);
-                          const { bg, border, iconSrc, labelPrefix } =
+                          const { bg, border, iconSrc, labelPrefix, iconSize } =
                             getDocVisual({ kind: nk });
                           const dateLabel = formatDateLabel(doc);
 
@@ -646,36 +656,72 @@ export default function ProLibrary() {
                                 navigate(`/cuenta-pro/biblioteca/${doc.id}`)
                               }
                             >
-                              <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
-                                <img
-                                  src={iconSrc}
-                                  alt=""
-                                  width={40}
-                                  height={40}
-                                  className="block select-none"
-                                />
-                                <h3
-                                  className="mt-6 text-[18px] leading-[24px] pr-4"
-                                  style={{
-                                    display: "-webkit-box",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  <span className="font-semibold text-slate-900">
-                                    {labelPrefix}
-                                  </span>{" "}
-                                  <span className="font-normal text-slate-700">
-                                    {doc.title || tr("library_untitled", "Sin título")}
-                                  </span>
-                                </h3>
-                                {dateLabel && (
-                                  <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
-                                    {dateLabel}
-                                  </p>
-                                )}
-                              </div>
+                              {nk === "humanizer" ? (
+                                <div className="h-full w-full px-5 pt-5 pb-6 flex flex-col">
+                                  <div className="h-[82px] w-full flex items-start">
+                                    <img
+                                      src={iconSrc}
+                                      alt=""
+                                      className="block select-none w-[72px] h-[72px] -ml-2 object-contain"
+                                      draggable={false}
+                                    />
+                                  </div>
+
+                                  <h3
+                                    className="mt-1 text-[18px] leading-[24px] pr-4"
+                                    style={{
+                                      display: "-webkit-box",
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: "vertical",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    <span className="font-semibold text-slate-900">
+                                      {labelPrefix}
+                                    </span>{" "}
+                                    <span className="font-normal text-slate-700">
+                                      {doc.title || tr("library_untitled", "Sin título")}
+                                    </span>
+                                  </h3>
+
+                                  {dateLabel && (
+                                    <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+                                      {dateLabel}
+                                    </p>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="h-full w-full px-5 pt-8 pb-6 flex flex-col">
+                                  <img
+                                    src={iconSrc}
+                                    alt=""
+                                    width={iconSize || 40}
+                                    height={iconSize || 40}
+                                    className="block select-none"
+                                  />
+                                  <h3
+                                    className="mt-6 text-[18px] leading-[24px] pr-4"
+                                    style={{
+                                      display: "-webkit-box",
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: "vertical",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    <span className="font-semibold text-slate-900">
+                                      {labelPrefix}
+                                    </span>{" "}
+                                    <span className="font-normal text-slate-700">
+                                      {doc.title || tr("library_untitled", "Sin título")}
+                                    </span>
+                                  </h3>
+                                  {dateLabel && (
+                                    <p className="mt-auto text-[14px] leading-[20px] text-slate-700">
+                                      {dateLabel}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           );
                         })}
@@ -732,7 +778,7 @@ export default function ProLibrary() {
             )}
           </div>
         </div>
-  
+      </section>
 
       {/* MODAL Crear carpeta */}
       {isFolderModalOpen && (
