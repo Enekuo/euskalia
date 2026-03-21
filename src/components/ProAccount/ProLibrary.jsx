@@ -522,7 +522,7 @@ export default function ProLibrary() {
                                 WebkitBoxOrient: "vertical",
                                 overflow: "hidden",
                               }}
-                            >
+                            > 
                               <span className="font-semibold text-slate-900">
                                 {labelPrefix}
                               </span>{" "}
