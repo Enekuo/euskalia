@@ -520,7 +520,7 @@ export default function ProLibrary() {
                               <img
                                 src={iconSrc}
                                 alt=""
-                                className="block select-none w-[48px] h-[48px] -ml-2 object-contain"
+                                className="block select-none w-[48px] h-[48px] mt-3 -ml-3 object-contain"
                                 draggable={false}
                               />
                             </div>
