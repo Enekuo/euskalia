@@ -526,7 +526,7 @@ export default function ProLibrary() {
                             </div>
 
                             <h3
-                              className="mt-1 text-[18px] leading-[24px] pr-4"
+                              className="mt-2 text-[18px] leading-[24px] pr-4"
                               style={{
                                 display: "-webkit-box",
                                 WebkitLineClamp: 2,
