@@ -668,7 +668,7 @@ export default function CorrectorGramatical() {
     <>
       <h1 className="sr-only">Corrector</h1>
 
-      <section className="w-full bg-[#F4F8FF] pt-4 pb-16">
+      <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16">
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
             {/* ✅ 3 BOTONES IZQUIERDA (como Resumen) */}
@@ -725,7 +725,7 @@ export default function CorrectorGramatical() {
               transition={{ duration: 0.3 }}
             >
               {/* ===== Panel Fuentes (izquierda) ===== */}
-              <aside className="h-[540px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <aside className="h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
                 {/* Título */}
                 <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                   <div className="text-sm font-medium text-slate-700">{labelSources}</div>
