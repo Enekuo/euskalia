@@ -672,7 +672,7 @@ export default function CorrectorGramatical() {
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
             {/* ✅ 3 BOTONES IZQUIERDA (como Resumen) */}
-            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-6">
+            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
               {/* Traductor (inactivo) */}
               <button
                 type="button"
