@@ -668,7 +668,7 @@ export default function CorrectorGramatical() {
     <>
       <h1 className="sr-only">Corrector</h1>
 
-      <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16">
+      <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16"> 
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
             {/* ✅ 3 BOTONES IZQUIERDA (como Resumen) */}
