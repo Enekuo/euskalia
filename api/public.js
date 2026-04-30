@@ -28,7 +28,7 @@ const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_
 // ✅ límite de correcciones por día (solo corrector) (NUEVO)
 const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 5);
 
-// ✅ Modelos (para que PUBLIC pueda ser EXACTAMENTE igual que PRO)
+// ✅ Modelos 
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // ej: "gpt-4.1-mini"
 const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // opcional
 const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // opcional (NUEVO)
