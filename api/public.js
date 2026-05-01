@@ -8,30 +8,30 @@ const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60 * 60 * 24 *
 // ====== LÍMITES SEPARADOS (TRADUCTOR vs RESUMIDOR vs CORRECTOR) ======
 // Traductor
 const FREE_TRANSLATOR_MAX_CHARS    = Number(process.env.FREE_TRANSLATOR_MAX_CHARS || 5000);
-const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 20000);
+const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TOKENS || 50000);
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
 // Resumidor
-const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 15000);
-const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 20000);
+const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 50000);
+const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 100000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
 // ✅ Corrector (NUEVO)
 const FREE_CORRECTOR_MAX_CHARS       = Number(process.env.FREE_CORRECTOR_MAX_CHARS || 12000);
-const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_TOKENS || 20000);
+const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_TOKENS || 50000);
 const FREE_CORRECTOR_RPM             = Number(process.env.FREE_CORRECTOR_RPM || 6);
 
-// ✅ límite de resúmenes por día (solo resumidor)
-const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 3);
 // ✅ límite de traducciones por día (solo traductor)
-const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 20);
+const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
+// ✅ límite de resúmenes por día (solo resumidor)
+const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
 // ✅ límite de correcciones por día (solo corrector) (NUEVO)
-const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 5);
+const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20); 
 
 // ✅ Modelos 
-const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // ej: "gpt-4.1-mini"
-const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // opcional
-const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // opcional (NUEVO)
+const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
+const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // 
+const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // 
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
