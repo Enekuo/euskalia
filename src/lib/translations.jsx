@@ -446,6 +446,56 @@ grammarcorrector_limit_reached: {
   EN: "Maximum limit: {{count}} characters.",
   FR: "Limite maximale : {{count}} caractères."
 },
+  // =========================
+  //        PARAFRASEADOR 
+  // =========================
+
+
+paraphraser_sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+paraphraser_tab_text: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+paraphraser_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
+paraphraser_tab_url: { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
+
+paraphraser_enter_text_placeholder: { ES: "Escribe o pega tu texto aquí…", EUS: "Idatzi edo itsatsi testua hemen…", EN: "Write or paste your text here…", FR: "Écris ou colle ton texte ici…" },
+
+paraphraser_pick_file_title: { ES: "Elige tu archivo o carpeta", EUS: "Aukeratu zure fitxategia edo karpeta", EN: "Choose your file or folder", FR: "Choisissez votre fichier ou dossier" },
+paraphraser_accepted_formats: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "PDF fitxategiak, testua edo web estekak gehi ditzakezu…", EN: "You can add PDF files, copied text, web links…", FR: "Vous pouvez ajouter des fichiers PDF, du texte copié, des liens web…" },
+paraphraser_folder_hint: { ES: "Aquí aparecerán tus textos o documentos subidos.", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.", EN: "Your uploaded texts or documents will appear here.", FR: "Vos textes ou documents téléchargés apparaîtront ici." },
+
+paraphraser_paste_urls_label: { ES: "Pegar URLs*", EUS: "URLak itsatsi*", EN: "Paste URLs*", FR: "Coller des URLs*" },
+paraphraser_add_urls_button: { ES: "Añadir URLs", EUS: "Gehitu URLak", EN: "Add URLs", FR: "Ajouter des URLs" },
+paraphraser_save_urls_button: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+paraphraser_cancel_button: { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Annuler" },
+paraphraser_urls_note_visible: { ES: "Solo se importará el texto visible del sitio web.", EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.", EN: "Only visible text from the website will be imported.", FR: "Seul le texte visible du site sera importé." },
+paraphraser_urls_note_paywalled: { ES: "No se admiten artículos de pago.", EUS: "Ordainpeko artikuluak ez dira onartzen.", EN: "Paywalled articles are not supported.", FR: "Les articles payants ne sont pas pris en charge." },
+paraphraser_remove_button: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Supprimer" },
+
+paraphraser_generate_button: { ES: "Crear parafraseo", EUS: "Sortu parafraseoa", EN: "Generate paraphrase", FR: "Créer une reformulation" },
+paraphraser_help_right: { ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa \"Crear parafraseo\".", EUS: "Aukeratu iturri bat (testua, dokumentuak edo URLak) eta sakatu \"Sortu parafraseoa\".", EN: "Select a source (text, documents or URLs) and click \"Generate paraphrase\".", FR: "Sélectionnez une source (texte, documents ou URLs) et cliquez sur \"Créer une reformulation\"." },
+
+paraphraser_left_title: { ES: "Aquí aparecerán tus textos o documentos subidos.", EUS: "Hemen agertuko dira igo dituzun testuak edo dokumentuak.", EN: "Your uploaded texts or documents will appear here.", FR: "Vos textes ou documents téléchargés apparaîtront ici." },
+paraphraser_left_body: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "PDF fitxategiak, testua edo web estekak gehi ditzakezu…", EN: "You can add PDF files, copied text, web links…", FR: "Vous pouvez ajouter des fichiers PDF, du texte copié, des liens web…" },
+
+paraphraser_mode_neutral: { ES: "Neutral", EUS: "Neutrala", EN: "Neutral", FR: "Neutre" },
+paraphraser_mode_informal: { ES: "Informal", EUS: "Informala", EN: "Informal", FR: "Informel" },
+paraphraser_mode_professional: { ES: "Profesional", EUS: "Profesionala", EN: "Professional", FR: "Professionnel" },
+paraphraser_mode_academic: { ES: "Académico", EUS: "Akademikoa", EN: "Academic", FR: "Académique" },
+paraphraser_mode_fluent: { ES: "Fluido", EUS: "Arina", EN: "Fluent", FR: "Fluide" },
+paraphraser_mode_simplified: { ES: "Simplificado", EUS: "Sinplifikatua", EN: "Simplified", FR: "Simplifié" },
+paraphraser_mode_creative: { ES: "Creativo", EUS: "Sortzailea", EN: "Creative", FR: "Créatif" },
+
+paraphraser_copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+paraphraser_copied: { ES: "Copiado", EUS: "Kopiatua", EN: "Copied", FR: "Copié" },
+paraphraser_download: { ES: "Descargar", EUS: "Deskargatu", EN: "Download", FR: "Télécharger" },
+paraphraser_save_to_library_button: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+paraphraser_saved_to_library: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
+
+paraphraser_error_need_input: { ES: "Añade texto suficiente, URLs o documentos antes de crear el parafraseo.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak parafraseoa sortu aurretik.", EN: "Add enough text, URLs or documents before generating the paraphrase.", FR: "Ajoutez du texte, des URLs ou des documents avant de créer la reformulation." },
+paraphraser_error_generic: { ES: "Error creando el parafraseo.", EUS: "Errorea parafraseoa sortzean.", EN: "Error generating paraphrase.", FR: "Erreur lors de la création de la reformulation." },
+paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.", EUS: "Saioa hasi behar duzu Pro erabiltzeko.", EN: "You need to log in to use Pro.", FR: "Vous devez vous connecter pour utiliser Pro." },
+
+
+
 
   // =========================
   //        COOKIES BANNER 
