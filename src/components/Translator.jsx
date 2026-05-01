@@ -56,24 +56,59 @@ export default function Translator() {
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
+  const LBL_DE = tr("summary.output_language_de", "Alemana");
+const LBL_IT = tr("summary.output_language_it", "Italiera");
+const LBL_PT = tr("summary.output_language_pt", "Portugesa");
+const LBL_NL = tr("summary.output_language_nl", "Neerlandesa");
+const LBL_ZH = tr("summary.output_language_zh", "Txinera");
+const LBL_AR = tr("summary.output_language_ar", "Arabiera");
+const LBL_RU = tr("summary.output_language_ru", "Errusiera");
+const LBL_JA = tr("summary.output_language_ja", "Japoniera");
+const LBL_SV = tr("summary.output_language_sv", "Suediera");
+const LBL_RO = tr("summary.output_language_ro", "Errumaniera");
+const LBL_UK = tr("summary.output_language_uk", "Ukrainera");
 
-  const OPTIONS_SRC = [
-    { value: "auto", label: LBL_DETECT },
-    { value: "es", label: LBL_ES },
-    { value: "eus", label: LBL_EUS },
-    { value: "en", label: LBL_EN },
-    { value: "fr", label: LBL_FR },
-  ];
 
-  const OPTIONS_DST = [
-    { value: "es", label: LBL_ES },
-    { value: "eus", label: LBL_EUS },
-    { value: "en", label: LBL_EN },
-    { value: "fr", label: LBL_FR },
-  ];
+
+const OPTIONS_DST = [
+  { value: "eus", label: LBL_EUS },
+  { value: "es", label: LBL_ES },
+  { value: "en", label: LBL_EN },
+  { value: "fr", label: LBL_FR },
+  { value: "de", label: LBL_DE },
+  { value: "it", label: LBL_IT },
+  { value: "pt", label: LBL_PT },
+  { value: "nl", label: LBL_NL },
+  { value: "zh", label: LBL_ZH },
+  { value: "ar", label: LBL_AR },
+  { value: "ru", label: LBL_RU },
+  { value: "ja", label: LBL_JA },
+  { value: "sv", label: LBL_SV },
+  { value: "ro", label: LBL_RO },
+  { value: "uk", label: LBL_UK },
+];
+
+const OPTIONS_SRC = [
+  { value: "auto", label: LBL_DETECT },
+  { value: "eus", label: LBL_EUS },
+  { value: "es", label: LBL_ES },
+  { value: "en", label: LBL_EN },
+  { value: "fr", label: LBL_FR },
+  { value: "de", label: LBL_DE },
+  { value: "it", label: LBL_IT },
+  { value: "pt", label: LBL_PT },
+  { value: "nl", label: LBL_NL },
+  { value: "zh", label: LBL_ZH },
+  { value: "ar", label: LBL_AR },
+  { value: "ru", label: LBL_RU },
+  { value: "ja", label: LBL_JA },
+  { value: "sv", label: LBL_SV },
+  { value: "ro", label: LBL_RO },
+  { value: "uk", label: LBL_UK },
+];
 
   const [src, setSrc] = useState("auto");
-  const [dst, setDst] = useState("es");
+  const [dst, setDst] = useState("eus");
   const [openLeft, setOpenLeft] = useState(false);
   const [openRight, setOpenRight] = useState(false);
 
@@ -207,12 +242,23 @@ export default function Translator() {
   }, [leftText, sourceMode, uiLang]);
 
   const langNameES = (code) => {
-    if (code === "eus") return "Euskera";
-    if (code === "es") return "Español";
-    if (code === "en") return "Inglés";
-    if (code === "fr") return "Francés";
-    return "Idioma";
-  };
+  if (code === "eus") return "Euskera";
+  if (code === "es") return "Español";
+  if (code === "en") return "Inglés";
+  if (code === "fr") return "Francés";
+  if (code === "de") return "Alemán";
+  if (code === "it") return "Italiano";
+  if (code === "pt") return "Portugués";
+  if (code === "nl") return "Neerlandés";
+  if (code === "zh") return "Chino";
+  if (code === "ar") return "Árabe";
+  if (code === "ru") return "Ruso";
+  if (code === "ja") return "Japonés";
+  if (code === "sv") return "Sueco";
+  if (code === "ro") return "Rumano";
+  if (code === "uk") return "Ucraniano";
+  return "Idioma";
+};
 
   const parseDetectedLanguage = (raw) => {
     const s = String(raw || "");
