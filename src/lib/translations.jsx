@@ -88,6 +88,22 @@ correctorSubtitle: {
     FR: "arrêter",
   },
   
+output_language_eus: { ES: "Euskera", EUS: "Euskara", EN: "Basque", FR: "Basque" },
+output_language_es: { ES: "Español", EUS: "Gaztelania", EN: "Spanish", FR: "Espagnol" },
+output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
+output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
+output_language_de: { ES: "Alemán", EUS: "Alemana", EN: "German", FR: "Allemand" },
+output_language_it: { ES: "Italiano", EUS: "Italiera", EN: "Italian", FR: "Italien" },
+output_language_pt: { ES: "Portugués", EUS: "Portugesa", EN: "Portuguese", FR: "Portugais" },
+output_language_nl: { ES: "Neerlandés", EUS: "Neerlandera", EN: "Dutch", FR: "Néerlandais" },
+output_language_zh: { ES: "Chino", EUS: "Txinera", EN: "Chinese", FR: "Chinois" },
+output_language_ar: { ES: "Árabe", EUS: "Arabiera", EN: "Arabic", FR: "Arabe" },
+output_language_ru: { ES: "Ruso", EUS: "Errusiera", EN: "Russian", FR: "Russe" },
+output_language_ja: { ES: "Japonés", EUS: "Japoniera", EN: "Japanese", FR: "Japonais" },
+output_language_sv: { ES: "Sueco", EUS: "Suediera", EN: "Swedish", FR: "Suédois" },
+output_language_ro: { ES: "Rumano", EUS: "Errumaniera", EN: "Romanian", FR: "Roumain" },
+output_language_uk: { ES: "Ucraniano", EUS: "Ukrainera", EN: "Ukrainian", FR: "Ukrainien" },
+
 
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
     listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },

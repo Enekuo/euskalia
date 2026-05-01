@@ -78,7 +78,6 @@ export default function Header() {
     try {
       if (typeof window !== "undefined" && !sessionStorage.getItem("lang-init")) {
         setLanguage("EUS");
-        sessionStorage.setItem("lang-init", "1");
       }
     } catch {}
   }, [setLanguage]);

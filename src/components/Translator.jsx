@@ -52,21 +52,21 @@ export default function Translator() {
     uiLang === "EUS" ? "detektatua" : "detectado"
   );
 
-  const LBL_EUS = tr("summary.output_language_eus", "Euskara");
-  const LBL_ES = tr("summary.output_language_es", "Gaztelania");
-  const LBL_EN = tr("summary.output_language_en", "Ingelesa");
-  const LBL_FR = tr("summary.output_language_fr", "Français");
-  const LBL_DE = tr("summary.output_language_de", "Alemana");
-const LBL_IT = tr("summary.output_language_it", "Italiera");
-const LBL_PT = tr("summary.output_language_pt", "Portugesa");
-const LBL_NL = tr("summary.output_language_nl", "Neerlandesa");
-const LBL_ZH = tr("summary.output_language_zh", "Txinera");
-const LBL_AR = tr("summary.output_language_ar", "Arabiera");
-const LBL_RU = tr("summary.output_language_ru", "Errusiera");
-const LBL_JA = tr("summary.output_language_ja", "Japoniera");
-const LBL_SV = tr("summary.output_language_sv", "Suediera");
-const LBL_RO = tr("summary.output_language_ro", "Errumaniera");
-const LBL_UK = tr("summary.output_language_uk", "Ukrainera");
+ const LBL_EUS = tr("translator.output_language_eus", "Euskara");
+const LBL_ES = tr("translator.output_language_es", "Gaztelania");
+const LBL_EN = tr("translator.output_language_en", "Ingelesa");
+const LBL_FR = tr("translator.output_language_fr", "Français");
+const LBL_DE = tr("translator.output_language_de", "Alemana");
+const LBL_IT = tr("translator.output_language_it", "Italiera");
+const LBL_PT = tr("translator.output_language_pt", "Portugesa");
+const LBL_NL = tr("translator.output_language_nl", "Neerlandesa");
+const LBL_ZH = tr("translator.output_language_zh", "Txinera");
+const LBL_AR = tr("translator.output_language_ar", "Arabiera");
+const LBL_RU = tr("translator.output_language_ru", "Errusiera");
+const LBL_JA = tr("translator.output_language_ja", "Japoniera");
+const LBL_SV = tr("translator.output_language_sv", "Suediera");
+const LBL_RO = tr("translator.output_language_ro", "Errumaniera");
+const LBL_UK = tr("translator.output_language_uk", "Ukrainera");
 
 
 
@@ -880,13 +880,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
     if (!open) return null;
     return (
-      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0" : "left-0"}`}>
+      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0 translate-x-6" : "left-0"}`}>
         <div className="relative">
           <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
             <path d="M0,10 L10,0 L20,10" className="fill-white" />
             <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
           </svg>
-          <div className="w-48 bg-white rounded-xl shadow-lg border border-slate-200 p-2">
+          <div className="w-48 max-h-96 overflow-y-auto bg-white rounded-xl shadow-lg border border-slate-200 p-2">
             {options.map((opt) => (
               <Item
                 key={opt.value}
