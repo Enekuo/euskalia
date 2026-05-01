@@ -259,6 +259,26 @@ const OPTIONS_SRC = [
   if (code === "uk") return "Ucraniano";
   return "Idioma";
 };
+const langNameTarget = (code) => {
+  if (code === "eus") return "Euskera";
+  if (code === "es") return "Español";
+  if (code === "en") return "English";
+  if (code === "fr") return "Français";
+  if (code === "de") return "Deutsch";
+  if (code === "it") return "Italiano";
+  if (code === "pt") return "Português";
+  if (code === "nl") return "Nederlands";
+  if (code === "zh") return "中文";
+  if (code === "ar") return "العربية";
+  if (code === "ru") return "Русский";
+  if (code === "ja") return "日本語";
+  if (code === "sv") return "Svenska";
+  if (code === "ro") return "Română";
+  if (code === "uk") return "Українська";
+  return "el idioma de destino";
+};
+
+
 
   const parseDetectedLanguage = (raw) => {
     const s = String(raw || "");
