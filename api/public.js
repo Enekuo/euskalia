@@ -49,7 +49,7 @@ function makeCacheKey({ task, model, system, messages, src, dst, lang, length })
   const userText = canonicalize((messages || []).map(m => m?.content || "").join(" "));
   const payload = JSON.stringify({
     // ✅ bump cache version para NO reutilizar resultados antiguos malos
-    v: "v2",
+    v: "v3",
     task,
     model,
     pair: lang || `${src || ""}-${dst || ""}` || "na",
@@ -108,6 +108,27 @@ EUSKERA-ARAUAK (oso garrantzitsua):
 - Erantzun BAKARRIK itzulpenarekin (formatua mantenduz).
 `.trim();
 }
+function langNameTarget(code) {
+  if (code === "eus") return "Euskera";
+  if (code === "es") return "Español";
+  if (code === "en") return "English";
+  if (code === "fr") return "Français";
+  if (code === "de") return "Deutsch";
+  if (code === "it") return "Italiano";
+  if (code === "pt") return "Português";
+  if (code === "nl") return "Nederlands";
+  if (code === "zh") return "中文";
+  if (code === "ar") return "العربية";
+  if (code === "ru") return "Русский";
+  if (code === "ja") return "日本語";
+  if (code === "sv") return "Svenska";
+  if (code === "ro") return "Română";
+  if (code === "uk") return "Українська";
+  return "el idioma de destino";
+}
+
+
+
 
 // ====== Handler ======
 export default async function handler(req, res) {
@@ -339,11 +360,23 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
     if (tool === "corrector" && FREE_CORRECTOR_MODEL) model = FREE_CORRECTOR_MODEL;
 
-    // ✅ Guardrail EUS (solo traductor y cuando destino sea eus)
-    const dst = hasTranslate ? body.to : (body?.dst || null);
-    if (tool === "translator" && String(dst || "").toLowerCase() === "eus") {
-      system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
-    }
+// ✅ Guardrail traductor: fuerza idioma destino real
+const dst = hasTranslate ? body.to : (body?.dst || null);
+const dstCode = String(dst || "").toLowerCase();
+
+if (tool === "translator" && dstCode) {
+  system = `${String(system || "").trim()}
+
+REGLA CRÍTICA DE DESTINO:
+- Traduce SIEMPRE al idioma destino: ${langNameTarget(dstCode)}.
+- La respuesta final debe estar únicamente en ${langNameTarget(dstCode)}.
+- No traduzcas a otro idioma aunque el texto sea corto.
+- No expliques nada. Devuelve solo la traducción.`.trim();
+}
+
+if (tool === "translator" && dstCode === "eus") {
+  system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
+}
 
     const finalMessages = [
       ...(system ? [{ role: "system", content: system }] : []),
