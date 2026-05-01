@@ -2,14 +2,11 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from '@/components/Header';
-import Translator from '@/components/Translator';
 import { Toaster } from '@/components/ui/toaster';
 import AuthPage from '@/pages/AuthPage';
 import RegisterPage from "@/pages/RegisterPage";
 import SupportPage from '@/pages/SupportPage';
 import AssistantPage from "@/pages/AssistantPage";
-import Resumen from "@/components/Resumen";
-import CorrectorGramatical from "@/components/CorrectorGramatical";
 import LegalNoticePage from "@/components/Legal/LegalNoticePage";
 import PrivacyPolicyPage from "@/components/Legal/PrivacyPolicyPage";
 import TermsConditionsPage from "@/components/Legal/TermsConditionsPage";
@@ -21,6 +18,11 @@ import CookieBanner from "@/components/CookieBanner";
 import PagoCorrectoPage from "@/pages/PagoCorrectoPage";
 import PagoCanceladoPage from "@/pages/PagoCanceladoPage";
 import TraductorSeoRedirect from "./TraductorSeoRedirect";
+//Herramientas Public
+import Translator from '@/components/Translator';
+import Resumen from "@/components/Resumen";
+import CorrectorGramatical from "@/components/CorrectorGramatical";
+import Parafraseador from "@/components/Parafraseador";
 
 
 
@@ -57,6 +59,7 @@ import PremiumLibraryDetail from "@/components/PremiumAccount/PremiumLibraryDeta
 import PremiumTextCreator from "@/components/PremiumAccount/PremiumTextCreator";
 import PremiumEmailCreator from "@/components/PremiumAccount/PremiumEmailCreator";
 import PremiumAudioCreator from "@/components/PremiumAccount/PremiumAudioCreator";
+
 
 
 
@@ -139,6 +142,7 @@ const seo =
             <Route path="/pago-correcto" element={<PagoCorrectoPage />} />
             <Route path="/pago-cancelado" element={<PagoCanceladoPage />} />
             <Route path="/traductor" element={<TraductorSeoRedirect />} />
+            <Route path="/parafraseador" element={<Parafraseador />} />
 
 
 
