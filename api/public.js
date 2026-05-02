@@ -21,17 +21,24 @@ const FREE_CORRECTOR_MAX_CHARS       = Number(process.env.FREE_CORRECTOR_MAX_CHA
 const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_TOKENS || 50000);
 const FREE_CORRECTOR_RPM             = Number(process.env.FREE_CORRECTOR_RPM || 6);
 
+// Parafraseador
+const FREE_PARAPHRASER_MAX_CHARS       = Number(process.env.FREE_PARAPHRASER_MAX_CHARS || 8000);
+const FREE_PARAPHRASER_DAILY_TOKENS    = Number(process.env.FREE_PARAPHRASER_DAILY_TOKENS || 50000);
+const FREE_PARAPHRASER_RPM             = Number(process.env.FREE_PARAPHRASER_RPM || 6);
+
 // ✅ límite de traducciones por día (solo traductor)
 const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
 // ✅ límite de correcciones por día (solo corrector) (NUEVO)
 const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20); 
+const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 10);
 
 // ✅ Modelos 
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
 const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // 
 const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // 
+const FREE_PARAPHRASER_MODEL = String(process.env.FREE_PARAPHRASER_MODEL || "").trim();
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -326,10 +333,17 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("ortograf") || rawMode.includes("ortograf") ||
       rawTask.includes("gramat") || rawMode.includes("gramat");
 
+    const isParaphraser =
+      rawTask.includes("paraphrase") || rawMode.includes("paraphrase") ||
+      rawTask.includes("parafrase") || rawMode.includes("parafrase") ||
+      rawTask.includes("rewrite") || rawMode.includes("rewrite") ||
+      rawTask.includes("reescrit") || rawMode.includes("reescrit");
+
     let tool =
       isSummary ? "summary" :
       isTranslator ? "translator" :
       isCorrector ? "corrector" :
+      isParaphraser ? "paraphraser" :
       "other";
 
     // ✅ FIX REAL: si llega como "other", inferimos por el contenido (porque tu frontend a veces no manda task/mode)
@@ -349,9 +363,15 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
         hint.includes("gramatica") || hint.includes("gramatica") || hint.includes("ortografia") ||
         hint.includes("puntuacion") || hint.includes("estilo");
 
-      if (looksSummary && !looksTranslate && !looksCorrector) tool = "summary";
-      else if (looksTranslate && !looksSummary && !looksCorrector) tool = "translator";
-      else if (looksCorrector && !looksSummary && !looksTranslate) tool = "corrector";
+      const looksParaphraser =
+        hint.includes("parafrase") || hint.includes("paraphrase") ||
+        hint.includes("reescribe") || hint.includes("reescritura") ||
+        hint.includes("rewrite") || hint.includes("rephrase");
+
+      if (looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser) tool = "summary";
+      else if (looksTranslate && !looksSummary && !looksCorrector && !looksParaphraser) tool = "translator";
+      else if (looksCorrector && !looksSummary && !looksTranslate && !looksParaphraser) tool = "corrector";
+      else if (looksParaphraser && !looksSummary && !looksTranslate && !looksCorrector) tool = "paraphraser";
       // si aparecen varios, se queda "other"
     }
 
@@ -359,6 +379,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     if (tool === "translator" && FREE_TRANSLATOR_MODEL) model = FREE_TRANSLATOR_MODEL;
     if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
     if (tool === "corrector" && FREE_CORRECTOR_MODEL) model = FREE_CORRECTOR_MODEL;
+    if (tool === "paraphraser" && FREE_PARAPHRASER_MODEL) model = FREE_PARAPHRASER_MODEL;
 
 // ✅ Guardrail traductor: fuerza idioma destino real
 const dst = hasTranslate ? body.to : (body?.dst || null);
@@ -387,18 +408,21 @@ if (tool === "translator" && dstCode === "eus") {
     const MAX_CHARS =
       tool === "summary" ? FREE_SUMMARY_MAX_CHARS :
       tool === "corrector" ? FREE_CORRECTOR_MAX_CHARS :
+      tool === "paraphraser" ? FREE_PARAPHRASER_MAX_CHARS :
       tool === "translator" ? FREE_TRANSLATOR_MAX_CHARS :
       FREE_TRANSLATOR_MAX_CHARS;
 
     const DAILY_TOKENS =
       tool === "summary" ? FREE_SUMMARY_DAILY_TOKENS :
       tool === "corrector" ? FREE_CORRECTOR_DAILY_TOKENS :
+      tool === "paraphraser" ? FREE_PARAPHRASER_DAILY_TOKENS :
       tool === "translator" ? FREE_TRANSLATOR_DAILY_TOKENS :
       FREE_TRANSLATOR_DAILY_TOKENS;
 
     const RPM =
       tool === "summary" ? FREE_SUMMARY_RPM :
       tool === "corrector" ? FREE_CORRECTOR_RPM :
+      tool === "paraphraser" ? FREE_PARAPHRASER_RPM :
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
@@ -515,6 +539,28 @@ if (tool === "translator" && dstCode === "eus") {
         }
       } catch (e) {
         console.log("[KV DAILY CORRECTOR ERROR]", e?.message || e);
+      }
+    }
+
+    if (tool === "paraphraser") {
+      try {
+        const dailyParaphraserKey = `quota:paraphraser:reqs:${day}:${ip}`;
+        const usedReqs = await kv.incr(dailyParaphraserKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyParaphraserKey, 60 * 60 * 26);
+        }
+        if (usedReqs > FREE_PARAPHRASER_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily paraphraser requests exceeded",
+            limit: { daily_requests: FREE_PARAPHRASER_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del parafraseador (${FREE_PARAPHRASER_DAILY_REQUESTS} usos/día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch (e) {
+        console.log("[KV DAILY PARAPHRASER ERROR]", e?.message || e);
       }
     }
 
