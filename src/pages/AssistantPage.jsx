@@ -1,261 +1,341 @@
-// Chat de IA //
-import React, { useState, useRef, useEffect } from "react";
-import { Plus } from "lucide-react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { Sparkles, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 
 export default function AssistantPage() {
   const { t } = useTranslation();
-  const tr = (k, f = "") => {
-    const val = typeof t === "function" ? t(k) : null;
-    return !val || val === k ? f : val;
+
+  const tr = (key, fallback = "") => {
+    const val = typeof t === "function" ? t(key) : null;
+    return !val || val === key ? fallback : val;
   };
 
-  const [messages, setMessages] = useState([]); // { role: "user" | "assistant", content: string }
   const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [avatarOk, setAvatarOk] = useState(true);
+  const [isSending, setIsSending] = useState(false);
   const [systemError, setSystemError] = useState("");
-  const inputRef = useRef(null);
 
-  // Mantener el foco en el input al entrar en la página
+  const listRef = useRef(null);
+  const inputRef = useRef(null);
+  const typingTimerRef = useRef(null);
+
+  const scrollToBottom = () => {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  };
+
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus?.();
   }, []);
 
-  const getErrorMessage = (errorCode) => {
-    switch (errorCode) {
-      case "DAILY_REQUEST_LIMIT":
-        return tr(
-          "assistant_error_daily_limit",
-          "Has alcanzado el límite diario de mensajes para el chat público."
-        );
-      case "CHAR_LIMIT_EXCEEDED":
-        return tr(
-          "assistant_error_char_limit",
-          "El mensaje supera el límite de caracteres permitido para el chat público."
-        );
-      case "RATE_LIMIT":
-        return tr(
-          "assistant_error_rate_limit",
-          "Estás enviando mensajes demasiado rápido. Inténtalo de nuevo en unos segundos."
-        );
-      case "DAILY_TOKEN_LIMIT":
-        return tr(
-          "assistant_error_token_limit",
-          "Has alcanzado el límite diario de uso del chat público."
-        );
-      case "EMPTY_MESSAGE":
-        return tr(
-          "assistant_error_empty",
-          "No se ha enviado ningún mensaje válido."
-        );
-      default:
-        return tr(
-          "assistant_error_generic",
-          "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
-        );
-    }
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text) return;
+  useEffect(() => {
+    return () => {
+      if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+    };
+  }, []);
 
-    // limpiar aviso anterior antes de un nuevo intento
-    setSystemError("");
+  const systemInstructionBase = useMemo(() => {
+    return `
+Eres el Asistente de IA de Euskalia.
 
-    // Mensaje del usuario
-    const userMsg = { role: "user", content: text };
-    const newMessages = [...messages, userMsg];
+Contexto: Euskalia es una plataforma centrada en el euskera para trabajar con textos: traducir, corregir, resumir, reescribir y generar contenido.
 
-    setMessages(newMessages);
-    setInput("");
+También puedes responder preguntas sobre la web de Euskalia: qué es, cómo funciona, qué herramientas incluye, para qué sirve cada una y cómo usarla.
 
-    // Volver a enfocar el input tras enviar
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
+Estilo:
+- Responde de forma natural, profesional y directa.
+- No enumeres capacidades si el usuario no lo pide.
+- No uses frases repetitivas.
+- Mantén un tono claro, útil y cercano.
 
-    // Llamada al backend de Euskalia (chat oficial con guía)
-    try {
-      const res = await fetch("/api/euskalia-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "assistant",
-          messages: newMessages,
-        }),
-      });
+Reglas:
+- Si el usuario saluda, responde de forma breve y natural.
+- Si pregunta qué es Euskalia, responde claramente en pocas frases.
+- Si pide algo fuera de Euskalia o fuera del trabajo con textos, redirige brevemente hacia tareas relacionadas con Euskalia, textos o euskera.
+- No uses listas salvo que sean necesarias.
+    `.trim();
+  }, []);
 
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        const backendErrorCode = data?.error || "";
-        const backendMessage = getErrorMessage(backendErrorCode);
-        throw new Error(backendMessage);
-      }
-
-      const assistantText =
-        data?.content ||
-        tr(
-          "assistant_error_generic",
-          "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
-        );
-
-      const assistantMsg = {
-        role: "assistant",
-        content: assistantText,
-      };
-
-      setMessages((prev) => [...prev, assistantMsg]);
-    } catch (error) {
-      setSystemError(
-        error?.message ||
-          tr(
-            "assistant_error_generic",
-            "Ha ocurrido un error al generar la respuesta. Inténtalo de nuevo más tarde."
-          )
-      );
-    }
-  };
-
-  const handleNewChat = () => {
+  const newChat = () => {
+    if (typingTimerRef.current) clearInterval(typingTimerRef.current);
     setMessages([]);
     setInput("");
+    setIsSending(false);
     setSystemError("");
 
     setTimeout(() => {
-      inputRef.current?.focus();
+      inputRef.current?.focus?.();
     }, 0);
   };
 
-  const isEmpty = messages.length === 0;
+  const extractAssistantText = (data) => {
+    if (!data) return "";
+    if (typeof data === "string") return data;
+    return (
+      data.text ||
+      data.reply ||
+      data.content ||
+      data.message ||
+      data?.choices?.[0]?.message?.content ||
+      ""
+    );
+  };
+
+  const callApi = async (chatMessages) => {
+    const payload = {
+      mode: "assistant",
+      messages: [
+        { role: "system", content: systemInstructionBase },
+        ...chatMessages.map((m) => ({
+          role: m.role,
+          content: m.text,
+        })),
+      ],
+    };
+
+    const res = await fetch("/api/euskalia-chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    let data = null;
+    try {
+      data = await res.json();
+    } catch {}
+
+    if (!res.ok) {
+      const msg =
+        extractAssistantText(data) ||
+        tr("assistant_error_generic", "No se pudo generar la respuesta. Inténtalo de nuevo.");
+      throw new Error(msg);
+    }
+
+    const out = extractAssistantText(data);
+
+    if (!out) {
+      throw new Error(tr("assistant_error_empty", "Respuesta vacía del servidor."));
+    }
+
+    return out;
+  };
+
+  const revealReply = (placeholderId, fullText) => {
+    if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+
+    const safe = String(fullText || "");
+    let i = 0;
+    const chunkSize = 6;
+
+    typingTimerRef.current = setInterval(() => {
+      const nextChunk = safe.slice(i, i + chunkSize);
+
+      if (!nextChunk) {
+        clearInterval(typingTimerRef.current);
+        typingTimerRef.current = null;
+        setIsSending(false);
+        setTimeout(() => inputRef.current?.focus?.(), 0);
+        return;
+      }
+
+      i += nextChunk.length;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === placeholderId
+            ? { role: "assistant", text: safe.slice(0, i), _id: placeholderId }
+            : m
+        )
+      );
+
+      setTimeout(() => scrollToBottom(), 0);
+    }, 16);
+  };
+
+  const send = async () => {
+    const text = (input || "").trim();
+    if (!text || isSending) return;
+
+    setSystemError("");
+
+    const next = [...messages, { role: "user", text }];
+    setMessages(next);
+    setInput("");
+    setIsSending(true);
+
+    const placeholderId = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", text: "", _id: placeholderId },
+    ]);
+
+    try {
+      const reply = await callApi(next);
+      revealReply(placeholderId, reply);
+    } catch (e) {
+      if (typingTimerRef.current) clearInterval(typingTimerRef.current);
+
+      const errText =
+        e?.message ||
+        tr("assistant_error_generic", "No se pudo generar la respuesta. Inténtalo de nuevo.");
+
+      setMessages((prev) => prev.filter((m) => m._id !== placeholderId));
+      setSystemError(errText);
+      setIsSending(false);
+
+      setTimeout(() => inputRef.current?.focus?.(), 0);
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      send();
+    }
+  };
 
   return (
-    <div className="bg-slate-50 min-h-[calc(100vh-4rem)] flex flex-col">
-      {/* Botón "Txat berria" arriba a la derecha */}
-      <div className="flex justify-end px-6 pt-4">
-        <button
-          onClick={handleNewChat}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white
-                     px-4 h-10 text-sm font-medium text-slate-700 shadow-sm
-                     hover:bg-slate-50 hover:shadow-md transition"
-        >
-          <Plus className="w-4 h-4" />
-          {tr("assistant_new_chat", "Nuevo chat")}
-        </button>
-      </div>
+    <div className="w-full min-h-[calc(100vh-64px)] px-3 sm:px-6 py-6 sm:py-10 bg-slate-50">
+      <div className="mx-auto w-full max-w-[1100px]">
+        <div className="w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100">
+          <div className="flex items-start justify-between px-6 pt-6">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <Sparkles className="w-4 h-4" />
+              </div>
 
-      {/* CONTENIDO CENTRAL */}
-      <div className="flex-1 flex flex-col items-center px-4 pb-8">
-        {/* Mascota + título solo si no hay mensajes */}
-        {isEmpty && (
-          <div className="mt-2 mb-8 flex flex-col items-center text-center">
-            <div className="mb-5 flex items-center justify-center">
-              <img
-                src="/olondo.mascota.png"
-                alt="Euskalia IA"
-                className="h-40 sm:h-44 md:h-48 w-auto"
-                draggable={false}
-              />
+              <div className="text-[20px] font-extrabold text-slate-900">
+                {tr("assistant_title", "Asistente de IA")}
+              </div>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-semibold text-slate-900">
-              {tr("assistant_title", "Asistente de IA")}
-            </h1>
+            <button
+              type="button"
+              onClick={newChat}
+              className="h-9 px-4 rounded-full text-sm font-semibold border bg-white border-slate-200 text-slate-900 shadow-sm inline-flex items-center gap-2 hover:bg-slate-50"
+            >
+              <span className="text-[18px] leading-none">+</span>
+              {tr("assistant_new_chat", "Nuevo chat")}
+            </button>
           </div>
-        )}
 
-        {/* ZONA DE MENSAJES */}
-        {!isEmpty && (
-          <div className="w-full max-w-3xl flex-1 overflow-y-auto mt-4 mb-6 pr-1">
-            {messages.map((m, idx) => (
-              <div
-                key={idx}
-                className={`w-full flex ${
-                  m.role === "user" ? "justify-end" : "justify-start"
-                } mb-3`}
-              >
-                <div
-                  className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-2 text-sm md:text-base leading-relaxed ${
-                    m.role === "user"
-                      ? "bg-sky-600 text-white rounded-br-md"
-                      : "bg-white text-slate-800 border border-slate-200 rounded-bl-md"
-                  }`}
-                >
-                  {m.content}
+          <div className="px-6 pt-3 pb-0">
+            <div className="mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col">
+              <div ref={listRef} className="relative flex-1 overflow-auto px-4 py-4">
+                {messages.length === 0 ? (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <div className="text-center px-4">
+                      <div className="mb-5 flex justify-center">
+                        {avatarOk ? (
+                          <img
+                            src="/olondo-mascota3.png"
+                            alt="Euskalia IA"
+                            className="h-36 sm:h-40 md:h-44 w-auto"
+                            draggable={false}
+                            onError={() => setAvatarOk(false)}
+                          />
+                        ) : (
+                          <div className="h-32 w-32 rounded-full bg-sky-100 flex items-center justify-center text-5xl">
+                            🤖
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="text-[36px] sm:text-[40px] font-extrabold tracking-tight text-slate-900">
+                        {tr("assistant_emptyTitle", "¿Cómo puedo ayudarte?")}
+                      </div>
+
+                      <div className="mt-2 text-[17px] sm:text-[18px] text-slate-600">
+                        {tr("assistant_emptySubtitle", "Escribe tu petición para empezar")}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((m, idx) => {
+                      const isUser = m.role === "user";
+
+                      if (isUser) {
+                        return (
+                          <div key={idx} className="w-full flex justify-end">
+                            <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-sky-100 text-slate-900 border border-sky-200 whitespace-pre-wrap">
+                              {m.text}
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div key={idx} className="w-full flex justify-start items-start gap-3">
+                          <div className="mt-0.5 h-10 w-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center overflow-hidden">
+                            {avatarOk ? (
+                              <img
+                                src="/olondo-mascota3.png"
+                                alt=""
+                                className="h-full w-full object-cover scale-[1.35]"
+                                onError={() => setAvatarOk(false)}
+                              />
+                            ) : (
+                              <span className="text-[14px]">🤖</span>
+                            )}
+                          </div>
+
+                          <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-slate-100 text-slate-900 border border-slate-200 whitespace-pre-wrap">
+                            {m.text}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {systemError && (
+                <div className="px-4 pb-3">
+                  <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {systemError}
+                  </div>
+                </div>
+              )}
+
+              <div className="px-4 pb-4">
+                <div className="rounded-[18px] border-2 border-slate-900/90 bg-white px-4 h-12 flex items-center gap-3">
+                  <input
+                    ref={inputRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={onKeyDown}
+                    placeholder={tr("assistant_placeholder", "Escribe aquí…")}
+                    className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={send}
+                    disabled={!input.trim() || isSending}
+                    className={`h-10 w-10 rounded-full inline-flex items-center justify-center transition ${
+                      input.trim() && !isSending
+                        ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                        : "bg-slate-100 text-slate-300 cursor-not-allowed"
+                    }`}
+                  >
+                    <ArrowUp className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* AVISO DEL SISTEMA */}
-        {systemError && (
-          <div className="w-full max-w-3xl mb-3">
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm md:text-base text-red-700">
-              {systemError}
             </div>
           </div>
-        )}
 
-        {/* BARRA DE ESCRITURA — CENTRADA */}
-        <div className="w-full flex justify-center mt-2 mb-6">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="w-full max-w-3xl"
-          >
-            <div
-              className="
-                flex items-center
-                rounded-full border border-slate-200 bg-white
-                shadow-sm hover:shadow-md transition
-                px-3 sm:px-4
-                py-2
-                gap-1 sm:gap-2
-              "
-            >
-              {/* Botón + (reservado para futuro) */}
-              <button
-                type="button"
-                className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-
-              {/* INPUT CONTROLADO */}
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  // Solo enviar con Enter (sin Shift)
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-                placeholder={tr("assistant_placeholder", "Escribe tu mensaje")}
-                className="flex-1 min-w-0 bg-transparent outline-none text-[15px] placeholder:text-slate-400 px-1"
-              />
-
-              {/* Botón Enviar */}
-              <button
-                type="submit"
-                disabled={!input.trim()}
-                className="
-                  h-9 rounded-full font-semibold text-white
-                  bg-sky-500 hover:bg-sky-600 disabled:opacity-60 disabled:cursor-not-allowed
-                  transition
-                  px-4 sm:px-6
-                  text-xs sm:text-sm
-                "
-              >
-                {tr("assistant_send", "Enviar")}
-              </button>
-            </div>
-          </form>
+          <div className="h-5" />
         </div>
       </div>
     </div>
