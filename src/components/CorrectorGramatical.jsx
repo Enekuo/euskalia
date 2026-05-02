@@ -11,6 +11,7 @@ import {
   Trash,
   Check,
   Globe,
+  SearchCheck,
   PenLine,
 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
@@ -50,6 +51,7 @@ export default function CorrectorGramatical() {
   const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
   const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
+  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -701,20 +703,35 @@ export default function CorrectorGramatical() {
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
 
-              {/* Corrector (activo) */}
-              <button
-                type="button"
-                aria-current="page"
-                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
-                className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
-              >
-                <PenLine className="w-6 h-6 text-blue-600" />
-              </button>
 
-              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
-              </div>
-            </div>
+{/* Corrector (activo) */}
+<button
+  type="button"
+  aria-current="page"
+  title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
+  className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+>
+  <SearchCheck className="w-6 h-6 text-blue-600" />
+</button>
+
+<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+  {tr("toolsMenu.correctorTitle", labelToolCorrector)}
+</div>
+
+{/* Parafraseador (inactivo) */}
+<button
+  type="button"
+  onClick={() => navigate("/parafraseador")}
+  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+  className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+>
+  <PenLine className="w-6 h-6 text-slate-700" />
+</button>
+
+<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+</div>
+  </div>
 
             <motion.section
               className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"

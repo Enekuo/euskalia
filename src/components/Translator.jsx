@@ -14,6 +14,7 @@ import {
   X,
   Globe,
   Sparkles,
+  SearchCheck,
   PenLine,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -1152,6 +1153,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const labelToolTranslator = tr("public_tools_translator", uiLang === "EUS" ? "Itzultzailea" : "Traductor");
   const labelToolSummarizer = tr("public_tools_summarizer", uiLang === "EUS" ? "Laburtzailea" : "Resumidor");
   const labelToolCorrector = tr("public_tools_corrector", uiLang === "EUS" ? "Zuzentzailea" : "Corrector");
+  const labelToolParaphraser = tr("public_tools_paraphraser", uiLang === "EUS" ? "Parafraseatzailea" : "Parafraseador");
+  
 
   return (
     <>
@@ -1198,12 +1201,25 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
                 className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
               >
-                <PenLine className="w-6 h-6 text-slate-700" />
+                <SearchCheck className="w-6 h-6 text-slate-700" />
               </button>
 
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
                 {tr("toolsMenu.correctorTitle", labelToolCorrector)}
               </div>
+              {/* Parafraseador */}
+<button
+  type="button"
+  onClick={() => navigate("/parafraseador")}
+  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+  className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+>
+  <PenLine className="w-6 h-6 text-slate-700" />
+</button>
+
+<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+</div>
             </div>
 
             {/* ✅ TU CARD ORIGINAL (igual) */}

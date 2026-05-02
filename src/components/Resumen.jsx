@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe, PenLine } from "lucide-react";
+import { FileText, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Globe, SearchCheck, PenLine } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -38,6 +38,7 @@ export default function Resumen() {
   const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
   const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
+  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
   // ===== Estado =====
   const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
@@ -725,20 +726,33 @@ export default function Resumen() {
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
-
-              {/* Corrector (inactivo) */}
+              {/* Corrector */}
               <button
                 type="button"
                 onClick={() => navigate("/corrector")}
-                title={tr("summary.correctorTitle", labelToolCorrector)}
+                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
                 className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
               >
-                <PenLine className="w-6 h-6 text-slate-700" />
+                <SearchCheck className="w-6 h-6 text-slate-700" />
               </button>
 
               <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {tr("summary.correctorTitle", labelToolCorrector)}
+                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
               </div>
+
+{/* Parafraseador (inactivo) */}
+<button
+  type="button"
+  onClick={() => navigate("/parafraseador")}
+  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+  className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+>
+  <PenLine className="w-6 h-6 text-slate-700" />
+</button>
+
+<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+</div>
             </div>
 
             <motion.section
