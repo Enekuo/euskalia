@@ -11,6 +11,8 @@ import {
   LifeBuoy,
   MessageSquare,
   SpellCheck,
+  PenLine,
+
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/translations";
@@ -98,6 +100,8 @@ export default function Header() {
       ? t("toolsMenu.summaryTitle")
       : pathname.startsWith("/corrector")
       ? t("toolsMenu.correctorTitle")
+      : pathname.startsWith("/parafraseador")
+      ? t("toolsMenu.paraphraserTitle")
       : "";
 
   const tools = [
@@ -119,6 +123,12 @@ export default function Header() {
       icon: <SpellCheck size={16} className="text-slate-500" />,
       path: "/corrector",
     },
+    {
+  name: t("toolsMenu.paraphraserTitle"),
+  subtitle: t("toolsMenu.paraphraserSubtitle"),
+  icon: <PenLine size={16} className="text-slate-500" />,
+  path: "/parafraseador",
+},
   ];
 
   const ToolsDropdownContent = ({ inMobileMenu = false }) => (

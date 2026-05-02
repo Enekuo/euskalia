@@ -2,6 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Globe,
+  SearchCheck,
   PenLine,
   FileText,
   FileDown,
@@ -32,6 +33,7 @@ export default function Parafraseador() {
   const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
   const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
+  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
   const [limitType, setLimitType] = useState("");
   const [limitOverride, setLimitOverride] = useState("");
@@ -644,12 +646,25 @@ MODO CREATIVO:
               title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
               className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
             >
-              <PenLine className="w-6 h-6 text-slate-700" />
+              <SearchCheck className="w-6 h-6 text-slate-700" />
             </button>
 
             <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
               {tr("toolsMenu.correctorTitle", labelToolCorrector)}
             </div>
+            {/* Parafraseador (activo) */}
+<button
+  type="button"
+  aria-current="page"
+  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+  className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+>
+  <PenLine className="w-6 h-6 text-blue-600" />
+</button>
+
+<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+</div>
           </div>
 
           <motion.section
