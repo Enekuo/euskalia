@@ -7,6 +7,9 @@ const FREE_ASSISTANT_DAILY_REQUESTS = Number(process.env.FREE_ASSISTANT_DAILY_RE
 const FREE_ASSISTANT_RPM = Number(process.env.FREE_ASSISTANT_RPM || 5);
 const FREE_ASSISTANT_DAILY_TOKENS = Number(process.env.FREE_ASSISTANT_DAILY_TOKENS || 12000);
 
+// 🔥 NUEVO: modelo configurable desde Vercel
+const MODEL = process.env.FREE_ASSISTANT_MODEL || "gpt-4o";
+
 // Seguridad extra para no aceptar historiales absurdamente grandes
 const INTERNAL_MAX_TOTAL_CHARS = Number(process.env.INTERNAL_MAX_TOTAL_CHARS || 20000);
 
@@ -59,7 +62,6 @@ function getLastUserMessageContent(messages) {
 }
 
 export default async function handler(req, res) {
-  // CORS / preflight
   if (req.method === "OPTIONS") {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -81,7 +83,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: "Missing OPENAI_API_KEY" });
     }
 
-    // Leer body crudo
     const raw = await new Promise((resolve, reject) => {
       let data = "";
       req.on("data", (c) => (data += c));
@@ -115,18 +116,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===== Límite de caracteres por petición =====
     if (lastUserText.length > FREE_ASSISTANT_MAX_CHARS) {
       return res.status(413).json({
         ok: false,
         error: "CHAR_LIMIT_EXCEEDED",
-        message: `Has superado el límite de ${FREE_ASSISTANT_MAX_CHARS} caracteres por mensaje en el chat público.`,
+        message: `Has superado el límite de ${FREE_ASSISTANT_MAX_CHARS} caracteres.`,
       });
     }
 
-    // ✅ CAMBIO IMPORTANTE:
-    // Ya NO se añade el manual interno desde el backend.
-    // El asistente solo hará caso al prompt que venga desde el frontend.
     const finalMessages = messages;
 
     const totalChars = finalMessages.reduce(
@@ -138,56 +135,32 @@ export default async function handler(req, res) {
       return res.status(413).json({
         ok: false,
         error: "INPUT_TOO_LONG",
-        message: "Testua luzeegia da txat honetarako.",
+        message: "Testua luzeegia da.",
       });
     }
 
-    // ===== Identidad del cliente =====
     const ip = getClientIp(req);
     const ipHash = crypto.createHash("sha256").update(ip).digest("hex");
     const today = getTodayKey();
     const minuteKey = getMinuteKey();
 
-    // ===== Límite diario de mensajes =====
-    const dailyRequestsKey = `euskalia-chat:${ipHash}:requests:${today}`;
+    const dailyRequestsKey = `chat:${ipHash}:req:${today}`;
     const usedRequests = Number((await kv.get(dailyRequestsKey)) || 0);
 
     if (usedRequests >= FREE_ASSISTANT_DAILY_REQUESTS) {
-      return res.status(429).json({
-        ok: false,
-        error: "DAILY_REQUEST_LIMIT",
-        message: "Has alcanzado el límite diario de mensajes para el chat público.",
-      });
+      return res.status(429).json({ ok: false, error: "DAILY_REQUEST_LIMIT" });
     }
 
-    // ===== RPM =====
-    const rpmKey = `euskalia-chat:${ipHash}:rpm:${minuteKey}`;
+    const rpmKey = `chat:${ipHash}:rpm:${minuteKey}`;
     const usedThisMinute = Number((await kv.get(rpmKey)) || 0);
 
     if (usedThisMinute >= FREE_ASSISTANT_RPM) {
-      return res.status(429).json({
-        ok: false,
-        error: "RATE_LIMIT",
-        message: "Has enviado demasiados mensajes en muy poco tiempo. Inténtalo de nuevo en un minuto.",
-      });
+      return res.status(429).json({ ok: false, error: "RATE_LIMIT" });
     }
 
     await kv.incr(rpmKey);
     await kv.expire(rpmKey, 90);
 
-    // ===== Límite diario de tokens =====
-    const dailyTokensKey = `euskalia-chat:${ipHash}:tokens:${today}`;
-    const usedTokens = Number((await kv.get(dailyTokensKey)) || 0);
-
-    if (usedTokens >= FREE_ASSISTANT_DAILY_TOKENS) {
-      return res.status(429).json({
-        ok: false,
-        error: "DAILY_TOKEN_LIMIT",
-        message: "Has alcanzado el límite diario de uso del chat público.",
-      });
-    }
-
-    // ===== Llamada a OpenAI =====
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -195,52 +168,23 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: MODEL, // 🔥 usa variable de entorno
         temperature: 0.8,
-        top_p: 0.9,
-        frequency_penalty: 0.2,
-        presence_penalty: 0.1,
         messages: finalMessages,
       }),
     });
 
-    const detailText = await r.text().catch(() => "");
-    let data;
-    try {
-      data = detailText ? JSON.parse(detailText) : {};
-    } catch {
-      data = {};
-    }
+    const data = await r.json();
+    let content = data?.choices?.[0]?.message?.content || "";
 
-    if (!r.ok) {
-      return res.status(r.status).json({
-        ok: false,
-        error: "OpenAI error",
-        detail: typeof data === "object" ? data : detailText,
-      });
-    }
-
-    let content = data?.choices?.[0]?.message?.content ?? "";
     content = fixBasqueEuskaliaDefinition(content);
 
-    const usage = data?.usage ?? null;
-    const totalTokensUsed = Number(usage?.total_tokens || 0);
-
-    // ===== Guardar consumo =====
     await kv.incr(dailyRequestsKey);
     await kv.expire(dailyRequestsKey, 60 * 60 * 24);
 
-    if (totalTokensUsed > 0) {
-      await kv.incrby(dailyTokensKey, totalTokensUsed);
-      await kv.expire(dailyTokensKey, 60 * 60 * 24);
-    }
-
     return res.status(200).json({
       ok: true,
-      provider: "openai",
       content,
-      usage,
-      cached: false,
     });
   } catch (err) {
     return res.status(500).json({
