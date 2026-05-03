@@ -2,10 +2,10 @@ import { kv } from "@vercel/kv";
 import crypto from "crypto";
 
 // ===== Límites chat público =====
-const FREE_ASSISTANT_MAX_CHARS = Number(process.env.FREE_ASSISTANT_MAX_CHARS || 1000);
-const FREE_ASSISTANT_DAILY_REQUESTS = Number(process.env.FREE_ASSISTANT_DAILY_REQUESTS || 15);
+const FREE_ASSISTANT_MAX_CHARS = Number(process.env.FREE_ASSISTANT_MAX_CHARS || 1500);
+const FREE_ASSISTANT_DAILY_REQUESTS = Number(process.env.FREE_ASSISTANT_DAILY_REQUESTS || 30);
 const FREE_ASSISTANT_RPM = Number(process.env.FREE_ASSISTANT_RPM || 5);
-const FREE_ASSISTANT_DAILY_TOKENS = Number(process.env.FREE_ASSISTANT_DAILY_TOKENS || 12000);
+const FREE_ASSISTANT_DAILY_TOKENS = Number(process.env.FREE_ASSISTANT_DAILY_TOKENS || 20000);
 
 // 🔥 NUEVO: modelo configurable desde Vercel
 const MODEL = process.env.FREE_ASSISTANT_MODEL || "gpt-4o";
