@@ -23,6 +23,8 @@ import Translator from '@/components/Translator';
 import Resumen from "@/components/Resumen";
 import CorrectorGramatical from "@/components/CorrectorGramatical";
 import Parafraseador from "@/components/Parafraseador";
+import TextCreator from "@/components/TextCreator";
+import EmailCreator from "@/components/EmailCreator";
 
 
 
@@ -143,6 +145,8 @@ const seo =
             <Route path="/pago-cancelado" element={<PagoCanceladoPage />} />
             <Route path="/traductor" element={<TraductorSeoRedirect />} />
             <Route path="/parafraseador" element={<Parafraseador />} />
+            <Route path="/creador-texto" element={<TextCreator />} />
+            <Route path="/creador-email" element={<EmailCreator />} />
 
 
 
