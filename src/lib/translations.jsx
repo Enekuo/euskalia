@@ -489,6 +489,8 @@ paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.
   //        CREADOR DE TEXTO
   // =========================
 textCreator: {
+  textCreatorTitle: { ES: "Creador de texto", EUS: "Testu sortzailea", EN: "Text creator", FR: "Créateur de texte" },
+  textCreatorSubtitle: { ES: "Genera textos con IA", EUS: "Sortu testuak IA-rekin", EN: "Generate texts with AI", FR: "Générez des textes avec IA" },
   sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
   title_label: { ES: "Título", EUS: "Izenburua", EN: "Title", FR: "Titre" },
   paragraph_label: { ES: "Párrafo", EUS: "Paragrafoa", EN: "Paragraph", FR: "Paragraphe" },
@@ -508,6 +510,8 @@ textCreator: {
   //        CREADOR DE EMAIL
   // =========================
 emailCreator: {
+  emailCreatorTitle: { ES: "Creador de email", EUS: "Email sortzailea", EN: "Email creator", FR: "Créateur d’email" },
+  emailCreatorSubtitle: { ES: "Genera emails automáticamente", EUS: "Sortu emailak automatikoki", EN: "Generate emails automatically", FR: "Générez des emails automatiquement" },
   sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
   generate_from_sources: { ES: "Generar email", EUS: "Emaila sortu", EN: "Generate email", FR: "Générer email" },
   create_help_right: { ES: "Rellena la información y genera el email", EUS: "Bete informazioa eta sortu emaila", EN: "Fill the information and generate the email", FR: "Remplissez les informations et générez l’email" },

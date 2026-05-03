@@ -11,6 +11,8 @@ import {
   LifeBuoy,
   SpellCheck,
   PenLine,
+  Mail,
+  Type,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/translations";
@@ -82,6 +84,10 @@ export default function Header() {
       ? t("toolsMenu.correctorTitle")
       : pathname.startsWith("/parafraseador")
       ? t("toolsMenu.paraphraserTitle")
+      : pathname.startsWith("/creador-texto")
+      ? t("toolsMenu.textCreatorTitle")
+      : pathname.startsWith("/creador-email")
+      ? t("toolsMenu.emailCreatorTitle")
       : "";
 
   const tools = [
@@ -108,6 +114,18 @@ export default function Header() {
       subtitle: t("toolsMenu.paraphraserSubtitle"),
       icon: <PenLine size={16} className="text-slate-500" />,
       path: "/parafraseador",
+    },
+    {
+      name: t("toolsMenu.textCreatorTitle"),
+      subtitle: t("toolsMenu.textCreatorSubtitle"),
+      icon: <Type size={16} className="text-slate-500" />,
+      path: "/creador-texto",
+    },
+    {
+      name: t("toolsMenu.emailCreatorTitle"),
+      subtitle: t("toolsMenu.emailCreatorSubtitle"),
+      icon: <Mail size={16} className="text-slate-500" />,
+      path: "/creador-email",
     },
   ];
 
