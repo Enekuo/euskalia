@@ -250,7 +250,7 @@ CORRECCIÓN DE TEXTO:
               </div>
 
               <div className="text-[20px] font-extrabold text-slate-900">
-                {tr("assistant_title", "Asistente de IA")}
+                {tr("header.assistant", "Asistente de IA")}
               </div>
             </div>
 

@@ -705,12 +705,30 @@ paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.
     EN: "New chat",
     FR: "Nouveau chat",
   },
+  assistant_emptyTitle: {
+  ES: "¿Cómo puedo ayudarte?",
+  EUS: "Nola lagundu dezaket?",
+  EN: "How can I help you?",
+  FR: "Comment puis-je vous aider ?"
+},
+assistant_emptySubtitle: {
+  ES: "Escribe tu petición para empezar",
+  EUS: "Idatzi zure eskaera hasteko",
+  EN: "Write your request to get started",
+  FR: "Écrivez votre demande pour commencer"
+},
+assistant_placeholder: {
+  ES: "Escribe tu mensaje",
+  EUS: "Idatzi zure mezua",
+  EN: "Write your message",
+  FR: "Écrivez votre message"
+},
   assistant_placeholder: {
-    ES: "Pregunta lo que quieras",
-    EUS: "Edozer galde dezakezu",
-    EN: "Ask anything",
-    FR: "Posez votre question",
-  },
+  ES: "Pregunta lo que quieras",
+  EUS: "Idatzi hemen zure eskaera",
+  EN: "Ask anything",
+  FR: "Écrivez votre demande ici",
+},
   assistant_send: {
     ES: "Enviar",
     EUS: "Bidali",
