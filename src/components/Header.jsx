@@ -9,10 +9,8 @@ import {
   Languages,
   FileText,
   LifeBuoy,
-  MessageSquare,
   SpellCheck,
   PenLine,
-
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/translations";
@@ -34,27 +32,9 @@ const languages = [
 
 function HelpBulbIcon({ size = 16, className = "" }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 2C8.134 2 5 5.134 5 9c0 2.27 1.05 3.85 2.2 4.98.67.66 1.3 1.5 1.3 2.52V17c0 .552.448 1 1 1h5c.552 0 1-.448 1-1v-.5c0-1.02.63-1.86 1.3-2.52C17.95 12.85 19 11.27 19 9c0-3.866-3.134-7-7-7Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9.5 21h5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C8.134 2 5 5.134 5 9c0 2.27 1.05 3.85 2.2 4.98.67.66 1.3 1.5 1.3 2.52V17c0 .552.448 1 1 1h5c.552 0 1-.448 1-1v-.5c0-1.02.63-1.86 1.3-2.52C17.95 12.85 19 11.27 19 9c0-3.866-3.134-7-7-7Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.5 21h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -124,11 +104,11 @@ export default function Header() {
       path: "/corrector",
     },
     {
-  name: t("toolsMenu.paraphraserTitle"),
-  subtitle: t("toolsMenu.paraphraserSubtitle"),
-  icon: <PenLine size={16} className="text-slate-500" />,
-  path: "/parafraseador",
-},
+      name: t("toolsMenu.paraphraserTitle"),
+      subtitle: t("toolsMenu.paraphraserSubtitle"),
+      icon: <PenLine size={16} className="text-slate-500" />,
+      path: "/parafraseador",
+    },
   ];
 
   const ToolsDropdownContent = ({ inMobileMenu = false }) => (
@@ -166,12 +146,6 @@ export default function Header() {
       icon: <HelpBulbIcon size={20} className="-ml-1 mr-2 text-slate-500" />,
       isLink: true,
       path: "/sugerencias",
-    },
-    {
-      name: t("resourcesMenu.aiChat"),
-      icon: <MessageSquare size={16} className="mr-2 text-slate-500" />,
-      isLink: true,
-      path: "/chat-ia",
     },
   ];
 
@@ -290,10 +264,10 @@ export default function Header() {
             </DropdownMenu>
 
             <Link
-              to="/pricing"
+              to="/chat-ia"
               className="flex items-center text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md"
             >
-              {t("header.pricing")}
+              Asistente de IA
             </Link>
           </nav>
         </div>
@@ -434,11 +408,11 @@ export default function Header() {
                 </div>
 
                 <Link
-                  to="/pricing"
+                  to="/chat-ia"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-left text-base font-medium h-12 px-2 rounded-md hover:bg-slate-100 mt-2"
+                  className="w-full text-left text-base font-medium h-12 px-2 rounded-md hover:bg-slate-100 mt-2 flex items-center"
                 >
-                  {t("header.pricing")}
+                  {t("header.assistant")}
                 </Link>
               </div>
 

@@ -16,6 +16,7 @@ export const translations = {
     pricing:   { ES: "Precios",       EUS: "Prezioak",       EN: "Pricing",      FR: "Tarifs" },
     signIn:    { ES: "Iniciar sesión",EUS: "Hasi saioa",     EN: "Sign in",      FR: "Connexion" },
     startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua",  EN: "Create account",FR: "Créer un compte" },
+    assistant: { ES: "Asistente de IA", EUS: "IA laguntzailea", EN: "AI Assistant", FR: "Assistant IA" },
   },
 
   toolsMenu: {
