@@ -267,7 +267,7 @@ export default function Header() {
               to="/chat-ia"
               className="flex items-center text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md"
             >
-              Asistente de IA
+              {t("header.assistant")}
             </Link>
           </nav>
         </div>
