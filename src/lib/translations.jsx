@@ -485,9 +485,54 @@ paraphraser_error_generic: { ES: "Error creando el parafraseo.", EUS: "Errorea p
 paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.", EUS: "Saioa hasi behar duzu Pro erabiltzeko.", EN: "You need to log in to use Pro.", FR: "Vous devez vous connecter pour utiliser Pro." },
 
 
-
+  // =========================
+  //        CREADOR DE TEXTO
+  // =========================
+textCreator: {
+  sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+  title_label: { ES: "Título", EUS: "Izenburua", EN: "Title", FR: "Titre" },
+  paragraph_label: { ES: "Párrafo", EUS: "Paragrafoa", EN: "Paragraph", FR: "Paragraphe" },
+  text_label: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  mode_normal: { ES: "Normal", EUS: "Arrunta", EN: "Normal", FR: "Normal" },
+  mode_paragraphs: { ES: "Por párrafos", EUS: "Paragrafoz", EN: "By paragraphs", FR: "Par paragraphes" },
+  generate_from_sources: { ES: "Generar", EUS: "Sortu", EN: "Generate", FR: "Générer" },
+  create_help_right: { ES: "Rellena el contenido y pulsa generar", EUS: "Idatzi edukia eta sakatu sortu", EN: "Fill the content and click generate", FR: "Remplissez le contenu et cliquez sur générer" },
+  output_language_eus: { ES: "Euskera", EUS: "Euskara", EN: "Basque", FR: "Basque" },
+  output_language_es: { ES: "Español", EUS: "Gaztelania", EN: "Spanish", FR: "Espagnol" },
+  output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
+  output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
+  save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+},
 
   // =========================
+  //        CREADOR DE EMAIL
+  // =========================
+emailCreator: {
+  sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
+  generate_from_sources: { ES: "Generar email", EUS: "Emaila sortu", EN: "Generate email", FR: "Générer email" },
+  create_help_right: { ES: "Rellena la información y genera el email", EUS: "Bete informazioa eta sortu emaila", EN: "Fill the information and generate the email", FR: "Remplissez les informations et générez l’email" },
+
+  output_language_eus: { ES: "Euskera", EUS: "Euskara", EN: "Basque", FR: "Basque" },
+  output_language_es: { ES: "Español", EUS: "Gaztelania", EN: "Spanish", FR: "Espagnol" },
+  output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
+  output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
+
+  tone_formal: { ES: "Formal", EUS: "Formala", EN: "Formal", FR: "Formel" },
+  tone_informal: { ES: "Informal", EUS: "Informala", EN: "Informal", FR: "Informel" },
+
+  small_1: { ES: "1- Saludo", EUS: "1- Agurra", EN: "1- Greeting", FR: "1- Salutation" },
+  small_2: { ES: "2- Introducción", EUS: "2- Sarrera", EN: "2- Introduction", FR: "2- Introduction" },
+  big_3: { ES: "3- Párrafo", EUS: "3- Paragrafoa", EN: "3- Paragraph", FR: "3- Paragraphe" },
+  final_phrase: { ES: "4- Frase final", EUS: "4- Amaiera esaldia", EN: "4- Final phrase", FR: "4- Phrase finale" },
+  small_4: { ES: "5- Despedida", EUS: "5- Agurra", EN: "5- Closing", FR: "5- Clôture" },
+  small_5: { ES: "6- Nombre", EUS: "6- Izena", EN: "6- Name", FR: "6- Nom" },
+
+  save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+},
+
+
+  
+// =========================
   //        COOKIES BANNER 
   // =========================
   cookies: {
