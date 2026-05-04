@@ -990,28 +990,27 @@ MODO CREATIVO:
                     <UpgradeBanner to="/soporte" />
                   </div>
 
-                  <div className="absolute left-6 right-6 bottom-20 z-10">
-                    <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
-                      {limitMsg}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {!loading && !result && !errorMsg && !limitType && (
-                    <>
-                      <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
-                        <Button
-                          type="button"
-                          onClick={handleGenerate}
-                          disabled={loading || !hasValidInput}
-                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: BLUE, color: "#ffffff" }}
-                        >
-                          {labelGenerateFromSources}
-                        </Button>
-                      </div>
-
+<div className="absolute left-6 right-6 bottom-20 z-10">
+  <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+    {limitMsg}
+  </div>
+</div>
+</div>
+) : (
+  <>
+    {!loading && !result && !errorMsg && (
+      <>
+        <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+          <Button
+            type="button"
+            onClick={handleGenerate}
+            disabled={loading || !hasValidInput}
+            className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ backgroundColor: BLUE, color: "#ffffff" }}
+          >
+            {labelGenerateFromSources}
+          </Button>
+        </div>
                       <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
                         <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
                       </div>
