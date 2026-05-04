@@ -90,7 +90,7 @@ const limitMsg =
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 8000;
+  
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
