@@ -145,10 +145,10 @@ upgradeBanner_cta: {
   FR: "Contacter le support" 
 },
 translator_limit_reached: {
-  ES: "Límite máximo: {{count}} caracteres.",
-  EUS: "Gehienezko muga: {{count}} karaktere.",
-  EN: "Maximum limit: {{count}} characters.",
-  FR: "Limite maximum : {{count}} caractères.",
+  ES: "Has superado el límite máximo de caracteres del traductor.",
+  EUS: "Itzultzailearen gehienezko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the translator's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du traducteur.",
   },
 translator_daily_limit_reached: {
   ES: "Has superado el límite diario de solicitudes del traductor.",
@@ -281,10 +281,12 @@ translator_daily_limit_reached: {
   },
  /* === NUEVAS CLAVES: aviso límite plan gratis === */
   summary_limit_reached: {
-    ES: "Límite máximo: {{count}} caracteres.",
-    EUS: "Gehienezko muga: {{count}} karaktere.",
-    EN: "Maximum limit: {{count}} characters.",
-    FR: "Limite maximum : {{count}} caractères.",
+    summary_limit_reached: {
+  ES: "Has superado el límite máximo de caracteres del resumidor.",
+  EUS: "Laburtzailearen gehienezko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the summarizer's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du résumeur.",
+},
   },
 summary_daily_limit_reached: {
    ES: "Has superado el límite diario de solicitudes del resumidor.",
@@ -435,10 +437,10 @@ summary_daily_limit_reached: {
 },
 
 grammarcorrector_limit_reached: {
-  ES: "Límite máximo: {{count}} caracteres.",
-  EUS: "Gehienezko muga: {{count}} karaktere.",
-  EN: "Maximum limit: {{count}} characters.",
-  FR: "Limite maximale : {{count}} caractères."
+   ES: "Has superado el límite máximo de caracteres del corrector.",
+  EUS: "Zuzentzailearen gehienezko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the corrector's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du correcteur.",
 },
   // =========================
   //        PARAFRASEADOR 
