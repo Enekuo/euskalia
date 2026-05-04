@@ -494,10 +494,10 @@ paraphraser_daily_limit_reached: {
   FR: "Vous avez dépassé la limite quotidienne de requêtes du paraphraseur.",
 },
 paraphraser_limit_reached: {
-  ES: "Límite máximo: {{count}} caracteres.",
-  EUS: "Gehienezko muga: {{count}} karaktere.",
-  EN: "Maximum limit: {{count}} characters.",
-  FR: "Limite maximale : {{count}} caractères.",
+  ES: "Has superado el límite máximo de caracteres del parafraseador.",
+  EUS: "Parafraseatzailearen gehienezko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the paraphraser's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du paraphraseur.",
 },
 
   // =========================
