@@ -563,7 +563,6 @@ MODO CREATIVO:
         else if (isDaily) setDailyLimit();
         else setDailyLimit();
 
-        if (data?.message) setLimitOverride(String(data.message));
 
         setLoading(false);
         return;
