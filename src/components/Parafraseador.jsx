@@ -36,6 +36,8 @@ export default function Parafraseador() {
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
   const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
+  const MAX_CHARS = 8000;
+
 const [limitType, setLimitType] = useState("");
 
 const setCharsLimit = () => {
