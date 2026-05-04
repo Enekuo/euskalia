@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import UpgradeBanner from "@/components/UpgradeBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -652,19 +653,19 @@ MODO CREATIVO:
             <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
               {tr("toolsMenu.correctorTitle", labelToolCorrector)}
             </div>
-            {/* Parafraseador (activo) */}
-<button
-  type="button"
-  aria-current="page"
-  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-  className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
->
-  <PenLine className="w-6 h-6 text-blue-600" />
-</button>
 
-<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-</div>
+            <button
+              type="button"
+              aria-current="page"
+              title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+              className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+            >
+              <PenLine className="w-6 h-6 text-blue-600" />
+            </button>
+
+            <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+              {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+            </div>
           </div>
 
           <motion.section
@@ -983,86 +984,96 @@ MODO CREATIVO:
                 </div>
               </div>
 
-              {!loading && !result && !errorMsg && !limitType && (
+              {!!limitType && !loading && !result && !errorMsg ? (
+                <div className="h-full w-full relative flex items-center justify-center px-6">
+                  <div className="w-full max-w-3xl space-y-3">
+                    <UpgradeBanner to="/soporte" />
+                  </div>
+
+                  <div className="absolute left-6 right-6 bottom-20 z-10">
+                    <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                      {limitMsg}
+                    </div>
+                  </div>
+                </div>
+              ) : (
                 <>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
-                    <Button
-                      type="button"
-                      onClick={handleGenerate}
-                      disabled={loading || !hasValidInput}
-                      className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: BLUE, color: "#ffffff" }}
-                    >
-                      {labelGenerateFromSources}
-                    </Button>
+                  {!loading && !result && !errorMsg && !limitType && (
+                    <>
+                      <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
+                        <Button
+                          type="button"
+                          onClick={handleGenerate}
+                          disabled={loading || !hasValidInput}
+                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: BLUE, color: "#ffffff" }}
+                        >
+                          {labelGenerateFromSources}
+                        </Button>
+                      </div>
+
+                      <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
+                        <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="w-full">
+                    {(result || errorMsg || loading) && (
+                      <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
+                        {errorMsg && (
+                          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                            {errorMsg}
+                          </div>
+                        )}
+
+                        {result && (
+                          <div className="flex flex-col gap-4">
+                            <article className="prose prose-slate max-w-none">
+                              <p className="whitespace-pre-wrap">{result}</p>
+                            </article>
+                          </div>
+                        )}
+
+                        {loading && !result && (
+                          <div className="space-y-3 animate-pulse">
+                            <div className="h-4 bg-slate-200 rounded" />
+                            <div className="h-4 bg-slate-200 rounded w-11/12" />
+                            <div className="h-4 bg-slate-200 rounded w-10/12" />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "40%" }}>
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">{labelHelpRight}</p>
-                  </div>
+                  {result && (
+                    <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(true)}
+                        aria-label={labelCopy}
+                        className="group relative p-2 rounded-md hover:bg-slate-100"
+                      >
+                        {copiedFlash ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                          {copiedFlash ? labelCopied : labelCopy}
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleDownload}
+                        aria-label={labelDownload}
+                        className="group relative p-2 rounded-md hover:bg-slate-100"
+                      >
+                        <FileDown className="w-5 h-5" />
+                        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                          {labelDownload}
+                        </span>
+                      </button>
+                    </div>
+                  )}
                 </>
-              )}
-
-              {!!limitType && !loading && !result && !errorMsg && (
-                <div className="absolute bottom-10 left-0 right-0 px-6">
-                  <p className="text-sm text-red-600 text-center">{limitMsg}</p>
-                </div>
-              )}
-
-              <div className="w-full">
-                {(result || errorMsg || loading) && (
-                  <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
-                    {errorMsg && (
-                      <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                        {errorMsg}
-                      </div>
-                    )}
-
-                    {result && (
-                      <div className="flex flex-col gap-4">
-                        <article className="prose prose-slate max-w-none">
-                          <p className="whitespace-pre-wrap">{result}</p>
-                        </article>
-                      </div>
-                    )}
-
-                    {loading && !result && (
-                      <div className="space-y-3 animate-pulse">
-                        <div className="h-4 bg-slate-200 rounded" />
-                        <div className="h-4 bg-slate-200 rounded w-11/12" />
-                        <div className="h-4 bg-slate-200 rounded w-10/12" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {result && (
-                <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(true)}
-                    aria-label={labelCopy}
-                    className="group relative p-2 rounded-md hover:bg-slate-100"
-                  >
-                    {copiedFlash ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                      {copiedFlash ? labelCopied : labelCopy}
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDownload}
-                    aria-label={labelDownload}
-                    className="group relative p-2 rounded-md hover:bg-slate-100"
-                  >
-                    <FileDown className="w-5 h-5" />
-                    <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                      {labelDownload}
-                    </span>
-                  </button>
-                </div>
               )}
             </section>
           </motion.section>
