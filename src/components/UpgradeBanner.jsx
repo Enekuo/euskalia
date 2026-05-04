@@ -41,7 +41,7 @@ function ButtonSparklesIcon({ className = "" }) {
 }
 
 export default function UpgradeBanner({
-  to = "/pricing",
+  to = "/soporte",
   className = "",
   titleKey = "upgradeBanner_title",
   subtitleKey = "upgradeBanner_subtitle",

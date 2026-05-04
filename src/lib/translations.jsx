@@ -124,25 +124,25 @@ output_language_uk: { ES: "Ucraniano", EUS: "Ukrainera", EN: "Ukrainian", FR: "U
     EN: "Saved to library",
     FR: "Enregistré dans la bibliothèque",
   },
-upgradeBanner_title: {
-  ES: "¡Desbloquea Euskalia PRO!",
-  EUS: "Desblokeatu Euskalia PRO!",
-  EN: "Unlock Euskalia PRO!",
-  FR: "Débloquez Euskalia PRO !",
+  upgradeBanner_title: { 
+  ES: "Has llegado al límite de Euskalia", 
+  EUS: "Euskaliako mugara iritsi zara", 
+  EN: "You have reached Euskalia's limit", 
+  FR: "Vous avez atteint la limite d’Euskalia" 
 },
 
-upgradeBanner_subtitle: {
-  ES: "Más capacidad y límites más amplios",
-  EUS: "Edukiera handiagoa eta muga zabalagoak",
-  EN: "More capacity and higher limits",
-  FR: "Plus de capacité et des limites plus élevées",
+upgradeBanner_subtitle: { 
+  ES: "Si necesitas más uso o tienes un caso especial, contáctanos.", 
+  EUS: "Erabilera gehiago behar baduzu edo kasu bereziren bat baduzu, jarri gurekin harremanetan.", 
+  EN: "If you need more usage or have a special case, contact us.", 
+  FR: "Si vous avez besoin de plus d'utilisation ou un cas spécial, contactez-nous." 
 },
 
-upgradeBanner_cta: {
-  ES: "Mejorar ahora",
-  EUS: "Hobetu orain",
-  EN: "Upgrade now",
-  FR: "Passer à Pro",
+upgradeBanner_cta: { 
+  ES: "Contactar soporte", 
+  EUS: "Jarri harremanetan", 
+  EN: "Contact support", 
+  FR: "Contacter le support" 
 },
 translator_limit_reached: {
   ES: "Límite máximo: {{count}} caracteres.",
