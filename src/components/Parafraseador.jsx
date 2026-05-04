@@ -36,31 +36,32 @@ export default function Parafraseador() {
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
   const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
-  const [limitType, setLimitType] = useState("");
-  const [limitOverride, setLimitOverride] = useState("");
+const [limitType, setLimitType] = useState("");
 
-  const setCharsLimit = () => {
-    setLimitType("chars");
-    setLimitOverride("");
-  };
+const setCharsLimit = () => {
+  setLimitType("chars");
+};
 
-  const setDailyLimit = () => {
-    setLimitType("daily");
-    setLimitOverride("");
-  };
+const setDailyLimit = () => {
+  setLimitType("daily");
+};
 
-  const clearLimit = () => {
-    setLimitType("");
-    setLimitOverride("");
-  };
+const clearLimit = () => {
+  setLimitType("");
+};
 
-  const limitMsg =
-    limitOverride ||
-    (limitType === "chars"
-      ? tr("public_limit_chars", "Has superado el límite máximo de caracteres.")
-      : limitType === "daily"
-      ? tr("public_limit_daily", "Has alcanzado el límite diario. Vuelve mañana.")
-      : "");
+const limitMsg =
+  limitType === "chars"
+    ? tr(
+        "paraphraser_limit_reached",
+        `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
+      ).replace("{{count}}", MAX_CHARS.toLocaleString())
+    : limitType === "daily"
+    ? tr(
+        "paraphraser_daily_limit_reached",
+        "Has superado el límite diario de solicitudes del parafraseador."
+      )
+    : "";
 
   const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
