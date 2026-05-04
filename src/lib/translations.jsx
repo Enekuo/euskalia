@@ -151,12 +151,11 @@ translator_limit_reached: {
   FR: "Limite maximum : {{count}} caractères.",
   },
 translator_daily_limit_reached: {
-  ES: "Has superado el límite diario. 5 solicitudes al día.",
-  EUS: "Eguneko muga gainditu duzu. 5 eskaera eguneko.",
-  EN: "You have exceeded the daily limit. 5 requests per day.",
-  FR: "Vous avez dépassé la limite quotidienne. 5 requêtes par jour.",
+  ES: "Has superado el límite diario de solicitudes del traductor.",
+  EUS: "Itzultzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the translator’s daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du traducteur.",
 },
-
 
   // =========================
   //   FREE SUMMARY RESUMIDOR
@@ -288,10 +287,10 @@ translator_daily_limit_reached: {
     FR: "Limite maximum : {{count}} caractères.",
   },
 summary_daily_limit_reached: {
-  ES: "Has superado el límite diario. 3 solicitudes al día.",
-  EUS: "Eguneko muga gainditu duzu. 3 eskaera eguneko.",
-  EN: "You have exceeded the daily limit. 3 requests per day.",
-  FR: "Vous avez dépassé la limite quotidienne. 3 requêtes par jour.",
+   ES: "Has superado el límite diario de solicitudes del resumidor.",
+  EUS: "Laburtzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the summarizer’s daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du résumeur.",
 },
 // =========================
   //   FREE GRAMMATICALCORRECTOR
@@ -429,10 +428,10 @@ summary_daily_limit_reached: {
   },
 },
   grammarcorrector_daily_limit_reached: {
-  ES: "Has superado el límite diario. 5 solicitudes al día.",
-  EUS: "Eguneko muga gainditu duzu. 5 eskaera egunean.",
-  EN: "You have exceeded the daily limit. 5 requests per day.",
-  FR: "Vous avez dépassé la limite quotidienne. 5 requêtes par jour."
+  ES: "Has superado el límite diario de solicitudes del corrector.",
+  EUS: "Zuzentzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the corrector’s daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du correcteur.",
 },
 
 grammarcorrector_limit_reached: {
@@ -488,7 +487,12 @@ paraphraser_saved_to_library: { ES: "Guardado en biblioteca", EUS: "Liburutegian
 paraphraser_error_need_input: { ES: "Añade texto suficiente, URLs o documentos antes de crear el parafraseo.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak parafraseoa sortu aurretik.", EN: "Add enough text, URLs or documents before generating the paraphrase.", FR: "Ajoutez du texte, des URLs ou des documents avant de créer la reformulation." },
 paraphraser_error_generic: { ES: "Error creando el parafraseo.", EUS: "Errorea parafraseoa sortzean.", EN: "Error generating paraphrase.", FR: "Erreur lors de la création de la reformulation." },
 paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.", EUS: "Saioa hasi behar duzu Pro erabiltzeko.", EN: "You need to log in to use Pro.", FR: "Vous devez vous connecter pour utiliser Pro." },
-
+paraphraser_daily_limit_reached: {
+   ES: "Has superado el límite diario de solicitudes del parafraseador.",
+  EUS: "Parafraseatzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the paraphraser’s daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du paraphraseur.",
+},
 
   // =========================
   //        CREADOR DE TEXTO
