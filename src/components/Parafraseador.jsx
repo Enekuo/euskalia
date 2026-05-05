@@ -592,7 +592,7 @@ const systemBase =
         .replace(/\r/g, "")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
-
+ 
       setResult(cleaned);
     } catch (err) {
       setErrorMsg(err.message || tr("paraphraser_error_generic", "Error creando el parafraseo."));
