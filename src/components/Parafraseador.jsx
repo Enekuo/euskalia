@@ -435,14 +435,8 @@ const limitMsg =
           .join("\n\n")
       : "";
 
-    const langInstruction =
-      outputLang === "es"
-        ? "Idioma de salida: español (ISO: es). Escribe todo en español."
-        : outputLang === "en"
-        ? "Output language: English (ISO: en). Write everything in English."
-        : outputLang === "fr"
-        ? "Langue de sortie : français (ISO : fr). Rédige tout en français."
-        : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi guztia euskaraz.";
+const langInstruction =
+  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. No traduzcas el contenido a otro idioma distinto al de la fuente.";
 
     const modeRule =
       mode === "neutral"
@@ -510,10 +504,12 @@ MODO CREATIVO:
       `\n${langInstruction}`,
     ].join("");
 
-    const systemBase =
-      "Eres Euskalia, un asistente experto en reescritura y parafraseo. " +
-      "Tu prioridad es producir textos naturales, claros y correctos. " +
-      "Si el idioma de salida es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales.";
+const systemBase =
+  "Eres Euskalia, un asistente experto en reescritura y parafraseo. " +
+  "Tu prioridad es producir textos naturales, claros y correctos. " +
+  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. " +
+  "No traduzcas el contenido a otro idioma distinto al de la fuente. " +
+  "Si el idioma detectado es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales.";
 
     const messages = [
       { role: "system", content: systemBase },
