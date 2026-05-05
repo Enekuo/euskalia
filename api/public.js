@@ -27,12 +27,13 @@ const FREE_PARAPHRASER_DAILY_TOKENS    = Number(process.env.FREE_PARAPHRASER_DAI
 const FREE_PARAPHRASER_RPM             = Number(process.env.FREE_PARAPHRASER_RPM || 6);
 
 // ✅ límite de traducciones por día (solo traductor)
-const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 1);
+const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
 // ✅ límite de resúmenes por día (solo resumidor)
-const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 1);
-// ✅ límite de correcciones por día (solo corrector) (NUEVO)
-const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 1); 
-const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 1);
+const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
+// ✅ límite de correcciones por día (solo corrector)
+const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20); 
+// ✅ límite de parafraseos por día (solo parafraseador)
+const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 10);
 
 // ✅ Modelos 
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
