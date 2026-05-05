@@ -539,14 +539,8 @@ const tr = (k, f) => {
       "Devuelve un único párrafo fluido, sin listas ni viñetas, sin guiones al inicio de línea, " +
       "sin subtítulos ni líneas sueltas. Redacta en frases completas, tono claro e informativo.";
 
-    const langInstruction =
-      outputLang === "es"
-        ? "Idioma de salida: español (ISO: es). Redacta toda la respuesta en español."
-        : outputLang === "en"
-        ? "Output language: English (ISO: en). Write the entire response in English."
-        : outputLang === "fr"
-        ? "Langue de sortie : français (ISO : fr). Rédige toute la réponse en français."
-        : "Irteerako hizkuntza: euskara (ISO: eu). Idatzi erantzun osoa euskaraz.";
+const langInstruction =
+  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. No traduzcas el contenido a otro idioma distinto al de la fuente.";
 
     const lengthRule =
       summaryLength === "breve"
@@ -575,24 +569,19 @@ const tr = (k, f) => {
       `\n${langInstruction}`,
     ].join("");
 
-    const systemBase =
-      outputLang === "eus"
-        ? (
-          "Euskalia zara. Zure lana da emandako edukia laburtzea euskaraz NATURALKI. " +
-          "Arau zorrotzak: " +
-          "1) Emaitza PARAGRAFO BAKAR batean: EZ zerrendarik, EZ buletik, EZ zenbakitzerik, EZ izenbururik. " +
-          "2) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
-          "3) Zenbakiak eta izen propioak BERE-BEREAN mantendu. " +
-          "4) Hizkuntza %100 euskaraz (salbu izen propioak). " +
-          "5) Ulermena hobetzeko, sarrerako testuko akats ortografiko/gramatikalak ZUZENDU ISILIK (ez aipatu zuzenketak), baina ez aldatu esanahia. " +
-          "6) Saihestu euskarazko esaldi artifizialak edo “robotikoak”; idatzi estilo argi eta profesionalarekin."
-        )
-        : (
-          "Eres un asistente que redacta resúmenes en formato de texto corrido. " +
-          "No uses listas, viñetas, guiones ni numeraciones. " +
-          "Entrega un único párrafo, sin encabezados, con frases completas y buena coherencia. " +
-          "Sé conciso. No inventes datos."
-        );
+const systemBase =
+  "Euskalia zara. Zure lana da emandako edukia laburtzea, baina beti sarrerako edukiaren hizkuntza nagusia mantenduz. " +
+  "Eres Euskalia. Tu trabajo es resumir el contenido proporcionado, manteniendo siempre el idioma principal de la fuente. " +
+  "Arau zorrotzak / Reglas estrictas: " +
+  "1) Detecta automáticamente el idioma principal del texto de entrada. " +
+  "2) Responde SIEMPRE en ese mismo idioma. No traduzcas el resultado a otro idioma. " +
+  "3) Emaitza PARAGRAFO BAKAR batean: EZ zerrendarik, EZ buletik, EZ zenbakitzerik, EZ izenbururik. " +
+  "4) No uses listas, viñetas, guiones, numeraciones ni encabezados. " +
+  "5) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
+  "6) No inventes datos ni añadas información externa. " +
+  "7) Zenbakiak eta izen propioak BERE-BEREAN mantendu. " +
+  "8) Si el idioma detectado es euskera, escribe en euskera natural, correcto y profesional, evitando calcos artificiales. " +
+  "9) Ulermena hobetzeko, sarrerako testuko akats ortografiko/gramatikalak ZUZENDU ISILIK, baina ez aldatu esanahia.";
 
     const systemStrict =
       outputLang === "eus"

@@ -550,14 +550,14 @@ export default function CorrectorGramatical() {
     const modeInstruction =
       "Haz una corrección ESTÁNDAR: corrige ortografía, gramática, puntuación y mejora un poco la fluidez, manteniendo el mismo tono y estructura general.";
 
-    const langInstruction =
-      outputLang === "ES"
-        ? "Usa ortografía y gramática del español estándar (España). NO traduzcas el texto a otro idioma. Devuelve siempre el texto completo corregido."
-        : outputLang === "EN"
-        ? "Use standard English grammar and spelling. Do NOT translate the text into another language. Always return the full corrected text."
-        : outputLang === "FR"
-        ? "Utilise la grammaire et l’orthographe du français standard. Ne traduis pas le texte dans une autre langue. Rends toujours le texte complet corrigé."
-        : "Erabili euskara batuaren ortografia eta gramatika. EZ itzuli testua beste hizkuntza batera. Itzuli beti testu osoa zuzenduta.";
+const langInstruction =
+  "Detecta automáticamente el idioma principal del texto de entrada y corrige SIEMPRE en ese mismo idioma. " +
+  "No traduzcas el texto a otro idioma distinto al de la fuente. " +
+  "Si el texto está en español, corrige en español. " +
+  "Si está en euskera, corrige en euskera batua natural. " +
+  "Si está en inglés, corrige en inglés. " +
+  "Si está en francés, corrige en francés. " +
+  "Devuelve siempre el texto completo corregido.";
 
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
