@@ -26,12 +26,23 @@ export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
 
   // ✅ FIX: si t devuelve la propia clave (cuando falta traducción), usamos fallback
-  const tr = (k, f) => {
-    const v = typeof t === "function" ? t(k) : null;
-    if (!v) return f;
-    if (typeof v === "string" && v.trim() === k) return f;
+const tr = (k, f) => {
+  const v = typeof t === "function" ? t(k) : null;
+
+  if (!v) return f;
+
+  if (typeof v === "string") {
+    if (v.trim() === k) return f;
     return v;
-  };
+  }
+
+  if (typeof v === "object") {
+    return v.ES || v.EUS || v.EN || v.FR || f;
+  }
+
+  return f;
+};
+
 
   const navigate = useNavigate();
 
