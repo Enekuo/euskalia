@@ -229,23 +229,30 @@ const languageLooksWrong = (text, lang) => {
   const s = canonicalize(text);
   if (!s) return false;
 
-  const esHits =
-    /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas|quedo|respuesta|saludo)\b/.test(
-      s
-    );
-  const eusHits =
-    /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi|zain|geratzen)\b/.test(
-      s
-    );
-  const enHits =
-    /\b(the|and|to|for|i|you|please|regards|sincerely|dear|response|thanks)\b/.test(s);
-  const frHits =
-    /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour|réponse)\b/.test(s);
+  const esWrongForeign =
+    /\b(eskerrik|adeitasunez|agur|kaixo|zure|zain|geratzen|naiz|dut|dudala|nahi)\b/.test(s) ||
+    /\b(the|and|please|regards|sincerely|dear|thanks|response)\b/.test(s) ||
+    /\b(cordialement|bonjour|madame|monsieur|réponse|votre|vous)\b/.test(s);
 
-  if (lang === "EUS") return esHits || enHits || frHits;
-  if (lang === "ES") return eusHits || enHits || frHits;
-  if (lang === "EN") return esHits || eusHits || frHits;
-  if (lang === "FR") return esHits || eusHits || enHits;
+  const eusWrongForeign =
+    /\b(gracias|atentamente|estimado|estimada|quedo|respuesta|saludo)\b/.test(s) ||
+    /\b(the|and|please|regards|sincerely|dear|thanks|response)\b/.test(s) ||
+    /\b(cordialement|bonjour|madame|monsieur|réponse|votre|vous)\b/.test(s);
+
+  const enWrongForeign =
+    /\b(eskerrik|adeitasunez|agur|kaixo|zure|zain|geratzen|naiz|dut|dudala)\b/.test(s) ||
+    /\b(gracias|atentamente|estimado|estimada|quedo|respuesta|saludo)\b/.test(s) ||
+    /\b(cordialement|bonjour|madame|monsieur|réponse|votre|vous)\b/.test(s);
+
+  const frWrongForeign =
+    /\b(eskerrik|adeitasunez|agur|kaixo|zure|zain|geratzen|naiz|dut|dudala)\b/.test(s) ||
+    /\b(gracias|atentamente|estimado|estimada|quedo|respuesta|saludo)\b/.test(s) ||
+    /\b(the|and|please|regards|sincerely|dear|thanks|response)\b/.test(s);
+
+  if (lang === "ES") return esWrongForeign;
+  if (lang === "EUS") return eusWrongForeign;
+  if (lang === "EN") return enWrongForeign;
+  if (lang === "FR") return frWrongForeign;
 
   return false;
 };
