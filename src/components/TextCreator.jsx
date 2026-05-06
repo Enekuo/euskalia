@@ -48,6 +48,7 @@ export default function TextCreator() {
   const [targetChars, setTargetChars] = useState(1200);
   const [outputLang, setOutputLang] = useState("EUS");
   const [copiedFlash, setCopiedFlash] = useState(false);
+  const [showMissingInfoConfirm, setShowMissingInfoConfirm] = useState(false);
 
   const normalWrapRef = useRef(null);
   const normalTaRef = useRef(null);
@@ -137,6 +138,24 @@ export default function TextCreator() {
     const ps = (paragraphs || []).some((p) => (p || "").trim().length > 0);
     return !!tTitle || ps;
   }, [titleValue, paragraphs]);
+
+  const mainTextForCheck = useMemo(() => {
+    const brief = buildBrief();
+    return brief.replace(/\s+/g, " ").trim();
+  }, [titleValue, paragraphs, writeMode]);
+
+  const hasEnoughInfoWithoutConfirm = useMemo(() => {
+    const clean = mainTextForCheck;
+    if (!clean) return false;
+
+    const words = clean.split(" ").filter(Boolean);
+
+    return clean.length >= 12 && words.length >= 3;
+  }, [mainTextForCheck]);
+
+  const closeMissingInfoConfirm = () => {
+    setShowMissingInfoConfirm(false);
+  };
 
   const clearRight = () => {
     setResult("");
@@ -294,7 +313,7 @@ export default function TextCreator() {
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, result, fullExportText]);
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (forceContinue = false) => {
     setLoading(true);
     setErrorMsg("");
     clearLimit();
@@ -309,6 +328,12 @@ export default function TextCreator() {
         )
       );
       setLoading(false);
+      return;
+    }
+
+    if (!forceContinue && !hasEnoughInfoWithoutConfirm) {
+      setLoading(false);
+      setShowMissingInfoConfirm(true);
       return;
     }
 
@@ -389,6 +414,10 @@ export default function TextCreator() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          task: "text_creator",
+          mode: "text_creator",
+          dst: outputLang === "EUS" ? "eus" : outputLang.toLowerCase(),
+          lang: outputLang,
           messages,
           length: "text_creator",
           cacheKey,
@@ -818,6 +847,45 @@ export default function TextCreator() {
           </motion.section>
         </div>
       </section>
+
+      {showMissingInfoConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="text-[18px] font-semibold text-slate-900 mb-3">
+              {tr("textCreator.missing_info_title", "No hay información suficiente")}
+            </h3>
+
+            <p className="text-[14px] leading-6 text-slate-600 mb-6">
+              {tr(
+                "textCreator.missing_info_text",
+                "No hay información suficiente. ¿Deseas continuar? La IA interpretará la idea y completará el contenido de forma coherente."
+              )}
+            </p>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeMissingInfoConfirm}
+                className="h-10 px-5 rounded-full border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                {tr("textCreator.missing_info_no", "Atrás")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMissingInfoConfirm(false);
+                  handleGenerate(true);
+                }}
+                className="h-10 px-5 rounded-full text-white hover:brightness-95"
+                style={{ backgroundColor: "#2563eb" }}
+              >
+                {tr("textCreator.missing_info_yes", "Crear")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
