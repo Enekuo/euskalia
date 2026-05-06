@@ -572,6 +572,40 @@ emailCreator: {
   EN: "Write all the information here: who it is for, objective, context, key points, tone...", 
   FR: "Écrivez ici toutes les informations : à qui c'est destiné, objectif, contexte, points clés, ton..."},
   save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+   missing_info_title: {
+    ES: "No hay información suficiente",
+    EUS: "Ez dago informazio nahikorik",
+    EN: "There is not enough information",
+    FR: "Il n’y a pas assez d’informations",
+  },
+
+  missing_info_creative_text: {
+    ES: "No hay información suficiente. ¿Deseas continuar? En modo Creativo se completarán los huecos inventando lo necesario de forma coherente.",
+    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu? Sortzailea moduan falta diren hutsuneak modu koherentean osatuko dira.",
+    EN: "There is not enough information. Do you want to continue? In Creative mode, missing gaps will be completed coherently.",
+    FR: "Il n’y a pas assez d’informations. Voulez-vous continuer ? En mode Créatif, les éléments manquants seront complétés de manière cohérente.",
+  },
+
+  missing_info_template_text: {
+    ES: "No hay información suficiente. ¿Deseas continuar? En modo Plantilla solo se creará el email con la información disponible, sin inventar nada.",
+    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu? Txantiloia moduan emaila dagoen informazioarekin bakarrik sortuko da, ezer asmatu gabe.",
+    EN: "There is not enough information. Do you want to continue? In Template mode, the email will only be created using the available information, without inventing anything.",
+    FR: "Il n’y a pas assez d’informations. Voulez-vous continuer ? En mode Modèle, l’email sera créé uniquement avec les informations disponibles, sans rien inventer.",
+  },
+
+  missing_info_no: {
+    ES: "No",
+    EUS: "Ez",
+    EN: "No",
+    FR: "Non",
+  },
+
+  missing_info_yes: {
+    ES: "Sí",
+    EUS: "Bai",
+    EN: "Yes",
+    FR: "Oui",
+  },
 },
 
 
