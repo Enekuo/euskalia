@@ -579,33 +579,32 @@ emailCreator: {
     FR: "Il n’y a pas assez d’informations",
   },
 
-  missing_info_creative_text: {
+  missing_info_creative_text: {      
     ES: "No hay información suficiente. ¿Deseas continuar? En modo Creativo se completarán los huecos inventando lo necesario de forma coherente.",
-    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu? Sortzailea moduan falta diren hutsuneak modu koherentean osatuko dira.",
+    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu ? Euskaliak falta den informazioa modu egikian interpretatu eta osatuko du.",
     EN: "There is not enough information. Do you want to continue? In Creative mode, missing gaps will be completed coherently.",
     FR: "Il n’y a pas assez d’informations. Voulez-vous continuer ? En mode Créatif, les éléments manquants seront complétés de manière cohérente.",
   },
 
   missing_info_template_text: {
     ES: "No hay información suficiente. ¿Deseas continuar? En modo Plantilla solo se creará el email con la información disponible, sin inventar nada.",
-    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu? Txantiloia moduan emaila dagoen informazioarekin bakarrik sortuko da, ezer asmatu gabe.",
+    EUS: "Ez dago informazio nahikorik. Jarraitu nahi duzu ? Euskaliak falta den informazioa modu egikian interpretatu eta osatuko du.",
     EN: "There is not enough information. Do you want to continue? In Template mode, the email will only be created using the available information, without inventing anything.",
     FR: "Il n’y a pas assez d’informations. Voulez-vous continuer ? En mode Modèle, l’email sera créé uniquement avec les informations disponibles, sans rien inventer.",
   },
+missing_info_no: {
+  ES: "Atrás", 
+  EUS: "Atzera",
+  EN: "Back",
+  FR: "Retour",
+},
 
-  missing_info_no: {
-    ES: "No",
-    EUS: "Ez",
-    EN: "No",
-    FR: "Non",
-  },
-
-  missing_info_yes: {
-    ES: "Sí",
-    EUS: "Bai",
-    EN: "Yes",
-    FR: "Oui",
-  },
+missing_info_yes: {
+  ES: "Crear",
+  EUS: "Sortu",
+  EN: "Create",
+  FR: "Créer",
+}, 
 },
 
 
