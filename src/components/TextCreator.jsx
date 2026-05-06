@@ -139,10 +139,14 @@ export default function TextCreator() {
     return !!tTitle || ps;
   }, [titleValue, paragraphs]);
 
-  const mainTextForCheck = useMemo(() => {
-    const brief = buildBrief();
-    return brief.replace(/\s+/g, " ").trim();
-  }, [titleValue, paragraphs, writeMode]);
+const mainTextForCheck = useMemo(() => {
+  const tTitle = (titleValue || "").trim();
+  const ps = (paragraphs || [])
+    .map((p) => (p || "").trim())
+    .filter(Boolean);
+
+  return [tTitle, ...ps].join(" ").replace(/\s+/g, " ").trim();
+}, [titleValue, paragraphs]);
 
   const hasEnoughInfoWithoutConfirm = useMemo(() => {
     const clean = mainTextForCheck;
