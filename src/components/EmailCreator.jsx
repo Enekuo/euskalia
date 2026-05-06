@@ -225,29 +225,30 @@ export default function EmailCreator() {
     return informal ? "Kaixo," : "Agurgarria,";
   };
 
-  const languageLooksWrong = (text, lang) => {
-    const s = canonicalize(text);
-    if (!s) return false;
+const languageLooksWrong = (text, lang) => {
+  const s = canonicalize(text);
+  if (!s) return false;
 
-    const esHits =
-      /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas)\b/.test(
-        s
-      );
-    const eusHits =
-      /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi)\b/.test(
-        s
-      );
-    const enHits =
-      /\b(the|and|to|for|i|you|please|regards|sincerely|dear)\b/.test(s);
-    const frHits =
-      /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour)\b/.test(s);
+  const esHits =
+    /\b(el|la|los|las|de|que|y|para|por|estoy|me|mi|tu|gracias|atentamente|estimado|estimada|estimados|estimadas|quedo|respuesta|saludo)\b/.test(
+      s
+    );
+  const eusHits =
+    /\b(eta|da|dut|dudala|zure|mesedez|eskerrik|agur|adeitasunez|naiz|nahi|zain|geratzen)\b/.test(
+      s
+    );
+  const enHits =
+    /\b(the|and|to|for|i|you|please|regards|sincerely|dear|response|thanks)\b/.test(s);
+  const frHits =
+    /\b(le|la|les|de|que|et|pour|je|vous|cordialement|bonjour|réponse)\b/.test(s);
 
-    if (lang === "EUS") return esHits || enHits || frHits ? !eusHits : false;
-    if (lang === "ES") return eusHits || enHits || frHits ? !esHits : false;
-    if (lang === "EN") return esHits || eusHits || frHits ? !enHits : false;
-    if (lang === "FR") return esHits || eusHits || enHits ? !frHits : false;
-    return false;
-  };
+  if (lang === "EUS") return esHits || enHits || frHits;
+  if (lang === "ES") return eusHits || enHits || frHits;
+  if (lang === "EN") return esHits || eusHits || frHits;
+  if (lang === "FR") return esHits || eusHits || enHits;
+
+  return false;
+};
 
   const ensureSaludoHasAddressee = (generatedSaludo, userSaludo, lang, tone) => {
     const gen0 = String(generatedSaludo || "").trim();
@@ -637,10 +638,14 @@ export default function EmailCreator() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        messages,
-        length: emailLength,
-        cacheKey,
-      }),
+  task: "email_creator",
+  mode: "email_creator",
+  dst: outputLang === "EUS" ? "eus" : outputLang.toLowerCase(),
+  lang: outputLang,
+  messages,
+  length: emailLength,
+  cacheKey,
+}),
     });
 
     if (!res.ok) {
@@ -1033,6 +1038,17 @@ export default function EmailCreator() {
               ? r2.usageTotal
               : basePrompt.length + raw2.length;
           setSpent((p) => p + (spentNow2 || 0));
+
+          const combined2 = `${subject2}\n${builtBody2}`;
+
+if (languageLooksWrong(combined2, outputLang)) {
+  throw new Error(
+    tr(
+      "emailCreator.error_language_mismatch",
+      "El resultado no respeta el idioma seleccionado. Vuelve a intentarlo."
+    )
+  );
+}
 
           setEmailSubject(
             subject2 || subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta")
