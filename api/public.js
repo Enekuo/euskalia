@@ -45,9 +45,9 @@ const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_RE
 // ✅ límite de parafraseos por día (solo parafraseador)
 const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 10);
 // ✅ límite de creaciones de texto por día (solo creador de texto)
-const FREE_TEXT_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_TEXT_CREATOR_DAILY_REQUESTS || 20);
+const FREE_TEXT_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_TEXT_CREATOR_DAILY_REQUESTS || 1);
 // ✅ límite de creaciones de email por día (solo creador de email)
-const FREE_EMAIL_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_EMAIL_CREATOR_DAILY_REQUESTS || 20);
+const FREE_EMAIL_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_EMAIL_CREATOR_DAILY_REQUESTS || 1);
 
 // ✅ Modelos 
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
