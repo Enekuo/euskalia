@@ -139,23 +139,73 @@ export default function TextCreator() {
     return !!tTitle || ps;
   }, [titleValue, paragraphs]);
 
-const mainTextForCheck = useMemo(() => {
-  const tTitle = (titleValue || "").trim();
-  const ps = (paragraphs || [])
-    .map((p) => (p || "").trim())
-    .filter(Boolean);
+  const mainTextForCheck = useMemo(() => {
+    const tTitle = (titleValue || "").trim();
 
-  return [tTitle, ...ps].join(" ").replace(/\s+/g, " ").trim();
-}, [titleValue, paragraphs]);
+    const ps = (paragraphs || [])
+      .map((p) => (p || "").trim())
+      .filter(Boolean);
 
-  const hasEnoughInfoWithoutConfirm = useMemo(() => {
-    const clean = mainTextForCheck;
-    if (!clean) return false;
+    return [tTitle, ...ps]
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }, [titleValue, paragraphs]);
 
-    const words = clean.split(" ").filter(Boolean);
+  const evaluateEnoughInformation = async (text) => {
+    if (!text || !text.trim()) return false;
 
-    return clean.length >= 12 && words.length >= 3;
-  }, [mainTextForCheck]);
+    try {
+      const res = await fetch("/api/public", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          task: "text_creator_check",
+          mode: "text_creator_check",
+          dst: outputLang === "EUS" ? "eus" : outputLang.toLowerCase(),
+          lang: outputLang,
+          messages: [
+            {
+              role: "system",
+              content:
+                "Debes analizar si el usuario ha dado suficiente información útil para crear un texto coherente y con sentido. Responde SOLO YES o NO.",
+            },
+            {
+              role: "user",
+              content: `
+Texto del usuario:
+"${text}"
+
+¿Hay suficiente información para crear un texto coherente y útil?
+Responde SOLO YES o NO.
+`,
+            },
+          ],
+          length: "short_check",
+        }),
+      });
+
+      if (!res.ok) return true;
+
+      const data = await res.json();
+
+      const raw =
+        data?.text ??
+        data?.content ??
+        data?.choices?.[0]?.message?.content ??
+        "";
+
+      const cleaned = String(raw || "")
+        .trim()
+        .toUpperCase();
+
+      return cleaned.includes("YES");
+    } catch {
+      return true;
+    }
+  };
 
   const closeMissingInfoConfirm = () => {
     setShowMissingInfoConfirm(false);
@@ -335,10 +385,14 @@ const mainTextForCheck = useMemo(() => {
       return;
     }
 
-    if (!forceContinue && !hasEnoughInfoWithoutConfirm) {
-      setLoading(false);
-      setShowMissingInfoConfirm(true);
-      return;
+    if (!forceContinue) {
+      const enoughInfo = await evaluateEnoughInformation(mainTextForCheck);
+
+      if (!enoughInfo) {
+        setLoading(false);
+        setShowMissingInfoConfirm(true);
+        return;
+      }
     }
 
     if (brief.length > MAX_CHARS) {
