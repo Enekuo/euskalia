@@ -529,6 +529,19 @@ textCreator: {
   output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
   output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
   save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  limit_chars: {
+    ES: "Has superado el límite máximo de caracteres permitido.",
+    EUS: "Onartutako gehieneko karaktere-muga gainditu duzu.",
+    EN: "You have exceeded the maximum character limit allowed.",
+    FR: "Vous avez dépassé la limite maximale de caractères autorisée.",
+  },
+
+  limit_daily: {
+    ES: "Has alcanzado el límite diario. Vuelve mañana.",
+    EUS: "Eguneko muga gainditu duzu. Itzuli bihar.",
+    EN: "You have reached the daily limit. Come back tomorrow.",
+    FR: "Vous avez atteint la limite quotidienne. Revenez demain.",
+  },
 },
 
   // =========================
@@ -605,6 +618,19 @@ missing_info_yes: {
   EN: "Create",
   FR: "Créer",
 }, 
+limit_chars: {
+    ES: "Has superado el límite máximo de caracteres permitido.",
+    EUS: "Onartutako gehieneko karaktere-muga gainditu duzu.",
+    EN: "You have exceeded the maximum character limit allowed.",
+    FR: "Vous avez dépassé la limite maximale de caractères autorisée.",
+  },
+
+  limit_daily: {
+    ES: "Has alcanzado el límite diario. Vuelve mañana.",
+    EUS: "Eguneko muga gainditu duzu. Itzuli bihar.",
+    EN: "You have reached the daily limit. Come back tomorrow.",
+    FR: "Vous avez atteint la limite quotidienne. Revenez demain.",
+  },
 },
 
 

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FileDown, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
+import UpgradeBanner from "@/components/UpgradeBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -1318,7 +1319,7 @@ if (languageLooksWrong(combined2, outputLang)) {
               </div>
             </aside>
 
-            <section className="relative h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
+            <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-2">
                   <LengthTab
@@ -1460,145 +1461,153 @@ if (languageLooksWrong(combined2, outputLang)) {
                 </div>
               </div>
 
-              {limitType && (
-                <div className="px-6 pt-4">
-                  <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                    {limitMsg}
+              {!!limitType && !loading && !result && !errorMsg ? (
+                <div className="h-full w-full relative flex items-center justify-center px-6">
+                  <div className="w-full max-w-3xl space-y-3">
+                    <UpgradeBanner to="/soporte" />
+                  </div>
+
+                  <div className="absolute left-6 right-6 bottom-20 z-10">
+                    <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                      {limitMsg}
+                    </div>
                   </div>
                 </div>
-              )}
-
-              {!loading && !result && !errorMsg && !limitType && (
+              ) : (
                 <>
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 z-10"
-                    style={{ top: "30%" }}
-                  >
-                    <Button
-                      type="button"
-                      onClick={() => handleGenerate()}
-                      disabled={loading || !hasValidInput}
-                      className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
-                    >
-                      {labelGenerateFromSources}
-                    </Button>
-                  </div>
+                  {!loading && !result && !errorMsg && (
+                    <>
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 z-10"
+                        style={{ top: "30%" }}
+                      >
+                        <Button
+                          type="button"
+                          onClick={() => handleGenerate()}
+                          disabled={loading || !hasValidInput}
+                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                        >
+                          {labelGenerateFromSources}
+                        </Button>
+                      </div>
 
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 text-center px-6"
-                    style={{ top: "40%" }}
-                  >
-                    <p className="text-sm leading-6 text-slate-600 max-w-xl">
-                      {labelHelpRight}
-                    </p>
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 text-center px-6"
+                        style={{ top: "40%" }}
+                      >
+                        <p className="text-sm leading-6 text-slate-600 max-w-xl">
+                          {labelHelpRight}
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="w-full">
+                    {(result || errorMsg || loading) && (
+                      <div className="px-6 pt-6 pb-[110px] max-w-3xl mx-auto">
+                        {errorMsg && (
+                          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                            {errorMsg}
+                          </div>
+                        )}
+
+                        {result && (
+                          <>
+                            <div className="w-full mb-4">
+                              <div
+                                className="w-full bg-white"
+                                style={{
+                                  height: 48,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  padding: "0 14px",
+                                  borderBottom: "1px solid #e5e7eb",
+                                }}
+                              >
+                                <span
+                                  className="text-[14px] text-slate-500"
+                                  style={{
+                                    fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                                  }}
+                                >
+                                  Asunto:&nbsp;
+                                </span>
+                                <span
+                                  className={`text-[14px] ${
+                                    emailSubject ? "text-slate-800" : "text-slate-400"
+                                  }`}
+                                  style={{
+                                    fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                                  }}
+                                >
+                                  {emailSubject ? emailSubject : ""}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="w-full">
+                              <div
+                                className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
+                                style={{ height: 380, padding: "18px 18px 44px 18px" }}
+                              >
+                                <div
+                                  className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
+                                  style={{
+                                    fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                                  }}
+                                >
+                                  {result}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="absolute bottom-4 right-6 flex items-center gap-4">
+                              <div className="flex items-center gap-4 mr-[20px] translate-y-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopy(true)}
+                                  aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                                  className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                >
+                                  {copiedFlash ? (
+                                    <Check className="w-5 h-5" style={{ color: BLUE }} />
+                                  ) : (
+                                    <Copy className="w-5 h-5" />
+                                  )}
+                                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                    {copiedFlash ? tooltipCopied : tooltipCopy}
+                                  </span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={handleDownloadPdf}
+                                  aria-label={tooltipPdf}
+                                  className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                >
+                                  <FileDown className="w-5 h-5" />
+                                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                    {tooltipPdf}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {loading && !result && (
+                          <div className="space-y-3 animate-pulse">
+                            <div className="h-4 bg-slate-200 rounded" />
+                            <div className="h-4 bg-slate-200 rounded w-11/12" />
+                            <div className="h-4 bg-slate-200 rounded w-10/12" />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </>
               )}
-
-              <div className="w-full">
-                {(result || errorMsg || loading) && (
-                  <div className="px-6 pt-6 pb-[110px] max-w-3xl mx-auto">
-                    {errorMsg && (
-                      <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                        {errorMsg}
-                      </div>
-                    )}
-
-                    {result && (
-                      <>
-                        <div className="w-full mb-4">
-                          <div
-                            className="w-full bg-white"
-                            style={{
-                              height: 48,
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "0 14px",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <span
-                              className="text-[14px] text-slate-500"
-                              style={{
-                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                              }}
-                            >
-                              Asunto:&nbsp;
-                            </span>
-                            <span
-                              className={`text-[14px] ${
-                                emailSubject ? "text-slate-800" : "text-slate-400"
-                              }`}
-                              style={{
-                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                              }}
-                            >
-                              {emailSubject ? emailSubject : ""}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="w-full">
-                          <div
-                            className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
-                            style={{ height: 380, padding: "18px 18px 44px 18px" }}
-                          >
-                            <div
-                              className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
-                              style={{
-                                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                              }}
-                            >
-                              {result}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="absolute bottom-4 right-6 flex items-center gap-4">
-                          <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                            <button
-                              type="button"
-                              onClick={() => handleCopy(true)}
-                              aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                            >
-                              {copiedFlash ? (
-                                <Check className="w-5 h-5" style={{ color: BLUE }} />
-                              ) : (
-                                <Copy className="w-5 h-5" />
-                              )}
-                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                {copiedFlash ? tooltipCopied : tooltipCopy}
-                              </span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={handleDownloadPdf}
-                              aria-label={tooltipPdf}
-                              className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                            >
-                              <FileDown className="w-5 h-5" />
-                              <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                {tooltipPdf}
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {loading && !result && (
-                      <div className="space-y-3 animate-pulse">
-                        <div className="h-4 bg-slate-200 rounded" />
-                        <div className="h-4 bg-slate-200 rounded w-11/12" />
-                        <div className="h-4 bg-slate-200 rounded w-10/12" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
             </section>
           </motion.section>
         </div>
