@@ -519,7 +519,7 @@ if (tool === "translator" && dstCode === "eus") {
 
     // 2) Rate-limit RPM por IP
     try {
-      const rpmKey = `rl:rpm:${tool}:${ip}`;
+      const rpmKey = `rl:rpm:${tool}:${ip}`; 
       const count = await kv.incr(rpmKey);
       if (count === 1) {
         await kv.expire(rpmKey, 60);
