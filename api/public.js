@@ -26,6 +26,16 @@ const FREE_PARAPHRASER_MAX_CHARS       = Number(process.env.FREE_PARAPHRASER_MAX
 const FREE_PARAPHRASER_DAILY_TOKENS    = Number(process.env.FREE_PARAPHRASER_DAILY_TOKENS || 50000);
 const FREE_PARAPHRASER_RPM             = Number(process.env.FREE_PARAPHRASER_RPM || 6);
 
+// Creador de texto
+const FREE_TEXT_CREATOR_MAX_CHARS       = Number(process.env.FREE_TEXT_CREATOR_MAX_CHARS || 12000);
+const FREE_TEXT_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_TEXT_CREATOR_DAILY_TOKENS || 80000);
+const FREE_TEXT_CREATOR_RPM             = Number(process.env.FREE_TEXT_CREATOR_RPM || 6);
+
+// Creador de email
+const FREE_EMAIL_CREATOR_MAX_CHARS       = Number(process.env.FREE_EMAIL_CREATOR_MAX_CHARS || 12000);
+const FREE_EMAIL_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_EMAIL_CREATOR_DAILY_TOKENS || 80000);
+const FREE_EMAIL_CREATOR_RPM             = Number(process.env.FREE_EMAIL_CREATOR_RPM || 6);
+
 // ✅ límite de traducciones por día (solo traductor)
 const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
 // ✅ límite de resúmenes por día (solo resumidor)
@@ -34,12 +44,18 @@ const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUE
 const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20); 
 // ✅ límite de parafraseos por día (solo parafraseador)
 const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 10);
+// ✅ límite de creaciones de texto por día (solo creador de texto)
+const FREE_TEXT_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_TEXT_CREATOR_DAILY_REQUESTS || 20);
+// ✅ límite de creaciones de email por día (solo creador de email)
+const FREE_EMAIL_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_EMAIL_CREATOR_DAILY_REQUESTS || 20);
 
 // ✅ Modelos 
 const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
 const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // 
 const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // 
 const FREE_PARAPHRASER_MODEL = String(process.env.FREE_PARAPHRASER_MODEL || "").trim();
+const FREE_TEXT_CREATOR_MODEL = String(process.env.FREE_TEXT_CREATOR_MODEL || "").trim();
+const FREE_EMAIL_CREATOR_MODEL = String(process.env.FREE_EMAIL_CREATOR_MODEL || "").trim();
 
 // Conversión aproximada chars→tokens (prudente)
 const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
@@ -340,11 +356,31 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("rewrite") || rawMode.includes("rewrite") ||
       rawTask.includes("reescrit") || rawMode.includes("reescrit");
 
+    const isTextCreator =
+      rawTask.includes("text_creator") || rawMode.includes("text_creator") ||
+      rawTask.includes("textcreator") || rawMode.includes("textcreator") ||
+      rawTask.includes("create_text") || rawMode.includes("create_text") ||
+      rawTask.includes("generate_text") || rawMode.includes("generate_text") ||
+      rawTask.includes("crear_texto") || rawMode.includes("crear_texto") ||
+      rawTask.includes("creador_texto") || rawMode.includes("creador_texto");
+
+    const isEmailCreator =
+      rawTask.includes("email_creator") || rawMode.includes("email_creator") ||
+      rawTask.includes("emailcreator") || rawMode.includes("emailcreator") ||
+      rawTask.includes("create_email") || rawMode.includes("create_email") ||
+      rawTask.includes("generate_email") || rawMode.includes("generate_email") ||
+      rawTask.includes("crear_email") || rawMode.includes("crear_email") ||
+      rawTask.includes("creador_email") || rawMode.includes("creador_email") ||
+      rawTask.includes("crear_correo") || rawMode.includes("crear_correo") ||
+      rawTask.includes("creador_correo") || rawMode.includes("creador_correo");
+
     let tool =
       isSummary ? "summary" :
       isTranslator ? "translator" :
       isCorrector ? "corrector" :
       isParaphraser ? "paraphraser" :
+      isEmailCreator ? "email_creator" :
+      isTextCreator ? "text_creator" :
       "other";
 
     // ✅ FIX REAL: si llega como "other", inferimos por el contenido (porque tu frontend a veces no manda task/mode)
@@ -369,10 +405,27 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
         hint.includes("reescribe") || hint.includes("reescritura") ||
         hint.includes("rewrite") || hint.includes("rephrase");
 
-      if (looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser) tool = "summary";
-      else if (looksTranslate && !looksSummary && !looksCorrector && !looksParaphraser) tool = "translator";
-      else if (looksCorrector && !looksSummary && !looksTranslate && !looksParaphraser) tool = "corrector";
-      else if (looksParaphraser && !looksSummary && !looksTranslate && !looksCorrector) tool = "paraphraser";
+      const looksTextCreator =
+        hint.includes("creador de texto") || hint.includes("crear texto") ||
+        hint.includes("genera un texto") || hint.includes("generar texto") ||
+        hint.includes("redacta un texto") || hint.includes("redactar texto") ||
+        hint.includes("text creator") || hint.includes("generate text") ||
+        hint.includes("create text");
+
+      const looksEmailCreator =
+        hint.includes("creador de email") || hint.includes("crear email") ||
+        hint.includes("creador de correo") || hint.includes("crear correo") ||
+        hint.includes("redacta un email") || hint.includes("redactar email") ||
+        hint.includes("redacta un correo") || hint.includes("redactar correo") ||
+        hint.includes("email creator") || hint.includes("generate email") ||
+        hint.includes("create email");
+
+      if (looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser && !looksTextCreator && !looksEmailCreator) tool = "summary";
+      else if (looksTranslate && !looksSummary && !looksCorrector && !looksParaphraser && !looksTextCreator && !looksEmailCreator) tool = "translator";
+      else if (looksCorrector && !looksSummary && !looksTranslate && !looksParaphraser && !looksTextCreator && !looksEmailCreator) tool = "corrector";
+      else if (looksParaphraser && !looksSummary && !looksTranslate && !looksCorrector && !looksTextCreator && !looksEmailCreator) tool = "paraphraser";
+      else if (looksEmailCreator && !looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser && !looksTextCreator) tool = "email_creator";
+      else if (looksTextCreator && !looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser && !looksEmailCreator) tool = "text_creator";
       // si aparecen varios, se queda "other"
     }
 
@@ -381,6 +434,8 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
     if (tool === "corrector" && FREE_CORRECTOR_MODEL) model = FREE_CORRECTOR_MODEL;
     if (tool === "paraphraser" && FREE_PARAPHRASER_MODEL) model = FREE_PARAPHRASER_MODEL;
+    if (tool === "text_creator" && FREE_TEXT_CREATOR_MODEL) model = FREE_TEXT_CREATOR_MODEL;
+    if (tool === "email_creator" && FREE_EMAIL_CREATOR_MODEL) model = FREE_EMAIL_CREATOR_MODEL;
 
 // ✅ Guardrail traductor: fuerza idioma destino real
 const dst = hasTranslate ? body.to : (body?.dst || null);
@@ -410,6 +465,8 @@ if (tool === "translator" && dstCode === "eus") {
       tool === "summary" ? FREE_SUMMARY_MAX_CHARS :
       tool === "corrector" ? FREE_CORRECTOR_MAX_CHARS :
       tool === "paraphraser" ? FREE_PARAPHRASER_MAX_CHARS :
+      tool === "text_creator" ? FREE_TEXT_CREATOR_MAX_CHARS :
+      tool === "email_creator" ? FREE_EMAIL_CREATOR_MAX_CHARS :
       tool === "translator" ? FREE_TRANSLATOR_MAX_CHARS :
       FREE_TRANSLATOR_MAX_CHARS;
 
@@ -417,6 +474,8 @@ if (tool === "translator" && dstCode === "eus") {
       tool === "summary" ? FREE_SUMMARY_DAILY_TOKENS :
       tool === "corrector" ? FREE_CORRECTOR_DAILY_TOKENS :
       tool === "paraphraser" ? FREE_PARAPHRASER_DAILY_TOKENS :
+      tool === "text_creator" ? FREE_TEXT_CREATOR_DAILY_TOKENS :
+      tool === "email_creator" ? FREE_EMAIL_CREATOR_DAILY_TOKENS :
       tool === "translator" ? FREE_TRANSLATOR_DAILY_TOKENS :
       FREE_TRANSLATOR_DAILY_TOKENS;
 
@@ -424,6 +483,8 @@ if (tool === "translator" && dstCode === "eus") {
       tool === "summary" ? FREE_SUMMARY_RPM :
       tool === "corrector" ? FREE_CORRECTOR_RPM :
       tool === "paraphraser" ? FREE_PARAPHRASER_RPM :
+      tool === "text_creator" ? FREE_TEXT_CREATOR_RPM :
+      tool === "email_creator" ? FREE_EMAIL_CREATOR_RPM :
       tool === "translator" ? FREE_TRANSLATOR_RPM :
       FREE_TRANSLATOR_RPM;
 
@@ -435,7 +496,10 @@ if (tool === "translator" && dstCode === "eus") {
       tool, ip, day,
       FREE_SUMMARY_DAILY_REQUESTS,
       FREE_TRANSLATOR_DAILY_REQUESTS,
-      FREE_CORRECTOR_DAILY_REQUESTS
+      FREE_CORRECTOR_DAILY_REQUESTS,
+      FREE_PARAPHRASER_DAILY_REQUESTS,
+      FREE_TEXT_CREATOR_DAILY_REQUESTS,
+      FREE_EMAIL_CREATOR_DAILY_REQUESTS
     });
 
     // 1) Máx. caracteres por request
@@ -562,6 +626,52 @@ if (tool === "translator" && dstCode === "eus") {
         }
       } catch (e) {
         console.log("[KV DAILY PARAPHRASER ERROR]", e?.message || e);
+      }
+    }
+
+    // 3d) Límite de creaciones de texto por día (solo creador de texto)
+    if (tool === "text_creator") {
+      try {
+        const dailyTextCreatorKey = `quota:text_creator:reqs:${day}:${ip}`;
+        const usedReqs = await kv.incr(dailyTextCreatorKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyTextCreatorKey, 60 * 60 * 26);
+        }
+        if (usedReqs > FREE_TEXT_CREATOR_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily text creator requests exceeded",
+            limit: { daily_text_creator_requests: FREE_TEXT_CREATOR_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del creador de texto (${FREE_TEXT_CREATOR_DAILY_REQUESTS} usos/día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch (e) {
+        console.log("[KV DAILY TEXT CREATOR ERROR]", e?.message || e);
+      }
+    }
+
+    // 3e) Límite de creaciones de email por día (solo creador de email)
+    if (tool === "email_creator") {
+      try {
+        const dailyEmailCreatorKey = `quota:email_creator:reqs:${day}:${ip}`;
+        const usedReqs = await kv.incr(dailyEmailCreatorKey);
+        if (usedReqs === 1) {
+          await kv.expire(dailyEmailCreatorKey, 60 * 60 * 26);
+        }
+        if (usedReqs > FREE_EMAIL_CREATOR_DAILY_REQUESTS) {
+          return res.status(429).json({
+            ok: false,
+            error: "Daily email creator requests exceeded",
+            limit: { daily_email_creator_requests: FREE_EMAIL_CREATOR_DAILY_REQUESTS, used: usedReqs },
+            message:
+              `Has alcanzado el límite diario del creador de email (${FREE_EMAIL_CREATOR_DAILY_REQUESTS} usos/día). ` +
+              `Vuelve mañana.`
+          });
+        }
+      } catch (e) {
+        console.log("[KV DAILY EMAIL CREATOR ERROR]", e?.message || e);
       }
     }
 
