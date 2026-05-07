@@ -530,18 +530,17 @@ textCreator: {
   output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
   save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
   limit_chars: {
-    ES: "Has superado el límite máximo de caracteres permitido.",
-    EUS: "Onartutako gehieneko karaktere-muga gainditu duzu.",
-    EN: "You have exceeded the maximum character limit allowed.",
-    FR: "Vous avez dépassé la limite maximale de caractères autorisée.",
-  },
-
+ES: "Has superado el límite máximo de caracteres del creador de texto.",
+  EUS: "Testu-sortzailearen gehieneko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the text creator's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du créateur de texte.",
+},
   limit_daily: {
-    ES: "Has alcanzado el límite diario. Vuelve mañana.",
-    EUS: "Eguneko muga gainditu duzu. Itzuli bihar.",
-    EN: "You have reached the daily limit. Come back tomorrow.",
-    FR: "Vous avez atteint la limite quotidienne. Revenez demain.",
-  },
+   ES: "Has superado el límite diario de solicitudes del creador de texto.",
+  EUS: "Testu-sortzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the text creator's daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du créateur de texte.",
+},
 },
 
   // =========================
@@ -619,18 +618,17 @@ missing_info_yes: {
   FR: "Créer",
 }, 
 limit_chars: {
-    ES: "Has superado el límite máximo de caracteres permitido.",
-    EUS: "Onartutako gehieneko karaktere-muga gainditu duzu.",
-    EN: "You have exceeded the maximum character limit allowed.",
-    FR: "Vous avez dépassé la limite maximale de caractères autorisée.",
-  },
-
-  limit_daily: {
-    ES: "Has alcanzado el límite diario. Vuelve mañana.",
-    EUS: "Eguneko muga gainditu duzu. Itzuli bihar.",
-    EN: "You have reached the daily limit. Come back tomorrow.",
-    FR: "Vous avez atteint la limite quotidienne. Revenez demain.",
-  },
+    ES: "Has superado el límite máximo de caracteres del creador de email.",
+  EUS: "Email-sortzailearen gehieneko karaktere-muga gainditu duzu.",
+  EN: "You have exceeded the email creator's maximum character limit.",
+  FR: "Vous avez dépassé la limite maximale de caractères du créateur d’e-mails.",
+},
+ limit_daily: {
+  ES: "Has superado el límite diario de solicitudes del creador de email.",
+  EUS: "Email-sortzailearen eguneko eskaera-muga gainditu duzu.",
+  EN: "You have exceeded the email creator's daily request limit.",
+  FR: "Vous avez dépassé la limite quotidienne de requêtes du créateur d’e-mails.",
+},
 },
 
 
