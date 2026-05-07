@@ -105,6 +105,39 @@ function todayKey(date = new Date()) {
   const d = String(date.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 }
+function detectLanguageForBanner(text = "") {
+  const clean = String(text || "").toLowerCase();
+
+  if (!clean || clean.trim().length < 20) return null;
+
+  if (/[ñáéíóú¿¡]/i.test(clean)) return "es";
+
+  const eusMarkers = [" eta ", " da ", " dira ", " dut ", " duzu ", " gara ", " izan ", " euskara ", " euskaraz "];
+
+  const frMarkers = [" le ", " les ", " des ", " une ", " vous ", " pour ", " avec ", " merci ", " bonjour "];
+
+  const enMarkers = [" the ", " and ", " you ", " that ", " with ", " from ", " hello ", " thanks "];
+
+  const padded = ` ${clean} `;
+
+  const count = (markers) =>
+    markers.reduce(
+      (total, marker) => total + (padded.includes(marker) ? 1 : 0),
+      0
+    );
+
+  const scores = {
+    eus: count(eusMarkers),
+    fr: count(frMarkers),
+    en: count(enMarkers),
+  };
+
+  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+
+  if (!best || best[1] < 2) return null;
+
+  return best[0];
+}
 
 // Very simple HTML → texto
 function htmlToText(html) {
