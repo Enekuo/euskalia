@@ -611,6 +611,8 @@ export default function CorrectorGramatical() {
 
       const data = await res.json();
 
+      console.log("DATA API:", data);
+
       setDetectedLanguage(data?.detectedLanguage || null);
 
       const rawText =
