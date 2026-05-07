@@ -613,7 +613,7 @@ export default function CorrectorGramatical() {
 
       console.log("DATA API:", data);
 
-      setDetectedLanguage(data?.detectedLanguage || null);
+      setDetectedLanguage(data?.detectedLanguage || "es");
 
       const rawText =
         data?.result ??
