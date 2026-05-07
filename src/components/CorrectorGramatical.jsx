@@ -17,6 +17,7 @@ import {
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import DetectedLanguageBanner from "@/components/DetectedLanguageBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +41,6 @@ import { useNavigate } from "react-router-dom";
 export default function CorrectorGramatical() {
   const { t } = useTranslation();
 
-  // ✅ evita que se muestre la clave literal si falta traducción
   const tr = (key, fallback = "") => {
     const val = typeof t === "function" ? t(key) : null;
     return !val || val === key ? fallback : val;
@@ -53,47 +53,37 @@ export default function CorrectorGramatical() {
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
   const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
 
-  // ===== Estado =====
-  const [sourceMode, setSourceMode] = useState(null); // null | "text" | "document" | "url"
+  const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
 
-  // Resultado / carga / error
   const [result, setResult] = useState("");
+  const [detectedLanguage, setDetectedLanguage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ✅ Igual que Resumen: errores "limit" se pintan con banner + mensaje abajo
-  const [errorKind, setErrorKind] = useState(null); // null | "limit"
+  const [errorKind, setErrorKind] = useState(null);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
-  // Modo de corrección fijo
   const CORRECTION_MODE = "standard";
 
-  // Idioma de referencia para la corrección (ES/EUS/EN/FR) — por defecto Euskera
   const [outputLang, setOutputLang] = useState("EUS");
 
-  // Track “texto desactualizado”
   const [lastSig, setLastSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
 
-  // Mostrar / ocultar resaltado de cambios
   const [showDiff, setShowDiff] = useState(false);
 
-  // Documentos
-  const [documents, setDocuments] = useState([]); // [{id,file}]
-  const [documentsText, setDocumentsText] = useState([]); // [{id,name,text}]
+  const [documents, setDocuments] = useState([]);
+  const [documentsText, setDocumentsText] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  // URLs
   const [urlInputOpen, setUrlInputOpen] = useState(false);
   const [urlsTextarea, setUrlsTextarea] = useState("");
-  const [urlItems, setUrlItems] = useState([]); // [{id,url,host}]
+  const [urlItems, setUrlItems] = useState([]);
 
-  // Copia: flash de tic azul
   const [copiedFlash, setCopiedFlash] = useState(false);
 
-  // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
@@ -108,7 +98,6 @@ export default function CorrectorGramatical() {
     out: { opacity: 0, y: -12 },
   };
 
-  // ===== i18n (CLAVES NUEVAS grammarcorrector.*) =====
   const labelSources = tr("grammarcorrector.sources_title", "Fuentes");
   const labelTabText = tr("grammarcorrector.sources_tab_text", "Texto");
   const labelTabDocument = tr("grammarcorrector.sources_tab_document", "Documento");
@@ -139,22 +128,20 @@ export default function CorrectorGramatical() {
   const labelViewChanges = tr("grammarcorrector.view_changes", "Ver cambios");
   const labelHideChanges = tr("grammarcorrector.hide_changes", "Ocultar cambios");
 
-  // ✅ Idiomas (UI) -> mismas keys globales
   const LBL_EUS = tr("summary.output_language_eus", "Euskara");
   const LBL_ES = tr("summary.output_language_es", "Gaztelania");
   const LBL_EN = tr("summary.output_language_en", "Ingelesa");
   const LBL_FR = tr("summary.output_language_fr", "Français");
 
-  // ✅ Tooltips (reutiliza las del translator)
   const tooltipCopy = t("translator.copy") || "Copiar";
   const tooltipCopied = t("translator.copied") || "Copiado";
   const tooltipPdf = t("translator.pdf") || "PDF";
 
-  // Ayuda izquierda
   const leftRaw = tr(
     "grammarcorrector.create_help_left",
     "Aquí aparecerán los textos o documentos que quieras corregir. Puedes pegar texto, subir archivos de texto o añadir URLs."
   );
+
   const [leftTitle, leftBody] = useMemo(() => {
     const parts = (leftRaw || "").split(".");
     const first = (parts.shift() || leftRaw || "").trim();
@@ -162,7 +149,6 @@ export default function CorrectorGramatical() {
     return [first.endsWith(".") ? first : `${first}.`, rest];
   }, [leftRaw]);
 
-  // ===== Tabs =====
   const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
     <div className="relative flex-1 min-w-0 flex items-stretch">
       <button
@@ -185,7 +171,6 @@ export default function CorrectorGramatical() {
     </div>
   );
 
-  // ===== Utils =====
   const parseUrlsFromText = (text) => {
     const raw = text
       .split(/[\s\n]+/g)
@@ -322,6 +307,7 @@ export default function CorrectorGramatical() {
 
   const clearRight = () => {
     setResult("");
+    setDetectedLanguage(null);
     setErrorMsg("");
     setErrorKind(null);
     setDailyLimitReached(false);
@@ -330,7 +316,6 @@ export default function CorrectorGramatical() {
     setShowDiff(false);
   };
 
-  // ===== Reglas UX =====
   useEffect(() => {
     const sig = canonicalize(textValue);
     if (sig.length === 0) {
@@ -360,7 +345,6 @@ export default function CorrectorGramatical() {
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, result, urlInputOpen]);
 
-  // ===== Documentos =====
   const readTextFromFiles = async (items) => {
     const results = await Promise.all(
       items.map(
@@ -432,7 +416,6 @@ export default function CorrectorGramatical() {
     clearRight();
   };
 
-  // ===== URLs =====
   const addUrlsFromTextarea = () => {
     const parsed = parseUrlsFromText(urlsTextarea);
     if (!parsed.length) return;
@@ -454,10 +437,8 @@ export default function CorrectorGramatical() {
 
   useEffect(() => {
     clearRight();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlItems.length]);
 
-  // ===== Validación =====
   const textIsValid = useMemo(() => {
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
@@ -466,7 +447,6 @@ export default function CorrectorGramatical() {
 
   const hasValidInput = textIsValid || urlItems.length > 0 || documents.length > 0;
 
-  // ===== Acciones barra derecha =====
   const handleCopy = async (flash = false) => {
     if (!result) return;
     try {
@@ -499,7 +479,6 @@ export default function CorrectorGramatical() {
     } catch {}
   };
 
-  // ===== Helper: cache key (sha-256) =====
   const sha256Hex = async (input) => {
     try {
       const enc = new TextEncoder().encode(input);
@@ -512,12 +491,12 @@ export default function CorrectorGramatical() {
     }
   };
 
-  // ===== Generar (corrección) =====
   const handleGenerate = async () => {
     setLoading(true);
     setErrorMsg("");
     setErrorKind(null);
     setDailyLimitReached(false);
+    setDetectedLanguage(null);
     setShowDiff(false);
 
     const trimmed = (textValue || "").trim();
@@ -525,7 +504,6 @@ export default function CorrectorGramatical() {
     const textOk = trimmed.length >= 1 && words.length >= 1;
     const validNow = textOk || urlItems.length > 0 || documents.length > 0;
 
-    // ✅ Límite de caracteres (como Resumen): banner + mensaje abajo (NO caja roja arriba)
     if ((textValue || "").length > MAX_CHARS) {
       setErrorKind("limit");
       setDailyLimitReached(false);
@@ -550,14 +528,14 @@ export default function CorrectorGramatical() {
     const modeInstruction =
       "Haz una corrección ESTÁNDAR: corrige ortografía, gramática, puntuación y mejora un poco la fluidez, manteniendo el mismo tono y estructura general.";
 
-const langInstruction =
-  "Detecta automáticamente el idioma principal del texto de entrada y corrige SIEMPRE en ese mismo idioma. " +
-  "No traduzcas el texto a otro idioma distinto al de la fuente. " +
-  "Si el texto está en español, corrige en español. " +
-  "Si está en euskera, corrige en euskera batua natural. " +
-  "Si está en inglés, corrige en inglés. " +
-  "Si está en francés, corrige en francés. " +
-  "Devuelve siempre el texto completo corregido.";
+    const langInstruction =
+      "Detecta automáticamente el idioma principal del texto de entrada y corrige SIEMPRE en ese mismo idioma. " +
+      "No traduzcas el texto a otro idioma distinto al de la fuente. " +
+      "Si el texto está en español, corrige en español. " +
+      "Si está en euskera, corrige en euskera batua natural. " +
+      "Si está en inglés, corrige en inglés. " +
+      "Si está en francés, corrige en francés. " +
+      "Devuelve siempre el texto completo corregido.";
 
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
@@ -633,7 +611,11 @@ const langInstruction =
 
       const data = await res.json();
 
+      setDetectedLanguage(data?.detectedLanguage || null);
+
       const rawText =
+        data?.result ??
+        data?.reply ??
         data?.text ??
         data?.content ??
         data?.choices?.[0]?.message?.content ??
@@ -647,8 +629,6 @@ const langInstruction =
       setResult(cleaned);
       setLastSig(canonicalize(textValue));
       setIsOutdated(false);
-
-      // ✅ activar modo cambios si hay diff
       setShowDiff(true);
     } catch (err) {
       setErrorMsg(err?.message || tr("grammarcorrector.error_generic", "Error realizando la corrección."));
@@ -657,7 +637,6 @@ const langInstruction =
     }
   };
 
-  // ===== Contador / barra =====
   const charCount = (textValue || "").length;
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
@@ -665,7 +644,6 @@ const langInstruction =
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
-  // ===== Render =====
   return (
     <>
       <h1 className="sr-only">Corrector</h1>
@@ -673,9 +651,7 @@ const langInstruction =
       <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16"> 
         <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
           <div className="relative">
-            {/* ✅ 3 BOTONES IZQUIERDA (como Resumen) */}
             <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
-              {/* Traductor (inactivo) */}
               <button
                 type="button"
                 onClick={() => navigate("/")}
@@ -689,7 +665,6 @@ const langInstruction =
                 {tr("toolsMenu.translatorTitle", labelToolTranslator)}
               </div>
 
-              {/* Resumidor (inactivo) */}
               <button
                 type="button"
                 onClick={() => navigate("/resumen")}
@@ -703,35 +678,32 @@ const langInstruction =
                 {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
               </div>
 
+              <button
+                type="button"
+                aria-current="page"
+                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
+                className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+              >
+                <SearchCheck className="w-6 h-6 text-blue-600" />
+              </button>
 
-{/* Corrector (activo) */}
-<button
-  type="button"
-  aria-current="page"
-  title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
-  className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
->
-  <SearchCheck className="w-6 h-6 text-blue-600" />
-</button>
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
+              </div>
 
-<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-  {tr("toolsMenu.correctorTitle", labelToolCorrector)}
-</div>
+              <button
+                type="button"
+                onClick={() => navigate("/parafraseador")}
+                title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+                className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              >
+                <PenLine className="w-6 h-6 text-slate-700" />
+              </button>
 
-{/* Parafraseador (inactivo) */}
-<button
-  type="button"
-  onClick={() => navigate("/parafraseador")}
-  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-  className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
->
-  <PenLine className="w-6 h-6 text-slate-700" />
-</button>
-
-<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-</div>
-  </div>
+              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
+                {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+              </div>
+            </div>
 
             <motion.section
               className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
@@ -741,14 +713,11 @@ const langInstruction =
               variants={pageVariants}
               transition={{ duration: 0.3 }}
             >
-              {/* ===== Panel Fuentes (izquierda) ===== */}
               <aside className="h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-                {/* Título */}
                 <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                   <div className="text-sm font-medium text-slate-700">{labelSources}</div>
                 </div>
 
-                {/* Tabs */}
                 <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
                   <TabBtn
                     active={sourceMode === "text"}
@@ -782,7 +751,6 @@ const langInstruction =
                   />
                 </div>
 
-                {/* Contenido */}
                 <div className="flex-1 overflow-hidden p-3">
                   {!sourceMode && (
                     <div className="h-full w-full flex items-center justify-center">
@@ -980,9 +948,7 @@ const langInstruction =
                 </div>
               </aside>
 
-              {/* ===== Panel Derecho ===== */}
               <section className="relative min-h-[540px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-                {/* Barra superior con selector idioma + acciones */}
                 <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                   <div className="flex items-center">
                     {hasDiff && (
@@ -1102,7 +1068,6 @@ const langInstruction =
                   </div>
                 </div>
 
-                {/* ✅ LIMIT (igual que Resumen): banner centrado + mensaje abajo */}
                 {errorKind === "limit" ? (
                   <div className="h-full w-full relative flex items-center justify-center px-6">
                     <div className="w-full max-w-3xl space-y-3">
@@ -1125,7 +1090,6 @@ const langInstruction =
                   </div>
                 ) : (
                   <>
-                    {/* Estado inicial (BOTÓN + AYUDA) */}
                     {!loading && !hasRealResult && !errorMsg && (
                       <>
                         <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
@@ -1149,6 +1113,8 @@ const langInstruction =
                     <div className="w-full">
                       {(hasRealResult || loading || errorMsg) && (
                         <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
+                          <DetectedLanguageBanner language={detectedLanguage} />
+
                           {errorMsg && (
                             <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                               {errorMsg}
@@ -1183,7 +1149,6 @@ const langInstruction =
                       )}
                     </div>
 
-                    {/* Barra inferior: solo copy + download */}
                     {hasRealResult && (
                       <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
                         <button
