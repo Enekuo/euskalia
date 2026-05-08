@@ -69,8 +69,17 @@ export default function DetectedLanguageBanner({
   if (!language) return null;
 
   const normalizedLanguage = String(language).toLowerCase();
+
+  const mapToSelector = {
+    es: "es",
+    eus: "eus",
+    en: "en",
+    fr: "fr",
+  };
+
   const normalizedSelected = selectedLanguage
-    ? String(selectedLanguage).toLowerCase()
+    ? mapToSelector[String(selectedLanguage).toLowerCase()] ||
+      String(selectedLanguage).toLowerCase()
     : null;
 
   if (
@@ -111,25 +120,25 @@ export default function DetectedLanguageBanner({
   return (
     <div
       className={
-        "relative mb-4 w-full max-w-[440px] rounded-xl border border-slate-200 bg-white shadow-xl px-5 py-4 " +
+        "relative w-[440px] max-w-[92vw] rounded-2xl border border-slate-200 bg-white shadow-2xl px-5 py-4 " +
         className
       }
     >
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-4 top-4 text-slate-500 hover:text-slate-800"
+        className="absolute right-4 top-4 text-slate-400 hover:text-slate-700 transition"
         aria-label="Cerrar"
       >
         <X className="h-5 w-5" />
       </button>
 
       <div className="pr-8">
-        <div className="text-[20px] font-semibold text-slate-900">
+        <div className="text-[22px] leading-none font-semibold text-slate-900">
           {titles[currentLang] || titles.ES}
         </div>
 
-        <div className="mt-3 text-[15px] leading-6 text-slate-700">
+        <div className="mt-3 text-[15px] leading-6 text-slate-600">
           {descriptions[currentLang] || descriptions.ES}
         </div>
 
@@ -137,7 +146,7 @@ export default function DetectedLanguageBanner({
           <button
             type="button"
             onClick={onAccept}
-            className="h-10 rounded-full bg-emerald-600 px-5 text-[15px] font-semibold text-white hover:bg-emerald-700 transition"
+            className="h-10 rounded-full bg-[#16a34a] px-5 text-[15px] font-semibold text-white hover:brightness-95 transition"
           >
             {buttonText}
           </button>
