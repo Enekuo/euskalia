@@ -146,7 +146,7 @@ export default function DetectedLanguageBanner({
           <button
             type="button"
             onClick={onAccept}
-            className="h-10 rounded-full bg-[#16a34a] px-5 text-[15px] font-semibold text-white hover:brightness-95 transition"
+            className="h-10 rounded-full bg-[#2563eb] px-5 text-[15px] font-semibold text-white hover:brightness-95 transition"
           >
             {buttonText}
           </button>
