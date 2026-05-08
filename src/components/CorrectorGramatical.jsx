@@ -1114,40 +1114,77 @@ export default function CorrectorGramatical() {
 
                     <div className="w-full">
                       {(hasRealResult || loading || errorMsg) && (
-                        <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
-                          <DetectedLanguageBanner language={detectedLanguage} />
+                        <>
+                          {/* ✅ Banner flotante FUERA del contenido */}
+                          {detectedLanguage && (
+                            <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+                              <div className="pointer-events-auto">
+                                <DetectedLanguageBanner
+                                  language={detectedLanguage}
+                                  selectedLanguage={outputLang}
+                                  onAccept={() => {
+                                    const map = {
+                                      es: "ES",
+                                      eus: "EUS",
+                                      en: "EN",
+                                      fr: "FR",
+                                    };
 
-                          {errorMsg && (
-                            <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                              {errorMsg}
+                                    const newLang =
+                                      map[String(detectedLanguage).toLowerCase()];
+
+                                    if (newLang) {
+                                      setOutputLang(newLang);
+                                    }
+                                  }}
+                                  onClose={() => {
+                                    setDetectedLanguage(null);
+                                  }}
+                                />
+                              </div>
                             </div>
                           )}
 
-                          {hasRealResult && (
-                            <>
-                              {!hasDiff ? (
-                                <div className="mt-6 flex flex-col items-center text-center gap-2">
-                                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                    <span className="text-lg">✅</span>
+                          {/* ✅ Contenido normal SIN que el banner lo mueva */}
+                          <div className="px-6 pt-20 pb-32 max-w-3xl mx-auto">
+                            {errorMsg && (
+                              <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                                {errorMsg}
+                              </div>
+                            )}
+
+                            {hasRealResult && (
+                              <>
+                                {!hasDiff ? (
+                                  <div className="mt-6 flex flex-col items-center text-center gap-2">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                      <span className="text-lg">✅</span>
+                                    </div>
+
+                                    <p className="text-sm font-medium text-emerald-800">
+                                      {tr(
+                                        "grammarcorrector.no_errors_message",
+                                        "¡Muy bien! No hemos detectado errores."
+                                      )}
+                                    </p>
                                   </div>
-                                  <p className="text-sm font-medium text-emerald-800">
-                                    {tr("grammarcorrector.no_errors_message", "¡Muy bien! No hemos detectado errores.")}
-                                  </p>
-                                </div>
-                              ) : (
-                                <article className="prose prose-slate max-w-none">{renderResult()}</article>
-                              )}
-                            </>
-                          )}
+                                ) : (
+                                  <article className="prose prose-slate max-w-none">
+                                    {renderResult()}
+                                  </article>
+                                )}
+                              </>
+                            )}
 
-                          {loading && !hasRealResult && (
-                            <div className="space-y-3 animate-pulse">
-                              <div className="h-4 bg-slate-200 rounded" />
-                              <div className="h-4 bg-slate-200 rounded w-11/12" />
-                              <div className="h-4 bg-slate-200 rounded w-10/12" />
-                            </div>
-                          )}
-                        </div>
+                            {loading && !hasRealResult && (
+                              <div className="space-y-3 animate-pulse">
+                                <div className="h-4 bg-slate-200 rounded" />
+                                <div className="h-4 bg-slate-200 rounded w-11/12" />
+                                <div className="h-4 bg-slate-200 rounded w-10/12" />
+                              </div>
+                            )}
+                          </div>
+                        </>
                       )}
                     </div>
 
@@ -1159,7 +1196,15 @@ export default function CorrectorGramatical() {
                           aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                           className="group relative p-2 rounded-md hover:bg-slate-100"
                         >
-                          {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
+                          {copiedFlash ? (
+                            <Check
+                              className="w-5 h-5"
+                              style={{ color: BLUE }}
+                            />
+                          ) : (
+                            <Copy className="w-5 h-5" />
+                          )}
+
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                             {copiedFlash ? tooltipCopied : tooltipCopy}
                           </span>
@@ -1172,6 +1217,7 @@ export default function CorrectorGramatical() {
                           className="group relative p-2 rounded-md hover:bg-slate-100"
                         >
                           <FileDown className="w-5 h-5" />
+
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                             {tooltipPdf}
                           </span>
@@ -1185,6 +1231,7 @@ export default function CorrectorGramatical() {
           </div>
         </div>
       </section>
+
       <BenefitsSection />
       <ToolsSection />
       <FeaturesSection />
