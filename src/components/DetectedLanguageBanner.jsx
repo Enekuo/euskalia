@@ -151,7 +151,7 @@ export default function DetectedLanguageBanner({
             {buttonText}
           </button>
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
