@@ -136,9 +136,16 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
               `{"code":"zh","label":"chino","buttonText":"Usar chino"}\n\n` +
               `Rules:\n` +
               `- code: short language code. Use "eus" for Basque, "es" for Spanish, "en" for English, "fr" for French. For other languages use common short codes like "zh", "ja", "ar", "de", "it", "pt", "ru", "ko", "nl", "sv", "ro", "uk".\n` +
-              `- label: language name written in the UI language.\n` +
-              `- buttonText: short button text written in the UI language, meaning "Use [language]".\n` +
-              `- If unsure, return {"code":"","label":"","buttonText":""}.\n\n` +
+`- label: language name translated to the UI language.\n` +
+`- NEVER return the native language name.\n` +
+`- Example:\n` +
+`  - German + ES UI -> "alemán"\n` +
+`  - German + EUS UI -> "alemana"\n` +
+`  - German + EN UI -> "German"\n` +
+`  - German + FR UI -> "allemand"\n` +
+`- NEVER return "Deutsch", "Español", "Français", etc. unless that is the UI language itself.\n` +
+`- buttonText: short button text written in the UI language, meaning "Use [language]".\n` +
+`- If unsure, return {"code":"","label":"","buttonText":""}.\n\n` +
               `TEXT:\n${cleanText.slice(0, 3000)}`
           }
         ],
