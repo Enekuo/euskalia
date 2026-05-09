@@ -539,8 +539,19 @@ const tr = (k, f) => {
       "Devuelve un único párrafo fluido, sin listas ni viñetas, sin guiones al inicio de línea, " +
       "sin subtítulos ni líneas sueltas. Redacta en frases completas, tono claro e informativo.";
 
+
+const outputLanguageName =
+  outputLang === "eus"
+    ? "euskera"
+    : outputLang === "es"
+    ? "español"
+    : outputLang === "en"
+    ? "inglés"
+    : "francés";
+
 const langInstruction =
-  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. No traduzcas el contenido a otro idioma distinto al de la fuente.";
+  `Responde SIEMPRE en ${outputLanguageName}, aunque el contenido de entrada esté en otro idioma. El idioma del resultado lo decide el selector de la herramienta, no el idioma de la fuente.`;
+
 
     const lengthRule =
       summaryLength === "breve"
