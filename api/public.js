@@ -16,7 +16,7 @@ const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS |
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 100000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
-// ✅ Corrector (NUEVO)
+// ✅ Corrector
 const FREE_CORRECTOR_MAX_CHARS       = Number(process.env.FREE_CORRECTOR_MAX_CHARS || 12000);
 const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_TOKENS || 50000);
 const FREE_CORRECTOR_RPM             = Number(process.env.FREE_CORRECTOR_RPM || 6);
@@ -41,7 +41,7 @@ const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
 // ✅ límite de correcciones por día (solo corrector)
-const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20); 
+const FREE_CORRECTOR_DAILY_REQUESTS = Number(process.env.FREE_CORRECTOR_DAILY_REQUESTS || 20);
 // ✅ límite de parafraseos por día (solo parafraseador)
 const FREE_PARAPHRASER_DAILY_REQUESTS = Number(process.env.FREE_PARAPHRASER_DAILY_REQUESTS || 10);
 // ✅ límite de creaciones de texto por día (solo creador de texto)
@@ -49,16 +49,16 @@ const FREE_TEXT_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_TEXT_CREATOR_DA
 // ✅ límite de creaciones de email por día (solo creador de email)
 const FREE_EMAIL_CREATOR_DAILY_REQUESTS = Number(process.env.FREE_EMAIL_CREATOR_DAILY_REQUESTS || 10);
 
-// ✅ Modelos 
-const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim(); // 
-const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();    // 
-const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();  // 
+// ✅ Modelos
+const FREE_TRANSLATOR_MODEL = String(process.env.FREE_TRANSLATOR_MODEL || "").trim();
+const FREE_SUMMARY_MODEL    = String(process.env.FREE_SUMMARY_MODEL || "").trim();
+const FREE_CORRECTOR_MODEL  = String(process.env.FREE_CORRECTOR_MODEL || "").trim();
 const FREE_PARAPHRASER_MODEL = String(process.env.FREE_PARAPHRASER_MODEL || "").trim();
 const FREE_TEXT_CREATOR_MODEL = String(process.env.FREE_TEXT_CREATOR_MODEL || "").trim();
 const FREE_EMAIL_CREATOR_MODEL = String(process.env.FREE_EMAIL_CREATOR_MODEL || "").trim();
 
 // Conversión aproximada chars→tokens (prudente)
-const TOKENS_PER_CHAR = 0.25; // ~4 chars ≈ 1 token
+const TOKENS_PER_CHAR = 0.25;
 
 // ====== Helpers ======
 function canonicalize(s) {
@@ -72,7 +72,6 @@ function canonicalize(s) {
 function makeCacheKey({ task, model, system, messages, src, dst, lang, length }) {
   const userText = canonicalize((messages || []).map(m => m?.content || "").join(" "));
   const payload = JSON.stringify({
-    // ✅ bump cache version para NO reutilizar resultados antiguos malos
     v: "v3",
     task,
     model,
@@ -93,7 +92,6 @@ function getClientIp(req) {
   else if (Array.isArray(xf) && xf.length) ip = xf[0].split(",")[0].trim();
   else ip = req.headers["x-real-ip"] || req.socket?.remoteAddress || "unknown";
 
-  // normalizar ::ffff:1.2.3.4
   ip = String(ip || "unknown");
   if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "");
   return ip;
@@ -105,38 +103,72 @@ function todayKey(date = new Date()) {
   const d = String(date.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 }
-function detectLanguageForBanner(text = "") {
-  const clean = String(text || "").toLowerCase();
 
-  if (!clean || clean.trim().length < 20) return null;
+async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", model = "gpt-4o-mini" }) {
+  const cleanText = String(text || "").trim();
 
-  if (/[ñáéíóú¿¡]/i.test(clean)) return "es";
+  if (!cleanText || cleanText.length < 2) return null;
 
-  const eusMarkers = [" eta ", " da ", " dira ", " dut ", " duzu ", " gara ", " izan ", " euskara ", " euskaraz "];
+  try {
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0,
+        max_tokens: 120,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              "You detect the main language of the user's text. Return ONLY valid JSON. Do not correct, translate, summarize, or rewrite the text."
+          },
+          {
+            role: "user",
+            content:
+              `Detect the main language of this text.\n\n` +
+              `UI language for label/button: ${uiLanguage}\n\n` +
+              `Return JSON exactly like this:\n` +
+              `{"code":"zh","label":"chino","buttonText":"Usar chino"}\n\n` +
+              `Rules:\n` +
+              `- code: short language code. Use "eus" for Basque, "es" for Spanish, "en" for English, "fr" for French. For other languages use common short codes like "zh", "ja", "ar", "de", "it", "pt", "ru", "ko", "nl", "sv", "ro", "uk".\n` +
+              `- label: language name written in the UI language.\n` +
+              `- buttonText: short button text written in the UI language, meaning "Use [language]".\n` +
+              `- If unsure, return {"code":"","label":"","buttonText":""}.\n\n` +
+              `TEXT:\n${cleanText.slice(0, 3000)}`
+          }
+        ],
+      }),
+    });
 
-  const frMarkers = [" le ", " les ", " des ", " une ", " vous ", " pour ", " avec ", " merci ", " bonjour "];
+    const detailText = await r.text().catch(() => "");
+    let data = {};
 
-  const enMarkers = [" the ", " and ", " you ", " that ", " with ", " from ", " hello ", " thanks "];
+    try {
+      data = detailText ? JSON.parse(detailText) : {};
+    } catch {
+      data = {};
+    }
 
-  const padded = ` ${clean} `;
+    if (!r.ok) return null;
 
-  const count = (markers) =>
-    markers.reduce(
-      (total, marker) => total + (padded.includes(marker) ? 1 : 0),
-      0
-    );
+    const raw = data?.choices?.[0]?.message?.content || "";
+    const parsed = JSON.parse(raw);
 
-  const scores = {
-    eus: count(eusMarkers),
-    fr: count(frMarkers),
-    en: count(enMarkers),
-  };
+    const code = String(parsed?.code || "").trim().toLowerCase();
+    const label = String(parsed?.label || "").trim();
+    const buttonText = String(parsed?.buttonText || "").trim();
 
-  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+    if (!code || !label || !buttonText) return null;
 
-  if (!best || best[1] < 2) return null;
-
-  return best[0];
+    return { code, label, buttonText };
+  } catch {
+    return null;
+  }
 }
 
 // Very simple HTML → texto
@@ -153,7 +185,7 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
-// ✅ “guardrail” para EUS (evita frases raras tipo “Nahi izan nuen…” y mantiene números)
+// ✅ “guardrail” para EUS
 function eusGuardrail() {
   return `
 EUSKERA-ARAUAK (oso garrantzitsua):
@@ -165,6 +197,7 @@ EUSKERA-ARAUAK (oso garrantzitsua):
 - Erantzun BAKARRIK itzulpenarekin (formatua mantenduz).
 `.trim();
 }
+
 function langNameTarget(code) {
   if (code === "eus") return "Euskera";
   if (code === "es") return "Español";
@@ -184,9 +217,6 @@ function langNameTarget(code) {
   return "el idioma de destino";
 }
 
-
-
-
 // ====== Handler ======
 export default async function handler(req, res) {
   // CORS / Preflight
@@ -196,6 +226,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     return res.status(200).end();
   }
+
   if (req.method !== "POST") {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Allow", "POST, OPTIONS");
@@ -249,7 +280,6 @@ export default async function handler(req, res) {
       const src = body.src || null;
       const dst = body.dst || null;
 
-      // Descargar contenido de cada URL
       const parts = [];
       for (const url of urls) {
         try {
@@ -257,7 +287,6 @@ export default async function handler(req, res) {
           const html = await r.text();
           const text = htmlToText(html);
 
-          // ✅ NUEVO: si falla extracción, devolvemos SIEMPRE tu frase (y no llamamos a OpenAI)
           if (!text || text.trim().length < 80) {
             return res.status(422).json({
               ok: false,
@@ -268,7 +297,6 @@ export default async function handler(req, res) {
 
           parts.push(`URL: ${url}\n\n${text.slice(0, 9000)}`);
         } catch (e) {
-          // ✅ NUEVO: si falla descarga, devolvemos SIEMPRE tu frase
           return res.status(422).json({
             ok: false,
             error: "URL_EXTRACT_FAILED",
@@ -279,7 +307,6 @@ export default async function handler(req, res) {
 
       const combined = parts.join("\n\n-----------------------------\n\n");
 
-      // System por defecto según par de idiomas
       if (!system) {
         if (src === "eus" && dst === "es") {
           system = `
@@ -341,7 +368,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       });
     }
 
-    // ✅✅✅ AÑADIDO: soportar documentos (resumidor y corrector)
+    // ✅ soportar documentos
     if (Array.isArray(body?.documentsText) && body.documentsText.length > 0) {
       const docsInline =
         "\nDOCUMENTOS (texto extraído):\n" +
@@ -360,9 +387,8 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
         messages = [{ role: "user", content: docsInline }, ...messages];
       }
     }
-    // ✅✅✅ FIN AÑADIDO
 
-    // ====== Identificar herramienta (Traductor vs Resumidor vs Corrector) ======
+    // ====== Identificar herramienta ======
     const rawTask = String(body?.task || "").toLowerCase();
     const rawMode = String(body?.mode || "").toLowerCase();
 
@@ -416,7 +442,6 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       isTextCreator ? "text_creator" :
       "other";
 
-    // ✅ FIX REAL: si llega como "other", inferimos por el contenido (porque tu frontend a veces no manda task/mode)
     if (tool === "other") {
       const sys = canonicalize(system || "");
       const user0 = canonicalize((messages || []).map(m => (m?.role === "user" ? m?.content : "")).join(" ").slice(0, 1500));
@@ -430,7 +455,7 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
 
       const looksCorrector =
         hint.includes("corrector") || hint.includes("corrige") || hint.includes("corregir") ||
-        hint.includes("gramatica") || hint.includes("gramatica") || hint.includes("ortografia") ||
+        hint.includes("gramatica") || hint.includes("ortografia") ||
         hint.includes("puntuacion") || hint.includes("estilo");
 
       const looksParaphraser =
@@ -459,10 +484,9 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       else if (looksParaphraser && !looksSummary && !looksTranslate && !looksCorrector && !looksTextCreator && !looksEmailCreator) tool = "paraphraser";
       else if (looksEmailCreator && !looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser && !looksTextCreator) tool = "email_creator";
       else if (looksTextCreator && !looksSummary && !looksTranslate && !looksCorrector && !looksParaphraser && !looksEmailCreator) tool = "text_creator";
-      // si aparecen varios, se queda "other"
     }
 
-    // ✅ FORZAR MODELO POR HERRAMIENTA (esto hace PUBLIC = PRO si pones la env var igual)
+    // ✅ FORZAR MODELO POR HERRAMIENTA
     if (tool === "translator" && FREE_TRANSLATOR_MODEL) model = FREE_TRANSLATOR_MODEL;
     if (tool === "summary" && FREE_SUMMARY_MODEL) model = FREE_SUMMARY_MODEL;
     if (tool === "corrector" && FREE_CORRECTOR_MODEL) model = FREE_CORRECTOR_MODEL;
@@ -470,23 +494,23 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     if (tool === "text_creator" && FREE_TEXT_CREATOR_MODEL) model = FREE_TEXT_CREATOR_MODEL;
     if (tool === "email_creator" && FREE_EMAIL_CREATOR_MODEL) model = FREE_EMAIL_CREATOR_MODEL;
 
-// ✅ Guardrail traductor: fuerza idioma destino real
-const dst = hasTranslate ? body.to : (body?.dst || null);
-const dstCode = String(dst || "").toLowerCase();
+    // ✅ Guardrail traductor
+    const dst = hasTranslate ? body.to : (body?.dst || null);
+    const dstCode = String(dst || "").toLowerCase();
 
-if (tool === "translator" && dstCode) {
-  system = `${String(system || "").trim()}
+    if (tool === "translator" && dstCode) {
+      system = `${String(system || "").trim()}
 
 REGLA CRÍTICA DE DESTINO:
 - Traduce SIEMPRE al idioma destino: ${langNameTarget(dstCode)}.
 - La respuesta final debe estar únicamente en ${langNameTarget(dstCode)}.
 - No traduzcas a otro idioma aunque el texto sea corto.
 - No expliques nada. Devuelve solo la traducción.`.trim();
-}
+    }
 
-if (tool === "translator" && dstCode === "eus") {
-  system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
-}
+    if (tool === "translator" && dstCode === "eus") {
+      system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
+    }
 
     const finalMessages = [
       ...(system ? [{ role: "system", content: system }] : []),
@@ -552,7 +576,7 @@ if (tool === "translator" && dstCode === "eus") {
 
     // 2) Rate-limit RPM por IP
     try {
-      const rpmKey = `rl:rpm:${tool}:${ip}`; 
+      const rpmKey = `rl:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
       if (count === 1) {
         await kv.expire(rpmKey, 60);
@@ -569,16 +593,12 @@ if (tool === "translator" && dstCode === "eus") {
       console.log("[KV RPM ERROR]", e?.message || e);
     }
 
-    // ✅✅✅ FIX: límites diarios por PETICIONES usando INCR (atómico) y con TTL
-
-    // 3) Límite de resúmenes por día (solo resumidor)
+    // 3) Límite de resúmenes por día
     if (tool === "summary") {
       try {
         const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailySummaryKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailySummaryKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailySummaryKey, 60 * 60 * 26);
         if (usedReqs > FREE_SUMMARY_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -594,14 +614,12 @@ if (tool === "translator" && dstCode === "eus") {
       }
     }
 
-    // 3b) Límite de traducciones por día (solo traductor)
+    // 3b) Límite de traducciones por día
     if (tool === "translator") {
       try {
         const dailyTranslatorKey = `quota:translator:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyTranslatorKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyTranslatorKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailyTranslatorKey, 60 * 60 * 26);
         if (usedReqs > FREE_TRANSLATOR_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -617,14 +635,12 @@ if (tool === "translator" && dstCode === "eus") {
       }
     }
 
-    // 3c) Límite de correcciones por día (solo corrector) (NUEVO)
+    // 3c) Límite de correcciones por día
     if (tool === "corrector") {
       try {
         const dailyCorrectorKey = `quota:corrector:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyCorrectorKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyCorrectorKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailyCorrectorKey, 60 * 60 * 26);
         if (usedReqs > FREE_CORRECTOR_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -644,9 +660,7 @@ if (tool === "translator" && dstCode === "eus") {
       try {
         const dailyParaphraserKey = `quota:paraphraser:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyParaphraserKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyParaphraserKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailyParaphraserKey, 60 * 60 * 26);
         if (usedReqs > FREE_PARAPHRASER_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -662,14 +676,12 @@ if (tool === "translator" && dstCode === "eus") {
       }
     }
 
-    // 3d) Límite de creaciones de texto por día (solo creador de texto)
+    // 3d) Límite de creaciones de texto
     if (tool === "text_creator") {
       try {
         const dailyTextCreatorKey = `quota:text_creator:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyTextCreatorKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyTextCreatorKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailyTextCreatorKey, 60 * 60 * 26);
         if (usedReqs > FREE_TEXT_CREATOR_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -685,14 +697,12 @@ if (tool === "translator" && dstCode === "eus") {
       }
     }
 
-    // 3e) Límite de creaciones de email por día (solo creador de email)
+    // 3e) Límite de creaciones de email
     if (tool === "email_creator") {
       try {
         const dailyEmailCreatorKey = `quota:email_creator:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyEmailCreatorKey);
-        if (usedReqs === 1) {
-          await kv.expire(dailyEmailCreatorKey, 60 * 60 * 26);
-        }
+        if (usedReqs === 1) await kv.expire(dailyEmailCreatorKey, 60 * 60 * 26);
         if (usedReqs > FREE_EMAIL_CREATOR_DAILY_REQUESTS) {
           return res.status(429).json({
             ok: false,
@@ -707,8 +717,6 @@ if (tool === "translator" && dstCode === "eus") {
         console.log("[KV DAILY EMAIL CREATOR ERROR]", e?.message || e);
       }
     }
-
-    // ✅✅✅ FIN FIX diarios por peticiones
 
     // 4) Cuota diaria de tokens por IP
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
@@ -740,6 +748,21 @@ if (tool === "translator" && dstCode === "eus") {
       task, model, system, messages: finalMessages, src, dst, lang, length
     });
 
+    const bannerDetectionText = String(
+      body?.bannerDetectionText ||
+      body?.text ||
+      (messages || [])
+        .filter((m) => m?.role === "user")
+        .map((m) => m?.content || "")
+        .join("\n")
+    ).trim();
+
+    const detectedLanguage = await detectLanguageForBannerWithAI({
+      text: bannerDetectionText,
+      uiLanguage: body?.uiLanguage || "ES",
+      model: "gpt-4o-mini",
+    });
+
     try {
       const cached = await kv.get(cacheKey);
       if (cached?.content) {
@@ -748,6 +771,7 @@ if (tool === "translator" && dstCode === "eus") {
           ok: true,
           provider: "openai",
           content: cached.content,
+          detectedLanguage,
           usage: cached.usage || null,
           cached: true
         });
@@ -816,6 +840,7 @@ if (tool === "translator" && dstCode === "eus") {
       ok: true,
       provider: "openai",
       content,
+      detectedLanguage,
       usage,
       cached: false
     });

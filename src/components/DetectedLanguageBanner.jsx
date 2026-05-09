@@ -3,60 +3,6 @@ import React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 
-const languageNames = {
-  es: {
-    ES: "español",
-    EUS: "gaztelania",
-    EN: "Spanish",
-    FR: "espagnol",
-  },
-  eus: {
-    ES: "euskera",
-    EUS: "euskara",
-    EN: "Basque",
-    FR: "basque",
-  },
-  en: {
-    ES: "inglés",
-    EUS: "ingelesa",
-    EN: "English",
-    FR: "anglais",
-  },
-  fr: {
-    ES: "francés",
-    EUS: "frantsesa",
-    EN: "French",
-    FR: "français",
-  },
-};
-
-const buttonLabels = {
-  es: {
-    ES: "Usar Español",
-    EUS: "Erabili gaztelania",
-    EN: "Use Spanish",
-    FR: "Utiliser l’espagnol",
-  },
-  eus: {
-    ES: "Usar Euskera",
-    EUS: "Erabili euskara",
-    EN: "Use Basque",
-    FR: "Utiliser le basque",
-  },
-  en: {
-    ES: "Usar Inglés",
-    EUS: "Erabili ingelesa",
-    EN: "Use English",
-    FR: "Utiliser l’anglais",
-  },
-  fr: {
-    ES: "Usar Francés",
-    EUS: "Erabili frantsesa",
-    EN: "Use French",
-    FR: "Utiliser le français",
-  },
-};
-
 export default function DetectedLanguageBanner({
   language = null,
   selectedLanguage = null,
@@ -66,37 +12,30 @@ export default function DetectedLanguageBanner({
 }) {
   const { language: currentLanguage } = useTranslation();
 
-  if (!language) return null;
-
-  const normalizedLanguage = String(language).toLowerCase();
-
-  const mapToSelector = {
-    es: "es",
-    eus: "eus",
-    en: "en",
-    fr: "fr",
-  };
-
-  const normalizedSelected = selectedLanguage
-    ? mapToSelector[String(selectedLanguage).toLowerCase()] ||
-      String(selectedLanguage).toLowerCase()
-    : null;
-
-  if (
-    normalizedSelected &&
-    normalizedLanguage === normalizedSelected
-  ) {
-    return null;
-  }
+  if (!language || typeof language !== "object") return null;
 
   const currentLang = currentLanguage || "ES";
 
-  const detectedName =
-    languageNames[normalizedLanguage]?.[currentLang] ||
-    languageNames[normalizedLanguage]?.ES ||
-    "";
+  const detectedCode = String(language.code || "").toLowerCase();
+  const detectedName = String(language.label || "").trim();
+  const buttonText = String(language.buttonText || "").trim();
 
-  if (!detectedName) return null;
+  if (!detectedCode || !detectedName || !buttonText) return null;
+
+  const selectedCode = selectedLanguage
+    ? String(selectedLanguage).toLowerCase()
+    : null;
+
+  const normalizedSelected =
+    selectedCode === "eus"
+      ? "eu"
+      : selectedCode === "euskara"
+      ? "eu"
+      : selectedCode;
+
+  if (normalizedSelected && detectedCode === normalizedSelected) {
+    return null;
+  }
 
   const titles = {
     ES: "¿Cambiar de idioma?",
@@ -107,15 +46,10 @@ export default function DetectedLanguageBanner({
 
   const descriptions = {
     ES: `Hemos detectado texto en ${detectedName}. ¿Quieres cambiar de idioma?`,
-    EUS: `Testua ${detectedName}z dagoela detektatu dugu. Hizkuntza aldatu nahi duzu?`,
+    EUS: `Testua ${detectedName} hizkuntzan dagoela detektatu dugu. Hizkuntza aldatu nahi duzu?`,
     EN: `We detected text in ${detectedName}. Do you want to change language?`,
     FR: `Nous avons détecté du texte en ${detectedName}. Voulez-vous changer de langue ?`,
   };
-
-  const buttonText =
-    buttonLabels[normalizedLanguage]?.[currentLang] ||
-    buttonLabels[normalizedLanguage]?.ES ||
-    "";
 
   return (
     <div
@@ -151,7 +85,7 @@ export default function DetectedLanguageBanner({
             {buttonText}
           </button>
         </div>
-      </div> 
+      </div>
     </div>
   );
 }
