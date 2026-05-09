@@ -1123,23 +1123,26 @@ export default function CorrectorGramatical() {
                                   language={detectedLanguage}
                                   selectedLanguage={outputLang}
                                   onAccept={() => {
-                                    const map = {
-                                      es: "ES",
-                                      eus: "EUS",
-                                      en: "EN",
-                                      fr: "FR",
-                                    };
+  const detectedCode = String(
+    detectedLanguage?.code || ""
+  ).toLowerCase();
 
-                                    const newLang =
-                                      map[String(detectedLanguage).toLowerCase()];
+  const map = {
+    es: "ES",
+    eus: "EUS",
+    eu: "EUS",
+    en: "EN",
+    fr: "FR",
+  };
 
-                                    if (newLang) {
-                                      setOutputLang(newLang);
-                                    }
-                                  }}
-                                  onClose={() => {
-                                    setDetectedLanguage(null);
-                                  }}
+  const nextLang = map[detectedCode];
+
+  if (nextLang) {
+    setOutputLang(nextLang);
+  }
+
+  setDetectedLanguage(null);
+}}
                                 />
                               </div>
                             </div>
