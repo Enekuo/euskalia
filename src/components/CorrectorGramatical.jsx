@@ -492,12 +492,15 @@ export default function CorrectorGramatical() {
   };
 
   const handleGenerate = async () => {
-    setLoading(true);
-    setErrorMsg("");
-    setErrorKind(null);
-    setDailyLimitReached(false);
-    setDetectedLanguage(null);
-    setShowDiff(false);
+setLoading(true);
+setErrorMsg("");
+setErrorKind(null);
+setDailyLimitReached(false);
+setDetectedLanguage(null);
+setResult("");
+setIsOutdated(false);
+setShowDiff(false);
+
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
