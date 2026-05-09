@@ -18,9 +18,15 @@ export default function DetectedLanguageBanner({
 
   const detectedCode = String(language.code || "").toLowerCase();
   const detectedName = String(language.label || "").trim();
-  const buttonText = String(language.buttonText || "").trim();
 
-  if (!detectedCode || !detectedName || !buttonText) return null;
+  const buttonText = String(
+    language.buttonText ||
+      language.actionText ||
+      language.cta ||
+      `Usar ${detectedName}`
+  ).trim();
+
+  if (!detectedCode || !detectedName) return null;
 
   const selectedCode = selectedLanguage
     ? String(selectedLanguage).toLowerCase()
