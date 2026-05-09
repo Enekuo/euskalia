@@ -166,13 +166,12 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
     const raw = data?.choices?.[0]?.message?.content || "";
     const parsed = JSON.parse(raw);
 
-    const code = String(parsed?.code || "").trim().toLowerCase();
-    const label = String(parsed?.label || "").trim();
-    const buttonText = "";
+const code = String(parsed?.code || "").trim().toLowerCase();
 
-   if (!code || !label) return null;
+if (!code) return null;
 
-return { code, label };
+return { code };
+
   } catch {
     return null;
   }
