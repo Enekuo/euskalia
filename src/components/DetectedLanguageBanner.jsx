@@ -19,12 +19,14 @@ export default function DetectedLanguageBanner({
   const detectedCode = String(language.code || "").toLowerCase();
   const detectedName = String(language.label || "").trim();
 
-  const buttonText = String(
-    language.buttonText ||
-      language.actionText ||
-      language.cta ||
-      `Usar ${detectedName}`
-  ).trim();
+const buttonTexts = {
+  ES: `Usar ${detectedName}`,
+  EUS: `${detectedName} erabili`,
+  EN: `Use ${detectedName}`,
+  FR: `Utiliser ${detectedName}`,
+};
+
+const buttonText = buttonTexts[currentLang] || buttonTexts.ES;
 
   if (!detectedCode || !detectedName) return null;
 
