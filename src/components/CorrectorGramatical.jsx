@@ -585,10 +585,13 @@ export default function CorrectorGramatical() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages,
-          mode: CORRECTION_MODE,
-          cacheKey,
-          documentsText,
+           messages,
+  mode: CORRECTION_MODE,
+  cacheKey,
+  documentsText,
+  bannerDetectionText: textValue,
+  uiLanguage: "ES",
+          
         }),
       });
 
