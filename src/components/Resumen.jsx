@@ -706,12 +706,10 @@ const urlsChars = (urlItems || []).reduce(
   0
 );
 
-
 const charCount =
   String(textValue || "").length +
   docsChars +
-  urlsChars +
-  promptCharsApprox;
+  urlsChars;
 
 const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
 const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
