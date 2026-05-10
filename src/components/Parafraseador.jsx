@@ -1065,9 +1065,6 @@ setDetectedLanguage(apiDetectedLanguage);
 }
 
 setDetectedLanguage(null);
-setResult("");
-setErrorMsg("");
-setCopiedFlash(false);
 
               }}
               onClose={() => setDetectedLanguage(null)}
