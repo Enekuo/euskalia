@@ -31,6 +31,13 @@ import { useNavigate } from "react-router-dom";
 
 const MAX_CHARS = 3000;
 
+const speechLangMap = {
+  eus: "eu-ES",
+  es: "es-ES",
+  en: "en-US",
+  fr: "fr-FR",
+};
+
 export default function Translator() {
   const { t, language } = useTranslation();
   const navigate = useNavigate();
