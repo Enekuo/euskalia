@@ -92,7 +92,7 @@ const tr = (k, f) => {
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 30000;
+  const MAX_CHARS = 50000;
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -696,7 +696,23 @@ const systemBase =
   };
 
   // ===== Contador / barra =====
-  const charCount = (textValue || "").length;
+  const charCount = messages.reduce(
+  (total, m) => total + String(m?.content || "").length,
+  0
+);
+const urlsChars = (urlItems || []).reduce(
+  (total, u) => total + String(u?.url || "").length,
+  0
+);
+
+const promptCharsApprox = 6000;
+
+const charCount =
+  String(textValue || "").length +
+  docsChars +
+  urlsChars +
+  promptCharsApprox;
+
   const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
   const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
   const overLimit = charCount > MAX_CHARS;
