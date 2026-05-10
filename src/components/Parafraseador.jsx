@@ -255,9 +255,12 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, result, urlInputOpen]);
 
-  useEffect(() => {
-    clearRight();
-  }, [urlItems.length, documents.length, mode, outputLang]);
+useEffect(() => {
+  setResult("");
+  setErrorMsg("");
+  setDetectedLanguage(null);
+  setCopiedFlash(false);
+}, [mode, outputLang]);
 
   const readTextFromFiles = async (items) => {
     const results = await Promise.all(
@@ -411,6 +414,7 @@ setResult("");
 setDetectedLanguage(null);
 setErrorKind(null);
 setDailyLimitReached(false);
+setCopiedFlash(false);
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
@@ -1056,12 +1060,15 @@ setDetectedLanguage(apiDetectedLanguage);
                 };
 
                 const nextLang = map[detectedCode];
+               if (nextLang) {
+  setOutputLang(nextLang);
+}
 
-                if (nextLang) {
-                  setOutputLang(nextLang);
-                }
+setDetectedLanguage(null);
+setResult("");
+setErrorMsg("");
+setCopiedFlash(false);
 
-                setDetectedLanguage(null);
               }}
               onClose={() => setDetectedLanguage(null)}
             />
