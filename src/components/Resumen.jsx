@@ -706,7 +706,6 @@ const urlsChars = (urlItems || []).reduce(
   0
 );
 
-const promptCharsApprox = 6000;
 
 const charCount =
   String(textValue || "").length +
