@@ -254,13 +254,7 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [loading, result, urlInputOpen]);
-
-useEffect(() => {
-  setResult("");
-  setErrorMsg("");
-  setDetectedLanguage(null);
-  setCopiedFlash(false);
-}, [mode, outputLang]);
+ 
 
   const readTextFromFiles = async (items) => {
     const results = await Promise.all(
