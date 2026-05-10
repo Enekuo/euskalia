@@ -26,6 +26,7 @@ import FaqSection from "@/components/FaqSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import SpeechInputButton from "@/components/SpeechInputButton";
 import { useNavigate } from "react-router-dom";
 
 const MAX_CHARS = 3000;
@@ -1368,20 +1369,31 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   {sourceMode === "text" && (
                     <>
                       <div className="flex-1 min-h-0">
-                        <textarea
-                          ref={leftTA}
-                          value={leftText}
-                          onChange={(e) => {
-                            const next = e.target.value;
-                            setLeftText(next);
-                            setDirty(true);
 
-                            if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
-                          }}
-                          placeholder={t("translator.left_placeholder")}
-                          className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
-                        />
-                      </div>
+ <textarea
+    ref={leftTA}
+    value={leftText}
+    onChange={(e) => {
+      const next = e.target.value;
+      setLeftText(next);
+      setDirty(true);
+
+      if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
+    }}
+    placeholder={t("translator.left_placeholder")}
+    className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
+  />
+
+  <div className="absolute left-4 bottom-4 z-20">
+    <SpeechInputButton
+      language="es-ES"
+      onResult={(text) => {
+        setLeftText((prev) => `${prev}${prev ? " " : ""}${text}`);
+        setDirty(true);
+      }}
+    />
+  </div>
+</div>
 
                       <div
                         className={`absolute bottom-4 right-6 text-[13px] ${
