@@ -71,7 +71,7 @@ export default function DetectedLanguageBanner({
   const selectedCode = selectedLanguage
     ? String(selectedLanguage).toLowerCase()
     : null;
-
+ 
   const normalizedSelected =
     selectedCode === "eus"
       ? "eu"

@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import DetectedLanguageBanner from "@/components/DetectedLanguageBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,6 +70,7 @@ const limitMsg =
   const [textValue, setTextValue] = useState("");
 
   const [result, setResult] = useState("");
+  const [detectedLanguage, setDetectedLanguage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -224,10 +226,12 @@ const limitMsg =
 
   const clearRight = () => {
     setResult("");
-    setErrorMsg("");
-    clearLimit();
-    setLoading(false);
-    setCopiedFlash(false);
+  setDetectedLanguage(null);
+  setErrorMsg("");
+  setErrorKind(null);
+  setDailyLimitReached(false);
+  setLoading(false);
+  setCopiedFlash(false);
   };
 
   useEffect(() => {
@@ -399,10 +403,12 @@ const limitMsg =
   };
 
   const handleGenerate = async () => {
-    setLoading(true);
-    setErrorMsg("");
-    setResult("");
-    clearLimit();
+setLoading(true);
+setErrorMsg("");
+setResult("");
+setDetectedLanguage(null);
+setErrorKind(null);
+setDailyLimitReached(false);
 
     const trimmed = (textValue || "").trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
@@ -541,6 +547,8 @@ const systemBase =
           messages,
           model: "gpt-5.1",
           temperature: 0.35,
+          bannerDetectionText: textValue,
+          uiLanguage: "ES",
         }),
       });
 
@@ -578,6 +586,14 @@ const systemBase =
       }
 
       const data = await res.json();
+
+      const apiDetectedLanguage =
+  data?.detectedLanguage && typeof data.detectedLanguage === "object"
+    ? data.detectedLanguage
+    : null;
+
+setDetectedLanguage(apiDetectedLanguage);
+
 
       const rawText =
         data?.text ??
@@ -1015,67 +1031,102 @@ const systemBase =
                     </>
                   )}
 
-                  <div className="w-full">
-                    {(result || errorMsg || loading) && (
-                      <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
-                        {errorMsg && (
-                          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                            {errorMsg}
-                          </div>
-                        )}
+<div className="w-full">
+  {(result || errorMsg || loading) && (
+    <>
+      {detectedLanguage && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+          <div className="pointer-events-auto">
+            <DetectedLanguageBanner
+              language={detectedLanguage}
+              selectedLanguage={outputLang}
+              onAccept={() => {
+                const detectedCode = String(
+                  detectedLanguage?.code || ""
+                ).toLowerCase();
 
-                        {result && (
-                          <div className="flex flex-col gap-4">
-                            <article className="prose prose-slate max-w-none">
-                              <p className="whitespace-pre-wrap">{result}</p>
-                            </article>
-                          </div>
-                        )}
+                const map = {
+                  es: "es",
+                  eus: "eus",
+                  eu: "eus",
+                  en: "en",
+                  fr: "fr",
+                };
 
-                        {loading && !result && (
-                          <div className="space-y-3 animate-pulse">
-                            <div className="h-4 bg-slate-200 rounded" />
-                            <div className="h-4 bg-slate-200 rounded w-11/12" />
-                            <div className="h-4 bg-slate-200 rounded w-10/12" />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                const nextLang = map[detectedCode];
 
-                  {result && (
-                    <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
-                      <button
-                        type="button"
-                        onClick={() => handleCopy(true)}
-                        aria-label={labelCopy}
-                        className="group relative p-2 rounded-md hover:bg-slate-100"
-                      >
-                        {copiedFlash ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                          {copiedFlash ? labelCopied : labelCopy}
-                        </span>
-                      </button>
+                if (nextLang) {
+                  setOutputLang(nextLang);
+                }
 
-                      <button
-                        type="button"
-                        onClick={handleDownload}
-                        aria-label={labelDownload}
-                        className="group relative p-2 rounded-md hover:bg-slate-100"
-                      >
-                        <FileDown className="w-5 h-5" />
-                        <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                          {labelDownload}
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </section>
-          </motion.section>
+                setDetectedLanguage(null);
+              }}
+              onClose={() => setDetectedLanguage(null)}
+            />
+          </div>
         </div>
+      )}
+
+      <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
+        {errorMsg && (
+          <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+            {errorMsg}
+          </div>
+        )}
+
+        {result && (
+          <div className="flex flex-col gap-4">
+            <article className="prose prose-slate max-w-none">
+              <p className="whitespace-pre-wrap">{result}</p>
+            </article>
+          </div>
+        )}
+
+        {loading && !result && (
+          <div className="space-y-3 animate-pulse">
+            <div className="h-4 bg-slate-200 rounded" />
+            <div className="h-4 bg-slate-200 rounded w-11/12" />
+            <div className="h-4 bg-slate-200 rounded w-10/12" />
+          </div>
+        )}
       </div>
-    </section>
-  );
+    </>
+  )}
+</div>
+
+{result && (
+  <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+    <button
+      type="button"
+      onClick={() => handleCopy(true)}
+      aria-label={labelCopy}
+      className="group relative p-2 rounded-md hover:bg-slate-100"
+    >
+      {copiedFlash ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+        {copiedFlash ? labelCopied : labelCopy}
+      </span>
+    </button>
+
+    <button
+      type="button"
+      onClick={handleDownload}
+      aria-label={labelDownload}
+      className="group relative p-2 rounded-md hover:bg-slate-100"
+    >
+      <FileDown className="w-5 h-5" />
+      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+        {labelDownload}
+      </span>
+    </button>
+  </div>
+)}
+</>
+)}
+</section>
+</motion.section>
+</div>
+</div>
+</section>
+);
 }
