@@ -69,10 +69,12 @@ const limitMsg =
   const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
 
-  const [result, setResult] = useState("");
-  const [detectedLanguage, setDetectedLanguage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+const [result, setResult] = useState("");
+const [detectedLanguage, setDetectedLanguage] = useState(null);
+const [loading, setLoading] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
+const [errorKind, setErrorKind] = useState(null);
+const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   const [mode, setMode] = useState("neutral");
   const [outputLang, setOutputLang] = useState("eus");
