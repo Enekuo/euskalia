@@ -695,11 +695,12 @@ const systemBase =
     }
   };
 
-  // ===== Contador / barra =====
-  const charCount = messages.reduce(
-  (total, m) => total + String(m?.content || "").length,
+// ===== Contador / barra =====
+const docsChars = (documentsText || []).reduce(
+  (total, d) => total + String(d?.text || "").length,
   0
 );
+
 const urlsChars = (urlItems || []).reduce(
   (total, u) => total + String(u?.url || "").length,
   0
@@ -713,11 +714,16 @@ const charCount =
   urlsChars +
   promptCharsApprox;
 
-  const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
-  const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-  const overLimit = charCount > MAX_CHARS;
+const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
+const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
+const overLimit = charCount > MAX_CHARS;
 
-  const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
+const barClass = overLimit
+  ? "bg-red-500"
+  : nearLimit
+  ? "bg-amber-500"
+  : "bg-sky-500";
+
 
   return (
     <>
