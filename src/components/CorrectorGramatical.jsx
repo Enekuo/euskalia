@@ -784,12 +784,18 @@ setDetectedLanguage(apiDetectedLanguage);
                       <textarea
                         value={textValue}
                         onChange={(e) => {
-                          setTextValue(e.target.value);
-                          setShowDiff(false);
-                          if (errorMsg) setErrorMsg("");
-                          if (errorKind) {
-                            setErrorKind(null);
-                            setDailyLimitReached(false);
+  setTextValue(e.target.value);
+
+  setResult("");
+  setDetectedLanguage(null);
+  setShowDiff(false);
+  setIsOutdated(false);
+  setLastSig(null);
+
+  if (errorMsg) setErrorMsg("");
+  if (errorKind) {
+    setErrorKind(null);
+    setDailyLimitReached(false);
                           }
                         }}
                         placeholder={labelEnterText}
