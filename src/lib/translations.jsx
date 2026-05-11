@@ -1534,36 +1534,39 @@ faq_item7_answer: {
     FR: "Il vous suffit de coller un texte, de téléverser un document ou d’indiquer une URL. Euskalia extrait le contenu et vous permet de choisir quoi en faire : traduire, résumer, corriger, paraphraser, créer du texte ou créer un email. Vous ajustez le niveau ou le style si besoin et obtenez un résultat prêt à copier, télécharger ou enregistrer dans la bibliothèque.",
   },
   eusFooterAboutTitle3: { ES: "Herramientas de Euskalia", EUS: "Euskaliaren tresnak", EN: "Euskalia tools", FR: "Outils d’Euskalia" },
-  eusFooterAboutContent3: { 
-    ES: 
-    "1- Traductor: traduce palabras, frases o textos completos al instante entre euskera y otros idiomas, manteniendo el contexto y la naturalidad.\n" +
-    "2- Resumidor: reduce textos largos a versiones claras y estructuradas, extrayendo la información más relevante.\n" +
-    "3- Corrector: detecta y corrige errores gramaticales, ortográficos y de estilo en textos en euskera.\n" +
-    "4- Parafraseador: reescribe textos con otras palabras sin cambiar el significado, adaptándolos a distintos contextos.\n" +
-    "5- Humanizador: mejora la fluidez y naturalidad del texto para que suene más humano y menos artificial.\n" +
-    "6- Detector de IA: analiza textos para identificar posibles indicios de contenido generado por inteligencia artificial.",
-    EUS: 
-    "1- Itzultzailea: hitzak, esaldiak edo testu osoak berehala itzultzen ditu euskararen eta beste hizkuntzen artean, testuingurua eta naturaltasuna errespetatuz.\n" +
-    "2- Laburtzailea: testu luzeak bertsio argi eta egituratuetan laburtzen ditu, informazio garrantzitsuena ateratzeko.\n" +
-    "3- Zuzentzailea: euskarazko testuetan akats gramatikalak, ortografikoak eta estilozkoak zuzentzen ditu.\n" +
-    "4- Parafraseatzailea: testuak beste modu batean berridazten ditu, esanahia aldatu gabe, testuinguru desberdinetara egokitzeko.\n" +
-    "5- Humanizatzailea: testuen jariakortasuna eta naturaltasuna hobetzen ditu, gizatiarragoak izan daitezen.\n" +
-    "6- IA detektagailua: testuak aztertzen ditu adimen artifizialak sortutako edukiaren zantzuak identifikatzeko.",
-    EN:
-    "1- Translator: instantly translates words, sentences or full texts between Basque and other languages, keeping context and naturalness.\n" +
-    "2- Summarizer: reduces long texts into clear, structured versions, extracting the most relevant information.\n" +
-    "3- Corrector: detects and fixes grammar, spelling and style issues in Basque texts.\n" +
-    "4- Paraphraser: rewrites texts with different wording without changing the meaning, adapting them to different contexts.\n" +
-    "5- Humanizer: improves fluency and naturalness so the text sounds more human and less artificial.\n" +
-    "6- AI Detector: analyzes texts to identify possible signs of AI-generated content.",
-    FR:
-    "1- Traducteur : traduit instantanément des mots, des phrases ou des textes entiers entre le basque et d’autres langues, en conservant le contexte et la naturalité.\n" +
-    "2- Résumeur : réduit de longs textes en versions claires et structurées, en extrayant l’information la plus pertinente.\n" +
-    "3- Correcteur : détecte et corrige les erreurs de grammaire, d’orthographe et de style dans les textes en basque.\n" +
-    "4- Paraphraseur : reformule les textes avec d’autres mots sans changer le sens, en les adaptant à différents contextes.\n" +
-    "5- Humaniseur : améliore la fluidité et la naturalité pour que le texte paraisse plus humain et moins artificiel.\n" +
-    "6- Détecteur d’IA : analyse les textes pour identifier d’éventuels indices de contenu généré par IA.",
-  },
+ eusFooterAboutContent3: { 
+  ES: 
+  "1- Traductor: traduce palabras, frases o textos completos al instante entre euskera y otros idiomas, manteniendo el contexto y la naturalidad.\n" +
+  "2- Resumidor: reduce textos largos a versiones claras y estructuradas, extrayendo la información más relevante.\n" +
+  "3- Corrector: detecta y corrige errores gramaticales, ortográficos y de estilo en textos en euskera.\n" +
+  "4- Parafraseador: reescribe textos con otras palabras sin cambiar el significado, adaptándolos a distintos contextos.\n" +
+  "5- Creador de texto: genera textos completos a partir de ideas, instrucciones o temas concretos.\n" +
+  "6- Creador de email: redacta correos electrónicos claros, profesionales y adaptados a diferentes situaciones.",
+  
+  EUS: 
+  "1- Itzultzailea: hitzak, esaldiak edo testu osoak berehala itzultzen ditu euskararen eta beste hizkuntzen artean, testuingurua eta naturaltasuna errespetatuz.\n" +
+  "2- Laburtzailea: testu luzeak bertsio argi eta egituratuetan laburtzen ditu, informazio garrantzitsuena ateratzeko.\n" +
+  "3- Zuzentzailea: euskarazko testuetan akats gramatikalak, ortografikoak eta estilozkoak zuzentzen ditu.\n" +
+  "4- Parafraseatzailea: testuak beste modu batean berridazten ditu, esanahia aldatu gabe, testuinguru desberdinetara egokitzeko.\n" +
+  "5- Testu sortzailea: ideietatik, jarraibideetatik edo gai zehatzetatik abiatuta testu osoak sortzen ditu.\n" +
+  "6- Email sortzailea: egoera desberdinetarako email argi eta profesionalak idazten ditu.",
+
+  EN:
+  "1- Translator: instantly translates words, sentences or full texts between Basque and other languages, keeping context and naturalness.\n" +
+  "2- Summarizer: reduces long texts into clear, structured versions, extracting the most relevant information.\n" +
+  "3- Corrector: detects and fixes grammar, spelling and style issues in Basque texts.\n" +
+  "4- Paraphraser: rewrites texts with different wording without changing the meaning, adapting them to different contexts.\n" +
+  "5- Text creator: generates complete texts from ideas, instructions or specific topics.\n" +
+  "6- Email creator: writes clear and professional emails adapted to different situations.",
+
+  FR:
+  "1- Traducteur : traduit instantanément des mots, des phrases ou des textes entiers entre le basque et d’autres langues, en conservant le contexte et la naturalité.\n" +
+  "2- Résumeur : réduit de longs textes en versions claires et structurées, en extrayant l’information la plus pertinente.\n" +
+  "3- Correcteur : détecte et corrige les erreurs de grammaire, d’orthographe et de style dans les textes en basque.\n" +
+  "4- Paraphraseur : reformule les textes avec d’autres mots sans changer le sens, en les adaptant à différents contextes.\n" +
+  "5- Créateur de texte : génère des textes complets à partir d’idées, d’instructions ou de sujets spécifiques.\n" +
+  "6- Créateur d’emails : rédige des emails clairs et professionnels adaptés à différentes situations.",
+},
 
   eusFooterAboutTitle4: { ES: "Resumidor", EUS: "Laburtzailea", EN: "Summarizer", FR: "Résumeur" },
   eusFooterAboutContent4: {
