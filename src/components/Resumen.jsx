@@ -1205,11 +1205,8 @@ const barClass = overLimit
       </section>
 
       <BenefitsSection />
-      <ToolsSection />
-      <FeaturesSection />
       <HowItWorks />
       <FaqSection />
-      <CtaSection />
       <Footer />
     </>
   );
