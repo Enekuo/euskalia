@@ -1533,7 +1533,7 @@ faq_item7_answer: {
     EN:  "You just need to paste text, upload a document or provide a URL. Euskalia extracts the content and lets you choose what to do with it: translate, summarize, correct, paraphrase, humanize or analyze whether there are AI signals. Adjust the level or style if needed and get a result ready to copy, download or save to your library.",
     FR: "Il vous suffit de coller un texte, de téléverser un document ou d’indiquer une URL. Euskalia extrait le contenu et vous permet de choisir quoi en faire : traduire, résumer, corriger, paraphraser, humaniser ou analyser la présence d’indices d’IA. Vous ajustez le niveau ou le style si besoin et obtenez un résultat prêt à copier, télécharger ou enregistrer dans la bibliothèque.",
   },
-  eusFooterAboutTitle3: { ES: "Herramientas Plan Pro", EUS: " Pro planeko tresnak", EN: "Pro Plan tools", FR: "Outils du plan Pro" },
+  eusFooterAboutTitle3: { ES: "Herramientas de Euskalia", EUS: "Euskaliaren tresnak", EN: "Euskalia tools", FR: "Outils d’Euskalia" },
   eusFooterAboutContent3: { 
     ES: 
     "1- Traductor: traduce palabras, frases o textos completos al instante entre euskera y otros idiomas, manteniendo el contexto y la naturalidad.\n" +

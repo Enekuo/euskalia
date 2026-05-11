@@ -1,9 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
-import { Button } from "@/components/ui/button";
-import { Instagram, X as XIcon, Linkedin, Mail, Sparkles } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Instagram, X as XIcon, Linkedin, Mail } from "lucide-react";
 
 /* ==== Banderas en SVG (24×18) ==== */
 function FlagEUS() {
@@ -16,6 +14,7 @@ function FlagEUS() {
     </svg>
   );
 }
+
 function FlagES() {
   return (
     <svg viewBox="0 0 16 12" width="24" height="18" aria-hidden="true">
@@ -24,6 +23,7 @@ function FlagES() {
     </svg>
   );
 }
+
 function FlagUS() {
   return (
     <svg viewBox="0 0 16 12" width="24" height="18" aria-hidden="true">
@@ -35,6 +35,7 @@ function FlagUS() {
     </svg>
   );
 }
+
 function FlagFR() {
   return (
     <svg viewBox="0 0 16 12" width="24" height="18" aria-hidden="true">
@@ -47,23 +48,25 @@ function FlagFR() {
 
 export default function Footer() {
   const { t, language, setLanguage } = useTranslation();
-  const { toast } = useToast();
   const tr = (key, fallback) => t(key) || fallback;
 
-  // === Selector de idioma ===
   const [openLang, setOpenLang] = useState(false);
   const langBtnRef = useRef(null);
+
   const CurrentFlag = () => {
     if (language === "ES") return <FlagES />;
     if (language === "EN") return <FlagUS />;
     if (language === "FR") return <FlagFR />;
-    return <FlagEUS />; // EUS por defecto
+    return <FlagEUS />;
   };
+
   const chooseLang = (code) => {
     setLanguage(code);
     setOpenLang(false);
   };
+
   const handleBlur = () => setTimeout(() => setOpenLang(false), 120);
+
   const LangItem = ({ active, onClick, children }) => (
     <button
       onMouseDown={(e) => e.preventDefault()}
@@ -81,7 +84,6 @@ export default function Footer() {
     { id: "what-is", titleKey: "eusFooterAboutTitle1", contentKey: "eusFooterAboutContent1" },
     { id: "how-works", titleKey: "eusFooterAboutTitle2", contentKey: "eusFooterAboutContent2" },
     { id: "tools", titleKey: "eusFooterAboutTitle3", contentKey: "eusFooterAboutContent3" },
-    { id: "plans", titleKey: "eusFooterAboutTitle5", contentKey: "eusFooterAboutContent5" },
     { id: "languages", titleKey: "eusFooterAboutTitle6", contentKey: "eusFooterAboutContent6" },
   ];
 
@@ -93,22 +95,10 @@ export default function Footer() {
     { titleKey: "eusFooterLegalTitle5", path: "/cookies" },
   ];
 
-  const handleClick = () => {
-    toast({
-      title: tr("eusToastFeatureNotImplementedTitle", "🚧 Funcionalidad no implementada"),
-      description: tr(
-        "eusToastFeatureNotImplementedDescription",
-        "Esta función aún no está implementada. ¡Pídela en tu próximo mensaje! 🚀"
-      ),
-      variant: "default",
-    });
-  };
-
   return (
     <footer className="w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto w-full px-6 pt-16 md:pt-20 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
-          {/* Columna 1: Sobre Euskalia — lista plana */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
               {tr("eusFooterColumnAboutTitle", "Sobre Euskalia")}
@@ -130,8 +120,6 @@ export default function Footer() {
                       .split("\n")
                       .map((line, i) => {
                         const trimmed = (line || "").trim();
-
-                        // ✅ SOLO si empieza con "n-" (1-, 2-, 3-...)
                         const isNumbered = /^[0-9]+\s*-\s*/.test(trimmed);
 
                         if (!isNumbered) {
@@ -142,10 +130,9 @@ export default function Footer() {
                           );
                         }
 
-                        // Para líneas numeradas: negrita solo "1- Xxxx:" (lo previo a :)
                         const colonIndex = trimmed.indexOf(":");
+
                         if (colonIndex === -1) {
-                          // Si no hay ":", no aplicamos negrita especial
                           return (
                             <div key={`${idx}-${i}`} className="mb-1">
                               {line}
@@ -153,8 +140,8 @@ export default function Footer() {
                           );
                         }
 
-                        const left = trimmed.slice(0, colonIndex); // "1- Itzultzailea"
-                        const right = trimmed.slice(colonIndex + 1); // " ..."
+                        const left = trimmed.slice(0, colonIndex);
+                        const right = trimmed.slice(colonIndex + 1);
 
                         return (
                           <div key={`${idx}-${i}`} className="mb-1">
@@ -171,11 +158,11 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columna 2: Legal */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
               {tr("eusFooterColumnLegalTitle", "Legal")}
             </h3>
+
             <ul className="space-y-2">
               {legalItems.map((item) => (
                 <li key={item.titleKey}>
@@ -190,7 +177,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Columna 3: Contacto + Selector Idioma + Planak */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
               {tr("eusFooterColumnContactTitle", "Contacto y Comunidad")}
@@ -198,12 +184,13 @@ export default function Footer() {
 
             <div className="space-y-3 mb-6">
               <a
-                href={`mailto:${tr("eusFooterContactEmailValue", "contacto@euskalia.ai")}`}
+                href={`mailto:${tr("eusFooterContactEmailValue", "euskaliaweb@gmail.com")}`}
                 className="flex items-center text-sm text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
               >
                 <Mail size={16} className="mr-2" />
-                {tr("eusFooterContactEmailValue", "contacto@euskalia.ai")}
+                {tr("eusFooterContactEmailValue", "euskaliaweb@gmail.com")}
               </a>
+
               <div className="flex space-x-3">
                 <span
                   aria-label="Instagram"
@@ -211,12 +198,14 @@ export default function Footer() {
                 >
                   <Instagram size={20} />
                 </span>
+
                 <span
                   aria-label="X"
                   className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
                 >
                   <XIcon size={20} />
                 </span>
+
                 <span
                   aria-label="LinkedIn"
                   className="text-slate-500 dark:text-slate-400 opacity-70 select-none"
@@ -226,12 +215,10 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Etiqueta Idioma */}
             <div className="mb-2 text-sm font-medium text-slate-800 dark:text-slate-200">
               {tr("eusFooterLanguageLabel", "Idioma")}
             </div>
 
-            {/* Botón con bandera activa + desplegable */}
             <div className="relative mb-6">
               <button
                 ref={langBtnRef}
@@ -259,43 +246,41 @@ export default function Footer() {
                   <LangItem active={language === "EUS"} onClick={() => chooseLang("EUS")}>
                     <FlagEUS /> <span className="ml-2 text-[13px]">EUS</span>
                   </LangItem>
+
                   <LangItem active={language === "ES"} onClick={() => chooseLang("ES")}>
                     <FlagES /> <span className="ml-2 text-[13px]">ES</span>
                   </LangItem>
+
                   <LangItem active={language === "EN"} onClick={() => chooseLang("EN")}>
                     <FlagUS /> <span className="ml-2 text-[13px]">EN</span>
                   </LangItem>
+
                   <LangItem active={language === "FR"} onClick={() => chooseLang("FR")}>
                     <FlagFR /> <span className="ml-2 text-[13px]">FR</span>
                   </LangItem>
                 </div>
               )}
             </div>
-
-            {/* Botón Planak (azul) */}
-            <Button asChild className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
-              <Link to="/pricing">
-                <Sparkles size={16} className="mr-2" />
-                {tr("eusFooterPlansButton", "Planak")}
-              </Link>
-            </Button>
           </div>
         </div>
 
-        {/* Franja inferior: copyright centrado + enlaces a la derecha */}
         <div className="mt-8 py-2 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
           <div className="grid grid-cols-1 md:grid-cols-3 items-center">
             <div className="hidden md:block" />
+
             <div className="text-center">
               © {new Date().getFullYear()} Euskalia — {tr("eusFooterRights", "Eskubide guztiak erreserbatuta")}
             </div>
+
             <div className="flex justify-end gap-4">
               <Link to="/cookies" className="hover:text-primary dark:hover:text-primary">
                 {tr("eusFooterCookies", "Cookieak")}
               </Link>
+
               <Link to="/aviso-legal" className="hover:text-primary dark:hover:text-primary">
                 {tr("eusFooterLegalTitle1", "Lege-oharra")}
               </Link>
+
               <Link to="/politica-de-privacidad" className="hover:text-primary dark:hover:text-primary">
                 {tr("eusFooterLegalTitle2", "Pribatutasun politika")}
               </Link>
