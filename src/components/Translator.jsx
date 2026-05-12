@@ -1663,12 +1663,10 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       </section>
 
       <BenefitsSection />
-      <ToolsSection />
-      <FeaturesSection />
       <HowItWorks />
       <FaqSection />
-      <CtaSection />
       <Footer />
+      
     </>
   );
 }

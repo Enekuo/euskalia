@@ -1255,12 +1255,10 @@ setDetectedLanguage(apiDetectedLanguage);
       </section>
 
       <BenefitsSection />
-      <ToolsSection />
-      <FeaturesSection />
       <HowItWorks />
       <FaqSection />
-      <CtaSection />
       <Footer />
+
     </>
   );
 }

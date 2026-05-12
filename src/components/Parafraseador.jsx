@@ -26,6 +26,10 @@ import {
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "@/lib/translations";
+import BenefitsSection from "@/components/BenefitsSection";
+import HowItWorks from "@/components/HowItWorks";
+import FaqSection from "@/components/FaqSection";
+import Footer from "@/components/Footer";
 
 export default function Parafraseador() {
   const { t } = useTranslation();
@@ -625,6 +629,7 @@ setDetectedLanguage(apiDetectedLanguage);
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
   return (
+     <>
     <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative">
@@ -1123,10 +1128,17 @@ setDetectedLanguage(null);
 )}
 </>
 )}
-</section>
-</motion.section>
-</div>
-</div>
-</section>
-);
+
+              </section>
+            </motion.section>
+          </div>
+        </div>
+      </section>
+
+      <BenefitsSection />
+      <HowItWorks />
+      <FaqSection />
+      <Footer />
+    </>
+  );
 }

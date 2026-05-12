@@ -4,6 +4,10 @@ import { FileDown, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
+import BenefitsSection from "@/components/BenefitsSection";
+import HowItWorks from "@/components/HowItWorks";
+import FaqSection from "@/components/FaqSection";
+import Footer from "@/components/Footer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -953,6 +957,11 @@ Responde SOLO YES o NO.
           </div>
         </div>
       )}
-    </>
+        
+          <BenefitsSection />
+          <HowItWorks />
+          <FaqSection />
+          <Footer />
+        </>
   );
 }
