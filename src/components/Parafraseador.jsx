@@ -979,7 +979,7 @@ setDetectedLanguage(apiDetectedLanguage);
                     type="button"
                     onClick={() => handleCopy(true)}
                     title={titleCopyResult}
-                    className={`h-9 w-9 flex items-center justify-center ${
+                    className={`ml-4 h-9 w-9 flex items-center justify-center ${
                       result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={ariaCopyResult}
