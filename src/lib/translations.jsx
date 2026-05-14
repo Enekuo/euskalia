@@ -1401,13 +1401,15 @@ homeHowItWorks: {
     EN: "🌍 Which languages does Euskalia support?",
     FR: "🌍 Quelles langues Euskalia prend-elle en charge ?",
   },
-  faq_item3_answer: {
-    ES: "El idioma principal de Euskalia es el euskera. Toda la plataforma está diseñada para utilizar el euskera en relación con el inglés, el español y el francés.",
-    EUS: "Hizkuntza nagusia euskara da. Plataforma osoa euskararekin lotuta erabiltzeko diseinatuta dago, ingelesa, gaztelania eta frantsesa tarteko direla.",
-    EN: "Euskalia’s main language is Basque. The entire platform is designed to use Basque in relation to English, Spanish and French.",
-    FR: "La langue principale d’Euskalia est le basque. Toute la plateforme est conçue pour utiliser le basque en relation avec l’anglais, l’espagnol et le français.",
-  },
+faq_item3_answer: {
+  ES: "Euskalia es una plataforma centrada en el euskera, pensada tanto para personas vascoparlantes como para usuarios que quieren relacionar el euskera con su propio idioma. La web está disponible en euskera, español, inglés y francés. El traductor permite trabajar entre euskera y múltiples idiomas compatibles, mientras que el resto de herramientas generan los resultados en los 4 idiomas principales de la plataforma. Además, la información que introduce el usuario puede estar escrita en prácticamente cualquier idioma, ya que Euskalia detecta y adapta automáticamente el contenido mediante inteligencia artificial. Si algún usuario desea añadir nuevos idiomas o tiene sugerencias lingüísticas, puede contactar con el equipo de Euskalia, que estará encantado de escuchar propuestas y seguir ampliando la plataforma.",
 
+  EUS: "Euskalia euskaran oinarritutako plataforma bat da, bai euskaldunentzat bai euskara beren hizkuntzarekin lotu nahi duten erabiltzaileentzat sortua. Webgunea euskaraz, gaztelaniaz, ingelesez eta frantsesez dago erabilgarri. Itzultzaileak euskara eta beste hainbat hizkuntza bateragarriren artean lan egiteko aukera ematen du, eta gainerako tresnek emaitzak plataformako 4 hizkuntza nagusietan eskaintzen dituzte. Gainera, erabiltzaileak sartzen duen informazioa edozein hizkuntzatan egon daiteke, Euskaliak edukia automatikoki detektatu eta egokitzen baitu adimen artifizialaren bidez. Erabiltzaileren batek hizkuntza gehiago gehitu nahi baditu edo iradokizunen bat egin nahi badu, Euskaliako taldearekin harremanetan jar daiteke; pozik jasoko ditugu proposamen berriak eta plataforma hobetzen jarraituko dugu.",
+
+  EN: "Euskalia is a platform focused on the Basque language, created both for Basque speakers and for people who want to connect Basque with their own language. The website is available in Basque, Spanish, English and French. The translator allows users to work between Basque and multiple compatible languages, while the rest of the tools generate results in the platform’s 4 main languages. In addition, the information entered by users can be written in almost any language, since Euskalia automatically detects and adapts the content using artificial intelligence. If any user would like to add more languages or share suggestions, they can contact the Euskalia team, who will be happy to listen and continue improving the platform.",
+
+  FR: "Euskalia est une plateforme centrée sur la langue basque, pensée aussi bien pour les bascophones que pour les personnes souhaitant relier le basque à leur propre langue. Le site est disponible en basque, espagnol, anglais et français. Le traducteur permet de travailler entre le basque et plusieurs langues compatibles, tandis que les autres outils génèrent les résultats dans les 4 langues principales de la plateforme. De plus, les informations ajoutées par l’utilisateur peuvent être écrites dans presque n’importe quelle langue, car Euskalia détecte et adapte automatiquement le contenu grâce à l’intelligence artificielle. Si un utilisateur souhaite ajouter de nouvelles langues ou proposer des suggestions, il peut contacter l’équipe d’Euskalia, qui sera ravie d’écouter les propositions et de continuer à améliorer la plateforme."
+},
   // 4
   faq_item4_question: {
     ES: "📝 ¿Cuál es la diferencia entre traducir y resumir?",
