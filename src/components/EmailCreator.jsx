@@ -1324,8 +1324,8 @@ if (languageLooksWrong(combined2, outputLang)) {
             </aside>
 
             <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-2">
+              <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
+                <div className="flex items-center justify-center gap-2 min-w-0 w-full sm:w-auto overflow-x-auto sm:overflow-visible">
                   <LengthTab
                     active={emailTone === "formal"}
                     label={LBL_FORMAL}
@@ -1349,12 +1349,12 @@ if (languageLooksWrong(combined2, outputLang)) {
                   />
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 w-full sm:w-auto pl-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                        className="h-9 min-w-[140px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
                         aria-label={tr("emailCreator.output_language_aria", "Idioma de salida")}
                       >
                         <span className="truncate">
@@ -1433,7 +1433,7 @@ if (languageLooksWrong(combined2, outputLang)) {
                     type="button"
                     onClick={() => handleCopy(true)}
                     title={copiedFlash ? tooltipCopied : tooltipCopy}
-                    className={`h-9 w-9 flex items-center justify-center ${
+                    className={` ml-auto h-9 w-9 flex items-center justify-center ${
                       result
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
@@ -1452,7 +1452,7 @@ if (languageLooksWrong(combined2, outputLang)) {
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("emailCreator.clear_input", "Eliminar")}
-                    className={`h-9 w-9 flex items-center justify-center ${
+                    className={`ml-auto -translate-x-3 h-9 w-9 flex items-center justify-center ${
                       canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"

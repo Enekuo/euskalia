@@ -166,7 +166,11 @@ export default function CorrectorGramatical() {
         )}
       </button>
       {showDivider && (
-        <span aria-hidden className="self-center" style={{ width: 1, height: 22, backgroundColor: DIVIDER }} />
+  <span
+    aria-hidden
+    className="absolute right-0 top-1/2 -translate-y-1/2"
+    style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
+  />
       )}
     </div>
   );

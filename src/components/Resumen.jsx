@@ -171,7 +171,13 @@ const tr = (k, f) => {
           <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
         )}
       </button>
-      {showDivider && <span aria-hidden className="self-center" style={{ width: 1, height: 22, backgroundColor: DIVIDER }} />}
+      {showDivider && (
+  <span
+    aria-hidden
+    className="absolute right-0 top-1/2 -translate-y-1/2"
+    style={{ width: 1, height: 22, backgroundColor: DIVIDER }}
+  />
+)}
     </div>
   );
 
