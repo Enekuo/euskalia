@@ -930,8 +930,8 @@ setDetectedLanguage(apiDetectedLanguage);
             </aside>
 
             <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-0 -ml-2">
+              <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
+                <div className="flex items-center gap-0 w-full sm:w-auto max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap pb-1">
                   <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
                   <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
                   <ModeTab active={mode === "professional"} label={modeLabels.professional} onClick={() => setMode("professional")} showDivider />
@@ -941,7 +941,7 @@ setDetectedLanguage(apiDetectedLanguage);
                   <ModeTab active={mode === "creative"} label={modeLabels.creative} onClick={() => setMode("creative")} />
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center justify-center gap-1 w-full sm:w-auto shrink-0">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
