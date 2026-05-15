@@ -9,7 +9,6 @@ const FAQ_ITEMS = [
   { id: 4 },
   { id: 5 },
   { id: 6 },
-  { id: 7 },
   { id: 10 },
 ];
 

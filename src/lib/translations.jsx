@@ -1404,7 +1404,7 @@ homeHowItWorks: {
 faq_item3_answer: {
   ES: "Euskalia es una plataforma centrada en el euskera, pensada tanto para personas vascoparlantes como para usuarios que quieren relacionar el euskera con su propio idioma. La web está disponible en euskera, español, inglés y francés. El traductor permite trabajar entre euskera y múltiples idiomas compatibles, mientras que el resto de herramientas generan los resultados en los 4 idiomas principales de la plataforma. Además, la información que introduce el usuario puede estar escrita en prácticamente cualquier idioma, ya que Euskalia detecta y adapta automáticamente el contenido mediante inteligencia artificial. Si algún usuario desea añadir nuevos idiomas o tiene sugerencias lingüísticas, puede contactar con el equipo de Euskalia, que estará encantado de escuchar propuestas y seguir ampliando la plataforma.",
 
-  EUS: "Euskalia euskaran oinarritutako plataforma bat da, bai euskaldunentzat bai euskara beren hizkuntzarekin lotu nahi duten erabiltzaileentzat sortua. Webgunea euskaraz, gaztelaniaz, ingelesez eta frantsesez dago erabilgarri. Itzultzaileak euskara eta beste hainbat hizkuntza bateragarriren artean lan egiteko aukera ematen du, eta gainerako tresnek emaitzak plataformako 4 hizkuntza nagusietan eskaintzen dituzte. Gainera, erabiltzaileak sartzen duen informazioa edozein hizkuntzatan egon daiteke, Euskaliak edukia automatikoki detektatu eta egokitzen baitu adimen artifizialaren bidez. Erabiltzaileren batek hizkuntza gehiago gehitu nahi baditu edo iradokizunen bat egin nahi badu, Euskaliako taldearekin harremanetan jar daiteke; pozik jasoko ditugu proposamen berriak eta plataforma hobetzen jarraituko dugu.",
+  EUS: "Euskalia euskaran oinarritutako plataforma bat da, bai euskaldunentzat bai euskara beren hizkuntzarekin lotu nahi duten erabiltzaileentzat sortua dago. Webgunea euskaraz, gaztelaniaz, ingelesez eta frantsesez dago erabilgarri. Itzultzaileak euskara eta beste hainbat hizkuntza bateragarriren artean lan egiteko aukera ematen du, eta gainerako tresnek emaitzak plataformako 4 hizkuntza nagusietan eskaintzen dituzte. Gainera, erabiltzaileak sartzen duen informazioa edozein hizkuntzatan egon daiteke, Euskaliak edukia automatikoki detektatu eta egokitzen baitu adimen artifizialaren bidez. Erabiltzaileren batek hizkuntza gehiago gehitu nahi baditu edo iradokizunen bat egin nahi badu, Euskaliako taldearekin harremanetan jar daiteke; pozik jasoko ditugu proposamen berriak eta plataforma hobetzen jarraituko dugu.",
 
   EN: "Euskalia is a platform focused on the Basque language, created both for Basque speakers and for people who want to connect Basque with their own language. The website is available in Basque, Spanish, English and French. The translator allows users to work between Basque and multiple compatible languages, while the rest of the tools generate results in the platform’s 4 main languages. In addition, the information entered by users can be written in almost any language, since Euskalia automatically detects and adapts the content using artificial intelligence. If any user would like to add more languages or share suggestions, they can contact the Euskalia team, who will be happy to listen and continue improving the platform.",
 
@@ -1412,32 +1412,31 @@ faq_item3_answer: {
 },
   // 4
   faq_item4_question: {
-    ES: "📝 ¿Cuál es la diferencia entre traducir y resumir?",
-    EUS: "📝 Zein da itzultze eta laburtzearen arteko aldea?",
-    EN: "📝 What’s the difference between translating and summarizing?",
-    FR: "📝 Quelle est la différence entre traduire et résumer ?",
-  },
-  faq_item4_answer: {
-    ES: "Traducir mantiene la longitud y estructura del texto original, pero lo convierte a otro idioma.\n\nResumir reduce el contenido a las ideas esenciales, manteniendo el idioma seleccionado.",
-    EUS: "Itzultzeak jatorrizko testuaren luzera eta egitura mantentzen ditu, baina beste hizkuntza batera eramaten du.\n\nLaburtzeak edukia murrizten du eta ideia nagusiak uzten ditu, aukeratutako hizkuntza errespetatuz.",
-    EN: "Translating keeps the original length and structure, but converts it to another language.\n\nSummarizing reduces the content to the essential ideas, keeping the selected language.",
-    FR: "Traduire conserve la longueur et la structure du texte original, mais le convertit dans une autre langue.\n\nRésumer réduit le contenu aux idées essentielles, tout en conservant la langue choisie.",
-  },
+  ES: "🛠️ ¿Qué herramientas incluye Euskalia?",
+  EUS: "🛠️ Zer tresna eskaintzen ditu Euskaliak?",
+  EN: "🛠️ What tools does Euskalia include?",
+  FR: "🛠️ Quels outils propose Euskalia ?",
+},
+ faq_item4_answer: {
+  ES: "Euskalia incluye diferentes herramientas relacionadas con el euskera y la generación de texto con IA. Actualmente puedes utilizar el traductor, resumidor, corrector, parafraseador, creador de texto y creador de emails. Además, Euskalia también cuenta con un asistente de IA pensado para ayudar con dudas, aprendizaje y generación de contenido relacionado con idiomas y textos.",
+  EUS: "Euskaliak euskararekin eta IA bidezko testu-sorkuntzarekin lotutako hainbat tresna eskaintzen ditu. Horaingoz itzultzailea, laburtzailea, zuzentzailea, parafraseatzailea, testu-sortzailea eta email-sortzailea erabil ditzakezu. Gainera, Euskaliak hizkuntzei eta testuei lotutako zalantzak argitzeko, ikasteko eta edukia sortzeko pentsatutako IA laguntzaile bat ere badu.",
+  EN: "Euskalia includes different tools related to the Basque language and AI-powered text generation. You can currently use the translator, summarizer, corrector, paraphraser, text creator and email creator. In addition, Euskalia also includes an AI assistant designed to help with questions, learning and content generation related to languages and texts.",
+  FR: "Euskalia comprend différents outils liés à la langue basque et à la génération de texte avec l’IA. Vous pouvez actuellement utiliser le traducteur, le résumeur, le correcteur, le paraphraseur, le créateur de texte et le créateur d’emails. Euskalia dispose également d’un assistant IA conçu pour aider avec les questions, l’apprentissage et la génération de contenu lié aux langues et aux textes."
+},
 
   // 5
   faq_item5_question: {
-    ES: "📏 ¿Hay límites de caracteres o tamaño de archivo?",
-    EUS: "📏 Ba al dago karaktere edo fitxategi-tamainaren mugarik?",
-    EN: "📏 Are there character or file size limits?",
-    FR: "📏 Y a-t-il des limites de caractères ou de taille de fichier ?",
-  },
+  ES: "📏 ¿Las herramientas de Euskalia tienen límites?",
+  EUS: "📏 Euskaliako tresnek mugarik al dute?",
+  EN: "📏 Do Euskalia’s tools have limits?",
+  FR: "📏 Les outils d’Euskalia ont-ils des limites ?",
+},
   faq_item5_answer: {
-    ES: "Sí, existen límites de caracteres para garantizar un uso estable del servicio. Actualmente, el límite es de 12.000 caracteres por operación, tanto para texto introducido manualmente como para contenido obtenido a partir de archivos o enlaces..\n\nSi tu contenido es muy largo, recomendamos dividirlo en partes.",
-    EUS: "Bai, karaktere-muga bat dago zerbitzuaren erabilera egonkorra bermatzeko. Une honetan, gehienezko muga 12.000 karaktere da eragiketa bakoitzeko, bai eskuz idatzitako testuentzat bai fitxategietatik edo esteketatik ateratako edukientzat.\n\nEdukia oso luzea bada, zatika bidaltzea gomendatzen dugu.",
-    EN: "Yes. There are character limits to ensure stable use of the service. Currently, the limit is 12,000 characters per operation, both for manually entered text and for content obtained from files or links..\n\nIf your content is very long, we recommend splitting it into parts.",
-    FR: "Oui. Il existe des limites de caractères pour garantir une utilisation stable du service. Actuellement, la limite est de 12 000 caractères par opération, aussi bien pour le texte saisi manuellement que pour le contenu obtenu à partir de fichiers ou de liens..\n\nSi votre contenu est très long, nous vous recommandons de le diviser en plusieurs parties.",
-  },
-
+  ES: "Todas las herramientas de Euskalia cuentan con ciertos límites de uso y caracteres para garantizar un funcionamiento rápido, estable y seguro para todos los usuarios. Estos límites ayudan a mantener el rendimiento de la plataforma, evitar abusos y ofrecer una experiencia equilibrada mientras Euskalia sigue creciendo y mejorando.",
+  EUS: "Euskaliako tresna guztiek erabilera eta karaktere mugak dituzte erabiltzaile guztientzat funtzionamendu azkar, egonkor eta segurua bermatzeko. Muga hauek beharrezkoak dira plataformaren errendimendua mantentzeko, gehiegizko erabilerak saihesteko eta Euskaliak hazten eta hobetzen jarraitzen duen bitartean esperientzia orekatua eskaintzeko.",
+  EN: " All Euskalia tools include certain usage and character limits to ensure fast, stable and secure performance for all users. These limits help maintain the platform’s performance, prevent abuse and provide a balanced experience while Euskalia continues to grow and improve.",
+  FR: "Tous les outils d’Euskalia disposent de certaines limites d’utilisation et de caractères afin de garantir un fonctionnement rapide, stable et sécurisé pour tous les utilisateurs. Ces limites permettent de maintenir les performances de la plateforme, d’éviter les abus et d’offrir une expérience équilibrée pendant qu’Euskalia continue de grandir et de s’améliorer."
+},
   // 6
   faq_item6_question: {
     ES: "🔐 ¿Son seguras mis traducciones?",
@@ -1446,11 +1445,11 @@ faq_item3_answer: {
     FR: "🔐 Mes traductions sont-elles sécurisées ?",
   },
   faq_item6_answer: {
-    ES: "Tus textos solo se usan para generar el resultado solicitado y no se almacenan para fines externos.",
-    EUS: "Zure testuak soilik eskatutako emaitzak sortzeko erabiltzen dira, eta ez dira kanpoko helburuetarako gordetzen.",
-    EN: "Your texts are only used to generate the requested result and are not stored for external purposes.",
-    FR: "Vos textes sont uniquement utilisés pour générer le résultat demandé et ne sont pas stockés à des fins externes.",
-  },
+  ES: "Euskalia está diseñada para ofrecer una experiencia segura y centrada en el usuario. La información que introduces solo se utiliza para generar el resultado solicitado en cada herramienta y no se comparte con terceros ni se utiliza con fines externos.",
+  EUS: "Euskalia erabiltzailearentzako esperientzia segurua eta fidagarria eskaintzeko diseinatuta dago. Sartzen duzun informazioa tresna bakoitzean eskatutako emaitza sortzeko baino ez da erabiltzen, eta ez da hirugarrenekin partekatzen ezta kanpoko helburuetarako erabiltzen.",
+  EN: "Euskalia is designed to provide a safe and user-focused experience. The information you enter is only used to generate the requested result within each tool and is not shared with third parties or used for external purposes.",
+  FR: "Euskalia est conçue pour offrir une expérience sûre et centrée sur l’utilisateur. Les informations que vous saisissez sont utilisées uniquement pour générer le résultat demandé dans chaque outil et ne sont ni partagées avec des tiers ni utilisées à des fins externes."
+},
 
   // 7
   faq_item7_question: {
@@ -1467,18 +1466,18 @@ faq_item7_answer: {
 },
   // 10
   faq_item10_question: {
-    ES: "💬 ¿Cómo puedo dar mi opinión?",
-    EUS: "💬 Nola bidal dezaket nire iritzia?",
-    EN: "💬 How can I share my feedback?",
-    FR: "💬 Comment puis-je donner mon avis ?",
-  },
+     ES: "💬 ¿Cómo puedo contactar con Euskalia?",
+  EUS: "💬 Nola jararri dezaket harremanetan Euskaliarekin ?",
+  EN: "💬 How can I contact Euskalia?",
+  FR: "💬 Comment puis-je contacter Euskalia ?",
+},
   faq_item10_answer: {
-    ES: "Puedes escribirnos para sugerencias o mejoras a:\neuskaliaweb@gmail.com",
-    EUS: "Iradokizunak edo hobekuntzak bidali hona:\neuskaliaweb@gmail.com",
-    EN: "You can email us suggestions or improvements at:\neuskaliaweb@gmail.com",
-    FR: "Vous pouvez nous écrire pour des suggestions ou des améliorations à :\neuskaliaweb@gmail.com",
-  },
- 
+  ES: "Si tienes dudas, puedes contactar desde la página de ayuda. Si quieres proponer nuevos idiomas, mejoras o sugerencias para Euskalia, también puedes hacerlo desde la página de sugerencias o a través del correo de Euskalia. El equipo de Euskalia estará muy contento de ayudaros en todo lo que necesitéis.\n\neuskaliaweb@gmail.com",
+  EUS: "Zalantzarik baduzu, laguntza orrialdetik jar zaitezke gurekin harremanetan. Euskaliarentzat hizkuntza berriak, hobekuntzak edo iradokizunak proposatu nahi badituzu, iradokizunen orrialdetik edo Euskaliaren posta elektronikoaren bidez ere egin dezakezu. Euskaliako taldea pozik egongo da behar duzuen edozerrekin laguntzeko.\n\neuskaliaweb@gmail.com",
+  EN: "If you have any questions, you can contact us through the help page. If you would like to suggest new languages, improvements or ideas for Euskalia, you can also do so through the suggestions page or by email. The Euskalia team will be very happy to help you with anything you need.\n\neuskaliaweb@gmail.com",
+  FR: "Si vous avez des questions, vous pouvez nous contacter depuis la page d’aide. Si vous souhaitez proposer de nouvelles langues, des améliorations ou des suggestions pour Euskalia, vous pouvez également le faire depuis la page de suggestions ou par e-mail. L’équipe d’Euskalia sera ravie de vous aider pour tout ce dont vous avez besoin.\n\neuskaliaweb@gmail.com"
+},
+    
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // =========================
   //            CTA
