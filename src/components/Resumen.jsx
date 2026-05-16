@@ -828,7 +828,7 @@ return (
               transition={{ duration: 0.3 }}
             >
               {/* ===== Panel Fuentes (izquierda) ===== */}
-              <aside className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
                 {/* Título */}
                 <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                   <div className="text-sm font-medium text-slate-700">{labelSources}</div>
@@ -1026,7 +1026,7 @@ return (
               </aside>
 
               {/* ===== Panel Derecho ===== */}
-              <section className="h-[630px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
+              <section className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
                 {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
                 <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
                   <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">

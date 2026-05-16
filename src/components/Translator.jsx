@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
 import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
@@ -937,6 +938,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   const labelUrlsNotePaywalled = tr("summary.urls_note_paywalled", "No se admiten artículos de pago.");
   const labelRemove = tr("summary.remove", "Quitar");
 
+
+  const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  in: { opacity: 1, y: 0 },
+  out: { opacity: 0, y: -12 },
+  };
+
   const stopPlayback = () => {
     if (speaking && ttsAbortRef.current) {
       try {
@@ -1244,8 +1252,15 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   </div>
   </div>
 
-            {/* ✅ TU CARD ORIGINAL (igual) */}
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
+            <motion.section
+  className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full"
+  initial="initial"
+  animate="in"
+  exit="out"
+  variants={pageVariants}
+  transition={{ duration: 0.3 }}
+>
+
               <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
                 <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
                   <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
@@ -1669,9 +1684,9 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* cierre relative */}
+            </motion.section>
+
           </div>
         </div>
       </section>
@@ -1680,7 +1695,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
       <HowItWorks />
       <FaqSection />
       <Footer />
-      
+
     </>
   );
 }
