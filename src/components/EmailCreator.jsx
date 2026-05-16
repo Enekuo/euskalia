@@ -1,6 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FileDown, X, Copy, Trash, Check } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, Mail, Type, FileDown, X, Copy, Trash, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorks from "@/components/HowItWorks";
@@ -18,11 +19,19 @@ import {
 
 export default function EmailCreator() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const tr = (key, fallback) => {
     const val = t(key);
     return !val || val === key ? fallback : val;
   };
+
+  const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
+  const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
+  const labelToolCorrector = tr("toolsMenu.correctorTitle", "Zuzentzailea");
+  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
+  const labelToolTextCreator = tr("toolsMenu.textCreatorTitle", "Testu-sortzailea");
+  const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
 
   const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
@@ -1112,11 +1121,94 @@ if (languageLooksWrong(combined2, outputLang)) {
     !!chatInput ||
     !!creativeInfo;
 
-  return (
-    <>
-      <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
-        <div className="max-w-7xl mx-auto w-full px-6">
-          <motion.section
+return (
+  <>
+    <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
+      <div className="max-w-7xl mx-auto w-full px-6">
+        <div className="relative">
+          <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
+
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              title={labelToolTranslator}
+              className="w-11 h-11 mt-5 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <Globe className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolTranslator}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/resumen")}
+              title={labelToolSummarizer}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <FileText className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolSummarizer}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/corrector")}
+              title={labelToolCorrector}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <SearchCheck className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolCorrector}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/parafraseador")}
+              title={labelToolParaphraser}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <PenLine className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolParaphraser}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/creador-texto")}
+              title={labelToolTextCreator}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <Type className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolTextCreator}
+            </div>
+
+            <button
+              type="button"
+              aria-current="page"
+              title={labelToolEmailCreator}
+              className="w-11 h-11 mt-2 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+            >
+              <Mail className="w-5 h-5 text-blue-600" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolEmailCreator}
+            </div>
+          </div>
+        </div>
+   
+      <motion.section
             className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
             initial="initial"
             animate="in"

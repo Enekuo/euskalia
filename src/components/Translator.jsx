@@ -1,22 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import {
-  Volume2,
-  Copy as CopyIcon,
-  FileDown,
-  Mic,
-  Trash2,
-  Check,
-  FileText,
-  File as FileIcon,
-  Link2 as UrlIcon,
-  Plus,
-  X,
-  Globe,
-  Sparkles,
-  SearchCheck,
-  PenLine,
-} from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
@@ -48,6 +32,14 @@ export default function Translator() {
     if (val === k) return f;
     return val;
   };
+
+  const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
+  const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
+  const labelToolCorrector = tr("toolsMenu.correctorTitle", "Zuzentzailea");
+  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
+  const labelToolTextCreator = tr("toolsMenu.textCreatorTitle", "Testu-sortzailea");
+  const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
+
 
   const uiLangRaw = (language || "ES").toString().toUpperCase();
   const uiLang = ["ES", "EUS", "EN", "FR"].includes(uiLangRaw) ? uiLangRaw : "ES";
@@ -1157,12 +1149,6 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
   const removeUrl = (id) => setUrlItems((prev) => prev.filter((u) => u.id !== id));
 
-  // ✅ Labels para los 3 botones (izquierda)
-  const labelToolTranslator = tr("public_tools_translator", uiLang === "EUS" ? "Itzultzailea" : "Traductor");
-  const labelToolSummarizer = tr("public_tools_summarizer", uiLang === "EUS" ? "Laburtzailea" : "Resumidor");
-  const labelToolCorrector = tr("public_tools_corrector", uiLang === "EUS" ? "Zuzentzailea" : "Corrector");
-  const labelToolParaphraser = tr("public_tools_paraphraser", uiLang === "EUS" ? "Parafraseatzailea" : "Parafraseador");
-  
 
   return (
     <>
@@ -1170,65 +1156,93 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
-          {/* ✅ Layout con columna izquierda para los 3 botones */}
           <div className="relative">
-            {/* ✅ BOTONES IZQUIERDA DEL TODO */}
-            <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
-              {/* Traductor (activo) */}
-              <button
-                type="button"
-                aria-current="page"
-                title={tr("toolsMenu.translatorTitle", labelToolTranslator)}
-                className="w-12 h-12 mt-8 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
-              >
-                <Globe className="w-6 h-6 text-blue-600" />
-              </button>
+<div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
 
-              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {tr("toolsMenu.translatorTitle", labelToolTranslator)}
-              </div>
+  {/* Traductor */}
+  <button
+    type="button"
+    aria-current="page"
+    title={labelToolTranslator}
+    className="w-11 h-11 mt-5 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+  >
+    <Globe className="w-5 h-5 text-blue-600" />
+  </button>
 
-              {/* Resumidor  */}
-              <button
-                type="button"
-                onClick={() => navigate("/resumen")}
-                title={tr("toolsMenu.summaryTitle", labelToolSummarizer)}
-                className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-              >
-                <FileText className="w-6 h-6 text-slate-700" />
-              </button>
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolTranslator}
+  </div>
 
-              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
-              </div>
+  {/* Resumidor */}
+  <button
+    type="button"
+    onClick={() => navigate("/resumen")}
+    title={labelToolSummarizer}
+    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+  >
+    <FileText className="w-5 h-5 text-slate-700" />
+  </button>
 
-              {/* Corrector */}
-              <button
-                type="button"
-                onClick={() => navigate("/corrector")}
-                title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
-                className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-              >
-                <SearchCheck className="w-6 h-6 text-slate-700" />
-              </button>
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolSummarizer}
+  </div>
 
-              <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-                {tr("toolsMenu.correctorTitle", labelToolCorrector)}
-              </div>
-              {/* Parafraseador */}
-<button
-  type="button"
-  onClick={() => navigate("/parafraseador")}
-  title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-  className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
->
-  <PenLine className="w-6 h-6 text-slate-700" />
-</button>
+  {/* Corrector */}
+  <button
+    type="button"
+    onClick={() => navigate("/corrector")}
+    title={labelToolCorrector}
+    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+  >
+    <SearchCheck className="w-5 h-5 text-slate-700" />
+  </button>
 
-<div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-  {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-</div>
-            </div>
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolCorrector}
+  </div>
+
+  {/* Parafraseador */}
+  <button
+    type="button"
+    onClick={() => navigate("/parafraseador")}
+    title={labelToolParaphraser}
+    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+  >
+    <PenLine className="w-5 h-5 text-slate-700" />
+  </button>
+
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolParaphraser}
+  </div>
+
+  {/* Creador de texto */}
+  <button
+    type="button"
+    onClick={() => navigate("/creador-texto")}
+    title={labelToolTextCreator}
+    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+  >
+    <Type className="w-5 h-5 text-slate-700" />
+  </button>
+
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolTextCreator}
+  </div>
+
+  {/* Creador de email */}
+  <button
+    type="button"
+    onClick={() => navigate("/creador-email")}
+    title={labelToolEmailCreator}
+    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+  >
+    <Mail className="w-5 h-5 text-slate-700" />
+  </button>
+
+  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+    {labelToolEmailCreator}
+  </div>
+  </div>
 
             {/* ✅ TU CARD ORIGINAL (igual) */}
             <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
@@ -1634,7 +1648,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       disabled={!hasRealResult}
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
                     >
-                      {copied ? <Check className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
+                      {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>

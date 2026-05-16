@@ -1,19 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Globe,
-  SearchCheck,
-  PenLine,
-  FileText,
-  FileDown,
-  File as FileIcon,
-  Link2 as UrlIcon,
-  Plus,
-  X,
-  Copy,
-  Trash,
-  Check,
-} from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
@@ -40,6 +27,8 @@ export default function Parafraseador() {
   const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
   const labelToolCorrector = tr("toolsMenu.correctorTitle", "Corrector");
   const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
+  const labelToolTextCreator = tr("toolsMenu.textCreatorTitle", "Testu-sortzailea");
+  const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
 
   const MAX_CHARS = 8000;
 
@@ -628,63 +617,91 @@ setDetectedLanguage(apiDetectedLanguage);
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
-  return (
-     <>
-    <section className="w-full min-h-screen bg-[#F4F8FF] pt-10 pb-16">
+return (
+  <>
+    <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative">
-          <div className="hidden md:flex flex-col items-center gap-3 pt-2 w-16 absolute -left-28 top-0">
+          <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
+
             <button
               type="button"
               onClick={() => navigate("/")}
-              title={tr("toolsMenu.translatorTitle", labelToolTranslator)}
-              className="w-12 h-12 mt-8 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              title={labelToolTranslator}
+              className="w-11 h-11 mt-5 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
             >
-              <Globe className="w-6 h-6 text-slate-700" />
+              <Globe className="w-5 h-5 text-slate-700" />
             </button>
 
-            <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-              {tr("toolsMenu.translatorTitle", labelToolTranslator)}
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolTranslator}
             </div>
 
             <button
               type="button"
               onClick={() => navigate("/resumen")}
-              title={tr("toolsMenu.summaryTitle", labelToolSummarizer)}
-              className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              title={labelToolSummarizer}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
             >
-              <FileText className="w-6 h-6 text-slate-700" />
+              <FileText className="w-5 h-5 text-slate-700" />
             </button>
 
-            <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-              {tr("toolsMenu.summaryTitle", labelToolSummarizer)}
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolSummarizer}
             </div>
 
             <button
               type="button"
               onClick={() => navigate("/corrector")}
-              title={tr("toolsMenu.correctorTitle", labelToolCorrector)}
-              className="w-12 h-12 mt-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+              title={labelToolCorrector}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
             >
-              <SearchCheck className="w-6 h-6 text-slate-700" />
+              <SearchCheck className="w-5 h-5 text-slate-700" />
             </button>
 
-            <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-              {tr("toolsMenu.correctorTitle", labelToolCorrector)}
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolCorrector}
             </div>
 
             <button
               type="button"
               aria-current="page"
-              title={tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
-              className="w-12 h-12 mt-4 rounded-2xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
+              title={labelToolParaphraser}
+              className="w-11 h-11 mt-2 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
             >
-              <PenLine className="w-6 h-6 text-blue-600" />
+              <PenLine className="w-5 h-5 text-blue-600" />
             </button>
 
-            <div className="text-[12px] font-medium text-slate-700 text-center leading-4">
-              {tr("toolsMenu.paraphraserTitle", labelToolParaphraser)}
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolParaphraser}
             </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/creador-texto")}
+              title={labelToolTextCreator}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <Type className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolTextCreator}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/creador-email")}
+              title={labelToolEmailCreator}
+              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
+            >
+              <Mail className="w-5 h-5 text-slate-700" />
+            </button>
+
+            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
+              {labelToolEmailCreator}
+            </div>
+
           </div>
 
           <motion.section
