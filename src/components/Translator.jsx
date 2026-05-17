@@ -1404,7 +1404,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                   {sourceMode === "text" && (
                     <>
-                      <div className="flex-1 min-h-0">
+                      <div className="min-h-0 h-[400px]">
 
  <textarea
     ref={leftTA}
@@ -1592,7 +1592,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
 
                 <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
-                  <div className="flex-1 min-h-0 pb-8">
+                  <div className="min-h-0 h-[430px] pb-8">
                     <textarea
                       ref={rightTA}
                       value={loading && document.activeElement !== rightTA.current ? t("translator.loading") : rightText}
