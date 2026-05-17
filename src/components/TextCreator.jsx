@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Globe, SearchCheck, PenLine, FileText, Mail, Type, FileDown, X, Copy, Trash, Check } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, Mail, Type, Share2, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -303,6 +303,18 @@ Responde SOLO YES o NO.
       }
     } catch {}
   };
+
+  const handleShare = async () => {
+  if (!result) return;
+
+  try {
+    await navigator.share({
+      text: result,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const handleDownloadPdf = () => {
     if (!result) return;
@@ -965,10 +977,14 @@ return (
 
                             <div className="absolute bottom-4 right-6 flex items-center gap-4">
                               <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                <button
+                                                                <button
                                   type="button"
                                   onClick={() => handleCopy(true)}
-                                  aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                                  aria-label={
+                                    copiedFlash
+                                      ? t("translator.copied")
+                                      : t("translator.copy")
+                                  }
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
                                 >
                                   {copiedFlash ? (
@@ -976,20 +992,24 @@ return (
                                   ) : (
                                     <Copy className="w-5 h-5" />
                                   )}
+
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                    {copiedFlash ? tooltipCopied : tooltipCopy}
+                                    {copiedFlash
+                                      ? t("translator.copied")
+                                      : t("translator.copy")}
                                   </span>
                                 </button>
 
                                 <button
                                   type="button"
-                                  onClick={handleDownloadPdf}
-                                  aria-label={tooltipPdf}
+                                  onClick={handleShare}
+                                  aria-label={t("translator.share")}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
                                 >
-                                  <FileDown className="w-5 h-5" />
+                                  <Share2 className="w-5 h-5" />
+
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                                    {tooltipPdf}
+                                    {t("translator.share")}
                                   </span>
                                 </button>
                               </div>
