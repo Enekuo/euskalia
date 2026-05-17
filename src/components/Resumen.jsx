@@ -1230,9 +1230,31 @@ return (
                           )}
 
                           {result && (
-                            <article className="prose prose-slate max-w-none mt-14">
-                              <div className="whitespace-pre-line">{result}</div>
-                            </article>
+                            <>
+                              <article className="prose prose-slate max-w-none mt-14">
+                                <div className="whitespace-pre-line">{result}</div>
+                              </article>
+
+                              <div className="mt-6 flex items-center justify-end gap-4">
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopy(true)}
+                                  className="text-slate-400 hover:text-slate-700 transition"
+                                  aria-label="Copiar"
+                                >
+                                  <Copy className="w-5 h-5" />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={handleShare}
+                                  className="text-slate-400 hover:text-slate-700 transition"
+                                  aria-label="Compartir"
+                                >
+                                  <Share2 className="w-5 h-5" />
+                                </button>
+                              </div>
+                            </>
                           )}
 
                           {loading && !result && (
@@ -1261,4 +1283,4 @@ return (
       <Footer />
     </>
   );
-} 
+}
