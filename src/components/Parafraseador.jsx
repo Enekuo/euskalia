@@ -1065,7 +1065,7 @@ return (
                     </>
                   )}
 
-<div className="w-full">
+<div className="h-[420px] overflow-y-auto w-full">
   {(result || errorMsg || loading) && (
     <>
       {detectedLanguage && (
@@ -1129,7 +1129,7 @@ setDetectedLanguage(null);
 </div>
 
 {result && (
-  <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+  <div className="absolute bottom-1 right-6 flex items-center gap-4 text-slate-500">
 
     <button
       type="button"
