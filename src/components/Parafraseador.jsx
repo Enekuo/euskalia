@@ -195,11 +195,11 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   const modeLabels = {
     neutral: tr("paraphraser_mode_neutral", "Neutral"),
+    formal: tr("paraphraser_mode_formal", "Formal"),
     informal: tr("paraphraser_mode_informal", "Informal"),
     professional: tr("paraphraser_mode_professional", "Profesional"),
     academic: tr("paraphraser_mode_academic", "Académico"),
     fluent: tr("paraphraser_mode_fluent", "Fluido"),
-    simplified: tr("paraphraser_mode_simplified", "Simplificado"),
     creative: tr("paraphraser_mode_creative", "Creativo"),
   };
 
@@ -458,6 +458,14 @@ MODO NEUTRAL:
 - Cambia palabras y orden lo justo.
 - No simplifiques, no embellezcas, no hagas más formal ni más informal.
 `.trim()
+        : mode === "formal"
+        ? `
+MODO FORMAL:
+- Usa un tono formal y elegante.
+- Mantén claridad y naturalidad.
+- Utiliza vocabulario más refinado y estructurado.
+- Evita expresiones coloquiales.
+`.trim()
         : mode === "informal"
         ? `
 MODO INFORMAL:
@@ -489,14 +497,6 @@ MODO FLUIDO:
 - Reordena para mejorar el flujo sin cambiar el significado.
 - Elimina repeticiones.
 - Añade transiciones suaves si encajan.
-`.trim()
-        : mode === "simplified"
-        ? `
-MODO SIMPLIFICADO:
-- Frases cortas y claras.
-- Vocabulario sencillo.
-- Una idea principal por frase.
-- Ideal para fatiga lectora o dificultad de concentración.
 `.trim()
         : `
 MODO CREATIVO:
@@ -962,11 +962,11 @@ return (
               <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-0 w-full md:w-auto max-w-full overflow-x-auto md:overflow-visible overflow-y-hidden whitespace-nowrap pb-1 md:pb-0">
                   <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
+                  <ModeTab active={mode === "formal"} label={modeLabels.formal} onClick={() => setMode("formal")} showDivider />
                   <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
                   <ModeTab active={mode === "professional"} label={modeLabels.professional} onClick={() => setMode("professional")} showDivider />
                   <ModeTab active={mode === "academic"} label={modeLabels.academic} onClick={() => setMode("academic")} showDivider />
                   <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => setMode("fluent")} showDivider />
-                  <ModeTab active={mode === "simplified"} label={modeLabels.simplified} onClick={() => setMode("simplified")} showDivider />
                   <ModeTab active={mode === "creative"} label={modeLabels.creative} onClick={() => setMode("creative")} />
                 </div>
 
@@ -1065,7 +1065,7 @@ return (
                     </>
                   )}
 
-<div className="h-[420px] overflow-y-auto w-full">
+<div className="h-[440px] overflow-y-auto w-full">
   {(result || errorMsg || loading) && (
     <>
       {detectedLanguage && (
@@ -1129,7 +1129,7 @@ setDetectedLanguage(null);
 </div>
 
 {result && (
-  <div className="absolute bottom-1 right-6 flex items-center gap-4 text-slate-500">
+  <div className="absolute bottom-2 right-6 flex items-center gap-4 text-slate-500">
 
     <button
       type="button"
