@@ -1212,7 +1212,7 @@ return (
                                     </p>
                                   </div>
                                 ) : (
-                                  <article className="prose prose-slate max-w-none">
+                                  <article className="prose prose-slate max-w-none mt-14">
                                     {renderResult()}
                                   </article>
                                 )}
