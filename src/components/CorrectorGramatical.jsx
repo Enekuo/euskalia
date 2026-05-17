@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText,  Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
@@ -451,6 +451,18 @@ export default function CorrectorGramatical() {
       }
     } catch {}
   };
+    
+  const handleShare = async () => {
+  if (!result) return;
+
+  try {
+    await navigator.share({
+      text: result,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const handleClearLeft = () => {
     if (!(sourceMode === "text" && textValue)) return;
@@ -1233,6 +1245,7 @@ return (
 
                     {hasRealResult && (
                       <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+
                         <button
                           type="button"
                           onClick={() => handleCopy(true)}
@@ -1255,16 +1268,20 @@ return (
 
                         <button
                           type="button"
-                          onClick={handleDownload}
-                          aria-label={tooltipPdf}
-                          className="group relative p-2 rounded-md hover:bg-slate-100"
+                          onClick={handleShare}
+                          aria-label={t("translator.share")}
+                          disabled={!hasRealResult}
+                          className={`group relative p-2 rounded-md hover:bg-slate-100 ${
+                            hasRealResult ? "" : "opacity-40 cursor-not-allowed"
+                          }`}
                         >
-                          <FileDown className="w-5 h-5" />
+                          <Share2 className="w-5 h-5" />
 
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                            {tooltipPdf}
+                            {t("translator.share")}
                           </span>
                         </button>
+
                       </div>
                     )}
                   </>

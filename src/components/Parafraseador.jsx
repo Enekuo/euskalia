@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
@@ -360,6 +360,18 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
       }
     } catch {}
   };
+
+    const handleShare = async () => {
+  if (!result) return;
+
+  try {
+    await navigator.share({
+      text: result,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const handleClearLeft = () => {
     if (!(sourceMode === "text" && textValue)) return;
@@ -1118,13 +1130,19 @@ setDetectedLanguage(null);
 
 {result && (
   <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+
     <button
       type="button"
       onClick={() => handleCopy(true)}
       aria-label={labelCopy}
       className="group relative p-2 rounded-md hover:bg-slate-100"
     >
-      {copiedFlash ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+      {copiedFlash ? (
+        <Check className="w-5 h-5" />
+      ) : (
+        <Copy className="w-5 h-5" />
+      )}
+
       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
         {copiedFlash ? labelCopied : labelCopy}
       </span>
@@ -1132,13 +1150,14 @@ setDetectedLanguage(null);
 
     <button
       type="button"
-      onClick={handleDownload}
-      aria-label={labelDownload}
+      onClick={handleShare}
+      aria-label={t("translator.share")}
       className="group relative p-2 rounded-md hover:bg-slate-100"
     >
-      <FileDown className="w-5 h-5" />
+      <Share2 className="w-5 h-5" />
+
       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-        {labelDownload}
+        {t("translator.share")}
       </span>
     </button>
   </div>

@@ -480,6 +480,18 @@ const tr = (k, f) => {
     } catch {}
   };
 
+    const handleShare = async () => {
+  if (!result) return;
+
+  try {
+    await navigator.share({
+      text: result,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   const handleShare = async () => {
     if (!result) return;
 
@@ -1268,24 +1280,41 @@ return (
                 </div>
 
                 {result && (
-                  <div className="absolute bottom-2 right-8 z-20">
+                  <div className="absolute bottom-2 right-8 z-20 flex items-center gap-4 text-slate-500">
+
                     <button
                       type="button"
                       onClick={() => handleCopy(true)}
-                      className="absolute right-12 text-slate-500 hover:text-slate-800 transition"
-                      aria-label="Copiar"
+                      aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                      className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
-                      <Copy className="w-5 h-5" />
+                      {copiedFlash ? (
+                        <Check
+                          className="w-5 h-5"
+                          style={{ color: BLUE }}
+                        />
+                      ) : (
+                        <Copy className="w-5 h-5" />
+                      )}
+
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {copiedFlash ? tooltipCopied : tooltipCopy}
+                      </span>
                     </button>
 
                     <button
                       type="button"
                       onClick={handleShare}
-                      className="text-slate-500 hover:text-slate-800 transition"
-                      aria-label="Compartir"
+                      aria-label={t("translator.share")}
+                      className="group relative p-2 rounded-md hover:bg-slate-100"
                     >
                       <Share2 className="w-5 h-5" />
+
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {t("translator.share")}
+                      </span>
                     </button>
+
                   </div>
                 )}
 
