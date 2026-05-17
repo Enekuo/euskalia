@@ -1152,7 +1152,7 @@ return (
                       </>
                     )}
 
-                    <div className="flex-1 overflow-y-auto w-full">
+                    <div className="h-[420px] overflow-y-auto w-full">
                       {(hasRealResult || loading || errorMsg) && (
                         <>
                           {/* ✅ Banner flotante FUERA del contenido */}
