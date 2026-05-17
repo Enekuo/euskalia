@@ -963,7 +963,7 @@ return (
 
                         {result && (
                           <>
-                            <div className="max-h-[400px] overflow-y-auto pr-2">
+                            <div className="max-h-[420px] overflow-y-auto pr-2">
                               {titleUpper ? (
                                 <div className="text-[16px] font-bold text-slate-900 mb-4 text-center w-full">
                                   {titleUpper}
