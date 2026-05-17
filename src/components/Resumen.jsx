@@ -683,13 +683,13 @@ const systemBase =
 
       if (!rawText) throw new Error(tr("summary.error_no_api_text", "No se recibió texto de la API."));
 
-      const cleaned = rawText
-        .replace(/^\s*[-–—•]\s+/gm, "")
-        .replace(/^\s*\d+\.\s+/gm, "")
-        .replace(/\r/g, "")
-        .replace(/\n+/g, " ")
-        .replace(/\s{2,}/g, " ")
-        .trim();
+const cleaned = rawText
+  .replace(/^\s*[-–—•]\s+/gm, "")
+  .replace(/^\s*\d+\.\s+/gm, "")
+  .replace(/\r/g, "")
+  .replace(/\n{3,}/g, "\n\n")
+  .replace(/[ \t]{2,}/g, " ")
+  .trim();
 
       if (/^el texto es demasiado breve para resumir con fidelidad\.?$/i.test(cleaned)) {
         setResult("El texto es demasiado breve para resumir con fidelidad.");
@@ -1227,8 +1227,8 @@ return (
                           )}
 
                           {result && (
-                            <article className="prose prose-slate max-w-none mt-10">
-                              <p className="whitespace-normal">{result}</p>
+                            <article className="prose prose-slate max-w-none mt-14">
+                              <div className="whitespace-pre-line">{result}</div>
                             </article>
                           )}
 
