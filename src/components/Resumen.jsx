@@ -707,7 +707,10 @@ const cleaned = rawText
         return;
       }
 
-      const clipped = enforceLength(cleaned, summaryLength);
+      const clipped =
+  summaryLength === "detallado"
+    ? cleaned
+    : enforceLength(cleaned, summaryLength);
 
       setResult(clipped);
       setLastSummarySig(canonicalize(textValue));
