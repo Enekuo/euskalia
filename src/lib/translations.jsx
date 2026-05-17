@@ -473,11 +473,11 @@ paraphraser_left_title: { ES: "Aquí aparecerán tus textos o documentos subidos
 paraphraser_left_body: { ES: "Puedes añadir archivos PDF, texto copiado, enlaces web…", EUS: "PDF fitxategiak, testua edo web estekak gehi ditzakezu…", EN: "You can add PDF files, copied text, web links…", FR: "Vous pouvez ajouter des fichiers PDF, du texte copié, des liens web…" },
 
 paraphraser_mode_neutral: { ES: "Neutral", EUS: "Neutrala", EN: "Neutral", FR: "Neutre" },
+paraphraser_mode_formal:  { ES: "Formal",   EUS: "Formala",  EN: "Formal",  FR: "Formel",},
 paraphraser_mode_informal: { ES: "Informal", EUS: "Informala", EN: "Informal", FR: "Informel" },
 paraphraser_mode_professional: { ES: "Profesional", EUS: "Profesionala", EN: "Professional", FR: "Professionnel" },
 paraphraser_mode_academic: { ES: "Académico", EUS: "Akademikoa", EN: "Academic", FR: "Académique" },
 paraphraser_mode_fluent: { ES: "Fluido", EUS: "Arina", EN: "Fluent", FR: "Fluide" },
-paraphraser_mode_simplified: { ES: "Simplificado", EUS: "Sinplifikatua", EN: "Simplified", FR: "Simplifié" },
 paraphraser_mode_creative: { ES: "Creativo", EUS: "Sortzailea", EN: "Creative", FR: "Créatif" },
 
 paraphraser_copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
