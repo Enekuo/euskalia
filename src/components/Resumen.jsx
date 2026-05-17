@@ -492,25 +492,6 @@ const tr = (k, f) => {
   }
 };
 
-  const handleShare = async () => {
-    if (!result) return;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Euskalia",
-          text: result,
-        });
-      } else {
-        await navigator.clipboard.writeText(result);
-        setCopiedFlash(true);
-        setTimeout(() => setCopiedFlash(false), 1200);
-      }
-    } catch (e) {
-      console.error("share error:", e);
-    }
-  };
-
   const handleClearLeft = () => {
     if (!(sourceMode === "text" && textValue)) return;
     setTextValue("");
