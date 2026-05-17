@@ -990,7 +990,7 @@ return (
                 </div>
               </aside>
 
-              <section className="relative min-h-[540px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
+              <section className="relative h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
                 <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
                   <div className="flex items-center">
                     {hasDiff && (
