@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -1058,27 +1058,31 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
     } catch (_) {}
   };
 
-  const handleDownloadPdf = () => {
-    if (!hasRealResult) return;
-    const text = (rightText || "").replace(/\n/g, "<br/>");
-    const w = window.open("", "_blank", "noopener,noreferrer");
-    if (!w) return;
-    w.document.write(`
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>Traducción - Euskalia</title>
-          <style>
-            body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif; padding: 32px; line-height: 1.6; color:#0f172a;}
-          </style>
-        </head>
-        <body>${text}</body>
-      </html>
-    `);
-    w.document.close();
-    w.focus();
-    w.print();
-  };
+ const handleShare = async () => {
+  if (!hasRealResult) return;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: "Euskalia",
+        text: rightText,
+      });
+    } else {
+      await navigator.clipboard.writeText(rightText || "");
+      setCopied(true);
+
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+
+      copyTimerRef.current = setTimeout(() => {
+        setCopied(false);
+      }, 1200);
+    }
+  } catch (e) {
+    console.error("share error:", e);
+  }
+};
 
   const addFiles = async (list) => {
     if (!list?.length) return;
@@ -1669,18 +1673,20 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                       </span>
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={handleDownloadPdf}
-                      aria-label={t("translator.pdf")}
-                      disabled={!hasRealResult}
-                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
-                    >
-                      <FileDown className="w-5 h-5" />
-                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                        {t("translator.pdf")}
-                      </span>
-                    </button>
+<button
+  type="button"
+  onClick={handleShare}
+  aria-label={t("translator.share")}
+  disabled={!hasRealResult}
+  className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+>
+  <Share2 className="w-5 h-5" />
+
+  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+    {t("translator.share")}
+  </span>
+</button>
+
                   </div>
                 </div>
               </div>

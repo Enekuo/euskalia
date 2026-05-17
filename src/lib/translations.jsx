@@ -101,10 +101,10 @@ output_language_uk: { ES: "Ucraniano", EUS: "Ukrainera", EN: "Ukrainian", FR: "U
 
 
     /* === NUEVAS CLAVES para los botones/tooltip del Hero === */
-    listen:     { ES: "Escuchar",     EUS: "Entzun",       EN: "Listen",        FR: "Écouter" },
+    listen:     { ES: "Escuchar",     EUS: "Entzun",      EN: "Listen",        FR: "Écouter" },
     copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
     copied:     { ES: "Copiado",      EUS: "Kopiatuta",   EN: "Copied",        FR: "Copié" },
-    pdf:        { ES: "PDF",          EUS: "PDF",         EN: "PDF",           FR: "PDF" },
+    share:      { ES: "Compartir",    EUS: "Partekatu",   EN: "Share",         FR: "Partager" },
     clear_left: { ES: "Borrar",       EUS: "Garbitu",     EN: "Clear",         FR: "Effacer" },
     dictate:    { ES: "Dictar",       EUS: "Diktatu",     EN: "Dictate",       FR: "Dicter" },
     listening:  { ES: "Escuchando…",  EUS: "Entzuten…",   EN: "Listening…",    FR: "Écoute…" },
