@@ -1189,7 +1189,7 @@ return (
                           )}
 
                           {/* ✅ Contenido normal SIN que el banner lo mueva */}
-                          <div className="px-6 pt-20 pb-20 max-w-3xl mx-auto">
+                          <div className="px-6 pt-8 pb-8 max-w-3xl mx-auto">
                             {errorMsg && (
                               <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                                 {errorMsg}
