@@ -1063,7 +1063,7 @@ return (
               </aside>
 
               {/* ===== Panel Derecho ===== */}
-              <section className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
+              <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
                 {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
                 <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
                   <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
@@ -1214,7 +1214,7 @@ return (
                           </div>
                         </div>
                       ) : (
-                        <div className="relative h-full px-3 sm:px-6 pt-20 pb-6 max-w-3xl mx-auto">
+                        <div className="relative min-h-full px-3 sm:px-6 pt-20 pb-20 max-w-3xl mx-auto">
                           {errorMsg && !errorKind && (
                             <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                               {errorMsg}
@@ -1249,31 +1249,9 @@ return (
                           )}
 
                           {result && (
-                            <>
-                              <article className="prose prose-slate max-w-none mt-14">
-                                <div className="whitespace-pre-line">{result}</div>
-                              </article>
-
-                              <div className="absolute bottom-6 right-6 flex items-center gap-4">
-                                <button
-                                  type="button"
-                                  onClick={() => handleCopy(true)}
-                                  className="text-slate-400 hover:text-slate-700 transition"
-                                  aria-label="Copiar"
-                                >
-                                  <Copy className="w-5 h-5" />
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={handleShare}
-                                  className="text-slate-400 hover:text-slate-700 transition"
-                                  aria-label="Compartir"
-                                >
-                                  <Share2 className="w-5 h-5" />
-                                </button>
-                              </div>
-                            </>
+                            <article className="prose prose-slate max-w-none mt-14">
+                              <div className="whitespace-pre-line">{result}</div>
+                            </article>
                           )}
 
                           {loading && !result && (
@@ -1288,6 +1266,28 @@ return (
                     </>
                   )}
                 </div>
+
+                {result && (
+                  <div className="absolute bottom-2 right-8 z-20">
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(true)}
+                      className="absolute right-12 text-slate-500 hover:text-slate-800 transition"
+                      aria-label="Copiar"
+                    >
+                      <Copy className="w-5 h-5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="text-slate-500 hover:text-slate-800 transition"
+                      aria-label="Compartir"
+                    >
+                      <Share2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
 
             
               </section>
