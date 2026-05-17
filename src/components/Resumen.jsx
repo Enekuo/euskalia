@@ -544,9 +544,13 @@ const tr = (k, f) => {
     const wordCount = words.length;
     const strictExtractive = onlyText && wordCount <= 120;
 
-    const formattingRules =
-      "Devuelve un único párrafo fluido, sin listas ni viñetas, sin guiones al inicio de línea, " +
-      "sin subtítulos ni líneas sueltas. Redacta en frases completas, tono claro e informativo.";
+
+const formattingRules =
+  summaryLength === "breve"
+    ? "Devuelve un resumen claro, compacto y profesional en un único párrafo fluido. No uses listas, viñetas, títulos ni numeraciones."
+    : summaryLength === "medio"
+    ? "Devuelve un resumen claro y profesional usando 2 o 3 párrafos naturales si el contenido lo necesita. No uses listas, viñetas, títulos ni numeraciones."
+    : "Devuelve un resumen claro y profesional usando tantos párrafos naturales como sean necesarios para mantener buena legibilidad. No uses listas, viñetas, títulos ni numeraciones.";
 
 
 const outputLanguageName =
@@ -596,8 +600,19 @@ const systemBase =
   "Arau zorrotzak / Reglas estrictas: " +
   "1) Detecta automáticamente el idioma del contenido solo para entenderlo correctamente. " +
   "2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. " +
-  "3) Emaitza PARAGRAFO BAKAR batean: EZ zerrendarik, EZ buletik, EZ zenbakitzerik, EZ izenbururik. " +
-  "4) No uses listas, viñetas, guiones, numeraciones ni encabezados. " +
+  
+  (summaryLength === "breve"
+  ? "3) Emaitza paragrafo bakar trinko eta naturalean. "
+  : summaryLength === "medio"
+  ? "3) Erabili 2 edo 3 paragrafo natural edukia luzea bada. "
+  : "3) Erabili behar adina paragrafo natural irakurgarritasun ona mantentzeko. ") +
+
+(summaryLength === "breve"
+  ? "4) Usa un único párrafo compacto y natural. "
+  : summaryLength === "medio"
+  ? "4) Usa 2 o 3 párrafos naturales si el contenido lo necesita. "
+  : "4) Usa tantos párrafos naturales como sean necesarios para mantener buena legibilidad. ") +
+  
   "5) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
   "6) No inventes datos ni añadas información externa. " +
   "7) Zenbakiak eta izen propioak BERE-BEREAN mantendu. " +
@@ -1132,7 +1147,7 @@ return (
                 </div>
 
                 {/* ✅ Zona de contenido con scroll interno (barra lateral) */}
-                <div className="flex-1 overflow-y-auto">
+                <div className="h-[520px] overflow-y-auto">
                   {!loading && !result && !errorKind && (
                     <div className="relative h-full">
                       <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
