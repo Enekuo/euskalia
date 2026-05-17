@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail } from "lucide-react";
+import { Globe, SearchCheck, PenLine, FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Mail , Share2} from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -478,6 +478,25 @@ const tr = (k, f) => {
         setTimeout(() => setCopiedFlash(false), 1200);
       }
     } catch {}
+  };
+
+  const handleShare = async () => {
+    if (!result) return;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Euskalia",
+          text: result,
+        });
+      } else {
+        await navigator.clipboard.writeText(result);
+        setCopiedFlash(true);
+        setTimeout(() => setCopiedFlash(false), 1200);
+      }
+    } catch (e) {
+      console.error("share error:", e);
+    }
   };
 
   const handleClearLeft = () => {
