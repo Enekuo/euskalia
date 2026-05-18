@@ -1458,7 +1458,7 @@ return (
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="h-9 min-w-[140px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                        className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] translate-x-[-25px]"
                         aria-label={tr("emailCreator.output_language_aria", "Idioma de salida")}
                       >
                         <span className="truncate">
@@ -1537,7 +1537,7 @@ return (
                     type="button"
                     onClick={() => handleCopy(true)}
                     title={copiedFlash ? tooltipCopied : tooltipCopy}
-                    className={` ml-auto h-9 w-9 flex items-center justify-center ${
+                    className={`h-8 w-8 flex items-center justify-center translate-x-[-5px] ${
                       result
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
@@ -1546,9 +1546,9 @@ return (
                     disabled={!result}
                   >
                     {copiedFlash ? (
-                      <Check className="w-4 h-4" style={{ color: BLUE }} />
+                      <Check className="w-5 h-5" style={{ color: BLUE }} />
                     ) : (
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-5 h-5" />
                     )}
                   </button>
 
@@ -1556,7 +1556,7 @@ return (
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("emailCreator.clear_input", "Eliminar")}
-                    className={`ml-auto -translate-x-3 h-9 w-9 flex items-center justify-center ${
+                    className={`h-8 w-8 flex items-center justify-center translate-x-[0px] ${
                       canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
@@ -1564,7 +1564,7 @@ return (
                     aria-label={tr("emailCreator.clear_input", "Eliminar")}
                     disabled={!canClearLeft}
                   >
-                    <Trash className="w-4 h-4" />
+                    <Trash className="w-5 h-5" />
                   </button>
                 </div>
               </div>

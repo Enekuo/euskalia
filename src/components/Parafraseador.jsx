@@ -1014,7 +1014,7 @@ return (
                     aria-label={ariaCopyResult}
                     disabled={!result}
                   >
-                    {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
+                    {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
                   </button>
 
                   <button
@@ -1027,7 +1027,7 @@ return (
                     aria-label={ariaDeleteInput}
                     disabled={!(sourceMode === "text" && textValue)}
                   >
-                    <Trash className="w-4 h-4" />
+                    <Trash className="w-5 h-5" />
                   </button>
                 </div>
               </div>

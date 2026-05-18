@@ -1139,7 +1139,7 @@ return (
                       type="button"
                       onClick={() => handleCopy(true)}
                       title="Copiar resultado"
-                      className={`h-9 w-9 flex items-center justify-center ${
+                      className={`h-9 w-9 flex items-center justify-center translate-x-[5px] ${
                         result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                       }`}
                       aria-label="Copiar resultado"

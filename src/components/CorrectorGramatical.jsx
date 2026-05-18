@@ -963,7 +963,7 @@ return (
                             <br />• {labelUrlsNotePaywalled}
                           </div>
                         </div>
-                      
+                       )}
 
                       {urlItems.length > 0 && (
                         <ul className="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
@@ -1027,7 +1027,7 @@ return (
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
-                          className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]"
+                          className="h-9 min-w-[150px] px-3 border border-slate-300 rounded-xl bg-white text-sm text-slate-800 flex items-center justify-between hover:border-slate-400 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] translate-x-[-25px]"
                           aria-label={tr("grammarcorrector.output_language_aria", "Idioma principal del texto")}
                         >
                           <span className="truncate">
@@ -1098,13 +1098,13 @@ return (
                       type="button"
                       onClick={() => handleCopy(true)}
                       title={copiedFlash ? tooltipCopied : tooltipCopy}
-                      className={`h-8 w-8 flex items-center justify-center ${
+                      className={`h-8 w-8 flex items-center justify-center translate-x-[-10px] ${
                         result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                       }`}
                       aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                       disabled={!result}
                     >
-                      {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-4 h-4" />}
+                      {copiedFlash ? <Check className="w-4 h-4" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
                     </button>
 
                     <button
@@ -1117,7 +1117,7 @@ return (
                       aria-label={tr("grammarcorrector.clear_input", "Eliminar")}
                       disabled={!(sourceMode === "text" && textValue)}
                     >
-                      <Trash className="w-4 h-4" />
+                      <Trash className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
