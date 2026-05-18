@@ -124,6 +124,8 @@ const tr = (k, f) => {
     "summary.create_help_right",
     "Hautatu iturri bat (testua, dokumentuak edo URLak) eta sakatu “Laburpena sortu”."
   );
+const tooltipCopy = t("translator.copy");
+const tooltipCopied = t("translator.copied");
 
   // ✅ SOLO 1 DOC
   const labelOnlyOneDoc = tr("summary.only_one_document", "Solo se admite un documento por resumen.");
