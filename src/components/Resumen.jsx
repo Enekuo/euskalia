@@ -1164,7 +1164,7 @@ return (
                 </div>
 
                 {/* ✅ Zona de contenido con scroll interno (barra lateral) */}
-                <div className="h-[520px] overflow-y-auto">
+                <div className="h-[500px] overflow-y-auto">
                   {!loading && !result && !errorKind && (
                     <div className="relative h-full">
                       <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
