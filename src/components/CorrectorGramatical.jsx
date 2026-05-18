@@ -963,7 +963,7 @@ return (
                             <br />• {labelUrlsNotePaywalled}
                           </div>
                         </div>
-                      )}
+                      
 
                       {urlItems.length > 0 && (
                         <ul className="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-200 rounded-xl border border-slate-200">
