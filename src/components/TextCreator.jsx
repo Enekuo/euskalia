@@ -185,7 +185,7 @@ export default function EmailCreator() {
             {
               role: "system",
               content:
-                "Debes analizar si el usuario ha dado suficiente información útil para crear un texto coherente y con sentido. Responde SOLO YES o NO.",
+              "Debes decidir si el usuario ha dado suficiente información concreta y útil para crear un texto coherente sin tener que inventar el tema principal ni completar excesivamente el contexto por tu cuenta. Si la información es demasiado vaga, insuficiente o ambigua, responde NO. Responde únicamente YES o NO.",
             },
             {
               role: "user",
@@ -216,7 +216,7 @@ Responde SOLO YES o NO.
         .trim()
         .toUpperCase();
 
-      return cleaned.includes("YES");
+      return cleaned === "YES";
     } catch {
       return true;
     }
