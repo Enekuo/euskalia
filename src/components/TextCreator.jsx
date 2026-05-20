@@ -395,7 +395,6 @@ Responde SOLO YES o NO.
   }, [loading, result, fullExportText]);
 
   const handleGenerate = async (forceContinue = false) => {
-    setLoading(true);
     setErrorMsg("");
     clearLimit();
 
@@ -427,6 +426,7 @@ Responde SOLO YES o NO.
       setLoading(false);
       return;
     }
+    setLoading(true);
 
     const langInstruction =
       outputLang === "ES"
