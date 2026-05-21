@@ -1135,31 +1135,48 @@ return (
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(true)}
-                      title="Copiar resultado"
-                      className={`h-9 w-9 flex items-center justify-center translate-x-[5px] ${
-                        result ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
-                      }`}
-                      aria-label="Copiar resultado"
-                      disabled={!result}
-                    >
-                      {copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}
-                    </button>
+<button
+  type="button"
+  onClick={() => handleCopy(true)}
+  title={
+    copiedFlash
+      ? tr("summary.copied", "Copiado")
+      : tr("summary.copy", "Copiar")
+  }
+  className={`h-9 w-9 flex items-center justify-center translate-x-[5px] ${
+    result
+      ? "text-slate-600 hover:text-slate-800"
+      : "text-slate-300 cursor-not-allowed"
+  }`}
+  aria-label={
+    copiedFlash
+      ? tr("summary.copied", "Copiado")
+      : tr("summary.copy", "Copiar")
+  }
+  disabled={!result}
+>
+  {copiedFlash ? (
+    <Check className="w-5 h-5" style={{ color: BLUE }} />
+  ) : (
+    <Copy className="w-5 h-5" />
+  )}
+</button>
 
-                    <button
-                      type="button"
-                      onClick={handleClearLeft}
-                      title="Eliminar texto de la izquierda y resultado"
-                      className={`h-9 w-9 flex items-center justify-center ${
-                        sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
-                      }`}
-                      aria-label="Eliminar texto de la izquierda y resultado"
-                      disabled={!(sourceMode === "text" && textValue)}
-                    >
-                      <Trash className="w-5 h-5" />
-                    </button>
+<button
+  type="button"
+  onClick={handleClearLeft}
+  title={tr("summary.clear_input", "Eliminar")}
+  className={`h-9 w-9 flex items-center justify-center ${
+    sourceMode === "text" && textValue
+      ? "text-slate-600 hover:text-slate-800"
+      : "text-slate-300 cursor-not-allowed"
+  }`}
+  aria-label={tr("summary.clear_input", "Eliminar")}
+  disabled={!(sourceMode === "text" && textValue)}
+>
+  <Trash className="w-5 h-5" />
+</button>
+
                   </div>
                 </div>
 

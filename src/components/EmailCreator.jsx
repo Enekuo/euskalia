@@ -1534,23 +1534,31 @@ return (
                   </DropdownMenu>
 
                   <button
-                    type="button"
-                    onClick={() => handleCopy(true)}
-                    title={copiedFlash ? tooltipCopied : tooltipCopy}
-                    className={`h-8 w-8 flex items-center justify-center translate-x-[-5px] ${
-                      result
-                        ? "text-slate-600 hover:text-slate-800"
-                        : "text-slate-300 cursor-not-allowed"
-                    }`}
-                    aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
-                    disabled={!result}
-                  >
-                    {copiedFlash ? (
-                      <Check className="w-5 h-5" style={{ color: BLUE }} />
-                    ) : (
-                      <Copy className="w-5 h-5" />
-                    )}
-                  </button>
+  type="button"
+  onClick={() => handleCopy(true)}
+  title={
+    copiedFlash
+      ? tr("emailCreator.copied", "Copiado")
+      : tr("emailCreator.copy", "Copiar")
+  }
+  className={`h-8 w-8 flex items-center justify-center translate-x-[-5px] ${
+    result
+      ? "text-slate-600 hover:text-slate-800"
+      : "text-slate-300 cursor-not-allowed"
+  }`}
+  aria-label={
+    copiedFlash
+      ? tr("emailCreator.copied", "Copiado")
+      : tr("emailCreator.copy", "Copiar")
+  }
+  disabled={!result}
+>
+  {copiedFlash ? (
+    <Check className="w-5 h-5" style={{ color: BLUE }} />
+  ) : (
+    <Copy className="w-5 h-5" />
+  )}
+</button>
 
                   <button
                     type="button"

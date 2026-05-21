@@ -169,6 +169,7 @@ translator_daily_limit_reached: {
     copy:                 { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier"},
     copied:               { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié"},
     pdf:                  { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+    clear_input:          { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
 
     //Texto
      enter_text_here_full:  {
@@ -302,6 +303,9 @@ summary_daily_limit_reached: {
   sources_tab_text:     { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
   sources_tab_document: { ES: "Documento", EUS: "Dokumentua", EN: "Document", FR: "Document" },
   sources_tab_url:      { ES: "URL", EUS: "URL", EN: "URL", FR: "URL" },
+  copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+  copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+  clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
 
   enter_text_here_full: {
     ES: "Escribe o pega aquí el texto que quieres corregir…",
@@ -465,6 +469,9 @@ paraphraser_cancel_button: { ES: "Cancelar", EUS: "Utzi", EN: "Cancel", FR: "Ann
 paraphraser_urls_note_visible: { ES: "Solo se importará el texto visible del sitio web.", EUS: "Webguneko testu ikusgarria bakarrik inportatuko da.", EN: "Only visible text from the website will be imported.", FR: "Seul le texte visible du site sera importé." },
 paraphraser_urls_note_paywalled: { ES: "No se admiten artículos de pago.", EUS: "Ordainpeko artikuluak ez dira onartzen.", EN: "Paywalled articles are not supported.", FR: "Les articles payants ne sont pas pris en charge." },
 paraphraser_remove_button: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Supprimer" },
+paraphraser_copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+paraphraser_copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+paraphraser_clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
 
 paraphraser_generate_button: { ES: "Crear parafraseo", EUS: "Sortu parafraseoa", EN: "Generate paraphrase", FR: "Créer une reformulation" },
 paraphraser_help_right: { ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa \"Crear parafraseo\".", EUS: "Aukeratu iturri bat (testua, dokumentuak edo URLak) eta sakatu \"Sortu parafraseoa\".", EN: "Select a source (text, documents or URLs) and click \"Generate paraphrase\".", FR: "Sélectionnez une source (texte, documents ou URLs) et cliquez sur \"Créer une reformulation\"." },
@@ -529,6 +536,9 @@ textCreator: {
   output_language_en: { ES: "Inglés", EUS: "Ingelesa", EN: "English", FR: "Anglais" },
   output_language_fr: { ES: "Francés", EUS: "Frantsesa", EN: "French", FR: "Français" },
   save_button_label: { ES: "Guardar", EUS: "Gorde", EN: "Save", FR: "Enregistrer" },
+  copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+  copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
   limit_chars: {
 ES: "Has superado el límite máximo de caracteres del creador de texto.",
   EUS: "Testu-sortzailearen gehieneko karaktere-muga gainditu duzu.",
@@ -560,6 +570,10 @@ emailCreator: {
 
   tone_formal: { ES: "Formal", EUS: "Formala", EN: "Formal", FR: "Formel" },
   tone_informal: { ES: "Informal", EUS: "Informala", EN: "Informal", FR: "Informel" },
+
+  copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
+  copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
+clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
 
   small_1: { ES: "1- Saludo", EUS: "1- Agurra", EN: "1- Greeting", FR: "1- Salutation" },
   small_2: { ES: "2- Introducción", EUS: "2- Sarrera", EN: "2- Introduction", FR: "2- Introduction" },
