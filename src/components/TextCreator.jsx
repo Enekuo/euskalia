@@ -159,7 +159,7 @@ export default function EmailCreator() {
 
     const ps = (paragraphs || [])
       .map((p) => (p || "").trim())
-      .filter(Boolean);
+      .filter(Boolean); 
 
     return [tTitle, ...ps]
       .join(" ")
