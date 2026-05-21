@@ -1099,8 +1099,8 @@ return (
   onClick={() => handleCopy(true)}
   title={
     copiedFlash
-      ? tr("corrector.copied", "Copiado")
-      : tr("corrector.copy", "Copiar")
+      ? tr("grammarcorrector.copied", "Copiado")
+      : tr("grammarcorrector.copy", "Copiar")
   }
   className={`h-8 w-8 flex items-center justify-center translate-x-[-10px] ${
     result
@@ -1109,8 +1109,8 @@ return (
   }`}
   aria-label={
     copiedFlash
-      ? tr("corrector.copied", "Copiado")
-      : tr("corrector.copy", "Copiar")
+      ? tr("grammarcorrector.copied", "Copiado")
+      : tr("grammarcorrector.copy", "Copiar")
   }
   disabled={!result}
 >
