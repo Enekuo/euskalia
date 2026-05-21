@@ -1,4 +1,6 @@
 import React from 'react';
+import { useEffect } from "react";
+import { pageview } from "@/lib/analytics";
 import { Helmet } from 'react-helmet';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -67,6 +69,10 @@ import PremiumAudioCreator from "@/components/PremiumAccount/PremiumAudioCreator
 
 function App() {
   const location = useLocation();
+
+  useEffect(() => {
+  pageview(location.pathname);
+}, [location]);
 
   const isProRoute =
   location.pathname.startsWith("/cuenta-pro") ||
