@@ -629,6 +629,26 @@ setDetectedLanguage(apiDetectedLanguage);
 
   const barClass = overLimit ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-sky-500";
 
+    const normalizeLangCode = (code) => {
+  const c = String(code || "").toLowerCase();
+
+  if (c === "eu" || c === "eus" || c === "basque") return "EUS";
+  if (c === "es" || c === "spa" || c === "spanish") return "ES";
+  if (c === "en" || c === "eng" || c === "english") return "EN";
+  if (c === "fr" || c === "fra" || c === "fre" || c === "french") return "FR";
+
+  return c.toUpperCase();
+};
+
+const detectedCodeNormalized = normalizeLangCode(detectedLanguage?.code);
+const selectedCodeNormalized = normalizeLangCode(outputLang);
+
+const shouldShowBanner =
+  detectedCodeNormalized &&
+  selectedCodeNormalized &&
+  detectedCodeNormalized !== selectedCodeNormalized;
+
+
 return (
   <>
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
@@ -1085,7 +1105,7 @@ return (
 <div className="h-[440px] overflow-y-auto w-full">
   {(result || errorMsg || loading) && (
     <>
-      {detectedLanguage && (
+      {shouldShowBanner && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
           <div className="pointer-events-auto">
             <DetectedLanguageBanner
