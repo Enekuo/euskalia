@@ -15,8 +15,9 @@ export const translations = {
     resources: { ES: "Recursos",      EUS: "Baliabideak",    EN: "Resources",    FR: "Ressources" },
     pricing:   { ES: "Precios",       EUS: "Prezioak",       EN: "Pricing",      FR: "Tarifs" },
     signIn:    { ES: "Iniciar sesión",EUS: "Hasi saioa",     EN: "Sign in",      FR: "Connexion" },
-    startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua",  EN: "Create account",FR: "Créer un compte" },
+    startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua",   EN: "Create account",FR: "Créer un compte" },
     assistant: { ES: "Asistente de IA", EUS: "IA laguntzailea", EN: "AI Assistant", FR: "Assistant IA" },
+    contact:   { ES: "Contacto",      EUS: "Kontaktua",      EN: "Contact",      FR: "Contact" },
   },
 
   toolsMenu: {
@@ -718,9 +719,10 @@ limit_chars: {
   //        SOPORTE
   // =========================
   
-  support_title:        { ES: "Soporte", EUS: "Laguntza", EN: "Support", FR: "Support" },
-  support_subtitle:     { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko.", EN: "Need help? We’re here to help you.", FR: "Besoin d’aide ? Nous sommes là pour vous aider." },
+  support_title:        { ES: "Contacto", EUS: "Kontaktua" , EN: "Contact", FR: "Contact" },
+  support_subtitle_bottom:{ ES: "Podéis rellenar el formulario o escribirnos directamente a euskaliaweb@gmail.com", EUS: "Formularioa bete edo zuzenean idatz diezagukezue: euskaliaweb@gmail.com", EN: "You can fill out the form or contact us directly at euskaliaweb@gmail.com", FR: "Vous pouvez remplir le formulaire ou nous écrire directement à euskaliaweb@gmail.com" },
   support_kicker:       { ES: "¿Cómo podemos ayudarte?", EUS: "Nola lagun diezazukegu?", EN: "How can we help you?", FR: "Comment pouvons-nous vous aider ?" },
+  support_help_text: { ES: "¿Necesitas ayuda? Estamos aquí para ayudarte.", EUS: "Laguntza behar duzu? Hemen gaude laguntzeko.", EN: "Need help? We're here to help you.", FR: "Besoin d’aide ? Nous sommes là pour vous aider." },
   support_cta:          { ES: "Contactar", EUS: "Harremanetan jarri", EN: "Contact", FR: "Contacter" },
   support_bubble_text:  { ES: "¿Tienes dudas? Escríbenos.", EUS: "Zalantzak al dituzu? Idatziguzu.", EN: "Have questions? Write to us.", FR: "Vous avez des questions ? Écrivez-nous." },
 

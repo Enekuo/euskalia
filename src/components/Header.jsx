@@ -298,7 +298,7 @@ export default function Header() {
           ) : null}
         </div>
 
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4ml-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-slate-900">
@@ -324,23 +324,13 @@ export default function Header() {
           </DropdownMenu>
 
           <Link
-            to="/iniciar-sesion"
-            className="text-sm font-medium text-slate-700 hover:text-slate-900"
+            to="/soporte"
+            className="text-sm font-medium text-slate-700 hover:text-slate-900 ml-6"
           >
-            {t("header.signIn")}
+            {t("header.contact")}
           </Link>
 
-          <Link to="/pricing">
-            <motion.button
-              className="h-9 px-4 bg-blue-600 text-white font-semibold text-sm rounded-full shadow-sm hover:bg-blue-700"
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              {t("header.startFree")}
-            </motion.button>
-          </Link>
         </div>
-
         <div className="lg:hidden flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -113,10 +113,10 @@ const SupportPage = () => {
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h2 className="text-4xl font-extrabold text-slate-900">
-                    {t("support_title", "Laguntza")}
+                    {t("support_title", "KONTAKTUA")}
                   </h2>
                   <p className="mt-2 text-base text-slate-600">
-                    {t("support_subtitle", "Laguntza behar duzu? Hemen gaude laguntzeko.")}
+                    {t("support_subtitle_bottom", "Formularioa bete edo zuzenean idatz diezagukezue: euskaliaweb@gmail.com",)}
                   </p>
                 </div>
 
@@ -136,7 +136,7 @@ const SupportPage = () => {
                 {t("support_kicker", "Nola lagun diezazukegu?")}
               </p>
               <p className="mt-1 text-base text-slate-600">
-                {t("support_subtitle", "Laguntza behar duzu? Hemen gaude laguntzeko.")}
+                {t("support_help_text", "Laguntza behar duzu? Hemen gaude laguntzeko.")}
               </p>
             </div>
 
@@ -209,7 +209,7 @@ const SupportPage = () => {
                 />
               </div>
 
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
                 {loading ? t("support_form_sending", "Bidaltzen...") : t("support_form_submit", "Bidali")}
               </Button>
 
