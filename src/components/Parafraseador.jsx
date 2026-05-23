@@ -1007,21 +1007,26 @@ return (
                       </button>
                     </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
-                      <DropdownMenuItem onClick={() => setOutputLang("es")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
-                        {LBL_ES}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("eus")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
-                        {LBL_EUS}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("en")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
-                        {LBL_EN}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("fr")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
-                        {LBL_FR}
-                      </DropdownMenuItem>
-                      <DropdownMenuArrow className="fill-white" />
-                    </DropdownMenuContent>
+
+                  <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
+  <DropdownMenuItem onClick={() => setOutputLang("eus")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
+    {LBL_EUS}
+  </DropdownMenuItem>
+
+  <DropdownMenuItem onClick={() => setOutputLang("es")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
+    {LBL_ES}
+  </DropdownMenuItem>
+
+  <DropdownMenuItem onClick={() => setOutputLang("en")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
+    {LBL_EN}
+  </DropdownMenuItem>
+
+  <DropdownMenuItem onClick={() => setOutputLang("fr")} className="cursor-pointer rounded-lg text-[14px] px-3 py-2">
+    {LBL_FR}
+  </DropdownMenuItem>
+
+  <DropdownMenuArrow className="fill-white" />
+</DropdownMenuContent>
                   </DropdownMenu>
 
 <button
