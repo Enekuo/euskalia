@@ -85,16 +85,47 @@ function App() {
 
 const path = location.pathname || "/";
 
-const seo =
-  path === "/resumen"
-    ? {
-        title: "Resumidor de euskera online | Euskalia",
-        desc: "Resumidor de euskera para crear resúmenes claros y rápidos de textos largos en segundos.",
-      }
-    : {
-        title: "Traductor y resumidor de euskera | Euskalia",
-        desc: "Euskalia es una plataforma de inteligencia artificial centrada en el euskera que permite traducir, resumir y mejorar textos, junto con otras funcionalidades basadas en IA.",
-      };
+const seoMap = {
+  "/": {
+    title: "Traductor de euskera online y gratis | Euskalia",
+    desc: "Traductor de euskera con IApara traducir textos online de forma rápida, natural y precisa.",
+  },
+
+  "/resumen": {
+    title: "Resumidor de textos en euskera con IA | Euskalia",
+    desc: "Resume textos largos en euskera automáticamente con inteligencia artificial de forma clara y rápida.",
+  },
+
+  "/corrector": {
+    title: "Corrector ortográfico y gramatical en euskera | Euskalia",
+    desc: "Corrige textos en euskera con inteligencia artificial. Mejora ortografía, gramática y claridad automáticamente.",
+  },
+
+  "/parafraseador": {
+    title: "Parafraseador de textos en euskera | Euskalia",
+    desc: "Reescribe textos en euskera con IA manteniendo el significado original de forma natural.",
+  },
+
+  "/creador-texto": {
+    title: "Generador de textos con IA en euskera | Euskalia",
+    desc: "Crea textos automáticamente en euskera con inteligencia artificial para estudios, trabajo o contenido.",
+  },
+
+  "/creador-email": {
+    title: "Generador de emails con IA en euskera | Euskalia",
+    desc: "Genera emails profesionales en euskera automáticamente con inteligencia artificial.",
+  },
+
+  "/chat-ia": {
+    title: "Chat IA especializado en euskera | Euskalia",
+    desc: "Asistente de inteligencia artificial especializado en euskera para ayudarte con textos, dudas y contenido.",
+  },
+};
+
+const seo = seoMap[path] || {
+  title: "Euskalia",
+  desc: "Herramientas de inteligencia artificial especializadas en euskera.",
+};
 
   return ( 
     <>

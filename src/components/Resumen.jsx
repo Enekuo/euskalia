@@ -765,6 +765,11 @@ const barClass = overLimit
 
 return (
   <>
+
+ <h1 className="sr-only">
+  Resumidor de textos en euskera con IA
+</h1>
+
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative">
