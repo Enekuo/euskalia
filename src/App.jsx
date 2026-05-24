@@ -145,6 +145,12 @@ const seo = seoMap[path] || {
   />
 
   <meta name="description" content={seo.desc} />
+  
+  <link
+    rel="canonical"
+    href={`https://euskaliaweb.com${path}`}
+  />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
   <link rel="icon" href="/favicon.ico" />
