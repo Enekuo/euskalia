@@ -117,7 +117,7 @@ const seoMap = {
   },
 
   "/chat-ia": {
-    title: "Chat IA especializado en euskera | Euskalia",
+    title: "Asistente de IA especializado en euskera | Euskalia",
     desc: "Asistente de inteligencia artificial especializado en euskera para ayudarte con textos, dudas y contenido.",
   },
 };
