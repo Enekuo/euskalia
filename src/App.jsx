@@ -150,6 +150,19 @@ const seo = seoMap[path] || {
     rel="canonical"
     href={`https://euskaliaweb.com${path}`}
   />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Euskalia" />
+<meta property="og:title" content={seo.title} />
+<meta property="og:description" content={seo.desc} />
+<meta property="og:url" content={`https://euskaliaweb.com${path}`} />
+<meta property="og:image" content="https://euskaliaweb.com/og-image.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={seo.title} />
+<meta name="twitter:description" content={seo.desc} />
+<meta name="twitter:image" content="https://euskaliaweb.com/og-image.png" />
+
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
