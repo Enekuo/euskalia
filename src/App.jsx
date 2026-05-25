@@ -88,7 +88,7 @@ const path = location.pathname || "/";
 const seoMap = {
   "/": {
     title: "Traductor de euskera online y gratis | Euskalia",
-    desc: "Traductor de euskera con IApara traducir textos online de forma rápida, natural y precisa.",
+    desc: "Traductor de euskera con IA para traducir textos online de forma rápida, natural y precisa.",
   },
 
   "/resumen": {
@@ -125,24 +125,45 @@ const seoMap = {
 const seo = seoMap[path] || {
   title: "Euskalia",
   desc: "Herramientas de inteligencia artificial especializadas en euskera.",
-};
+  };
 
-  return ( 
+
+return ( 
     <>
 <Helmet>
   <title>{seo.title}</title>
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
+
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify([
+      {
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "Euskalia",
         alternateName: "Euskalia",
         url: "https://euskaliaweb.com",
-      }),
-    }}
-  />
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "Euskalia",
+        url: "https://euskaliaweb.com",
+        logo: "https://euskaliaweb.com/og-image.png",
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: "Euskalia",
+        url: "https://euskaliaweb.com",
+        applicationCategory: "EducationalApplication",
+        operatingSystem: "Web",
+        description:
+          "Euskalia es una plataforma de inteligencia artificial especializada en euskera para traducir, resumir, corregir, parafrasear y crear textos.",
+      },
+    ]),
+  }}
+/>
 
   <meta name="description" content={seo.desc} />
   
