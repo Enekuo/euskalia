@@ -126,6 +126,27 @@ const seo = seoMap[path] || {
   title: "Euskalia",
   desc: "Herramientas de inteligencia artificial especializadas en euskera.",
   };
+  const faqSchema = [
+  ["¿Qué es Euskalia?", "Euskalia es una plataforma de inteligencia artificial especializada en euskera."],
+
+  ["¿Qué idiomas soporta Euskalia?", "Euskalia trabaja principalmente con euskera y otros idiomas."],
+
+  ["¿Euskalia es gratis?", "Sí. Euskalia es totalmente gratuito."],
+
+  ["¿Cómo funciona el traductor de Euskalia?", "El traductor utiliza inteligencia artificial para traducir textos al euskera y desde euskera de forma rápida y natural."],
+
+  ["¿Cómo funciona el resumidor?", "El resumidor de Euskalia crea resúmenes automáticos de textos largos utilizando inteligencia artificial."],
+
+  ["¿Qué hace el corrector de Euskalia?", "El corrector mejora ortografía, gramática y claridad automáticamente en textos en euskera."],
+
+  ["¿Para qué sirve el parafraseador?", "El parafraseador reescribe textos manteniendo el significado original de forma natural."],
+
+  ["¿Qué hace el generador de textos?", "El generador de textos crea contenido automáticamente con inteligencia artificial en euskera."],
+
+  ["¿Qué hace el generador de emails?", "El generador de emails crea correos profesionales automáticamente con inteligencia artificial."],
+
+  ["¿Qué es el asistente IA de Euskalia?", "Es un asistente especializado en euskera y textos que ayuda a traducir, corregir, resumir y crear contenido."]
+];
 
 
 return ( 
@@ -144,6 +165,7 @@ return (
         alternateName: "Euskalia",
         url: "https://euskaliaweb.com",
       },
+
       {
         "@context": "https://schema.org",
         "@type": "Organization",
@@ -151,6 +173,7 @@ return (
         url: "https://euskaliaweb.com",
         logo: "https://euskaliaweb.com/og-image.png",
       },
+
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
@@ -161,9 +184,24 @@ return (
         description:
           "Euskalia es una plataforma de inteligencia artificial especializada en euskera para traducir, resumir, corregir, parafrasear y crear textos.",
       },
+
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqSchema.map(([q, a]) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: a,
+          },
+        })),
+      },
     ]),
   }}
 />
+
+
 
   <meta name="description" content={seo.desc} />
   
