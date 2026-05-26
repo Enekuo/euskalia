@@ -20,6 +20,7 @@ import CookieBanner from "@/components/CookieBanner";
 import PagoCorrectoPage from "@/pages/PagoCorrectoPage";
 import PagoCanceladoPage from "@/pages/PagoCanceladoPage";
 import TraductorSeoRedirect from "./TraductorSeoRedirect";
+import InformationPage from "@/pages/InformationPage";
 //Herramientas Public
 import Translator from '@/components/Translator';
 import Resumen from "@/components/Resumen";
@@ -262,6 +263,7 @@ return (
             <Route path="/parafraseador" element={<Parafraseador />} />
             <Route path="/creador-texto" element={<TextCreator />} />
             <Route path="/creador-email" element={<EmailCreator />} />
+            <Route path="/informacion" element={<InformationPage />} />
 
 
 
