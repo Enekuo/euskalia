@@ -1,5 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Menu } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Globe, SearchCheck, PenLine, FileText, Mail, Type, Share2, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { useNavigate } from "react-router-dom";
@@ -583,6 +585,12 @@ return (
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative">
+          <Link
+  to="/informacion?tool=creador-texto"
+  className="absolute -right-24 top-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition"
+>
+  <Menu className="w-5 h-5 text-slate-600" />
+</Link>
           <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
 
   <button

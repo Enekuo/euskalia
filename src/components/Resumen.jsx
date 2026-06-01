@@ -776,7 +776,7 @@ return (
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative">
           <Link
-  to="/informacion#resumidor"
+  to="/informacion?tool=resumidor"
   className="absolute -right-24 top-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition"
 >
   <Menu className="w-5 h-5 text-slate-600" />
