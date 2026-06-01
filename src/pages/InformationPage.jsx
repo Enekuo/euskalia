@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
+import { Lightbulb } from "lucide-react";
 import { Globe, FileText, SearchCheck, PenLine, Type, Mail, File, Link2, ArrowLeftRight, Trash2, Mic, Volume2, Copy, Share2 } from "lucide-react";
 
 export default function InformationPage() {
@@ -35,7 +36,7 @@ export default function InformationPage() {
 
     {/* HERO */}
 
-    <section className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-[560px] flex items-center px-6 sm:px-10 py-10 mb-5">
+    <section className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5">
 
       <div className="absolute top-[-140px] right-[-100px] w-[520px] h-[520px] rounded-full bg-[#DBE8FF] opacity-70" />
 
@@ -51,10 +52,10 @@ export default function InformationPage() {
 
           <div className="w-[56px] h-[6px] rounded-full bg-[#3B82F6] mb-7" />
 
-          <p className="text-[24px] leading-[1.65] text-[#334155] max-w-[620px] font-[450]">
+          <p className="text-[20px] leading-[1.65] text-[#334155] max-w-[620px] font-[450]">
             {tr(
               "information_subtitle",
-              "Conoce mejor Euskalia y descubre para qué sirve cada una de sus herramientas y aprende a utilizarlas para sacarles el máximo partido de forma sencilla y práctica."
+              "Euskalia reúne diferentes herramientas diseñadas para trabajar con textos en euskera y otros idiomas. En esta página encontrarás información sobre cada una de ellas, cómo funcionan, en qué situaciones pueden resultar útiles y cómo sacar el máximo partido a cada herramienta."
             )}
           </p>
 
@@ -213,103 +214,557 @@ export default function InformationPage() {
 
     </section>
 
-    {/* ======================= */}
-    {/* QUÉ ES EUSKALIA */}
-    {/* ======================= */}
+{/* ======================= */}
+{/* QUÉ ES EUSKALIA */}
+{/* ======================= */}
 
-    <section
-      id="que-es-euskalia"
-      className="rounded-[26px] border border-[#E7ECF5] bg-white px-5 sm:px-7 py-8 scroll-mt-28"
-    >
+<section
+  id="que-es-euskalia"
+  className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center"
+>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-center">
+  {/* Formas decorativas */}
 
-        {/* ILUSTRACIÓN */}
+  <div className="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full bg-[#DCE9FF] opacity-50" />
 
-        <div className="relative flex items-center justify-center min-h-[260px]">
+  <div className="absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full bg-[#DCE9FF] opacity-40" />
 
-          <div className="absolute w-[220px] h-[220px] rounded-full bg-gradient-to-br from-[#E8F0FF] to-[#F4F7FF]" />
+  <div className="absolute top-16 right-16 grid grid-cols-6 gap-3 opacity-30">
+    {Array.from({ length: 36 }).map((_, i) => (
+      <div
+        key={i}
+        className="w-[4px] h-[4px] rounded-full bg-[#3B82F6]"
+      />
+    ))}
+  </div>
 
-          <div className="absolute w-[280px] h-[280px] rounded-full border border-[#D9E6FF]" />
+  <div className="absolute bottom-16 left-16 grid grid-cols-6 gap-3 opacity-30">
+    {Array.from({ length: 36 }).map((_, i) => (
+      <div
+        key={i}
+        className="w-[4px] h-[4px] rounded-full bg-[#3B82F6]"
+      />
+    ))}
+  </div>
 
-          {/* Logo central */}
-          <div className="relative z-20 w-[110px] h-[110px] rounded-full bg-gradient-to-br from-[#3B82F6] to-[#2563EB] flex items-center justify-center shadow-[0_18px_40px_rgba(37,99,235,0.28)]">
+  <div className="relative z-10 max-w-[1000px] mx-auto text-center">
 
-            <span className="text-white text-[56px] font-bold">
-              E
-            </span>
+    <h2 className="text-[46px] leading-[1.05] tracking-[-1px] font-bold text-[#071437] mb-5">
+      {tr("information_about_title", "¿Qué es Euskalia?")}
+    </h2>
 
+    <div className="w-[56px] h-[6px] rounded-full bg-[#3B82F6] mb-10 mx-auto" />
+
+    <div className="space-y-8 text-[#334155] leading-[1.9] text-[18px] text-left">
+
+      <p>
+        {tr(
+          "information_about_paragraph_1",
+          "Euskalia es una plataforma digital creada con un objetivo claro: contribuir al crecimiento y la presencia del euskera en el entorno tecnológico actual. Nace con la idea de acercar la innovación y la inteligencia artificial a todas las personas que utilizan el euskera, facilitando que puedan trabajar, aprender y comunicarse en su propio idioma dentro del entorno digital."
+        )}
+      </p>
+
+      <p>
+        {tr(
+          "information_about_paragraph_2",
+          "Euskalia nace con la voluntad de construir un ecosistema digital centrado en el euskera, adaptado a las necesidades reales de la comunidad vasca y preparado para evolucionar junto a los avances tecnológicos. Más allá de ofrecer servicios digitales, el proyecto busca reforzar la presencia del euskera en Internet y contribuir a que siga teniendo un papel relevante en la sociedad digital del futuro."
+        )}
+      </p>
+
+      <p>
+        {tr(
+          "information_about_paragraph_3",
+          "Nuestra visión es construir un proyecto de referencia para la comunidad vasca, impulsando la innovación lingüística y demostrando que el euskera también puede formar parte activa de los avances tecnológicos del presente y del futuro. Euskalia no busca únicamente ofrecer soluciones digitales, sino contribuir a que el idioma siga creciendo, evolucionando y ocupando el lugar que merece en la era digital."
+        )}
+      </p>
+
+      <p className="font-semibold text-[#071437] text-center pt-4 text-[22px]">
+        {tr(
+          "information_about_tools",
+          "Estas son las herramientas que ofrece Euskalia."
+        )}
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+{/* ======================= */}
+{/* TRADUCTOR */}
+{/* ======================= */}
+
+<section
+  id="traductor"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
+    
+    <div className="max-w-2xl">
+
+      <div className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm mb-8">
+        {tr("information_translator_badge", "Euskalia · Traductor")}
+      </div>
+
+      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+        {tr("information_translator_title", "Traductor")}
+      </h2>
+
+      <p className="text-[22px] leading-[1.9] text-slate-600">
+        {tr(
+          "information_translator_text",
+          "El traductor de Euskalia permite traducir textos entre euskera, castellano, inglés, francés y otros idiomas. Está pensado para ofrecer traducciones claras, naturales y útiles, especialmente cuando el euskera forma parte del proceso."
+        )}
+      </p>
+
+    </div>
+
+    <div className="relative h-[620px] flex items-center justify-center">
+      
+      <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
+
+      <div className="relative w-[420px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+        <div className="space-y-6">
+          
+          <div className="bg-[#2563EB] text-white rounded-3xl px-6 py-5 max-w-[280px]">
+            <p className="text-[22px] leading-relaxed font-medium">
+              {tr("information_translator_mockup_basque_text", "Kaixo, zer moduz?")}
+            </p>
           </div>
 
-          {/* Cards flotantes */}
-          {[
-            {
-              top: "12px",
-              left: "18px",
-              color: "from-[#3B82F6] to-[#2563EB]",
-            },
-            {
-              top: "24px",
-              right: "12px",
-              color: "from-[#4ADE80] to-[#22C55E]",
-            },
-            {
-              bottom: "24px",
-              left: "4px",
-              color: "from-[#FB923C] to-[#F97316]",
-            },
-            {
-              bottom: "10px",
-              right: "20px",
-              color: "from-[#A855F7] to-[#7C3AED]",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className={`absolute w-[42px] h-[42px] rounded-[14px] bg-gradient-to-br ${item.color} shadow-lg`}
-              style={{
-                top: item.top,
-                left: item.left,
-                right: item.right,
-                bottom: item.bottom,
-              }}
-            />
-          ))}
+          <div className="flex justify-end">
+            <div className="bg-slate-100 rounded-3xl px-6 py-5 max-w-[280px]">
+              <p className="text-[20px] leading-relaxed text-slate-700">
+                {tr("information_translator_mockup_spanish_text", "Hola, ¿qué tal?")}
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-slate-100">
+            <div className="flex items-center justify-between">
+
+              <span className="text-sm text-slate-500">
+                {tr("information_translator_mockup_completed", "Traducción completada")}
+              </span>
+
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{/* ======================= */}
+{/* RESUMIDOR */}
+{/* ======================= */}
+
+<section
+  id="resumidor"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-16 items-center w-full">
+
+    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
+
+      <div className="absolute w-[470px] h-[470px] rounded-[60px] bg-[#EEF8F1]" />
+
+      <div className="relative w-[400px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+        
+        <div className="space-y-4">
+          <div className="h-4 rounded-full bg-slate-200 w-full" />
+          <div className="h-4 rounded-full bg-slate-200 w-[90%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-[85%]" />
+          <div className="h-4 rounded-full bg-green-200 w-[60%] mt-8" />
+          <div className="h-4 rounded-full bg-green-200 w-[70%]" />
+        </div>
+
+      </div>
+    </div>
+
+    <div className="max-w-[780px] order-1 lg:order-2">
+
+      <div className="inline-flex items-center rounded-full bg-green-50 px-5 py-2 text-green-700 font-medium text-sm mb-8">
+        {tr("information_summary_badge")}
+      </div>
+
+      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+        {tr("information_summary_title")}
+      </h2>
+
+      <div className="space-y-10 text-[20px] leading-[1.9] text-slate-600">
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
+          <p>
+            {tr(
+              "information_summary_point_1",
+              "El resumidor de Euskalia permite convertir textos largos, documentos y contenido web en versiones más breves y fáciles de consultar. Su función es identificar las ideas principales de un contenido y presentarlas de forma más clara y condensada, manteniendo la información más relevante."
+            )}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
+          <p>
+            {tr("information_summary_point_2_part_1")}
+
+            <span className="underline text-green-600 font-semibold">
+              {tr("information_summary_point_2_highlight")}
+            </span>
+
+            {tr("information_summary_point_2_part_2")}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
+          <p>
+            {tr("information_summary_point_3_part_1")}
+
+            <span className="underline text-green-600 font-semibold">
+              {tr("information_summary_point_3_highlight_1")}
+            </span>
+
+            {tr("information_summary_point_3_part_2")}
+
+            <span className="underline text-green-600 font-semibold">
+              {tr("information_summary_point_3_highlight_2")}
+            </span>
+
+            {tr("information_summary_point_3_part_3")}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{/* ======================= */}
+{/* CORRECTOR */}
+{/* ======================= */}
+
+<section
+  id="corrector"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center w-full">
+
+    <div className="max-w-2xl">
+
+      <div className="inline-flex items-center rounded-full bg-purple-50 px-5 py-2 text-purple-700 font-medium text-sm mb-8">
+        {tr("information_corrector_badge")}
+      </div>
+
+      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+        {tr("information_corrector_title")}
+      </h2>
+
+      <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-purple-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_corrector_point_1_part_1", "El corrector revisa ")}
+
+            <span className="underline text-purple-600 font-semibold">
+              {tr("information_corrector_point_1_highlight_1", "errores ortográficos, gramaticales y de escritura")}
+            </span>
+
+            {tr("information_corrector_point_1_part_2", " sin modificar el significado original del texto. Su función es ")}
+
+            <span className="underline text-purple-600 font-semibold">
+              {tr("information_corrector_point_1_highlight_2", "detectar y corregir errores")}
+            </span>
+
+            {tr("information_corrector_point_1_part_3", ", manteniendo el contenido y la intención del autor.")}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-purple-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_corrector_point_2_part_1", "El ")}
+
+            <span className="underline text-purple-600 font-semibold">
+              {tr("information_corrector_point_2_highlight_1", "idioma")}
+            </span>
+
+            {tr("information_corrector_point_2_part_2", " del texto añadido debe coincidir con el ")}
+
+            <span className="underline text-purple-600 font-semibold">
+              {tr("information_corrector_point_2_highlight_2", "idioma seleccionado")}
+            </span>
+
+            {tr("information_corrector_point_2_part_3", " en el selector. Si se detecta que el contenido está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes de realizar la corrección.")}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div className="relative h-[620px] flex items-center justify-center">
+
+      <div className="absolute w-[430px] h-[430px] rounded-[60px] bg-purple-50 rotate-6" />
+
+      <div className="relative w-[470px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-10">
+        
+        <div className="space-y-8">
+
+          <div className="flex items-center gap-4">
+            <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0" />
+            <p className="text-slate-700 line-through text-[22px]">
+              {tr(
+                "information_corrector_mockup_wrong",
+                "Texto con errores ortográficos y gramaticales"
+              )}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0" />
+            <p className="text-slate-900 font-medium text-[22px]">
+              {tr(
+                "information_corrector_mockup_right",
+                "Texto corregido sin errores"
+              )}
+            </p>
+          </div>
 
         </div>
 
-        {/* TEXTO */}
+      </div>
 
-        <div className="max-w-[760px]">
+    </div>
 
-          <h2 className="text-[34px] leading-[1] tracking-[-1px] font-bold text-[#071437] mb-4">
-            {tr("information_about_title", "¿Qué es Euskalia?")}
-          </h2>
+  </div>
+</section>
 
-          <div className="w-[42px] h-[5px] rounded-full bg-[#3B82F6] mb-5" />
+{/* ======================= */}
+{/* PARAFRASEADOR */}
+{/* ======================= */}
 
-          <div className="space-y-4 text-[#334155] leading-[1.8] text-[16px]">
+<section
+  id="parafraseador"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
 
-            <p>
-              {tr(
-                "information_about_paragraph_1",
-                "Euskalia es una plataforma de inteligencia artificial especializada en euskera y textos multilingües. Su objetivo es ofrecer herramientas rápidas, claras y útiles para traducir, resumir, corregir, parafrasear y generar contenido de forma sencilla."
-              )}
+    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
+
+      <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-orange-50 -rotate-6" />
+
+      <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+        <div className="space-y-6">
+
+          <div className="rounded-3xl bg-slate-100 px-6 py-5">
+            <p className="text-[20px] text-slate-600 leading-relaxed">
+              {tr("information_paraphraser_mockup_original", "Texto original")}
             </p>
+          </div>
 
-            <p>
-              {tr(
-                "information_about_paragraph_2",
-                "A diferencia de muchas herramientas generales, Euskalia está pensada para ofrecer una experiencia especialmente cuidada en euskera, manteniendo resultados naturales, comprensibles y adaptados al uso real del idioma."
-              )}
-            </p>
+          <div className="flex justify-center text-[32px] text-orange-500 font-bold">
+            ↓
+          </div>
 
-            <p>
-              {tr(
-                "information_about_paragraph_3",
-                "El mundo digital y la inteligencia artificial están cambiando la forma en la que las personas estudian, trabajan y se comunican. Euskalia nace con la idea de que el euskera también forme parte de esa nueva etapa tecnológica."
-              )}
+          <div className="rounded-3xl bg-orange-50 px-6 py-5 border border-orange-100">
+            <p className="text-[20px] text-slate-800 leading-relaxed font-medium">
+              {tr("information_paraphraser_mockup_rewritten", "Texto reformulado")}
             </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div className="max-w-2xl order-1 lg:order-2">
+
+      <div className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm mb-8">
+        {tr("information_paraphraser_badge", "Euskalia · Parafraseador")}
+      </div>
+
+      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+        {tr("information_paraphraser_title", "Parafraseador")}
+      </h2>
+
+      <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-orange-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_paraphraser_point_1_part_1", "El parafraseador permite ")}
+
+            <span className="underline text-orange-600 font-semibold">
+              {tr("information_paraphraser_point_1_highlight_1", "reformular un texto")}
+            </span>
+
+            {tr("information_paraphraser_point_1_part_2", " manteniendo su significado original. Su función es expresar las mismas ideas utilizando palabras o estructuras diferentes. Euskalia ofrece distintos estilos de parafraseo: Neutral, Formal, Informal, Profesional, Académico, Fluido y Creativo, permitiendo adaptar el resultado a diferentes contextos y necesidades.")}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-orange-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_paraphraser_point_2_part_1", "El ")}
+
+            <span className="underline text-orange-600 font-semibold">
+              {tr("information_paraphraser_point_2_highlight_1", "idioma")}
+            </span>
+
+            {tr("information_paraphraser_point_2_part_2", " del resultado siempre será el mismo que el del texto añadido en la fuente. El parafraseador ")}
+
+            <span className="underline text-orange-600 font-semibold">
+              {tr("information_paraphraser_point_2_highlight_2", "reformula el contenido")}
+            </span>
+
+            {tr("information_paraphraser_point_2_part_3", ", pero ")}
+
+            <span className="underline text-orange-600 font-semibold">
+              {tr("information_paraphraser_point_2_highlight_3", "no realiza traducciones")}
+            </span>
+
+            {tr("information_paraphraser_point_2_part_4", " ni cambia el ")}
+
+            <span className="underline text-orange-600 font-semibold">
+              {tr("information_paraphraser_point_2_highlight_4", "idioma original del texto")}
+            </span>
+
+            {tr("information_paraphraser_point_2_part_5", ". El idioma seleccionado en el selector debe coincidir con el idioma del contenido añadido. Si se detecta que el texto está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes de realizar el parafraseo.")}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{/* ======================= */}
+{/* CREADOR DE TEXTO */}
+{/* ======================= */}
+
+<section
+  id="creador-texto"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center w-full">
+
+    <div className="max-w-[900px] -mt-10">
+
+      <div className="flex items-center gap-6 mb-10">
+
+        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+          {tr("information_text_creator_title", "Creador de Texto")}
+        </h2>
+
+        <div className="inline-flex items-center rounded-full bg-sky-50 px-5 py-2 text-sky-700 font-medium text-sm">
+          {tr("information_text_creator_badge", "Euskalia · Creador de Texto")}
+        </div>
+
+      </div>
+
+      <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr(
+              "information_text_creator_point_1",
+              "El creador de texto permite generar contenido nuevo a partir de la información proporcionada por el usuario. Puede utilizarse para redactar artículos, descripciones, publicaciones, textos informativos y otros tipos de contenido. Si la información añadida no es suficiente, la inteligencia artificial mostrará un mensaje indicando que se necesita más contexto antes de continuar."
+            )}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
+          <p>
+            <span className="underline text-sky-600 font-semibold">
+              {tr("information_text_creator_point_2_highlight_1", "La longitud")}
+            </span>
+
+            {tr("information_text_creator_point_2_part_1", " del resultado puede ajustarse mediante el control disponible en la herramienta. En la fuente se puede introducir información en cualquier ")}
+
+            <span className="underline text-sky-600 font-semibold">
+              {tr("information_text_creator_point_2_highlight_2", "idioma")}
+            </span>
+
+            {tr("information_text_creator_point_2_part_2", ", mientras que el texto generado se mostrará en el idioma seleccionado en el selector.")}
+          </p>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_text_creator_point_3_part_1", "La herramienta dispone de dos modos de creación. En el modo ")}
+
+            <span className="underline text-sky-600 font-semibold">
+              {tr("information_text_creator_point_3_highlight_1", "Normal")}
+            </span>
+
+            {tr("information_text_creator_point_3_part_2", ", el usuario proporciona la información y la inteligencia artificial decide cómo estructurar y desarrollar el texto. En el modo ")}
+
+            <span className="underline text-sky-600 font-semibold">
+              {tr("information_text_creator_point_3_highlight_2", "Por párrafos")}
+            </span>
+
+            {tr("information_text_creator_point_3_part_3", ", el usuario tiene un mayor control sobre el resultado, pudiendo indicar cuántos párrafos desea generar y qué contenido o función debe tener cada uno de ellos.")}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div className="relative h-[620px] flex items-start justify-center pt-28">
+
+      <div className="absolute w-[520px] h-[460px] rounded-[60px] bg-sky-50 rotate-6" />
+
+      <div className="relative w-[520px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+
+        <div className="space-y-5">
+
+          <div className="h-5 rounded-full bg-sky-200 w-[60%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-full" />
+          <div className="h-4 rounded-full bg-slate-200 w-[92%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-[88%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
+          <div className="h-4 rounded-full bg-slate-200 w-[70%]" />
+
+          <div className="mt-8 rounded-[28px] bg-sky-50 border border-sky-200 px-6 py-5 shadow-sm">
+
+            <div className="flex items-center gap-5">
+
+              <div className="w-16 h-16 flex-shrink-0">
+
+                <img
+                  src="/Bombilla.png"
+                  alt="Bombilla"
+                  className="w-full h-full object-contain"
+                  style={{ transform: "scale(2.2)", transformOrigin: "center center" }}
+                />
+
+              </div>
+
+              <p className="flex-1 text-[15px] leading-[1.65] text-sky-700 font-bold">
+                {tr(
+                  "information_text_creator_tip",
+                  "Es importante que el usuario entienda que cuanto más información, detalles y contexto proporcione, más preciso y completo podrá ser el resultado generado."
+                )}
+              </p>
+
+            </div>
 
           </div>
 
@@ -317,354 +772,161 @@ export default function InformationPage() {
 
       </div>
 
-    </section>
+    </div>
 
-        {/* TRADUCTOR */}
-        {/* ======================= */}
+  </div>
+</section>
 
-        <section
-          id="traductor"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-            
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm mb-8">
-                Euskalia · Traductor
-              </div>
+{/* ======================= */}
+{/* CREADOR DE EMAIL */}
+{/* ======================= */}
 
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_translator_title", "Traductor")}
-              </h2>
+<section
+  id="creador-email"
+  className="min-h-screen flex items-center py-24 scroll-mt-28"
+>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
 
-              <p className="text-[22px] leading-[1.9] text-slate-600">
-                {tr(
-                  "information_translator_text",
-                  "El traductor de Euskalia permite traducir textos entre euskera, castellano, inglés, francés y otros idiomas. Está pensado para ofrecer traducciones claras, naturales y útiles, especialmente cuando el euskera forma parte del proceso."
-                )}
-              </p>
-            </div>
+    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 -ml-40">
 
-            <div className="relative h-[620px] flex items-center justify-center">
-              
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
+      <div className="absolute w-[400px] h-[400px] rounded-[60px] bg-indigo-50 -rotate-6" />
 
-              <div className="relative w-[420px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                <div className="space-y-6">
-                  
-                  <div className="bg-[#2563EB] text-white rounded-3xl px-6 py-5 max-w-[280px]">
-                    <p className="text-[22px] leading-relaxed font-medium">
-                      Kaixo, zer moduz?
-                    </p>
-                  </div>
+      <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+        
+        <div className="space-y-5">
 
-                  <div className="flex justify-end">
-                    <div className="bg-slate-100 rounded-3xl px-6 py-5 max-w-[280px]">
-                      <p className="text-[20px] leading-relaxed text-slate-700">
-                        Hola, ¿qué tal?
-                      </p>
-                    </div>
-                  </div>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+            <span className="text-sm text-slate-500">
+              {tr("information_email_creator_mockup_to", "Nori:")}
+            </span>
 
-                  <div className="pt-6 border-t border-slate-100">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-500">
-                        Traducción completada
-                      </span>
-
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
+            <div className="h-3 rounded-full bg-slate-200 w-[170px]" />
           </div>
-        </section>
 
-        {/* ======================= */}
-        {/* RESUMIDOR */}
-        {/* ======================= */}
+          <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+            <span className="text-sm text-slate-500">
+              {tr("information_email_creator_mockup_subject", "Gaia:")}
+            </span>
 
-        <section
-          id="resumidor"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
+            <div className="h-3 rounded-full bg-slate-200 w-[150px]" />
+          </div>
 
-            <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
+          <div className="space-y-4 pt-4">
+            <div className="h-4 rounded-full bg-slate-200 w-full" />
+            <div className="h-4 rounded-full bg-slate-200 w-[90%]" />
+            <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
+            <div className="h-4 rounded-full bg-slate-200 w-[75%]" />
+          </div>
 
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-[#EEF8F1]" />
+          <div className="mt-8 rounded-[28px] bg-indigo-50 border border-indigo-200 px-6 py-5 shadow-sm">
 
-              <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                
-                <div className="space-y-4">
-                  <div className="h-4 rounded-full bg-slate-200 w-full" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[90%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[85%]" />
-                  <div className="h-4 rounded-full bg-green-200 w-[60%] mt-8" />
-                  <div className="h-4 rounded-full bg-green-200 w-[70%]" />
-                </div>
+            <div className="flex items-center gap-5">
 
-              </div>
-            </div>
-
-            <div className="max-w-2xl order-1 lg:order-2">
-              <div className="inline-flex items-center rounded-full bg-green-50 px-5 py-2 text-green-700 font-medium text-sm mb-8">
-                Euskalia · Resumidor
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  src="/Bombilla morada.png"
+                  alt="Bombilla"
+                  className="w-full h-full object-contain"
+                  style={{ transform: "scale(2)", transformOrigin: "center center" }}
+                />
               </div>
 
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_summary_title", "Resumidor")}
-              </h2>
-
-              <p className="text-[22px] leading-[1.9] text-slate-600">
+              <p className="flex-1 text-[14px] leading-[1.55] text-indigo-700 font-bold">
                 {tr(
-                  "information_summary_text",
-                  "El resumidor ayuda a convertir textos largos, documentos o contenido web en versiones más breves y fáciles de entender. Es útil para estudiar, revisar información o ahorrar tiempo al leer."
+                  "information_email_creator_tip",
+                  "Antes de enviar cualquier correo, se recomienda revisar el resultado generado para comprobar que la información sea la correcta."
                 )}
               </p>
+
             </div>
 
           </div>
-        </section>
 
-        {/* ======================= */}
-        {/* CORRECTOR */}
-        {/* ======================= */}
+        </div>
+      </div>
 
-        <section
-          id="corrector"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
+    </div>
 
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center rounded-full bg-purple-50 px-5 py-2 text-purple-700 font-medium text-sm mb-8">
-                Euskalia · Corrector
-              </div>
+    <div className="max-w-2xl order-1 lg:order-2 -ml-28">
 
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_corrector_title", "Corrector")}
-              </h2>
+      <div className="flex items-center gap-6 mb-10">
 
-              <p className="text-[22px] leading-[1.9] text-slate-600">
-                {tr(
-                  "information_corrector_text",
-                  "El corrector revisa errores ortográficos, gramaticales y de estilo sin cambiar el sentido original del texto. Está diseñado para mejorar la claridad y la calidad del contenido escrito."
-                )}
-              </p>
-            </div>
+        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+          {tr("information_email_creator_title", "Creador de Email")}
+        </h2>
 
-            <div className="relative h-[620px] flex items-center justify-center">
+        <div className="inline-flex items-center rounded-full bg-indigo-50 px-5 py-2 text-indigo-700 font-medium text-sm">
+          {tr("information_email_creator_badge", "Euskalia · Creador de Email")}
+        </div>
 
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-purple-50 rotate-6" />
+      </div>
 
-              <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                
-                <div className="space-y-6">
+      <div className="space-y-10 text-[16px] leading-[2] text-slate-600 -ml-16">
 
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full bg-red-500" />
-                    <p className="text-slate-700 line-through">
-                      Texto con errore gramatical
-                    </p>
-                  </div>
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_email_creator_point_1_part_1", "El creador de email permite generar correos electrónicos a partir de la información proporcionada por el usuario, independientemente del ")}
 
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full bg-green-500" />
-                    <p className="text-slate-900 font-medium">
-                      Texto con errores gramaticales
-                    </p>
-                  </div>
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_1_highlight_1", "idioma")}
+            </span>
 
-                </div>
+            {tr("information_email_creator_point_1_part_2", " en que esté escrita. El resultado se mostrará en el idioma seleccionado en el selector. Dispone de dos estilos de redacción: ")}
 
-              </div>
-            </div>
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_1_highlight_2", "Formal")}
+            </span>
 
-          </div>
-        </section>
+            {tr("information_email_creator_point_1_part_3", ", para comunicaciones profesionales, e ")}
 
-        {/* ======================= */}
-        {/* PARAFRASEADOR */}
-        {/* ======================= */}
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_1_highlight_3", "Informal")}
+            </span>
 
-        <section
-          id="parafraseador"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
+            {tr("information_email_creator_point_1_part_4", ", para mensajes más cercanos y naturales.")}
+          </p>
+        </div>
 
-            <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_email_creator_point_2_part_1", "En modo ")}
 
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-orange-50 -rotate-6" />
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_2_highlight_1", "Creativo")}
+            </span>
 
-              <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                <div className="space-y-6">
+            {tr("information_email_creator_point_2_part_2", ", la inteligencia artificial desarrolla el correo de forma más libre y creativa, pudiendo ser una muy buena opción para usuarios que tienen bloqueos sobre cómo empezar o qué escribir. En modo ")}
 
-                  <div className="rounded-3xl bg-slate-100 px-6 py-5">
-                    <p className="text-[20px] text-slate-600 leading-relaxed">
-                      Texto original
-                    </p>
-                  </div>
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_2_highlight_2", "Plantilla")}
+            </span>
 
-                  <div className="flex justify-center text-[32px] text-orange-500 font-bold">
-                    ↓
-                  </div>
+            {tr("information_email_creator_point_2_part_3", ", el resultado es más literal y el usuario tiene un mayor control sobre el contenido, pudiendo definir la información de cada párrafo.")}
+          </p>
+        </div>
 
-                  <div className="rounded-3xl bg-orange-50 px-6 py-5 border border-orange-100">
-                    <p className="text-[20px] text-slate-800 leading-relaxed font-medium">
-                      Texto reformulado
-                    </p>
-                  </div>
+        <div className="flex items-start gap-4">
+          <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
+          <p>
+            {tr("information_email_creator_point_3_part_1", "Cuanto más contexto, información y detalles proporcione el usuario, ")}
 
-                </div>
-              </div>
+            <span className="underline text-indigo-600 font-semibold">
+              {tr("information_email_creator_point_3_highlight_1", "más preciso y completo")}
+            </span>
 
-            </div>
+            {tr("information_email_creator_point_3_part_2", " será el resultado generado.")}
+          </p>
+        </div>
 
-            <div className="max-w-2xl order-1 lg:order-2">
-              <div className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm mb-8">
-                Euskalia · Parafraseador
-              </div>
+      </div>
 
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_paraphraser_title", "Parafraseador")}
-              </h2>
+    </div>
 
-              <p className="text-[22px] leading-[1.9] text-slate-600">
-                {tr(
-                  "information_paraphraser_text",
-                  "El parafraseador permite reformular textos manteniendo la idea principal. Sirve para expresar una frase de otra manera, mejorar la redacción o adaptar el tono del contenido."
-                )}
-              </p>
-            </div>
+  </div>
+</section>
 
-          </div>
-        </section>
-
-        {/* ======================= */}
-        {/* CREADOR DE TEXTO */}
-        {/* ======================= */}
-
-        <section
-          id="creador-texto"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center rounded-full bg-sky-50 px-5 py-2 text-sky-700 font-medium text-sm mb-8">
-                Euskalia · Creador de texto
-              </div>
-
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_text_creator_title", "Creador de texto")}
-              </h2>
-
-              <p className="text-[22px] leading-[1.9] text-slate-600">
-                {tr(
-                  "information_text_creator_text",
-                  "El creador de texto ayuda a generar contenidos a partir de una idea, una instrucción o información base. Puede servir para redactar explicaciones, textos informativos, borradores o contenido estructurado."
-                )}
-              </p>
-            </div>
-
-            <div className="relative h-[620px] flex items-center justify-center">
-
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-sky-50 rotate-6" />
-
-              <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                
-                <div className="space-y-5">
-                  <div className="h-5 rounded-full bg-sky-200 w-[60%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-full" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[92%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[88%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
-                  <div className="h-4 rounded-full bg-slate-200 w-[70%]" />
-
-                  <div className="mt-10 rounded-3xl bg-sky-50 border border-sky-100 px-6 py-5">
-                    <p className="text-[18px] text-sky-700 font-semibold">
-                      Idea convertida en texto
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ======================= */}
-        {/* CREADOR DE EMAIL */}
-        {/* ======================= */}
-
-        <section
-          id="creador-email"
-          className="min-h-screen flex items-center py-24 scroll-mt-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-
-            <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
-
-              <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-indigo-50 -rotate-6" />
-
-              <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-                
-                <div className="space-y-5">
-
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-                    <span className="text-sm text-slate-500">Para:</span>
-                    <div className="h-3 rounded-full bg-slate-200 w-[170px]" />
-                  </div>
-
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-                    <span className="text-sm text-slate-500">Asunto:</span>
-                    <div className="h-3 rounded-full bg-slate-200 w-[150px]" />
-                  </div>
-
-                  <div className="space-y-4 pt-4">
-                    <div className="h-4 rounded-full bg-slate-200 w-full" />
-                    <div className="h-4 rounded-full bg-slate-200 w-[90%]" />
-                    <div className="h-4 rounded-full bg-slate-200 w-[95%]" />
-                    <div className="h-4 rounded-full bg-slate-200 w-[75%]" />
-                  </div>
-
-                  <div className="mt-10 rounded-3xl bg-indigo-50 border border-indigo-100 px-6 py-5">
-                    <p className="text-[18px] text-indigo-700 font-semibold">
-                      Email generado
-                    </p>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
-
-            <div className="max-w-2xl order-1 lg:order-2">
-              <div className="inline-flex items-center rounded-full bg-indigo-50 px-5 py-2 text-indigo-700 font-medium text-sm mb-8">
-                Euskalia · Creador de email
-              </div>
-
-              <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-                {tr("information_email_creator_title", "Creador de email")}
-              </h2>
-
-              <p className="text-[22px] leading-[1.9] text-slate-600">
-                {tr(
-                  "information_email_creator_text",
-                  "El creador de email permite redactar correos de forma rápida y clara según el contexto indicado. Es útil para mensajes profesionales, solicitudes, respuestas o comunicaciones formales."
-                )}
-              </p>
-            </div>
-
-          </div>
-        </section>
       </section>
     </main>
   );

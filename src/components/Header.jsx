@@ -299,6 +299,7 @@ export default function Header() {
         </div>
 
         <div className="hidden lg:flex items-center gap-4ml-6">
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-slate-900">
@@ -329,6 +330,13 @@ export default function Header() {
           >
             {t("header.contact")}
           </Link>
+
+          <Link
+  to="/informacion"
+  className="text-sm font-medium text-slate-700 hover:text-slate-900 ml-8"
+>
+  {t("header.more_information")}
+</Link>
 
         </div>
         <div className="lg:hidden flex items-center gap-2">

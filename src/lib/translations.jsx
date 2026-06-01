@@ -18,6 +18,7 @@ export const translations = {
     startFree: { ES: "Crear cuenta",  EUS: "Sortu kontua",   EN: "Create account",FR: "Créer un compte" },
     assistant: { ES: "Asistente de IA", EUS: "IA laguntzailea", EN: "AI Assistant", FR: "Assistant IA" },
     contact:   { ES: "Contacto",      EUS: "Kontaktua",      EN: "Contact",      FR: "Contact" },
+    more_information: { ES: "Más información", EUS: "Informazio gehiago", EN: "More information", FR: "Plus d'informations" },
   },
 
   toolsMenu: {
@@ -849,7 +850,666 @@ limit_chars: {
       FR: "Merci ! Nous avons reçu votre suggestion.",
     },
   },
- 
+
+
+  // =========================
+  //        INFORMATION PAGE
+  // =========================
+
+  information_title: {
+  ES: "Información sobre Euskalia",
+  EUS: "Euskaliari buruzko informazioa",
+  EN: "Information about Euskalia",
+  FR: "Informations sur Euskalia",
+},
+
+information_subtitle: {
+  ES: "Euskalia reúne diferentes herramientas diseñadas para trabajar con textos en euskera y otros idiomas. En esta página encontrarás información sobre cada una de ellas, cómo funcionan, en qué situaciones pueden resultar útiles y cómo sacar el máximo partido a cada herramienta.",
+  EUS: "Euskaliak euskarazko eta beste hizkuntza batzuetako testuekin lan egiteko diseinatutako hainbat tresna erabiltzen ditu. Orrialde honetan tresna bakoitzari buruzko informazioa aurkituko duzu, nola funtzionatzen duten, zein egoeratan izan daitezkeen erabilgarriak eta tresna bakoitzari ahalik eta etekin handiena nola atera.",
+  EN: "Euskalia brings together different tools designed to work with texts in Basque and other languages. On this page you will find information about each of them, how they work, in which situations they may be useful and how to get the most out of each tool.",
+  FR: "Euskalia regroupe différents outils conçus pour travailler avec des textes en basque et dans d'autres langues. Sur cette page, vous trouverez des informations sur chacun d'eux, leur fonctionnement, les situations dans lesquelles ils peuvent être utiles et comment tirer le meilleur parti de chaque outil.",
+},
+
+information_mockup_text: {
+  ES: "Texto",
+  EUS: "Testua",
+  EN: "Text",
+  FR: "Texte",
+},
+
+information_mockup_document: {
+  ES: "Documento",
+  EUS: "Dokumentua",
+  EN: "Document",
+  FR: "Document",
+},
+
+information_mockup_url: {
+  ES: "URL",
+  EUS: "URL",
+  EN: "URL",
+  FR: "URL",
+},
+
+information_mockup_detect_language: {
+  ES: "Detectar idioma",
+  EUS: "Hizkuntza detektatu",
+  EN: "Detect language",
+  FR: "Détecter la langue",
+},
+
+information_mockup_basque: {
+  ES: "Euskera",
+  EUS: "Euskara",
+  EN: "Basque",
+  FR: "Basque",
+},
+
+information_mockup_input_placeholder: {
+  ES: "Escribe o pega el texto aquí.",
+  EUS: "Idatzi edo itsatsi testua hemen.",
+  EN: "Write or paste the text here.",
+  FR: "Écrivez ou collez le texte ici.",
+},
+
+information_mockup_output_placeholder: {
+  ES: "Aquí aparecerá la traducción.",
+  EUS: "Hemen agertuko da itzulpena.",
+  EN: "The translation will appear here.",
+  FR: "La traduction apparaîtra ici.",
+},
+
+information_mockup_translate_button: {
+  ES: "Traducir",
+  EUS: "Itzuli",
+  EN: "Translate",
+  FR: "Traduire",
+},
+
+information_about_title: {
+  ES: "¿Qué es Euskalia?",
+  EUS: "Zer da Euskalia?",
+  EN: "What is Euskalia?",
+  FR: "Qu’est-ce que Euskalia ?",
+},
+
+information_about_title: {
+  ES: "¿Qué es Euskalia?",
+  EUS: "Zer da Euskalia?",
+  EN: "What is Euskalia?",
+  FR: "Qu'est-ce qu'Euskalia ?",
+},
+
+information_about_paragraph_1: {
+  ES: "Euskalia es una plataforma digital creada con un objetivo claro: contribuir al crecimiento y la presencia del euskera en el entorno tecnológico actual. Nace con la idea de acercar la innovación y la inteligencia artificial a todas las personas que utilizan el euskera, facilitando que puedan trabajar, aprender y comunicarse en su propio idioma dentro del entorno digital.",
+  EUS: "Euskalia gaur egungo ingurene teknologikoan euskararen presentzia eta garapena sustatzeko helburuarekin sortutako webgune bat da. Berrikuntza eta adimen artifiziala euskara erabiltzen duten pertsona guztiengana hurbiltzeko sortu da, ingurune digitalean beren hizkuntzan lan egin, ikasi eta komunikatu ahal izan dezaten.",
+  EN: "Euskalia is a digital platform created with a clear objective: to contribute to the growth and presence of the Basque language in today's technological environment. It was created to bring innovation and artificial intelligence closer to everyone who uses Basque, helping them work, learn and communicate in their own language within the digital world.",
+  FR: "Euskalia est une plateforme numérique créée avec un objectif clair : contribuer à la croissance et à la présence de la langue basque dans l'environnement technologique actuel. Elle est née pour rapprocher l'innovation et l'intelligence artificielle de toutes les personnes qui utilisent le basque, en leur permettant de travailler, d'apprendre et de communiquer dans leur propre langue au sein du monde numérique.",
+},
+
+information_about_paragraph_2: {
+  ES: "Euskalia nace con la voluntad de construir un ecosistema digital centrado en el euskera, adaptado a las necesidades reales de la comunidad vasca y preparado para evolucionar junto a los avances tecnológicos. Más allá de ofrecer servicios digitales, el proyecto busca reforzar la presencia del euskera en Internet y contribuir a que siga teniendo un papel relevante en la sociedad digital del futuro.",
+  EUS: "Euskalia euskaran oinarritutako ekosistema digital bat eraikitzeko asmoz jaio da, euskal komunitatearen benetako beharretara egokitua eta aurrerapen teknologikoekin batera garatzeko prestatua. Zerbitzu digitalak eskaintzeaz harago, proiektuak euskararen presentzia Interneten indartu nahi du, eta etorkizuneko gizarte digitalean leku garrantzitsua izaten jarrai dezan lagundu.",
+  EN: "Euskalia was born with the ambition of building a digital ecosystem centered on the Basque language, adapted to the real needs of the Basque community and prepared to evolve alongside technological advances. Beyond offering digital services, the project aims to strengthen the presence of Basque on the Internet and help ensure it continues to play an important role in the digital society of the future.",
+  FR: "Euskalia est née avec la volonté de construire un écosystème numérique centré sur la langue basque, adapté aux besoins réels de la communauté basque et prêt à évoluer avec les avancées technologiques. Au-delà de l'offre de services numériques, le projet vise à renforcer la présence du basque sur Internet et à contribuer à ce qu'il conserve un rôle important dans la société numérique de demain.",
+},
+
+information_about_paragraph_3: {
+  ES: "Nuestra visión es construir un proyecto de referencia para la comunidad vasca, impulsando la innovación lingüística y demostrando que el euskera también puede formar parte activa de los avances tecnológicos del presente y del futuro. Euskalia no busca únicamente ofrecer soluciones digitales, sino contribuir a que el idioma siga creciendo, evolucionando y ocupando el lugar que merece en la era digital.",
+  EUS: "Gure ikuspegia euskal komunitatearentzat erreferentziazko proiektu bat eraikitzea da, hizkuntza-berrikuntza sustatuz eta euskarak gaur egungo zein etorkizuneko aurrerapen teknologikoetan ere protagonismoa izan dezakeela erakutsiz. Euskaliaren helburua ez da soilik irtenbide digitalak eskaintzea; euskarak aro digitalean merezi duen lekua izan dezan laguntzea ere bada, hizkuntza hazten, garatzen eta indartzen jarrai dezan.",
+  EN: "Our vision is to build a benchmark project for the Basque community, promoting linguistic innovation and demonstrating that the Basque language can also play an active role in the technological advances of today and tomorrow. Euskalia does not seek only to provide digital solutions, but also to help the language continue to grow, evolve and occupy the place it deserves in the digital age.",
+  FR: "Notre vision est de construire un projet de référence pour la communauté basque, en favorisant l'innovation linguistique et en démontrant que la langue basque peut également jouer un rôle actif dans les avancées technologiques d'aujourd'hui et de demain. Euskalia ne cherche pas seulement à offrir des solutions numériques, mais aussi à contribuer à ce que la langue continue de grandir, d'évoluer et d'occuper la place qu'elle mérite à l'ère numérique.",
+},
+
+information_about_tools: {
+  ES: "Estas son las herramientas que ofrece Euskalia:",
+  EUS: "Hauek dira Euskaliak eskaintzen dituen tresnak:",
+  EN: "These are the tools offered by Euskalia:",
+  FR: "Voici les outils proposés par Euskalia :",
+},
+
+information_translator_badge: {
+  ES: "Euskalia · Traductor",
+  EUS: "Euskalia · Itzultzailea",
+  EN: "Euskalia · Translator",
+  FR: "Euskalia · Traducteur",
+},
+
+information_translator_title: {
+  ES: "Traductor",
+  EUS: "Itzultzailea",
+  EN: "Translator",
+  FR: "Traducteur",
+},
+
+information_translator_text: {
+  ES: "El traductor de Euskalia permite traducir textos entre euskera, castellano, inglés, francés y otros idiomas. Está pensado para ofrecer traducciones claras, naturales y útiles, especialmente cuando el euskera forma parte del proceso.",
+  EUS: "Euskaliaren itzultzaileak euskararen, gaztelaniaren, ingelesaren, frantsesaren eta beste hizkuntza batzuen arteko itzulpenak egiteko aukera ematen du. Itzulpen argi, natural eta erabilgarriak eskaintzeko diseinatuta dago, bereziki euskara prozesuaren parte denean.",
+  EN: "Euskalia’s translator allows you to translate texts between Basque, Spanish, English, French and other languages. It is designed to provide clear, natural and useful translations, especially when Basque is part of the process.",
+  FR: "Le traducteur de Euskalia permet de traduire des textes entre le basque, l’espagnol, l’anglais, le français et d’autres langues. Il est conçu pour offrir des traductions claires, naturelles et utiles, surtout lorsque le basque fait partie du processus.",
+},
+
+information_translator_mockup_basque_text: {
+  ES: "Kaixo, zer moduz?",
+  EUS: "Hola, ¿qué tal?",
+  EN: "Kaixo, zer moduz?",
+  FR: "Kaixo, zer moduz?",
+},
+
+information_translator_mockup_spanish_text: {
+  ES: "Hola, ¿qué tal?",
+  EUS: "Kaixo, zer moduz?",
+  EN: "Hello, how are you?",
+  FR: "Bonjour, comment ça va ?",
+},
+
+information_translator_mockup_completed: {
+  ES: "Traducción completada",
+  EUS: "Itzulpena osatuta",
+  EN: "Translation completed",
+  FR: "Traduction terminée",
+},
+// SUMMARY //
+information_summary_title: {
+  EUS: "Laburtzailea",
+  ES: "Resumidor",
+  EN: "Summarizer",
+  FR: "Résumeur",
+},
+
+information_summary_badge: {
+  EUS: "Euskalia · Laburtzailea",
+  ES: "Euskalia · Resumidor",
+  EN: "Euskalia · Summarizer",
+  FR: "Résumeur",
+},
+information_summary_point_1: {
+  EUS: "Euskaliako laburtzaileak testu luzeak, dokumentuak eta web edukiak bertsio laburrago batean bihurtzea ahalbidetzen du. Bere funtzioa eduki baten ideia nagusiak identifikatzea eta modu argiago eta laburragoan aurkeztea da, informazio garrantzitsuena mantenduz.",
+  ES: "El resumidor de Euskalia permite convertir textos largos, documentos y contenido web en versiones más breves y fáciles de consultar. Su función es identificar las ideas principales de un contenido y presentarlas de forma más clara y condensada, manteniendo la información más relevante.",
+  EN: "Euskalia's summarizer allows long texts, documents and web content to be converted into shorter and easier-to-read versions. Its purpose is to identify the main ideas of a piece of content and present them in a clearer and more concise way while keeping the most relevant information.",
+  FR: "Le résumeur d’Euskalia permet de transformer des textes longs, des documents et du contenu web en versions plus courtes et plus faciles à consulter. Sa fonction est d’identifier les idées principales d’un contenu et de les présenter de manière plus claire et plus condensée, tout en conservant les informations les plus importantes.",
+},
+information_summary_point_2_part_1: {
+  EUS: "Hautatutako botoiaren arabera, laburpena ",
+  ES: "Dependiendo del botón seleccionado, el resumen puede generarse en formato ",
+  EN: "Depending on the selected option, the summary can be generated in ",
+  FR: "Selon l’option sélectionnée, le résumé peut être généré sous un format ",
+},
+
+information_summary_point_2_highlight: {
+  EUS: "laburra, ertaina edo zehatza",
+  ES: "breve, medio o detallado",
+  EN: "short, medium or detailed",
+  FR: "court, moyen ou détaillé",
+},
+
+information_summary_point_2_part_2: {
+  EUS: " izan daiteke. Emaitzaren luzera ere erabiltzaileak gehitutako iturrietan dagoen informazio kopuruaren araberakoa izango da.",
+  ES: ". La longitud del resultado también dependerá de la cantidad de información disponible en las fuentes añadidas por el usuario.",
+  EN: ". The length of the result will also depend on the amount of information available in the sources provided by the user.",
+  FR: ". La longueur du résultat dépendra également de la quantité d’informations disponible dans les sources ajoutées par l’utilisateur.",
+},
+
+information_summary_point_3_part_1: {
+  EUS: "Iturriko edukia ",
+  ES: "La fuente puede estar escrita en ",
+  EN: "The source content can be written in ",
+  FR: "Le contenu source peut être rédigé dans ",
+},
+
+information_summary_point_3_highlight_1: {
+  EUS: "edozein hizkuntzatan",
+  ES: "cualquier idioma",
+  EN: "any language",
+  FR: "n’importe quelle langue",
+},
+
+information_summary_point_3_part_2: {
+  EUS: " ezarri daiteke. Emaitza beti ",
+  ES: ". El resultado se generará siempre en el ",
+  EN: ". The result will always be generated in the ",
+  FR: ". Le résultat sera toujours généré dans la ",
+},
+
+information_summary_point_3_highlight_2: {
+  EUS: "hautatutako hizkuntzan",
+  ES: "idioma",
+  EN: "language",
+  FR: "langue",
+},
+
+information_summary_point_3_part_3: {
+  EUS: " sortzen da, beraz, hizkuntzen arteko edozein konbinazio erabili daiteke.",
+  ES: " seleccionado en el selector, por lo que cualquier combinación entre idiomas es posible.",
+  EN: " selected in the selector, making any language combination possible.",
+  FR: " sélectionnée dans le sélecteur, ce qui permet toutes les combinaisons de langues.",
+},
+
+// CORRECTOR //
+information_corrector_title: {
+  EUS: "Zuzentzailea",
+  ES: "Corrector",
+  EN: "Corrector",
+  FR: "Correcteur",
+},
+
+information_corrector_badge: {
+  EUS: "Euskalia · Zuzentzailea",
+  ES: "Euskalia · Corrector",
+  EN: "Corrector",
+  FR: "Correcteur",
+},
+
+information_corrector_point_1_part_1: {
+  EUS: "Zuzentzaileak, ",
+  ES: "El corrector revisa ",
+  EN: "The corrector reviews ",
+  FR: "Le correcteur examine les ",
+},
+
+information_corrector_point_1_highlight_1: {
+  EUS: "ortografia, gramatika eta idazketa akatsak",
+  ES: "errores ortográficos, gramaticales y de escritura",
+  EN: "spelling, grammar and writing errors",
+  FR: "erreurs orthographiques, grammaticales et rédactionnelles",
+},
+
+information_corrector_point_1_part_2: {
+  EUS: " zuzentzen ditu, testuaren jatorrizko esanahia aldatu gabe. Bere funtzioa ",
+  ES: " sin modificar el significado original del texto. Su función es ",
+  EN: " without changing the original meaning of the text. Its purpose is to ",
+  FR: " sans modifier le sens original du texte. Son objectif est de ",
+},
+
+information_corrector_point_1_highlight_2: {
+  EUS: "akatsak detektatu eta zuzentzea",
+  ES: "detectar y corregir errores",
+  EN: "detect and correct errors",
+  FR: "détecter et corriger les erreurs",
+},
+
+information_corrector_point_1_part_3: {
+  EUS: " da, edukia eta egilearen asmoa mantenduz.",
+  ES: ", manteniendo el contenido y la intención del autor.",
+  EN: ", while preserving the content and the author's intent.",
+  FR: ", tout en conservant le contenu et l’intention de l’auteur.",
+},
+
+information_corrector_point_2_part_1: {
+  EUS: "Gehitutako testuaren ",
+  ES: "El ",
+  EN: "The ",
+  FR: "La ",
+},
+
+information_corrector_point_2_highlight_1: {
+  EUS: "hizkuntzak",
+  ES: "idioma",
+  EN: "language",
+  FR: "langue",
+},
+
+information_corrector_point_2_part_2: {
+  EUS: " bat etorri behar du ",
+  ES: " del texto añadido debe coincidir con el ",
+  EN: " of the added text must match the ",
+  FR: " du texte ajouté doit correspondre à la ",
+},
+
+information_corrector_point_2_highlight_2: {
+  EUS: "hautatzailean aukeratutako hizkuntzarekin",
+  ES: "idioma seleccionado",
+  EN: "selected language",
+  FR: "langue sélectionnée",
+},
+
+information_corrector_point_2_part_3: {
+  EUS: ". Edukia beste hizkuntza batean idatzita dagoela detektatzen bada, zuzenketa egin aurretik hautatzailea detektatutako hizkuntzara aldatzeko abisu bat erakutsiko da.",
+  ES: " en el selector. Si se detecta que el contenido está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes de realizar la corrección.",
+  EN: " in the selector. If the content is detected to be written in another language, a notice will be displayed offering to switch the selector to the detected language before performing the correction.",
+  FR: " dans le sélecteur. Si le contenu est détecté comme étant rédigé dans une autre langue, un avertissement proposera de modifier le sélecteur vers la langue détectée avant d’effectuer la correction.",
+},
+
+information_corrector_mockup_wrong: {
+  EUS: "Ortografia eta gramatika akatsak dituen testua",
+  ES: "Texto con errores ortográficos y gramaticales",
+  EN: "Text with spelling and grammar mistakes",
+  FR: "Texte avec des erreurs orthographiques et grammaticales",
+},
+
+information_corrector_mockup_right: {
+  EUS: "Akatsik gabeko testu zuzendua",
+  ES: "Texto corregido sin errores",
+  EN: "Corrected text without errors",
+  FR: "Texte corrigé sans erreurs",
+},
+information_paraphraser_title: {
+  ES: "Parafraseador",
+  EUS: "Parafraseatzailea",
+  EN: "Paraphraser",
+  FR: "Paraphraseur",
+},
+information_paraphraser_badge: {
+  EUS: "Euskalia · Parafraseatzailea",
+  ES: "Euskalia · Parafraseador",
+  EN: "Euskalia · Paraphraser",
+  FR: "Euskalia · Paraphraseur",
+},
+
+information_paraphraser_mockup_original: {
+  EUS: "Jatorrizko testua",
+  ES: "Texto original",
+  EN: "Original text",
+  FR: "Texte original",
+},
+
+information_paraphraser_mockup_rewritten: {
+  EUS: "Berridatzitako testua",
+  ES: "Texto reformulado",
+  EN: "Rewritten text",
+  FR: "Texte reformulé",
+},
+
+information_paraphraser_point_1_part_1: {
+  EUS: "Parafraseatzaileak ",
+  ES: "El parafraseador permite ",
+  EN: "The paraphraser allows you to ",
+  FR: "Le reformulateur permet de ",
+},
+
+information_paraphraser_point_1_highlight_1: {
+  EUS: "testu bat berridaztea",
+  ES: "reformular un texto",
+  EN: "rephrase a text",
+  FR: "reformuler un texte",
+},
+
+information_paraphraser_point_1_part_2: {
+  EUS: " ahalbidetzen du, bere jatorrizko esanahia mantenduz. Bere funtzioa ideia berdinak beste hitz edo egitura batzuekin adieraztea da. Euskaliak hainbat parafraseo estilo eskaintzen ditu: Neutrala, Formala, Informala, Profesionala, Akademikoa, Arina eta Sortzailea, emaitza testuinguru eta behar desberdinetara egokitzeko.",
+  ES: " manteniendo su significado original. Su función es expresar las mismas ideas utilizando palabras o estructuras diferentes. Euskalia ofrece distintos estilos de parafraseo: Neutral, Formal, Informal, Profesional, Académico, Fluido y Creativo, permitiendo adaptar el resultado a diferentes contextos y necesidades.",
+  EN: " while preserving its original meaning. Its purpose is to express the same ideas using different words or structures. Euskalia offers several paraphrasing styles: Neutral, Formal, Informal, Professional, Academic, Fluent and Creative.",
+  FR: " tout en conservant son sens original. Son objectif est d'exprimer les mêmes idées avec des mots ou des structures différentes.",
+},
+
+information_paraphraser_point_2_part_1: {
+  EUS: " ",
+  ES: "El ",
+  EN: "The ",
+  FR: "La ",
+},
+
+information_paraphraser_point_2_highlight_1: {
+  EUS: "Emaitzaren hizkuntza",
+  ES: "idioma",
+  EN: "language",
+  FR: "langue",
+},
+
+information_paraphraser_point_2_part_2: {
+  EUS: " beti iturburuko testuaren bera izango da. Parafraseatzaileak ",
+  ES: " del resultado siempre será el mismo que el del texto añadido en la fuente. El parafraseador ",
+  EN: " of the result will always be the same as that of the source text. The paraphraser ",
+  FR: " du résultat sera toujours le même que celui du texte source. Le reformulateur ",
+},
+
+information_paraphraser_point_2_highlight_2: {
+  EUS: "edukia berridazten du",
+  ES: "reformula el contenido",
+  EN: "rephrases the content",
+  FR: "reformule le contenu",
+},
+
+information_paraphraser_point_2_part_3: {
+  EUS: ", baina ",
+  ES: ", pero ",
+  EN: ", but ",
+  FR: ", mais ",
+},
+
+information_paraphraser_point_2_highlight_3: {
+  EUS: "ez du itzulpenik egiten",
+  ES: "no realiza traducciones",
+  EN: "does not perform translations",
+  FR: "ne réalise pas de traductions",
+},
+
+information_paraphraser_point_2_part_4: {
+  EUS: ", ezta ere ",
+  ES: " ni cambia el ",
+  EN: " nor does it change the ",
+  FR: " et ne modifie pas la ",
+},
+
+information_paraphraser_point_2_highlight_4: {
+  EUS: "jatorrizko hizkuntza",
+  ES: "idioma original del texto",
+  EN: "original language of the text",
+  FR: "langue d'origine du texte",
+},
+
+information_paraphraser_point_2_part_5: {
+  EUS: " aldatu. Hautatzailean aukeratutako hizkuntzak bat etorri behar du edukiaren hizkuntzarekin. Testua beste hizkuntza batean dagoela detektatzen bada, parafraseatu aurretik hizkuntza aldatzeko aukera emango duen abisu bat erakutsiko da.",
+  ES: ". El idioma seleccionado en el selector debe coincidir con el idioma del contenido añadido. Si se detecta que el texto está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes del parafraseo.",
+  EN: ". The selected language must match the language of the content provided. If another language is detected, a notice will be displayed before paraphrasing.",
+  FR: ". La langue sélectionnée doit correspondre à celle du contenu ajouté. Si une autre langue est détectée, un avertissement sera affiché avant la reformulation.",
+},
+
+information_text_creator_title: {
+  EUS: "Testu sortzailea",
+  ES: "Creador de Texto",
+  EN: "Text Creator",
+  FR: "Créateur de texte",
+},
+
+information_text_creator_badge: {
+  EUS: "Euskalia · Testu sortzailea",
+  ES: "Euskalia · Creador de Texto",
+  EN: "Euskalia · Text Creator",
+  FR: "Euskalia · Créateur de texte",
+},
+
+information_text_creator_point_1: {
+  EUS: "Testu sortzaileak erabiltzaileak emandako informaziotik eduki bat sortzea ahalbidetzen du. Artikuluak, deskribapenak, argitalpenak, informazio testuak eta bestelako eduki motak idazteko erabil daiteke. Gehitutako informazioa nahikoa ez bada, adimen artifizialak jarraitu aurretik testuinguru gehiago behar dela adieraziko duen mezu bat erakutsiko du.",
+  ES: "El creador de texto permite generar contenido nuevo a partir de la información proporcionada por el usuario. Puede utilizarse para redactar artículos, descripciones, publicaciones, textos informativos y otros tipos de contenido. Si la información añadida no es suficiente, la inteligencia artificial mostrará un mensaje indicando que se necesita más contexto antes de continuar.",
+  EN: "The text creator allows new content to be generated from the information provided by the user. It can be used to write articles, descriptions, posts, informational texts and other types of content. If the added information is not sufficient, the artificial intelligence will display a message indicating that more context is needed before continuing.",
+  FR: "Le créateur de texte permet de générer du nouveau contenu à partir des informations fournies par l’utilisateur. Il peut être utilisé pour rédiger des articles, des descriptions, des publications, des textes informatifs et d’autres types de contenu. Si les informations ajoutées ne sont pas suffisantes, l’intelligence artificielle affichera un message indiquant qu’un contexte supplémentaire est nécessaire avant de continuer.",
+},
+
+information_text_creator_point_2_highlight_1: {
+  EUS: "Luzera",
+  ES: "La longitud",
+  EN: "Length",
+  FR: "La longueur",
+},
+
+information_text_creator_point_2_part_1: {
+  EUS: " emaitzaren kontrol erabilgarriaren bidez doitu daiteke. Iturburuan informazioa edozein ",
+  ES: " del resultado puede ajustarse mediante el control disponible en la herramienta. En la fuente se puede introducir información en cualquier ",
+  EN: " of the result can be adjusted using the control available in the tool. Information can be entered in the source in any ",
+  FR: " du résultat peut être ajustée grâce au contrôle disponible dans l’outil. Dans la source, il est possible d’introduire des informations dans n’importe quelle ",
+},
+
+information_text_creator_point_2_highlight_2: {
+  EUS: "hizkuntzatan",
+  ES: "idioma",
+  EN: "language",
+  FR: "langue",
+},
+
+information_text_creator_point_2_part_2: {
+  EUS: " sar daiteke, eta sortutako testua hautatzailean aukeratutako hizkuntzan egongo da.",
+  ES: ", mientras que el texto generado se mostrará en el idioma seleccionado en el selector.",
+  EN: ", while the generated text will be displayed in the language selected in the selector.",
+  FR: ", tandis que le texte généré s’affichera dans la langue sélectionnée dans le sélecteur.",
+},
+
+information_text_creator_point_3_part_1: {
+  EUS: "Tresnak bi sortze modu ditu. ",
+  ES: "La herramienta dispone de dos modos de creación. En el modo ",
+  EN: "The tool has two creation modes. In ",
+  FR: "L’outil dispose de deux modes de création. En mode ",
+},
+
+information_text_creator_point_3_highlight_1: {
+  EUS: "Normala",
+  ES: "Normal",
+  EN: "Normal",
+  FR: "Normal",
+},
+
+information_text_creator_point_3_part_2: {
+  EUS: " moduan, erabiltzaileak informazioa ematen du eta adimen artifizialak erabakitzen du testua nola egituratu eta garatu. ",
+  ES: ", el usuario proporciona la información y la inteligencia artificial decide cómo estructurar y desarrollar el texto. En el modo ",
+  EN: " mode, the user provides the information and the artificial intelligence decides how to structure and develop the text. In ",
+  FR: ", l’utilisateur fournit les informations et l’intelligence artificielle décide comment structurer et développer le texte. En mode ",
+},
+
+information_text_creator_point_3_highlight_2: {
+  EUS: "Paragrafoen arabera",
+  ES: "Por párrafos",
+  EN: "By paragraphs",
+  FR: "Par paragraphes",
+},
+
+information_text_creator_point_3_part_3: {
+  EUS: " moduan, erabiltzaileak kontrol handiagoa du emaitzaren gainean, zenbat paragrafo sortu nahi dituen eta bakoitzak zer eduki edo funtzio izan behar duen adieraz dezakeelako.",
+  ES: ", el usuario tiene un mayor control sobre el resultado, pudiendo indicar cuántos párrafos desea generar y qué contenido o función debe tener cada uno de ellos.",
+  EN: " mode, the user has greater control over the result and can indicate how many paragraphs they want to generate and what content or purpose each one should have.",
+  FR: ", l’utilisateur dispose d’un plus grand contrôle sur le résultat et peut indiquer combien de paragraphes il souhaite générer ainsi que le contenu ou la fonction de chacun.",
+},
+
+information_text_creator_tip: {
+  EUS: "Garrantzitsua da erabiltzaileak ulertzea zenbat eta informazio, xehetasun eta testuinguru gehiago eman, orduan eta zehatzagoa eta osoagoa izango dela sortutako emaitza.",
+  ES: "Es importante que el usuario entienda que cuanto más información, detalles y contexto proporcione, más preciso y completo podrá ser el resultado generado.",
+  EN: "It is important for the user to understand that the more information, details and context they provide, the more accurate and complete the generated result can be.",
+  FR: "Il est important que l’utilisateur comprenne que plus il fournit d’informations, de détails et de contexte, plus le résultat généré pourra être précis et complet.",
+},
+
+information_email_creator_title: {
+  EUS: "Email sortzailea",
+  ES: "Creador de Email",
+  EN: "Email Creator",
+  FR: "Créateur d’e-mails",
+},
+
+information_email_creator_badge: {
+  EUS: "Euskalia · Email sortzailea",
+  ES: "Euskalia · Creador de Email",
+  EN: "Euskalia · Email Creator",
+  FR: "Euskalia · Créateur d’e-mails",
+},
+
+information_email_creator_tip: {
+  EUS: "Edozein mezu bidali aurretik, sortutako emaitza berrikustea gomendatzen da informazioa zuzena dela egiaztatzeko.",
+  ES: "Antes de enviar cualquier correo, se recomienda revisar el resultado generado para comprobar que la información sea la correcta.",
+  EN: "Before sending any email, it is recommended to review the generated result to make sure the information is correct.",
+  FR: "Avant d’envoyer un e-mail, il est recommandé de vérifier le résultat généré afin de s’assurer que les informations sont correctes.",
+},
+
+information_email_creator_point_1_part_1: {
+  EUS: "Email sortzaileak erabiltzaileak emandako informaziotik mezu elektronikoak sortzea ahalbidetzen du, informazioa idatzita dagoen ",
+  ES: "El creador de email permite generar correos electrónicos a partir de la información proporcionada por el usuario, independientemente del ",
+  EN: "The email creator allows emails to be generated from the information provided by the user, regardless of the ",
+  FR: "Le créateur d’e-mails permet de générer des e-mails à partir des informations fournies par l’utilisateur, indépendamment de la ",
+},
+
+information_email_creator_point_1_highlight_1: {
+  EUS: "hizkuntza",
+  ES: "idioma",
+  EN: "language",
+  FR: "langue",
+},
+
+information_email_creator_point_1_part_2: {
+  EUS: " edozein dela ere. Emaitza hautatzailean aukeratutako hizkuntzan erakutsiko da. Bi idazketa mota ditu: ",
+  ES: " en que esté escrita. El resultado se mostrará en el idioma seleccionado en el selector. Dispone de dos estilos de redacción: ",
+  EN: " in which it is written. The result will be shown in the language selected in the selector. It offers two writing styles: ",
+  FR: " dans laquelle elles sont rédigées. Le résultat s’affichera dans la langue sélectionnée dans le sélecteur. Il propose deux styles de rédaction : ",
+},
+
+information_email_creator_point_1_highlight_2: {
+  EUS: "Formala",
+  ES: "Formal",
+  EN: "Formal",
+  FR: "Formel",
+},
+
+information_email_creator_point_1_part_3: {
+  EUS: ", komunikazio profesionaletarako, eta ",
+  ES: ", para comunicaciones profesionales, e ",
+  EN: ", for professional communications, and ",
+  FR: ", pour les communications professionnelles, et ",
+},
+
+information_email_creator_point_1_highlight_3: {
+  EUS: "Informala",
+  ES: "Informal",
+  EN: "Informal",
+  FR: "Informel",
+},
+
+information_email_creator_point_1_part_4: {
+  EUS: ", mezu hurbilago eta naturalagoetarako.",
+  ES: ", para mensajes más cercanos y naturales.",
+  EN: ", for warmer and more natural messages.",
+  FR: ", pour des messages plus proches et naturels.",
+},
+
+information_email_creator_point_2_part_1: {
+  EUS: " ",
+  ES: "En modo ",
+  EN: "In ",
+  FR: "En mode ",
+},
+
+information_email_creator_point_2_highlight_1: {
+  EUS: "Sortzailea",
+  ES: "Creativo",
+  EN: "Creative",
+  FR: "Créatif",
+},
+
+information_email_creator_point_2_part_2: {
+  EUS: " moduan, adimen artifizialak mezua modu libreago eta sortzaileagoan garatzen du, eta oso aukera ona izan daiteke nola hasi edo zer idatzi ez dakiten erabiltzaileentzat. ",
+  ES: ", la inteligencia artificial desarrolla el correo de forma más libre y creativa, pudiendo ser una muy buena opción para usuarios que tienen bloqueos sobre cómo empezar o qué escribir. En modo ",
+  EN: " mode, the artificial intelligence develops the email in a freer and more creative way, making it a very good option for users who are unsure how to start or what to write. In ",
+  FR: ", l’intelligence artificielle rédige l’e-mail de manière plus libre et créative, ce qui peut être une très bonne option pour les utilisateurs qui ne savent pas comment commencer ou quoi écrire. En mode ",
+},
+
+information_email_creator_point_2_highlight_2: {
+  EUS: "Txantiloia",
+  ES: "Plantilla",
+  EN: "Template",
+  FR: "Modèle",
+},
+
+information_email_creator_point_2_part_3: {
+  EUS: " moduan, erabiltzaileak kontrol handiagoa du edukiaren gainean, paragrafo bakoitzaren informazioa zehaztu ahal duelako.",
+  ES: ", el resultado es más literal y el usuario tiene un mayor control sobre el contenido, pudiendo definir la información de cada párrafo.",
+  EN: " mode, the result is more literal and the user has greater control over the content by defining the information for each paragraph.",
+  FR: ", le résultat est plus littéral et l’utilisateur dispose d’un plus grand contrôle sur le contenu, en pouvant définir les informations de chaque paragraphe.",
+},
+
+information_email_creator_point_3_part_1: {
+  EUS: "Erabiltzaileak zenbat eta testuinguru, informazio eta xehetasun gehiago eman, orduan eta ",
+  ES: "Cuanto más contexto, información y detalles proporcione el usuario, ",
+  EN: "The more context, information and details the user provides, the ",
+  FR: "Plus l’utilisateur fournit de contexte, d’informations et de détails, plus le résultat généré sera ",
+},
+
+information_email_creator_point_3_highlight_1: {
+  EUS: "zehatzagoa eta osatuagoa",
+  ES: "más preciso y completo",
+  EN: "more accurate and complete",
+  FR: "précis et complet",
+},
+
+information_email_creator_point_3_part_2: {
+  EUS: " izango da sortutako emaitza.",
+  ES: " será el resultado generado.",
+  EN: " the generated result will be.",
+  FR: ".",
+},
 
   // =========================
   //        CHAT IA 
