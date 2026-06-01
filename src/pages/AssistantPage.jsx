@@ -344,27 +344,27 @@ CORRECCIÓN DE TEXTO:
               )}
 
               <div className="px-4 pb-4">
-                <div className="rounded-[18px] border-2 border-slate-900/90 bg-white px-4 h-12 flex items-center gap-3">
+                <div className="relative rounded-[18px] border-2 border-slate-900/90 bg-white h-12 flex items-center">
                   <input
                     ref={inputRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={onKeyDown}
                     placeholder={tr("assistant_placeholder", "Escribe aquí…")}
-                    className="flex-1 h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400"
+                    className="w-full h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400 pl-4 pr-12"
                   />
 
                   <button
                     type="button"
                     onClick={send}
                     disabled={!input.trim() || isSending}
-                    className={`h-10 w-10 rounded-full inline-flex items-center justify-center transition ${
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full inline-flex items-center justify-center transition ${
                       input.trim() && !isSending
                         ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
                         : "bg-slate-100 text-slate-300 cursor-not-allowed"
                     }`}
                   >
-                    <ArrowUp className="w-5 h-5" />
+                    <ArrowUp className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
