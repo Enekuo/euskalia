@@ -45,7 +45,7 @@ export default function CorrectorGramatical() {
   const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
 
 
-  const [sourceMode, setSourceMode] = useState(null);
+  const [sourceMode, setSourceMode] = useState("text");
   const [textValue, setTextValue] = useState("");
 
   const [result, setResult] = useState("");
@@ -807,26 +807,6 @@ return (
                       clearRight();
                     }}
                     showDivider
-                  />
-                  <TabBtn
-                    active={sourceMode === "document"}
-                    icon={FileIcon}
-                    label={labelTabDocument}
-                    onClick={() => {
-                      setSourceMode("document");
-                      clearRight();
-                    }}
-                    showDivider
-                  />
-                  <TabBtn
-                    active={sourceMode === "url"}
-                    icon={UrlIcon}
-                    label={labelTabUrl}
-                    onClick={() => {
-                      setSourceMode("url");
-                      clearRight();
-                    }}
-                    showDivider={false}
                   />
                 </div>
 
