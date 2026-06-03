@@ -1601,17 +1601,30 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
 
                 <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
-                  <div className="min-h-0 h-[350px] pb-8">
-                    <textarea
-                      ref={rightTA}
-                      value={loading && document.activeElement !== rightTA.current ? t("translator.loading") : rightText}
-                      placeholder={t("translator.right_placeholder")}
-                      readOnly
-                      className={`w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto ${
-                        loading ? "italic text-slate-500" : ""
-                      }`}
-                    />
-                  </div>
+
+<div className="h-[440px] overflow-y-auto w-full">
+  <div className="px-6 pt-16 pb-20 max-w-3xl mx-auto">
+    {loading && !rightText && (
+      <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
+        {t("translator.loading")}
+      </p>
+    )}
+
+    {!loading && !rightText && (
+      <p className="text-[17px] leading-8 text-slate-500 font-medium">
+        {t("translator.right_placeholder")}
+      </p>
+    )}
+
+    {rightText && (
+      <article className="prose prose-slate max-w-none">
+        <p className="whitespace-pre-wrap text-[17px] leading-8 text-slate-700 font-medium">
+          {rightText}
+        </p>
+      </article>
+    )}
+  </div>
+</div>
 
                   {sourceMode === "text" && !loading && !err && (!hasRealResult || dirty) && (
                     <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
