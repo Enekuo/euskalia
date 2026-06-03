@@ -1602,8 +1602,8 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
                 <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
 
-<div className="h-[440px] overflow-y-auto w-full">
-  <div className="px-6 pt-10 pb-20 max-w-3xl mx-auto">
+<div className="h-[440px] overflow-y-auto w-full -mt-8">
+  <div className="px-6 pt-4 pb-20 max-w-3xl mx-auto">
     {loading && !rightText && (
       <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
         {t("translator.loading")}
