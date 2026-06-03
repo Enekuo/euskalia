@@ -529,11 +529,26 @@ const tooltipCopied = t("translator.copied");
   }
 };
 
-  const handleClearLeft = () => {
-    if (!(sourceMode === "text" && textValue)) return;
+const handleClearLeft = () => {
+  if (!canClear) return;
+
+  if (sourceMode === "text") {
     setTextValue("");
-    clearRight();
-  };
+  }
+
+  if (sourceMode === "document") {
+    setDocuments([]);
+    setDocumentsText([]);
+  }
+
+  if (sourceMode === "url") {
+    setUrlItems([]);
+    setUrlsTextarea("");
+    setUrlInputOpen(false);
+  }
+
+  clearRight();
+};
 
   // ===== Helper: cache key (sha-256) para KV =====
   const sha256Hex = async (input) => {
@@ -796,6 +811,11 @@ const barClass = overLimit
   : nearLimit
   ? "bg-amber-500"
   : "bg-sky-500";
+
+  const canClear =
+  (sourceMode === "text" && !!textValue) ||
+  (sourceMode === "document" && documents.length > 0) ||
+  (sourceMode === "url" && urlItems.length > 0);
 
 
 return (
@@ -1214,12 +1234,12 @@ return (
   onClick={handleClearLeft}
   title={tr("summary.clear_input", "Eliminar")}
   className={`h-9 w-9 flex items-center justify-center ${
-    sourceMode === "text" && textValue
+    canClear
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
   }`}
   aria-label={tr("summary.clear_input", "Eliminar")}
-  disabled={!(sourceMode === "text" && textValue)}
+  disabled={!canClear}
 >
   <Trash className="w-5 h-5" />
 </button>
