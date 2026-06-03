@@ -13,6 +13,11 @@ import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
 import { useNavigate } from "react-router-dom";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+
 
 const MAX_CHARS = 3000;
 
@@ -1596,7 +1601,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
                 </div>
 
                 <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
-                  <div className="min-h-0 h-[430px] pb-8">
+                  <div className="min-h-0 h-[350px] pb-8">
                     <textarea
                       ref={rightTA}
                       value={loading && document.activeElement !== rightTA.current ? t("translator.loading") : rightText}
