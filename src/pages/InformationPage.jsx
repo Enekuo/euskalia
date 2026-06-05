@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { Lightbulb } from "lucide-react";
 import { Globe, FileText, SearchCheck, PenLine, Type, Mail, File, Link2, ArrowLeftRight, Trash2, Mic, Volume2, Copy, Share2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function InformationPage() {
   const { t } = useTranslation();
@@ -16,21 +17,24 @@ export default function InformationPage() {
     return !val || val === key ? fallback : val;
   };
 
-  useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace("#", "");
-      const element = document.getElementById(id);
+useEffect(() => {
+  const targetId = location.hash
+    ? location.hash.replace("#", "")
+    : tool;
 
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }, 100);
-      }
-    }
-  }, [location]);
+  if (!targetId) return;
+
+  const element = document.getElementById(targetId);
+
+  if (element) {
+    requestAnimationFrame(() => {
+      element.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+      });
+    });
+  }
+}, [location, tool]);
 
   return (
 
@@ -42,8 +46,16 @@ export default function InformationPage() {
 
     {/* HERO */}
 
-    <section className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5">
-      <div className="absolute top-[-140px] right-[-100px] w-[520px] h-[520px] rounded-full bg-[#DBE8FF] opacity-70" />
+<motion.section
+  className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5"
+initial={{ opacity: 0, y: 180, scale: 0.96 }}
+whileInView={{ opacity: 1, y: 0, scale: 1 }}
+viewport={{ once: false, amount: 0.4 }}
+transition={{
+  duration: 0.8,
+  delay: 0.4
+}}
+  >
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full relative z-10">
         <div className="max-w-[520px] pl-1 lg:pl-4 -mt-8">
@@ -174,16 +186,24 @@ export default function InformationPage() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
 
 {/* ======================= */}
 {/* QUÉ ES EUSKALIA */}
 {/* ======================= */}
 
-<section
+<motion.section
   id="que-es-euskalia"
   className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center"
+  initial={{ opacity: 0, y: 80 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: false, amount: 0.4 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.2
+  }}
 >
+
   <div className="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full bg-[#DCE9FF] opacity-50" />
   <div className="absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full bg-[#DCE9FF] opacity-40" />
 
@@ -236,7 +256,7 @@ export default function InformationPage() {
       </p>
     </div>
   </div>
-</section>
+</motion.section>
 
 </>
 )}
@@ -246,9 +266,17 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "traductor") && (
-<section
+  <motion.section
   id="traductor"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: -100 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.5 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
+
 >
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
     <div className="max-w-2xl">
@@ -300,7 +328,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 )}
 
 {/* ======================= */}
@@ -308,11 +336,19 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "resumidor") && (
-<section
+<motion.section
   id="resumidor"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: 150 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.3 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
 >
-  <div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-16 items-center w-full">
+
+<div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-16 items-center w-full">
     <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
       <div className="absolute w-[470px] h-[470px] rounded-[60px] bg-[#EEF8F1]" />
 
@@ -376,7 +412,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+  </motion.section>
 )}
 
 {/* ======================= */}
@@ -384,10 +420,18 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "corrector") && (
-<section
+<motion.section
   id="corrector"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: -100 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.5 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
 >
+
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center w-full">
     <div className="max-w-2xl">
       <div className="inline-flex items-center rounded-full bg-purple-50 px-5 py-2 text-purple-700 font-medium text-sm mb-8">
@@ -459,7 +503,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 )}
 
 {/* ======================= */}
@@ -467,28 +511,36 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "parafraseador") && (
-<section
+<motion.section
   id="parafraseador"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: 150 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.3 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
 >
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
-      <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-orange-50 -rotate-6" />
 
-      <div className="relative w-[430px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-        <div className="space-y-6">
+<div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-10 items-center w-full">
+    <div className="relative h-[560px] flex items-center justify-center order-2 lg:order-1">
+      <div className="absolute w-[440px] h-[440px] rounded-[60px] bg-orange-50 -rotate-6" />
+
+      <div className="relative w-[360px] rounded-[36px] border border-slate-200 bg-white shadow-2xl p-7">
+        <div className="space-y-5">
           <div className="rounded-3xl bg-slate-100 px-6 py-5">
-            <p className="text-[20px] text-slate-600 leading-relaxed">
+            <p className="text-[18px] text-slate-600 leading-relaxed">
               {tr("information_paraphraser_mockup_original", "Texto original")}
             </p>
           </div>
 
-          <div className="flex justify-center text-[32px] text-orange-500 font-bold">
+          <div className="flex justify-center text-[30px] text-orange-500 font-bold">
             ↓
           </div>
 
           <div className="rounded-3xl bg-orange-50 px-6 py-5 border border-orange-100">
-            <p className="text-[20px] text-slate-800 leading-relaxed font-medium">
+            <p className="text-[18px] text-slate-800 leading-relaxed font-medium">
               {tr("information_paraphraser_mockup_rewritten", "Texto reformulado")}
             </p>
           </div>
@@ -496,14 +548,16 @@ export default function InformationPage() {
       </div>
     </div>
 
-    <div className="max-w-2xl order-1 lg:order-2">
-      <div className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm mb-8">
-        {tr("information_paraphraser_badge", "Euskalia · Parafraseador")}
-      </div>
+    <div className="max-w-[760px] order-1 lg:order-2 lg: ml-10">
+      <div className="flex items-center gap-6 mb-8">
+        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+          {tr("information_paraphraser_title", "Parafraseador")}
+        </h2>
 
-      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-        {tr("information_paraphraser_title", "Parafraseador")}
-      </h2>
+        <div className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm">
+          {tr("information_paraphraser_badge", "Euskalia · Parafraseador")}
+        </div>
+      </div>
 
       <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
         <div className="flex items-start gap-4">
@@ -542,7 +596,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 )}
 
 {/* ======================= */}
@@ -550,11 +604,19 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "creador-texto") && (
-<section
-  id="creador-texto"
+<motion.section
+  id="corrector"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: -100 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.5 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
 >
-  <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center w-full">
+
+<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center w-full">
     <div className="max-w-[900px] -mt-10">
       <div className="flex items-center gap-6 mb-10">
         <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
@@ -643,7 +705,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 )}
 
 {/* ======================= */}
@@ -651,11 +713,19 @@ export default function InformationPage() {
 {/* ======================= */}
 
 {(!tool || tool === "creador-email") && (
-<section
+<motion.section
   id="creador-email"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
+  initial={{ opacity: 0, x: 150 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  viewport={{ once: false, amount: 0.3 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.5
+  }}
 >
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
+
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
     <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 -ml-40">
       <div className="absolute w-[400px] h-[400px] rounded-[60px] bg-indigo-50 -rotate-6" />
 
@@ -766,7 +836,7 @@ export default function InformationPage() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 )}
 
       </section>

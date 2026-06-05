@@ -657,7 +657,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           console.error("API /api/public (urls) error:", res.status, raw);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
           if (!hasPrev)
-            setErr(uiLang === "EUS" ? "Ezin izan dira URLak orain prozesatu." : "No se pudieron procesar las URLs ahora mismo.");
+            setErr(uiLang === "EUS" ? "Ezin izan da prozesatu URLa ." : "No se pudieron procesar las URLs ahora mismo.");
           return;
         }
 
