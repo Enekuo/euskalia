@@ -17,12 +17,22 @@ export default function InformationPage() {
     return !val || val === key ? fallback : val;
   };
 
-useEffect(() => {
+
+  useEffect(() => {
   const targetId = location.hash
     ? location.hash.replace("#", "")
     : tool;
 
-  if (!targetId) return;
+  if (!targetId) {
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    });
+    return;
+  }
 
   const element = document.getElementById(targetId);
 
@@ -35,6 +45,12 @@ useEffect(() => {
     });
   }
 }, [location, tool]);
+
+const viewportAmount =
+  typeof window !== "undefined" && window.innerWidth < 1024
+    ? 0.1
+    : 0.4;
+
 
   return (
 
@@ -50,16 +66,16 @@ useEffect(() => {
   className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5"
 initial={{ opacity: 0, y: 180, scale: 0.96 }}
 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-viewport={{ once: false, amount: 0.4 }}
+viewport={{ once: false, amount: viewportAmount }}
 transition={{
   duration: 0.8,
-  delay: 0.4
+  delay: 0.2
 }}
   >
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full relative z-10">
         <div className="max-w-[520px] pl-1 lg:pl-4 -mt-8">
-          <h1 className="text-[58px] leading-[0.98] tracking-[-2px] font-bold text-[#071437] mb-7">
+          <h1 className="text-[42px] sm:text-[58px] leading-[0.98] tracking-[-2px] font-bold text-[#071437] mb-7 break-words">
             {tr("information_title", "Información sobre Euskalia")}
           </h1>
 
@@ -197,7 +213,7 @@ transition={{
   className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center"
   initial={{ opacity: 0, y: 80 }}
   whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: false, amount: 0.4 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.2
@@ -271,10 +287,10 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: -100 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.5 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
-    delay: 0.5
+    delay: 0.1
   }}
 
 >
@@ -341,7 +357,7 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: 150 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.3 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.5
@@ -425,7 +441,7 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: -100 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.5 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.5
@@ -438,7 +454,7 @@ transition={{
         {tr("information_corrector_badge")}
       </div>
 
-      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+      <h2 className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
         {tr("information_corrector_title")}
       </h2>
 
@@ -516,7 +532,7 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: 150 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.3 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.5
@@ -550,7 +566,7 @@ transition={{
 
     <div className="max-w-[760px] order-1 lg:order-2 lg: ml-10">
       <div className="flex items-center gap-6 mb-8">
-        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+        <h2 className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
           {tr("information_paraphraser_title", "Parafraseador")}
         </h2>
 
@@ -609,7 +625,7 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: -100 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.5 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.5
@@ -718,7 +734,7 @@ transition={{
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: 150 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: 0.3 }}
+  viewport={{ once: false, amount: viewportAmount }}
   transition={{
     duration: 0.8,
     delay: 0.5
@@ -726,7 +742,7 @@ transition={{
 >
 
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 -ml-40">
+    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 lg:-ml-40">
       <div className="absolute w-[400px] h-[400px] rounded-[60px] bg-indigo-50 -rotate-6" />
 
       <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
@@ -777,7 +793,7 @@ transition={{
       </div>
     </div>
 
-    <div className="max-w-2xl order-1 lg:order-2 -ml-28">
+    <div className="max-w-2xl order-1 lg:order-2 lg:-ml-28">
       <div className="flex items-center gap-6 mb-10">
         <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
           {tr("information_email_creator_title", "Creador de Email")}
@@ -788,7 +804,7 @@ transition={{
         </div>
       </div>
 
-      <div className="space-y-10 text-[16px] leading-[2] text-slate-600 -ml-16">
+      <div className="space-y-10 text-[16px] leading-[2] text-slate-600 lg:-ml-16">
         <div className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
           <p>

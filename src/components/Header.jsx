@@ -403,7 +403,7 @@ export default function Header() {
               </button>
             </div>
 
-            <div className="p-4 flex flex-col h-[calc(100%-64px)]">
+            <div className="p-4 flex flex-col h-[calc(100vh-64px)] overflow-y-auto">
               <div className="flex flex-col gap-1">
                 <p className="px-2 text-sm font-semibold text-slate-500 mt-2 mb-1">
                   {t("header.tools")}
@@ -454,22 +454,22 @@ export default function Header() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <Link
-                  to="/iniciar-sesion"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="h-12 w-full text-base font-medium rounded-md hover:bg-slate-100 flex items-center justify-center"
-                >
-                  {t("header.signIn")}
-                </Link>
+<Link
+  to="/soporte"
+  onClick={() => setIsMobileMenuOpen(false)}
+  className="h-12 w-full text-base font-medium rounded-md hover:bg-slate-100 flex items-center justify-center"
+>
+  {t("header.contact")}
+</Link>
 
-                <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-                  <motion.button
-                    className="w-full h-11 bg-blue-600 text-white font-bold text-base rounded-full"
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {t("header.startFree")}
-                  </motion.button>
-                </Link>
+<Link
+  to="/informacion"
+  onClick={() => setIsMobileMenuOpen(false)}
+  className="h-12 w-full text-base font-medium rounded-md hover:bg-slate-100 flex items-center justify-center"
+>
+  {t("header.more_information")}
+</Link>
+
               </div>
             </div>
           </motion.div>
