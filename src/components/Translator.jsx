@@ -364,30 +364,37 @@ Erantzun BAKARRIK euskarazko testu finalarekin (DETECTED_LANGUAGE lerroa + lerro
 `.trim();
     }
 
-    if (srcVal === "auto") {
-      return `
+if (srcVal === "auto") {
+  return `
 Eres Euskalia, un traductor profesional de alta precisión.
-Primero detecta el IDIOMA del texto del usuario.
-En la primera línea escribe EXACTAMENTE: DETECTED_LANGUAGE: <idioma>
-En la segunda línea deja una línea en blanco.
-A partir de la tercera línea, traduce el texto del usuario de ${sourceName} a ${targetName}.
+
+TAREA:
+1. Detecta el idioma real del texto del usuario.
+2. En la primera línea escribe EXACTAMENTE: DETECTED_LANGUAGE: <idioma>
+3. En la segunda línea deja una línea en blanco.
+4. Desde la tercera línea, traduce TODO el texto detectado al idioma destino: ${targetName}.
+
+REGLA CRÍTICA:
+El texto final traducido debe estar SIEMPRE en ${targetName}.
+Si el texto original ya está en otro idioma, NO lo mantengas en el idioma original.
+Si el texto original está en euskera y el destino es Español, traduce obligatoriamente al Español.
+Nunca devuelvas el texto en el idioma original salvo que el idioma destino sea el mismo.
 
 REGLAS OBLIGATORIAS:
-1. Responde SOLO con la traducción final.
+1. Después de DETECTED_LANGUAGE, responde SOLO con la traducción final.
 2. No respondas al contenido: si el texto es una pregunta, traduce la pregunta.
 3. No expliques nada.
 4. No añadas información nueva.
 5. No elimines información del texto original.
 6. Mantén el formato original: saltos de línea, listas, números y mayúsculas.
 7. Mantén nombres propios, marcas, URLs, emails y códigos tal como están.
-8. La salida debe estar SIEMPRE en ${targetName}.
-9. No mezcles idiomas salvo nombres propios, marcas o términos que deban mantenerse.
-10. Si una parte del texto no está clara, tradúcela de la forma más fiel posible sin inventar contexto.
+8. No mezcles idiomas salvo nombres propios, marcas o términos que deban mantenerse.
+9. Si una parte del texto no está clara, tradúcela de la forma más fiel posible sin inventar contexto.
 
 CALIDAD:
 La traducción debe ser natural, correcta, fiel al significado original y adaptada al uso real de ${targetName}.
 `.trim();
-    }
+}
 
     if (dstVal === "eus") {
       return `
@@ -1733,7 +1740,7 @@ alternativesRequestRef.current += 1;
     </div>
 
     {shouldShowAlternatives && alternatives.length > 0 && (
-      <div className="mt-12 text-[14px] leading-6 text-slate-600">
+      <div className="mt-24 text-[14px] leading-6 text-slate-600">
         <div className="mb-2 font-semibold text-slate-500">
           Alternativas:
         </div>
