@@ -155,6 +155,11 @@ const OPTIONS_SRC = [
   const micChunksRef = useRef([]);
 
   const hasRealResult = !!(rightText && rightText.trim().length > 0);
+  const leftFontClass =
+  leftText.length > 500 ? "text-[14px]" : "text-[17px]";
+
+  const rightFontClass =
+  rightText.length > 500 ? "text-[14px]" : "text-[17px]";
 
   const isLimitTextES = (s) => String(s || "").includes("Límite máximo");
   const isLimitTextEUS = (s) => String(s || "").includes("Gehienezko muga");
@@ -1403,7 +1408,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
       if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
     }}
     placeholder={t("translator.left_placeholder")}
-    className="w-full h-full resize-none bg-transparent outline-none text-[17px] leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto"
+    className={`w-full h-full resize-none bg-transparent outline-none ${leftFontClass} leading-8 text-slate-700 placeholder:text-slate-500 font-medium overflow-y-auto`}
   />
 
   <div className="absolute left-4 bottom-4 z-20">
@@ -1580,7 +1585,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
                 <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
 
 <div className="h-[440px] overflow-y-auto w-full -mt-8">
-  <div className="px-6 pt-4 pb-20 max-w-3xl mx-auto">
+  <div className="px-6 pt-4 pb-20 w-full">
     {loading && !rightText && (
       <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
         {t("translator.loading")}
@@ -1595,7 +1600,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
 
     {rightText && (
       <article className="prose prose-slate max-w-none">
-        <p className="whitespace-pre-wrap text-[17px] leading-8 text-slate-700 font-medium">
+        <p className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}>
           {rightText}
         </p>
       </article>
@@ -1603,7 +1608,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
   </div>
 </div>
 
-                  {sourceMode === "text" && !loading && !err && (!hasRealResult || dirty) && (
+                  {sourceMode === "text" && !loading && !err && !hasRealResult && (
                     <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
                       <button
                         type="button"
