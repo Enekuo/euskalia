@@ -1598,13 +1598,13 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
       </p>
     )}
 
-    {rightText && (
-      <article className="prose prose-slate max-w-none">
-        <p className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}>
-          {rightText}
-        </p>
-      </article>
-    )}
+{rightText && (
+  <div
+    className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
+  >
+    {rightText}
+  </div>
+)}
   </div>
 </div>
 
@@ -1643,7 +1643,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
                     <div className="absolute bottom-4 left-8 md:left-10 text-sm text-red-500">{err}</div>
                   )}
 
-                  <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
+                  <div className="absolute bottom-2 right-6 flex items-center gap-4 text-slate-500">
                     <button
                       type="button"
                       onClick={handleSpeakToggle}
