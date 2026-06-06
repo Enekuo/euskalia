@@ -121,6 +121,9 @@ const OPTIONS_SRC = [
 
   const [leftText, setLeftText] = useState("");
   const [rightText, setRightText] = useState("");
+  const [alternatives, setAlternatives] = useState([]);
+  const [alternativesLoading, setAlternativesLoading] = useState(false);
+  const alternativesRequestRef = useRef(0);
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -155,6 +158,13 @@ const OPTIONS_SRC = [
   const micChunksRef = useRef([]);
 
   const hasRealResult = !!(rightText && rightText.trim().length > 0);
+
+  const shouldShowAlternatives =
+  sourceMode === "text" &&
+  rightText &&
+  rightText.trim().length > 0 &&
+  rightText.trim().length <= 350;
+
   const leftFontClass =
   leftText.length > 500 ? "text-[14px]" : "text-[17px]";
 
@@ -472,6 +482,104 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
     uiLang === "EUS" ? "Itzuli" : "Traducir"
   );
 
+const getTranslationAlternatives = async (originalText, translatedText) => {
+  const cleanOriginal = String(originalText || "").trim();
+  const cleanTranslation = String(translatedText || "").trim();
+
+  alternativesRequestRef.current += 1;
+  const requestId = alternativesRequestRef.current;
+
+  setAlternatives([]);
+
+  if (
+    sourceMode !== "text" ||
+    !cleanOriginal ||
+    !cleanTranslation ||
+    cleanTranslation.length > 350
+  ) {
+    setAlternativesLoading(false);
+    return;
+  }
+
+  try {
+    setAlternativesLoading(true);
+
+    const prompt = `
+Eres Euskalia, un asistente profesional de traducción.
+
+Texto original:
+${cleanOriginal}
+
+Traducción principal:
+${cleanTranslation}
+
+Tu tarea:
+Devuelve alternativas naturales para la traducción principal SOLO si realmente tienen sentido.
+
+Reglas:
+- Si no hay alternativas útiles, responde exactamente: NO_ALTERNATIVES
+- No expliques nada.
+- No repitas la traducción principal.
+- Máximo 4 alternativas.
+- Cada alternativa debe conservar el mismo significado.
+- No inventes información.
+- Mantén el idioma de destino.
+- Devuelve cada alternativa en una línea diferente.
+`.trim();
+
+    const res = await fetch("/api/public", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: "translate",
+        model: "gpt-4o-mini",
+        temperature: 0,
+        mode: "translate_text",
+        src,
+        dst,
+        text: cleanTranslation,
+        messages: [
+          { role: "system", content: prompt },
+          { role: "user", content: cleanTranslation },
+        ],
+      }),
+    });
+
+    if (requestId !== alternativesRequestRef.current) return;
+
+    if (!res.ok) {
+      setAlternatives([]);
+      return;
+    }
+
+    const data = await res.json();
+    const raw = String(data?.content ?? data?.translation ?? "").trim();
+
+    if (!raw || raw === "NO_ALTERNATIVES") {
+      setAlternatives([]);
+      return;
+    }
+
+    const list = raw
+      .split(/\r?\n/)
+      .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
+      .filter(Boolean)
+      .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
+      .slice(0, 4);
+
+    setAlternatives(list);
+  } catch (e) {
+    if (requestId === alternativesRequestRef.current) {
+      console.error("alternatives error:", e);
+      setAlternatives([]);
+    }
+  } finally {
+    if (requestId === alternativesRequestRef.current) {
+      setAlternativesLoading(false);
+    }
+  }
+};
+
   const handleTranslateClick = () => {
     if (sourceMode !== "text") return;
     if (!leftText.trim()) return;
@@ -480,9 +588,12 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
       return;
     }
     setDailyLimitReached(false);
-    setErr("");
-    setTranslateTick((v) => v + 1);
-    setDirty(false);
+setErr("");
+setAlternatives([]);
+setAlternativesLoading(false);
+alternativesRequestRef.current += 1;
+setTranslateTick((v) => v + 1);
+setDirty(false);
   };
 
   useEffect(() => {
@@ -550,13 +661,22 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
         }
 
         if (src === "auto") {
-          const parsed = parseDetectedLanguage(out);
-          setDetectedLangLabel(parsed.detected || "");
-          setRightText((parsed.translation || "").trim());
-        } else {
-          setDetectedLangLabel("");
-          setRightText(out);
-        }
+  const parsed = parseDetectedLanguage(out);
+  const finalTranslation = (parsed.translation || "").trim();
+
+  setDetectedLangLabel(parsed.detected || "");
+  setRightText(finalTranslation);
+
+  getTranslationAlternatives(leftText, finalTranslation);
+} else {
+  const finalTranslation = String(out || "").trim();
+
+  setDetectedLangLabel("");
+  setRightText(finalTranslation);
+
+  getTranslationAlternatives(leftText, finalTranslation);
+}
+
       } catch (e) {
         if (e.name !== "AbortError") {
           console.error("translate error:", e);
@@ -1033,6 +1153,9 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
     setDetectedLangLabel("");
     setDirty(false);
     setDailyLimitReached(false);
+    setAlternatives([]);
+    setAlternativesLoading(false);
+    alternativesRequestRef.current += 1;
   };
 
   const handleCopy = async () => {
@@ -1403,7 +1526,10 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
     onChange={(e) => {
       const next = e.target.value;
       setLeftText(next);
-      setDirty(true);
+setDirty(true);
+setAlternatives([]);
+setAlternativesLoading(false);
+alternativesRequestRef.current += 1;
 
       if (next.length <= MAX_CHARS && isLimitErr(err)) setErr("");
     }}
@@ -1599,12 +1725,42 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
     )}
 
 {rightText && (
-  <div
-    className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
-  >
-    {rightText}
-  </div>
+  <>
+    <div
+      className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
+    >
+      {rightText}
+    </div>
+
+    {shouldShowAlternatives && alternatives.length > 0 && (
+      <div className="mt-5 text-[14px] leading-6 text-slate-600">
+        <div className="mb-2 font-semibold text-slate-500">
+          Alternativas:
+        </div>
+
+        <div className="space-y-1">
+          {alternatives.map((alt, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setRightText(alt)}
+              className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition"
+            >
+              {alt}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {shouldShowAlternatives && alternativesLoading && (
+      <div className="mt-5 text-[14px] text-slate-400">
+        Buscando alternativas...
+      </div>
+    )}
+  </>
 )}
+
   </div>
 </div>
 
