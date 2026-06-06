@@ -1733,7 +1733,7 @@ alternativesRequestRef.current += 1;
     </div>
 
     {shouldShowAlternatives && alternatives.length > 0 && (
-      <div className="mt-5 text-[14px] leading-6 text-slate-600">
+      <div className="mt-12 text-[14px] leading-6 text-slate-600">
         <div className="mb-2 font-semibold text-slate-500">
           Alternativas:
         </div>
