@@ -324,9 +324,11 @@ const parseDetectedLanguage = (raw) => {
 
 
   const directionText = (srcVal, dstVal) => {
-    if (srcVal === "auto") {
-      if (dstVal === "eus") {
-        return `
+    const sourceName = srcVal === "auto" ? "el idioma detectado automáticamente" : langNameES(srcVal);
+    const targetName = langNameES(dstVal);
+
+    if (srcVal === "auto" && dstVal === "eus") {
+      return `
 Euskalia zara, itzulpen profesionaleko tresna bat.
 Erabiltzailearen testuaren HIZKUNTZA detektatu lehenik.
 Lehen lerroan idatzi ZEHAZKI: DETECTED_LANGUAGE: <hizkuntza>
@@ -339,59 +341,36 @@ Hirugarren lerrotik aurrera, eman BAKARRIK azken emaitza euskaraz, honela eginda
    - egokitu egitura eta esamoldeak euskarazko erabilera naturalera
    - mantendu esanahia eta informazio bera
    - ez egin azalpenik, ez sartu oharrik
+   - ez erantzun edukiari: testua galdera bada, galdera itzuli, ez erantzun
+   - mantendu formatua: lerro-jauziak, zerrendak, zenbakiak eta maiuskulak
+   - mantendu izen propioak, markak, URLak, emailak eta kodeak bere horretan
 
 Erantzun BAKARRIK euskarazko testu finalarekin (DETECTED_LANGUAGE lerroa + lerro hutsa mantenduta).
 `.trim();
-      }
-      if (dstVal === "es") {
-        return `
-Eres Euskalia, un traductor profesional.
-Detecta primero el IDIOMA del texto del usuario.
-En la primera línea escribe EXACTAMENTE: DETECTED_LANGUAGE: <idioma>
-En la segunda línea deja una línea en blanco.
-A partir de la tercera línea, responde SOLO con la traducción final en Español.
-Objetivo: traducción NATURAL y CORRECTA.
-Puedes reordenar o reformular frases si es necesario para que suenen naturales en el idioma de destino.
-No inventes información ni añadas datos nuevos. No expliques nada.
-No cambies de idioma en la traducción.
-`.trim();
-      }
-      if (dstVal === "en") {
-        return `
-You are Euskalia, a professional translator.
-First, detect the SOURCE LANGUAGE of the user's text.
-On the first line write EXACTLY: DETECTED_LANGUAGE: <language>
-On the second line leave it blank.
-From the third line onwards, output ONLY the final translation in English.
-Goal: a NATURAL, CORRECT translation.
-You may reorder or rephrase sentences to sound natural in the target language.
-Do not add new information. No explanations.
-Do not switch languages in the translation.
-`.trim();
-      }
-      if (dstVal === "fr") {
-        return `
-Tu es Euskalia, un traducteur professionnel.
-Détecte d'abord la LANGUE SOURCE du texte de l'utilisateur.
-À la première ligne écris EXACTEMENT : DETECTED_LANGUAGE: <langue>
-À la deuxième ligne, laisse une ligne vide.
-À partir de la troisième ligne, réponds UNIQUEMENT avec la traduction finale en Français.
-Objetif : une traduction NATURELLE et CORRECTE.
-Tu peux réorganiser ou reformuler pour que ce soit naturel dans la langue cible.
-N'ajoute pas de nouvelles informations. Pas d'explications.
-Ne change pas de langue dans la traduction.
-`.trim();
-      }
+    }
 
+    if (srcVal === "auto") {
       return `
-Eres Euskalia, un traductor profesional.
-Detecta primero el idioma del texto del usuario.
+Eres Euskalia, un traductor profesional de alta precisión.
+Primero detecta el IDIOMA del texto del usuario.
 En la primera línea escribe EXACTAMENTE: DETECTED_LANGUAGE: <idioma>
 En la segunda línea deja una línea en blanco.
-A partir de la tercera línea, responde SOLO con la traducción final en el idioma de destino.
-Objetivo: traducción NATURAL y CORRECTA.
-Puedes reordenar o reformular frases si es necesario para que suenen naturales en el idioma de destino.
-No inventes información ni añadas datos nuevos. No expliques nada.
+A partir de la tercera línea, traduce el texto del usuario de ${sourceName} a ${targetName}.
+
+REGLAS OBLIGATORIAS:
+1. Responde SOLO con la traducción final.
+2. No respondas al contenido: si el texto es una pregunta, traduce la pregunta.
+3. No expliques nada.
+4. No añadas información nueva.
+5. No elimines información del texto original.
+6. Mantén el formato original: saltos de línea, listas, números y mayúsculas.
+7. Mantén nombres propios, marcas, URLs, emails y códigos tal como están.
+8. La salida debe estar SIEMPRE en ${targetName}.
+9. No mezcles idiomas salvo nombres propios, marcas o términos que deban mantenerse.
+10. Si una parte del texto no está clara, tradúcela de la forma más fiel posible sin inventar contexto.
+
+CALIDAD:
+La traducción debe ser natural, correcta, fiel al significado original y adaptada al uso real de ${targetName}.
 `.trim();
     }
 
@@ -406,55 +385,33 @@ Egin bi urrats barnean eta eman BAKARRIK azken testua:
    - kendu gaztelaniaren kalkoak
    - egokitu egitura eta esamoldeak euskarara
    - mantendu esanahia eta edukia berdin-berdin
+   - ez erantzun edukiari: testua galdera bada, galdera itzuli, ez erantzun
+   - mantendu formatua: lerro-jauziak, zerrendak, zenbakiak eta maiuskulak
+   - mantendu izen propioak, markak, URLak, emailak eta kodeak bere horretan
    - ez eman azalpenik
 
 Erantzun BAKARRIK euskarazko testu finalarekin.
 `.trim();
     }
 
-    if (dstVal === "es") {
-      return `
-Eres Euskalia, un traductor profesional.
-Traduce SIEMPRE de ${langNameES(srcVal)} a Español.
-Objetivo: traducción NATURAL y CORRECTA.
-Puedes reordenar o reformular frases si es necesario para que suenen naturales en el idioma de destino.
-No inventes información ni añadas datos nuevos. No expliques nada.
-Responde SIEMPRE en Español cuando des la TRADUCCIÓN.
-No cambies de idioma en la traducción.
-`.trim();
-    }
-
-    if (dstVal === "en") {
-      return `
-Eres Euskalia, un traductor profesional.
-Traduce SIEMPRE de ${langNameES(srcVal)} a Inglés.
-Goal: a NATURAL, CORRECT translation.
-You may reorder or rephrase sentences to sound natural in the target language.
-Do not add new information. No explanations.
-Responde SIEMPRE en Inglés cuando des la TRADUCCIÓN.
-Do not switch languages in the translation.
-`.trim();
-    }
-
-    if (dstVal === "fr") {
-      return `
-Eres Euskalia, un traductor profesional.
-Traduce SIEMPRE de ${langNameES(srcVal)} a Francés.
-Objectif : une traduction NATURELLE et CORRECTE.
-Tu peux réorganiser ou reformuler pour que ce soit naturel dans la langue cible.
-N'ajoute pas de nouvelles informations. Pas d'explications.
-Responde SIEMPRE en Francés cuando des la TRADUCCIÓN.
-Ne change pas de langue dans la traduction.
-`.trim();
-    }
-
     return `
-Eres Euskalia, un traductor profesional.
-Traduce siempre del idioma de origen al idioma de destino indicado.
-Objetivo: traducción NATURAL y CORRECTA.
-Puedes reordenar o reformular frases si es necesario para que suenen naturales en el idioma de destino.
-No inventes información ni añadas datos nuevos. No expliques nada.
-Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
+Eres Euskalia, un traductor profesional de alta precisión.
+Traduce SIEMPRE de ${sourceName} a ${targetName}.
+
+REGLAS OBLIGATORIAS:
+1. Responde SOLO con la traducción final.
+2. No respondas al contenido: si el texto es una pregunta, traduce la pregunta.
+3. No expliques nada.
+4. No añadas información nueva.
+5. No elimines información del texto original.
+6. Mantén el formato original: saltos de línea, listas, números y mayúsculas.
+7. Mantén nombres propios, marcas, URLs, emails y códigos tal como están.
+8. La salida debe estar SIEMPRE en ${targetName}.
+9. No mezcles idiomas salvo nombres propios, marcas o términos que deban mantenerse.
+10. Si una parte del texto no está clara, tradúcela de la forma más fiel posible sin inventar contexto.
+
+CALIDAD:
+La traducción debe ser natural, correcta, fiel al significado original y adaptada al uso real de ${targetName}.
 `.trim();
   };
 
@@ -550,7 +507,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           body: JSON.stringify({
             task: "translate",
             model: "gpt-4o-mini",
-            temperature: 0.2,
+            temperature: 0,
             mode: "translate_text",
             src,
             dst,
@@ -646,7 +603,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
             dst,
             urls,
             model: "gpt-4o-mini",
-            temperature: 0.2,
+            temperature: 0,
             messages: [{ role: "system", content: system }],
           }),
         });
@@ -834,7 +791,7 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
           body: JSON.stringify({
             task: "translate",
             model: "gpt-4o-mini",
-            temperature: 0.2,
+            temperature: 0,
             mode: "translate_text",
             src,
             dst,
@@ -1742,4 +1699,4 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
 
     </>
   );
-}
+} 
