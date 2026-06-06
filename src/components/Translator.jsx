@@ -286,22 +286,42 @@ const langNameTarget = (code) => {
 };
 
 
+const parseDetectedLanguage = (raw) => {
+  const s = String(raw || "").trimStart();
+  const lines = s.split(/\r?\n/);
 
-  const parseDetectedLanguage = (raw) => {
-    const s = String(raw || "");
-    const lines = s.split(/\r?\n/);
-    const first = (lines[0] || "").trim();
+  let detected = "";
+  let startIndex = 0;
 
-    const m = first.match(/^DETECTED_LANGUAGE\s*:\s*(.+)\s*$/i);
-    if (!m) return { detected: "", translation: s };
+  for (let i = 0; i < Math.min(lines.length, 5); i++) {
+    const line = (lines[i] || "").trim();
 
-    const detected = (m[1] || "").trim();
-    let rest = lines.slice(1);
-    if (rest.length && rest[0].trim() === "") rest = rest.slice(1);
-    const translation = rest.join("\n").trimStart();
+    const m =
+      line.match(/^DETECTED_LANGUAGE\s*:\s*(.+)\s*$/i) ||
+      line.match(/^Detected language\s*:\s*(.+)\s*$/i) ||
+      line.match(/^Idioma detectado\s*:\s*(.+)\s*$/i) ||
+      line.match(/^Hizkuntza detektatua\s*:\s*(.+)\s*$/i) ||
+      line.match(/^Langue détectée\s*:\s*(.+)\s*$/i);
 
-    return { detected, translation };
+    if (m) {
+      detected = (m[1] || "").trim();
+      startIndex = i + 1;
+      break;
+    }
+  }
+
+  let rest = lines.slice(startIndex);
+
+  while (rest.length && rest[0].trim() === "") {
+    rest = rest.slice(1);
+  }
+
+  return {
+    detected,
+    translation: rest.join("\n").trimStart(),
   };
+};
+
 
   const directionText = (srcVal, dstVal) => {
     if (srcVal === "auto") {
@@ -1430,13 +1450,13 @@ Responde SIEMPRE en el idioma de destino cuando des la TRADUCCIÓN.
   />
 
   <div className="absolute left-4 bottom-4 z-20">
-    <SpeechInputButton
-      language="es-ES"
-      onResult={(text) => {
-        setLeftText((prev) => `${prev}${prev ? " " : ""}${text}`);
-        setDirty(true);
-      }}
-    />
+<SpeechInputButton
+  language={speechLangMap[src === "auto" ? "es" : src] || "es-ES"}
+  onResult={(text) => {
+    setLeftText((prev) => `${prev}${prev ? " " : ""}${text}`);
+    setDirty(true);
+  }}
+/>
   </div>
 </div>
 
