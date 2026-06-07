@@ -621,10 +621,13 @@ setDirty(false);
             src,
             dst,
             text: leftText,
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: leftText },
-            ],
+messages: [
+  { role: "system", content: system },
+  {
+    role: "user",
+    content: `Traduce este texto al idioma destino seleccionado. No lo copies. Devuelve únicamente la traducción:\n\n${leftText}`,
+  },
+],
           }),
         });
 
