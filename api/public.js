@@ -769,22 +769,6 @@ REGLA CRÍTICA DE DESTINO:
       model: "gpt-4o-mini",
     });
 
-    try {
-      const cached = await kv.get(cacheKey);
-      if (cached?.content) {
-        await kv.expire(cacheKey, CACHE_TTL_SECONDS);
-        return res.status(200).json({
-          ok: true,
-          provider: "openai",
-          content: cached.content,
-          detectedLanguage,
-          usage: cached.usage || null,
-          cached: true
-        });
-      }
-    } catch (e) {
-      console.log("[KV CACHE GET ERROR]", e?.message || e);
-    }
 
     // ====== Llamada a OpenAI ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -820,12 +804,6 @@ REGLA CRÍTICA DE DESTINO:
     const content = data?.choices?.[0]?.message?.content ?? "";
     const usage   = data?.usage ?? null;
 
-    // ====== Guardar en KV (caché resultado) ======
-    try {
-      await kv.set(cacheKey, { content, usage }, { ex: CACHE_TTL_SECONDS });
-    } catch (e) {
-      console.log("[KV CACHE SET ERROR]", e?.message || e);
-    }
 
     // ====== Actualizar cuota diaria real (tokens) ======
     try {
