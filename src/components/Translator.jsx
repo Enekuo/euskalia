@@ -163,7 +163,7 @@ const OPTIONS_SRC = [
   sourceMode === "text" &&
   rightText &&
   rightText.trim().length > 0 &&
-  rightText.trim().length <= 350;
+  rightText.trim().length <= 250;
 
   const leftFontClass =
   leftText.length > 500 ? "text-[14px]" : "text-[17px]";
@@ -553,12 +553,12 @@ Reglas:
       return;
     }
 
-    const list = raw
-      .split(/\r?\n/)
-      .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
-      .filter(Boolean)
-      .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
-      .slice(0, 4);
+const list = raw
+  .split(/\n\s*\n|---+/)
+  .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
+  .filter(Boolean)
+  .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
+  .slice(0, 4);
 
     setAlternatives(list);
   } catch (e) {
