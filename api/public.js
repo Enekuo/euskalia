@@ -525,7 +525,7 @@ REGLA CRÍTICA DE DESTINO:
       system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
     }
 
-    const finalMessages = [
+    let finalMessages = [
       ...(system ? [{ role: "system", content: system }] : []),
       ...messages,
     ];
@@ -770,7 +770,48 @@ REGLA CRÍTICA DE DESTINO:
         .join("\n")
     ).trim();
 
-    const detectedLanguage = null;
+    const detectedLanguage =
+  tool === "translator" && String(src || "").toLowerCase() === "auto"
+    ? await detectLanguageForBannerWithAI({
+        text: bannerDetectionText,
+        uiLanguage: body?.uiLanguage || "ES",
+        model: "gpt-4o-mini",
+      })
+    : null;
+
+if (
+  tool === "translator" &&
+  String(src || "").toLowerCase() === "auto" &&
+  detectedLanguage?.code &&
+  dstCode
+) {
+  const sourceName = langNameTarget(detectedLanguage.code);
+  const targetName = langNameTarget(dstCode);
+
+  finalMessages = [
+    {
+      role: "system",
+      content: `
+Eres Euskalia, un traductor profesional.
+
+El idioma origen detectado es: ${sourceName}.
+El idioma destino es: ${targetName}.
+
+Traduce TODO el texto del usuario desde ${sourceName} a ${targetName}.
+No detectes otra vez el idioma.
+No escribas DETECTED_LANGUAGE.
+No copies el texto original.
+No hagas traducción parcial.
+No mezcles idiomas.
+Devuelve únicamente la traducción final en ${targetName}.
+`.trim(),
+    },
+    {
+      role: "user",
+      content: bannerDetectionText,
+    },
+  ];
+}
 
     // ====== Llamada a OpenAI ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
