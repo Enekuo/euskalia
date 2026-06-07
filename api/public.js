@@ -205,22 +205,22 @@ EUSKERA-ARAUAK (oso garrantzitsua):
 }
 
 function langNameTarget(code) {
-  if (code === "eus") return "Euskera";
-  if (code === "es") return "Español";
-  if (code === "en") return "English";
-  if (code === "fr") return "Français";
-  if (code === "de") return "Deutsch";
-  if (code === "it") return "Italiano";
-  if (code === "pt") return "Português";
-  if (code === "nl") return "Nederlands";
-  if (code === "zh") return "中文";
-  if (code === "ar") return "العربية";
-  if (code === "ru") return "Русский";
-  if (code === "ja") return "日本語";
-  if (code === "sv") return "Svenska";
-  if (code === "ro") return "Română";
-  if (code === "uk") return "Українська";
-  return "el idioma de destino";
+  if (code === "eus") return "euskera";
+  if (code === "es") return "español";
+  if (code === "en") return "inglés";
+  if (code === "fr") return "francés";
+  if (code === "de") return "alemán";
+  if (code === "it") return "italiano";
+  if (code === "pt") return "portugués";
+  if (code === "nl") return "neerlandés";
+  if (code === "zh") return "chino";
+  if (code === "ar") return "árabe";
+  if (code === "ru") return "ruso";
+  if (code === "ja") return "japonés";
+  if (code === "sv") return "sueco";
+  if (code === "ro") return "rumano";
+  if (code === "uk") return "ucraniano";
+  return "idioma de destino";
 }
 
 // ====== Handler ======
@@ -504,15 +504,22 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
     const dst = hasTranslate ? body.to : (body?.dst || null);
     const dstCode = String(dst || "").toLowerCase();
 
-    if (tool === "translator" && dstCode) {
-      system = `${String(system || "").trim()}
+if (tool === "translator" && dstCode) {
+  system = `${String(system || "").trim()}
 
 REGLA CRÍTICA DE DESTINO:
 - Traduce SIEMPRE al idioma destino: ${langNameTarget(dstCode)}.
-- La respuesta final debe estar únicamente en ${langNameTarget(dstCode)}.
-- No traduzcas a otro idioma aunque el texto sea corto.
-- No expliques nada. Devuelve solo la traducción.`.trim();
-    }
+- La respuesta final debe estar completamente en ${langNameTarget(dstCode)}.
+- No copies el texto original.
+- No hagas traducción parcial.
+- No mezcles idiomas.
+- Si el destino es ruso, la respuesta debe estar en ruso usando alfabeto cirílico.
+- Si el destino es árabe, la respuesta debe estar en árabe.
+- Si el destino es chino, la respuesta debe estar en chino.
+- Si el destino es japonés, la respuesta debe estar en japonés.
+- Solo puedes mantener nombres propios, marcas, URLs, emails o códigos.
+- No expliques nada. Devuelve solo la traducción final.`.trim();
+}
 
     if (tool === "translator" && dstCode === "eus") {
       system = `${String(system || "").trim()}\n\n${eusGuardrail()}`.trim();
