@@ -770,12 +770,7 @@ REGLA CRÍTICA DE DESTINO:
         .join("\n")
     ).trim();
 
-    const detectedLanguage = await detectLanguageForBannerWithAI({
-      text: bannerDetectionText,
-      uiLanguage: body?.uiLanguage || "ES",
-      model: "gpt-4o-mini",
-    });
-
+    const detectedLanguage = null;
 
     // ====== Llamada a OpenAI ======
     const r = await fetch("https://api.openai.com/v1/chat/completions", {

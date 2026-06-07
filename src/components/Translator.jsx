@@ -366,33 +366,21 @@ Erantzun BAKARRIK euskarazko testu finalarekin (DETECTED_LANGUAGE lerroa + lerro
 
 if (srcVal === "auto") {
   return `
-Eres Euskalia, un traductor profesional de alta precisión.
+Eres Euskalia, un traductor profesional.
+Detecta el idioma del texto de entrada.
+La PRIMERA línea de tu respuesta debe ser EXACTAMENTE:
+DETECTED_LANGUAGE: <codigo_idioma>
+Ejemplos de código: eus, es, en, fr, de, pt, it, nl, ru, ar, ja, zh, sv, ro, uk.
+Después de esa primera línea, escribe ÚNICAMENTE el texto traducido, sin etiquetas.
+NO escribas "Traducción:", "Translation:", "Resultado:", comillas, ni explicaciones.
+Devuelve solo el texto final traducido.
 
-TAREA:
-Detecta internamente el idioma real del texto del usuario y traduce TODO el texto al idioma destino: ${targetName}.
-
-REGLA CRÍTICA:
-- Responde SOLO con la traducción final.
-- NO escribas DETECTED_LANGUAGE.
-- NO escribas el idioma detectado.
-- NO dejes líneas extra al principio.
-- El resultado debe estar SIEMPRE en ${targetName}.
-- Nunca devuelvas el texto original salvo que el idioma destino sea el mismo.
-- No hagas traducción parcial.
-- No mezcles idiomas salvo nombres propios, marcas, URLs, emails o códigos.
-
-REGLAS OBLIGATORIAS:
-1. No respondas al contenido: si el texto es una pregunta, traduce la pregunta.
-2. No expliques nada.
-3. No añadas información nueva.
-4. No elimines información del texto original.
-5. Mantén el formato original: saltos de línea, listas, números y mayúsculas.
-6. Si una parte del texto no está clara, tradúcela de la forma más fiel posible sin inventar contexto.
-
-CALIDAD:
-La traducción debe ser natural, correcta, fiel al significado original y adaptada al uso real de ${targetName}.
+Traduce SIEMPRE al idioma de destino: ${targetName}.
+Responde SIEMPRE en ${targetName}.
+No añadas explicaciones ni comentarios.
 `.trim();
 }
+
 
     if (dstVal === "eus") {
       return `
