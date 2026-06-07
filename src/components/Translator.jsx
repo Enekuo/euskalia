@@ -521,23 +521,23 @@ Reglas:
 - Si una alternativa tiene varios párrafos, mantenlos juntos dentro de la misma alternativa.
 `.trim();
 
-    const res = await fetch("/api/public", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        task: "translate",
-        model: "gpt-4o-mini",
-        temperature: 0,
-        mode: "translate_text",
-        src,
-        dst,
-        text: cleanTranslation,
-        messages: [
-          { role: "system", content: prompt },
-          { role: "user", content: cleanTranslation },
-        ],
-      }),
-    });
+const res = await fetch("/api/public", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    task: "translation_alternatives",
+    model: "gpt-4o-mini",
+    temperature: 0,
+    mode: "translation_alternatives",
+    src,
+    dst,
+    text: cleanTranslation,
+    messages: [
+      { role: "system", content: prompt },
+      { role: "user", content: cleanTranslation },
+    ],
+  }),
+});
 
     if (requestId !== alternativesRequestRef.current) return;
 
