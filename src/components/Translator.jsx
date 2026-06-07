@@ -667,14 +667,14 @@ if (src === "auto") {
 
   setRightText(finalTranslation);
 
-  // getTranslationAlternatives(leftText, finalTranslation);
+  getTranslationAlternatives(leftText, finalTranslation);
 } else {
   const finalTranslation = String(out || "").trim();
 
   setDetectedLangLabel("");
   setRightText(finalTranslation);
 
-  // getTranslationAlternatives(leftText, finalTranslation);
+  getTranslationAlternatives(leftText, finalTranslation);
 }
 
       } catch (e) {
