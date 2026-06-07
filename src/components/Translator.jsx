@@ -517,7 +517,8 @@ Reglas:
 - Cada alternativa debe conservar el mismo significado.
 - No inventes información.
 - Mantén el idioma de destino.
-- Devuelve cada alternativa en una línea diferente.
+- Separa cada alternativa usando exactamente esta línea: ---ALT---
+- Si una alternativa tiene varios párrafos, mantenlos juntos dentro de la misma alternativa.
 `.trim();
 
     const res = await fetch("/api/public", {
@@ -554,7 +555,7 @@ Reglas:
     }
 
 const list = raw
-  .split(/\n\s*\n|---+/)
+  .split(/---ALT---/i)
   .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
   .filter(Boolean)
   .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
@@ -1744,7 +1745,7 @@ alternativesRequestRef.current += 1;
               key={index}
               type="button"
               onClick={() => setRightText(alt)}
-              className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition"
+              className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition whitespace-pre-wrap"
             >
               {alt}
             </button>
