@@ -1753,11 +1753,11 @@ alternativesRequestRef.current += 1;
       </div>
     )}
 
-    {shouldShowAlternatives && alternativesLoading && (
-      <div className="mt-5 text-[14px] text-slate-400">
-        Buscando alternativas...
-      </div>
-    )}
+{shouldShowAlternatives && alternativesLoading && (
+  <div className="mt-5 text-[14px] leading-6 text-slate-400">
+    Buscando alternativas...
+  </div>
+)}
   </>
 )}
 
