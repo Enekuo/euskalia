@@ -804,6 +804,12 @@ REGLA CRÍTICA DE DESTINO:
     }
 
     const content = data?.choices?.[0]?.message?.content ?? "";
+
+console.log("TRANSLATOR DEBUG");
+console.log("SRC:", src);
+console.log("DST:", dst);
+console.log("CONTENT:", content);
+
     const usage   = data?.usage ?? null;
 
 
