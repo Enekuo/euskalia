@@ -117,9 +117,10 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model,
-        temperature: 0.8,
-        max_tokens: 120,
+        task: "translation_alternatives",
+temperature: 0.9,
+mode: "translation_alternatives",
+max_tokens: 220,
         response_format: { type: "json_object" },
         messages: [
           {
