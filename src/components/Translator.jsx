@@ -486,10 +486,10 @@ const getTranslationAlternatives = async (originalText, translatedText) => {
 
 const alternativesRule =
   lineCount <= 1
-    ? "- OBLIGATORIO: devuelve 4 alternativas. Si no puedes hacer 4 perfectas, devuelve al menos 3. Nunca devuelvas solo 1 o 2."
+    ? "Para textos de una sola línea, devuelve exactamente 4 alternativas diferentes."
     : lineCount === 2
-    ? "- OBLIGATORIO: devuelve 2 alternativas. Nunca devuelvas solo 1."
-    : "- Devuelve hasta 4 alternativas si son útiles.";
+    ? "Para textos de dos líneas, devuelve exactamente 2 alternativas diferentes."
+    : "Para textos de tres líneas o más, devuelve hasta 4 alternativas si aportan valor.";
 
   alternativesRequestRef.current += 1;
   const requestId = alternativesRequestRef.current;
@@ -509,8 +509,8 @@ const alternativesRule =
   try {
     setAlternativesLoading(true);
 
-    const prompt = `
-Eres Euskalia, un asistente profesional de traducción.
+const prompt = `
+Eres Euskalia, un generador de alternativas de traducción.
 
 Texto original:
 ${cleanOriginal}
@@ -518,19 +518,23 @@ ${cleanOriginal}
 Traducción principal:
 ${cleanTranslation}
 
-Tu tarea:
-Genera alternativas naturales para la traducción principal.
+INSTRUCCIÓN PRINCIPAL:
+Genera alternativas de traducción en el mismo idioma que la traducción principal.
 
-Reglas:
+REGLAS OBLIGATORIAS:
 - No expliques nada.
 - No repitas la traducción principal.
+- Cada alternativa debe mantener el mismo significado.
+- Puedes usar expresiones equivalentes, más formales, más naturales o más coloquiales.
+- Mantén siempre el idioma de destino.
 - ${alternativesRule}
-- Cada alternativa debe conservar el mismo significado.
-- No inventes información.
-- Mantén el idioma de destino.
-- Puedes cambiar palabras, expresiones o la estructura de la frase si el significado se mantiene.
-- Cada alternativa debe ir en una línea diferente.
-- Para textos de 1 línea, NUNCA respondas NO_ALTERNATIVES. Debes devolver 3 o 4 alternativas.
+
+FORMATO OBLIGATORIO:
+Devuelve SOLO las alternativas, separadas por saltos de línea.
+No uses números.
+No uses guiones.
+No uses comillas.
+No escribas títulos.
 `.trim();
 
 const res = await fetch("/api/public", {
