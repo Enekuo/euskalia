@@ -517,18 +517,17 @@ Reglas:
 - Cada alternativa debe conservar el mismo significado.
 - No inventes información.
 - Mantén el idioma de destino.
-- Separa cada alternativa usando exactamente esta línea: ---ALT---
-- Si una alternativa tiene varios párrafos, mantenlos juntos dentro de la misma alternativa.
+- Devuelve cada alternativa en una línea diferente.
 `.trim();
 
 const res = await fetch("/api/public", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    task: "translation_alternatives",
+    task: "translate",
     model: "gpt-4o-mini",
     temperature: 0,
-    mode: "translation_alternatives",
+    mode: "translate_text",
     src,
     dst,
     text: cleanTranslation,
@@ -555,8 +554,8 @@ const res = await fetch("/api/public", {
     }
 
 const list = raw
-  .split(/---ALT---/i)
-  .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
+  .split(/\r?\n/)
+    .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
   .filter(Boolean)
   .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
   .slice(0, 4);
@@ -1745,7 +1744,7 @@ alternativesRequestRef.current += 1;
               key={index}
               type="button"
               onClick={() => setRightText(alt)}
-              className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition whitespace-pre-wrap"
+              className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition"
             >
               {alt}
             </button>
