@@ -479,6 +479,18 @@ const getTranslationAlternatives = async (originalText, translatedText) => {
   const cleanOriginal = String(originalText || "").trim();
   const cleanTranslation = String(translatedText || "").trim();
 
+  const lineCount = cleanTranslation
+  .split(/\r?\n/)
+  .map((line) => line.trim())
+  .filter(Boolean).length;
+
+const alternativesRule =
+  lineCount <= 1
+    ? "- Devuelve exactamente 4 alternativas naturales, una por línea."
+    : lineCount === 2
+    ? "- Devuelve exactamente 2 alternativas naturales, una por línea."
+    : "- Devuelve hasta 4 alternativas naturales, una por línea, solo si realmente tienen sentido.";
+
   alternativesRequestRef.current += 1;
   const requestId = alternativesRequestRef.current;
 
@@ -513,11 +525,11 @@ Reglas:
 - Si no hay alternativas útiles, responde exactamente: NO_ALTERNATIVES
 - No expliques nada.
 - No repitas la traducción principal.
-- Máximo 4 alternativas.
+- ${alternativesRule}
 - Cada alternativa debe conservar el mismo significado.
 - No inventes información.
 - Mantén el idioma de destino.
-- Devuelve cada alternativa en una línea diferente.
+- Cada alternativa debe ir en una línea diferente.
 `.trim();
 
 const res = await fetch("/api/public", {
