@@ -479,17 +479,32 @@ const getTranslationAlternatives = async (originalText, translatedText) => {
   const cleanOriginal = String(originalText || "").trim();
   const cleanTranslation = String(translatedText || "").trim();
 
-  const lineCount = cleanTranslation
+const realLines = cleanTranslation
   .split(/\r?\n/)
   .map((line) => line.trim())
   .filter(Boolean).length;
 
+let lineCount = realLines;
+
+if (realLines === 1) {
+  if (cleanTranslation.length > 180) {
+    lineCount = 3;
+  } else if (cleanTranslation.length > 90) {
+    lineCount = 2;
+  }
+}
+
+const visualLineCount =
+  cleanTranslation.length > 90 ? 2 : realLines;
+
+const lineCount = Math.max(realLines, visualLineCount);
+
 const alternativesRule =
   lineCount <= 1
-    ? "Para textos de una sola línea, devuelve exactamente 4 alternativas diferentes."
+    ? "OBLIGATORIO: devuelve exactamente 4 alternativas diferentes."
     : lineCount === 2
-    ? "Para textos de dos líneas, devuelve exactamente 2 alternativas diferentes."
-    : "Para textos de tres líneas o más, devuelve hasta 4 alternativas si aportan valor.";
+    ? "OBLIGATORIO: devuelve exactamente 2 alternativas diferentes."
+    : "OBLIGATORIO: devuelve exactamente 1 alternativa diferente.";
 
   alternativesRequestRef.current += 1;
   const requestId = alternativesRequestRef.current;
