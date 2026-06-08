@@ -494,10 +494,6 @@ if (realLines === 1) {
   }
 }
 
-const visualLineCount =
-  cleanTranslation.length > 90 ? 2 : realLines;
-
-const lineCount = Math.max(realLines, visualLineCount);
 
 const alternativesRule =
   lineCount <= 1
