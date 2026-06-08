@@ -519,17 +519,18 @@ Traducción principal:
 ${cleanTranslation}
 
 Tu tarea:
-Devuelve alternativas naturales para la traducción principal SOLO si realmente tienen sentido.
+Genera alternativas naturales para la traducción principal.
 
 Reglas:
-- Si no hay alternativas útiles, responde exactamente: NO_ALTERNATIVES
 - No expliques nada.
 - No repitas la traducción principal.
 - ${alternativesRule}
 - Cada alternativa debe conservar el mismo significado.
 - No inventes información.
 - Mantén el idioma de destino.
+- Puedes cambiar palabras, expresiones o la estructura de la frase si el significado se mantiene.
 - Cada alternativa debe ir en una línea diferente.
+- Solo responde NO_ALTERNATIVES si realmente no existe ninguna forma razonable de reformular el texto.
 `.trim();
 
 const res = await fetch("/api/public", {
