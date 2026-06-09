@@ -617,14 +617,23 @@ setTranslateTick((v) => v + 1);
 setDirty(false);
   };
 
-  useEffect(() => {
-    if (sourceMode !== "text") return;
-    if (translateTick === 0) return;
+useEffect(() => {
+  if (sourceMode !== "text") return;
+  if (translateTick === 0) return;
+  if (!leftText.trim()) {
+    setLoading(false);
+    setRightText("");
+    setDetectedLangLabel("");
+    setAlternatives([]);
+    setAlternativesLoading(false);
+    return;
+  }
 
-    const controller = new AbortController();
+  const controller = new AbortController();
 
-    const run = async () => {
-      try {
+  const run = async () => {
+
+  try {
         setLoading(true);
         setDailyLimitReached(false);
 
