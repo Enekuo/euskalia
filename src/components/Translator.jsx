@@ -653,7 +653,7 @@ messages: [
   { role: "system", content: system },
   {
     role: "user",
-    content: `Traduce este texto al idioma destino seleccionado. No lo copies. Devuelve únicamente la traducción:\n\n${leftText}`,
+    content: leftText,
   },
 ],
           }),
