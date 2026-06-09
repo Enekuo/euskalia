@@ -163,7 +163,7 @@ const OPTIONS_SRC = [
   sourceMode === "text" &&
   rightText &&
   rightText.trim().length > 0 &&
-  rightText.trim().length <= 250;
+  rightText.trim().length <= 350;
 
   const leftFontClass =
   leftText.length > 500 ? "text-[14px]" : "text-[17px]";
@@ -479,29 +479,6 @@ const getTranslationAlternatives = async (originalText, translatedText) => {
   const cleanOriginal = String(originalText || "").trim();
   const cleanTranslation = String(translatedText || "").trim();
 
-const realLines = cleanTranslation
-  .split(/\r?\n/)
-  .map((line) => line.trim())
-  .filter(Boolean).length;
-
-let lineCount = realLines;
-
-if (realLines === 1) {
-  if (cleanTranslation.length > 180) {
-    lineCount = 3;
-  } else if (cleanTranslation.length > 90) {
-    lineCount = 2;
-  }
-}
-
-
-const alternativesRule =
-  lineCount <= 1
-    ? "OBLIGATORIO: devuelve exactamente 4 alternativas diferentes."
-    : lineCount === 2
-    ? "OBLIGATORIO: devuelve exactamente 2 alternativas diferentes."
-    : "OBLIGATORIO: devuelve exactamente 1 alternativa diferente.";
-
   alternativesRequestRef.current += 1;
   const requestId = alternativesRequestRef.current;
 
@@ -520,8 +497,8 @@ const alternativesRule =
   try {
     setAlternativesLoading(true);
 
-const prompt = `
-Eres Euskalia, un generador de alternativas de traducción.
+    const prompt = `
+Eres Euskalia, un asistente profesional de traducción.
 
 Texto original:
 ${cleanOriginal}
@@ -529,42 +506,37 @@ ${cleanOriginal}
 Traducción principal:
 ${cleanTranslation}
 
-INSTRUCCIÓN PRINCIPAL:
-Genera alternativas de traducción en el mismo idioma que la traducción principal.
+Tu tarea:
+Devuelve alternativas naturales para la traducción principal SOLO si realmente tienen sentido.
 
-REGLAS OBLIGATORIAS:
+Reglas:
+- Si no hay alternativas útiles, responde exactamente: NO_ALTERNATIVES
 - No expliques nada.
 - No repitas la traducción principal.
-- Cada alternativa debe mantener el mismo significado.
-- Puedes usar expresiones equivalentes, más formales, más naturales o más coloquiales.
-- Mantén siempre el idioma de destino.
-- ${alternativesRule}
-
-FORMATO OBLIGATORIO:
-Devuelve SOLO las alternativas, separadas por saltos de línea.
-No uses números.
-No uses guiones.
-No uses comillas.
-No escribas títulos.
+- Máximo 4 alternativas.
+- Cada alternativa debe conservar el mismo significado.
+- No inventes información.
+- Mantén el idioma de destino.
+- Devuelve cada alternativa en una línea diferente.
 `.trim();
 
-const res = await fetch("/api/public", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    task: "translation_alternatives",
-    model: "gpt-4o-mini",
-    temperature: 0,
-    mode: "translation_alternatives",
-    src,
-    dst,
-    text: cleanTranslation,
-    messages: [
-      { role: "system", content: prompt },
-      { role: "user", content: cleanTranslation },
-    ],
-  }),
-});
+    const res = await fetch("/api/public", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: "translate",
+        model: "gpt-4o-mini",
+        temperature: 0,
+        mode: "translate_text",
+        src,
+        dst,
+        text: cleanTranslation,
+        messages: [
+          { role: "system", content: prompt },
+          { role: "user", content: cleanTranslation },
+        ],
+      }),
+    });
 
     if (requestId !== alternativesRequestRef.current) return;
 
@@ -581,12 +553,12 @@ const res = await fetch("/api/public", {
       return;
     }
 
-const list = raw
-  .split(/\r?\n/)
-    .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
-  .filter(Boolean)
-  .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
-  .slice(0, 4);
+    const list = raw
+      .split(/\r?\n/)
+      .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
+      .filter(Boolean)
+      .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
+      .slice(0, 4);
 
     setAlternatives(list);
   } catch (e) {
@@ -617,23 +589,14 @@ setTranslateTick((v) => v + 1);
 setDirty(false);
   };
 
-useEffect(() => {
-  if (sourceMode !== "text") return;
-  if (translateTick === 0) return;
-  if (!leftText.trim()) {
-    setLoading(false);
-    setRightText("");
-    setDetectedLangLabel("");
-    setAlternatives([]);
-    setAlternativesLoading(false);
-    return;
-  }
+  useEffect(() => {
+    if (sourceMode !== "text") return;
+    if (translateTick === 0) return;
 
-  const controller = new AbortController();
+    const controller = new AbortController();
 
-  const run = async () => {
-
-  try {
+    const run = async () => {
+      try {
         setLoading(true);
         setDailyLimitReached(false);
 
@@ -662,7 +625,7 @@ messages: [
   { role: "system", content: system },
   {
     role: "user",
-    content: leftText,
+    content: `Traduce este texto al idioma destino seleccionado. No lo copies. Devuelve únicamente la traducción:\n\n${leftText}`,
   },
 ],
           }),
@@ -704,14 +667,14 @@ if (src === "auto") {
 
   setRightText(finalTranslation);
 
-  getTranslationAlternatives(leftText, finalTranslation);
+  // getTranslationAlternatives(leftText, finalTranslation);
 } else {
   const finalTranslation = String(out || "").trim();
 
   setDetectedLangLabel("");
   setRightText(finalTranslation);
 
-  getTranslationAlternatives(leftText, finalTranslation);
+  // getTranslationAlternatives(leftText, finalTranslation);
 }
 
       } catch (e) {
@@ -1790,11 +1753,11 @@ alternativesRequestRef.current += 1;
       </div>
     )}
 
-{shouldShowAlternatives && alternativesLoading && (
-  <div className="mt-5 text-[14px] leading-6 text-slate-400">
-    Buscando alternativas...
-  </div>
-)}
+    {shouldShowAlternatives && alternativesLoading && (
+      <div className="mt-5 text-[14px] text-slate-400">
+        Buscando alternativas...
+      </div>
+    )}
   </>
 )}
 

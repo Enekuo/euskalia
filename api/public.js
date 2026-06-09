@@ -37,7 +37,7 @@ const FREE_EMAIL_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_EMAIL_CREATOR
 const FREE_EMAIL_CREATOR_RPM             = Number(process.env.FREE_EMAIL_CREATOR_RPM || 6);
 
 // ✅ límite de traducciones por día (solo traductor)
-const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 100);
+const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
 // ✅ límite de correcciones por día (solo corrector)
@@ -117,10 +117,9 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        task: "translation_alternatives",
-temperature: 0,
-mode: "translation_alternatives",
-max_tokens: 220,
+        model,
+        temperature: 0,
+        max_tokens: 120,
         response_format: { type: "json_object" },
         messages: [
           {
@@ -403,22 +402,11 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
       rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
 
-const isTranslationAlternatives =
-  rawTask.includes("translation_alternatives") ||
-  rawMode.includes("translation_alternatives");
-
-const isTranslator =
-  !isTranslationAlternatives &&
-  (
-    hasTranslate ||
-    body?.mode === "translate_urls" ||
-    rawTask.includes("translate") ||
-    rawMode.includes("translate") ||
-    rawTask.includes("traduc") ||
-    rawMode.includes("traduc") ||
-    rawMode.includes("translate_text") ||
-    rawMode.includes("translate_urls")
-  );
+    const isTranslator =
+      hasTranslate || body?.mode === "translate_urls" ||
+      rawTask.includes("translate") || rawMode.includes("translate") ||
+      rawTask.includes("traduc") || rawMode.includes("traduc") ||
+      rawMode.includes("translate_text") || rawMode.includes("translate_urls");
 
     const isCorrector =
       rawTask.includes("correct") || rawMode.includes("correct") ||
@@ -452,7 +440,6 @@ const isTranslator =
       rawTask.includes("creador_correo") || rawMode.includes("creador_correo");
 
     let tool =
-      isTranslationAlternatives ? "translation_alternatives" :
       isSummary ? "summary" :
       isTranslator ? "translator" :
       isCorrector ? "corrector" :
