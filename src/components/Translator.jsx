@@ -589,9 +589,17 @@ setTranslateTick((v) => v + 1);
 setDirty(false);
   };
 
-  useEffect(() => {
-    if (sourceMode !== "text") return;
-    if (translateTick === 0) return;
+useEffect(() => {
+  if (sourceMode !== "text") return;
+  if (translateTick === 0) return;
+  if (!leftText.trim()) {
+    setLoading(false);
+    setRightText("");
+    setDetectedLangLabel("");
+    setAlternatives([]);
+    setAlternativesLoading(false);
+    return;
+  }
 
     const controller = new AbortController();
 
@@ -625,7 +633,7 @@ messages: [
   { role: "system", content: system },
   {
     role: "user",
-    content: `Traduce este texto al idioma destino seleccionado. No lo copies. Devuelve únicamente la traducción:\n\n${leftText}`,
+    content: leftText,
   },
 ],
           }),
@@ -693,7 +701,7 @@ if (src === "auto") {
     return () => {
       controller.abort();
     };
-  }, [translateTick, src, dst, sourceMode]);
+  }, [translateTick, src, dst, sourceMode, leftText]);
 
   useEffect(() => {
     if (sourceMode !== "url") return;
