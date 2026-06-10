@@ -402,11 +402,18 @@ Responde SOLO con la traducción final en el idioma de destino y mantén en lo p
       rawTask.includes("summary") || rawTask.includes("summar") || rawTask.includes("resum") ||
       rawMode.includes("summary") || rawMode.includes("summar") || rawMode.includes("resum");
 
-    const isTranslator =
-      hasTranslate || body?.mode === "translate_urls" ||
-      rawTask.includes("translate") || rawMode.includes("translate") ||
-      rawTask.includes("traduc") || rawMode.includes("traduc") ||
-      rawMode.includes("translate_text") || rawMode.includes("translate_urls");
+      const isTranslationAlternatives =
+       rawTask.includes("translation_alternatives") ||
+       rawMode.includes("translation_alternatives");
+
+const isTranslator =
+  !isTranslationAlternatives &&
+  (
+    hasTranslate || body?.mode === "translate_urls" ||
+    rawTask.includes("translate") || rawMode.includes("translate") ||
+    rawTask.includes("traduc") || rawMode.includes("traduc") ||
+    rawMode.includes("translate_text") || rawMode.includes("translate_urls")
+  );
 
     const isCorrector =
       rawTask.includes("correct") || rawMode.includes("correct") ||
