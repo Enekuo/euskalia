@@ -524,10 +524,10 @@ Reglas:
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        task: "translate",
+        task: "translation_alternatives",
         model: "gpt-4o-mini",
         temperature: 0,
-        mode: "translate_text",
+        mode: "translation_alternatives",
         src,
         dst,
         text: cleanTranslation,
