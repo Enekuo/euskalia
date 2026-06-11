@@ -667,7 +667,11 @@ messages: [
 if (src === "auto") {
   const detectedCode = String(data?.detectedLanguage?.code || "").trim().toLowerCase();
 
-  setDetectedLangLabel(detectedCode ? langNameES(detectedCode) : "");
+  setDetectedLangLabel(
+  detectedCode
+    ? OPTIONS_SRC.find((o) => o.value === detectedCode)?.label || langNameES(detectedCode)
+    : ""
+);
 
   const finalTranslation = String(out || "")
     .replace(/^DETECTED_LANGUAGE\s*:\s*.+$/im, "")
