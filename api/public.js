@@ -137,6 +137,9 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
               `Rules:\n` +
               `- code: short language code. Use "eus" for Basque, "es" for Spanish, "en" for English, "fr" for French. For other languages use common short codes like "zh", "ja", "ar", "de", "it", "pt", "ru", "ko", "nl", "sv", "ro", "uk".\n` +
 `- label: language name translated to the UI language.\n` +
+`- Do not detect the language from a single word, brand name, product name, place name or proper noun.\n` +
+`- Detect the language from the full sentence and the surrounding grammar.\n` +
+`- If the first word looks like a name, brand or isolated term, ignore it and use the rest of the text.\n` +
 `- NEVER return the native language name.\n` +
 `- Example:\n` +
 `  - German + ES UI -> "alemán"\n` +
