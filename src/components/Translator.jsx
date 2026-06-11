@@ -701,7 +701,7 @@ if (src === "auto") {
     return () => {
       controller.abort();
     };
-  }, [translateTick, src, dst, sourceMode, leftText]);
+  }, [translateTick, src, dst, sourceMode]);
 
   useEffect(() => {
     if (sourceMode !== "url") return;
