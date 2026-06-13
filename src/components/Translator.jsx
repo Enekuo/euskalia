@@ -1682,10 +1682,10 @@ alternativesRequestRef.current += 1;
                   )}
                 </div>
 
-                <div className="px-6 pt-10 pb-4 md:px-8 md:pt-12 md:pb-5 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
+                <div className="p-8 md:p-10 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
 
-<div className="h-[440px] overflow-y-auto w-full -mt-8">
-  <div className="px-6 pt-4 pb-20 w-full">
+<div className="h-[400px] overflow-y-auto w-full">
+  <div className="w-full">
     {loading && !rightText && (
       <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
         {t("translator.loading")}
