@@ -543,7 +543,7 @@ if (translationRef.current) {
     const data = await res.json();
     const list = Array.isArray(data?.alternatives) ? data.alternatives : [];
 
-    setAlternatives(list.slice(0, 4));
+    setAlternatives(list.slice(0, maxAlternatives));
   } catch (e) {
     if (requestId === alternativesRequestRef.current) {
       console.error("alternatives error:", e);
