@@ -501,6 +501,8 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
 
     let maxAlternatives = 1;
 
+    console.log("ALT_REF", translationRef.current);
+
 if (translationRef.current) {
   const styles = window.getComputedStyle(translationRef.current);
 
