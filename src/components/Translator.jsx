@@ -511,6 +511,13 @@ if (translationRef.current) {
     1,
     Math.round(height / lineHeight)
   );
+  console.log("ALT_DEBUG", {
+  height,
+  lineHeight,
+  visualLines,
+  maxAlternatives,
+  text: cleanTranslation,
+});
 
   if (visualLines === 1) {
     maxAlternatives = 4;
