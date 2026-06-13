@@ -646,6 +646,8 @@ messages: [
 
         const data = await res.json();
         const out = data?.content ?? data?.translation ?? "";
+        console.log("TRADUCTOR TEXTO - DATA:", data);
+console.log("TRADUCTOR TEXTO - OUT:", out);
 
         if (isRefusal(out)) {
           setRightText("");
