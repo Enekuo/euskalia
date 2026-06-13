@@ -1684,7 +1684,7 @@ alternativesRequestRef.current += 1;
 
                 <div className="p-8 md:p-10 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
 
-<div className="h-[400px] overflow-y-auto w-full">
+<div className="h-[400px] overflow-y-auto w-[calc(100%+24px)] pr-6">
   <div className="w-full">
     {loading && !rightText && (
       <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
