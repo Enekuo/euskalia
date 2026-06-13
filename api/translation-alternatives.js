@@ -145,14 +145,19 @@ ${translatedText}
       });
     }
 
-    const rawContent = String(data?.choices?.[0]?.message?.content || "").trim();
+const rawContent = String(data?.choices?.[0]?.message?.content || "").trim();
 
-    if (!rawContent || rawContent === "NO_ALTERNATIVES") {
-      return res.status(200).json({
-        ok: true,
-        alternatives: [],
-      });
-    }
+const noAlternatives = rawContent
+  .replace(/[.\s]+$/g, "")
+  .trim()
+  .toUpperCase() === "NO_ALTERNATIVES";
+
+if (!rawContent || noAlternatives) {
+  return res.status(200).json({
+    ok: true,
+    alternatives: [],
+  });
+}
 
     const alternatives = rawContent
       .split(/\r?\n/)
