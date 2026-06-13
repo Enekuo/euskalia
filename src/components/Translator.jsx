@@ -498,6 +498,28 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
   try {
     setAlternativesLoading(true);
 
+    let maxAlternatives = 1;
+
+if (translationRef.current) {
+  const styles = window.getComputedStyle(translationRef.current);
+
+  const lineHeight = parseFloat(styles.lineHeight);
+  const height = translationRef.current.offsetHeight;
+
+  const visualLines = Math.max(
+    1,
+    Math.round(height / lineHeight)
+  );
+
+  if (visualLines === 1) {
+    maxAlternatives = 4;
+  } else if (visualLines === 2) {
+    maxAlternatives = 2;
+  } else {
+    maxAlternatives = 1;
+  }
+}
+
     const res = await fetch("/api/translation-alternatives", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -506,6 +528,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
         translatedText: cleanTranslation,
         src,
         dst,
+        maxAlternatives,
       }),
     });
 
@@ -562,6 +585,8 @@ useEffect(() => {
     setAlternativesLoading(false);
     return;
   }
+
+  const translationRef = useRef(null);
 
     const controller = new AbortController();
 
@@ -1700,11 +1725,13 @@ alternativesRequestRef.current += 1;
 
 {rightText && (
   <>
-    <div
-      className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
-    >
-      {rightText}
-    </div>
+
+<div
+  ref={translationRef}
+  className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
+>
+  {rightText}
+</div>
 
     {shouldShowAlternatives && alternatives.length > 0 && (
       <div className="mt-24 text-[14px] leading-6 text-slate-600">

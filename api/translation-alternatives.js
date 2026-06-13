@@ -60,6 +60,11 @@ export default async function handler(req, res) {
     const src = String(body.src || "").trim().toLowerCase();
     const dst = String(body.dst || "").trim().toLowerCase();
 
+    const maxAlternatives = Math.max(
+  1,
+  Math.min(4, Number(body.maxAlternatives || 4))
+);
+
     if (!originalText || !translatedText) {
       return res.status(400).json({
         ok: false,
@@ -87,7 +92,7 @@ REGLAS OBLIGATORIAS:
 - NO expliques nada.
 - NO repitas exactamente la traducción principal.
 - Devuelve solo alternativas útiles si realmente mejoran o varían la expresión.
-- Máximo 4 alternativas.
+- Máximo ${maxAlternatives} alternativas.
 - Todas las alternativas deben conservar exactamente el mismo significado.
 - Todas las alternativas deben estar en ${targetLanguage}.
 - No inventes información.
@@ -154,7 +159,7 @@ ${translatedText}
       .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
       .filter(Boolean)
       .filter((x) => x.toLowerCase() !== translatedText.toLowerCase())
-      .slice(0, 4);
+      .slice(0, maxAlternatives);
 
     return res.status(200).json({
       ok: true,
