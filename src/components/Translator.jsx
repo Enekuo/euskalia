@@ -1717,7 +1717,13 @@ alternativesRequestRef.current += 1;
             <button
               key={index}
               type="button"
-              onClick={() => setRightText(alt)}
+              onClick={() => {
+  const currentMain = rightText;
+  setRightText(alt);
+  setAlternatives((prev) =>
+    prev.map((item) => (item === alt ? currentMain : item))
+  );
+}}
               className="block w-full text-left rounded-md px-2 py-1 hover:bg-slate-100 transition"
             >
               {alt}
