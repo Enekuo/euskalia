@@ -137,7 +137,7 @@ const OPTIONS_SRC = [
   const fileInputRef = useRef(null);
 
   const [urlInputOpen, setUrlInputOpen] = useState(false);
-  const [urlsTextarea, setUrlsTextarea] = useState("");
+  const [urlsTextarea, setUrlsTextarea] = useState(""); 
   const [urlItems, setUrlItems] = useState([]);
 
   const [speaking, setSpeaking] = useState(false);
