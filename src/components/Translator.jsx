@@ -152,6 +152,7 @@ const OPTIONS_SRC = [
   const rightRef = useRef(null);
   const leftTA = useRef(null);
   const rightTA = useRef(null);
+  const translationRef = useRef(null);
 
   const mediaRecorderRef = useRef(null);
   const mediaStreamRef = useRef(null);
@@ -586,7 +587,6 @@ useEffect(() => {
     return;
   }
 
-  const translationRef = useRef(null);
 
     const controller = new AbortController();
 
