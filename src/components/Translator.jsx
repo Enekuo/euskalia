@@ -501,7 +501,7 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
 
     let maxAlternatives = 1;
 
-    console.log("ALT_REF", translationRef.current);
+    
 
 if (translationRef.current) {
   const styles = window.getComputedStyle(translationRef.current);
@@ -522,14 +522,6 @@ if (translationRef.current) {
   } else {
     maxAlternatives = 1;
   }
-
-  console.log("ALT_DEBUG", {
-  height,
-  lineHeight,
-  visualLines,
-  maxAlternatives,
-  text: cleanTranslation,
-});
 }
 
     const res = await fetch("/api/translation-alternatives", {
@@ -677,12 +669,25 @@ if (src === "auto") {
 
   setRightText(finalTranslation);
 
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    getTranslationAlternatives(leftText, finalTranslation);
+  });
+});
+
   getTranslationAlternatives(leftText, finalTranslation);
 } else {
   const finalTranslation = String(out || "").trim();
 
   setDetectedLangLabel("");
+  
   setRightText(finalTranslation);
+
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    getTranslationAlternatives(leftText, finalTranslation);
+  });
+});
 
   getTranslationAlternatives(leftText, finalTranslation);
 }
