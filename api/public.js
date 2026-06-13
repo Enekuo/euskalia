@@ -37,7 +37,7 @@ const FREE_EMAIL_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_EMAIL_CREATOR
 const FREE_EMAIL_CREATOR_RPM             = Number(process.env.FREE_EMAIL_CREATOR_RPM || 6);
 
 // ✅ límite de traducciones por día (solo traductor)
-const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 50);
+const FREE_TRANSLATOR_DAILY_REQUESTS = Number(process.env.FREE_TRANSLATOR_DAILY_REQUESTS || 100);
 // ✅ límite de resúmenes por día (solo resumidor)
 const FREE_SUMMARY_DAILY_REQUESTS  = Number(process.env.FREE_SUMMARY_DAILY_REQUESTS || 10);
 // ✅ límite de correcciones por día (solo corrector)
