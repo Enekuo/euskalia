@@ -1492,7 +1492,7 @@ if (src === "auto") {
                 <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
                   {sourceMode === "text" && (
                     <>
-                      <div className="min-h-0 h-[400px]">
+                      <div className="min-h-0 h-[400px] w-[calc(100%+24px)] pr-6">
 
  <textarea
     ref={leftTA}
