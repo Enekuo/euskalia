@@ -475,7 +475,8 @@ La traducción debe ser natural, correcta, fiel al significado original y adapta
     uiLang === "EUS" ? "Itzuli" : "Traducir"
   );
 
-const getTranslationAlternatives = async (originalText, translatedText) => {
+
+  const getTranslationAlternatives = async (originalText, translatedText) => {
   const cleanOriginal = String(originalText || "").trim();
   const cleanTranslation = String(translatedText || "").trim();
 
@@ -497,44 +498,14 @@ const getTranslationAlternatives = async (originalText, translatedText) => {
   try {
     setAlternativesLoading(true);
 
-    const prompt = `
-Eres Euskalia, un asistente profesional de traducción.
-
-Texto original:
-${cleanOriginal}
-
-Traducción principal:
-${cleanTranslation}
-
-Tu tarea:
-Devuelve alternativas naturales para la traducción principal SOLO si realmente tienen sentido.
-
-Reglas:
-- Si no hay alternativas útiles, responde exactamente: NO_ALTERNATIVES
-- No expliques nada.
-- No repitas la traducción principal.
-- Máximo 4 alternativas.
-- Cada alternativa debe conservar el mismo significado.
-- No inventes información.
-- Mantén el idioma de destino.
-- Devuelve cada alternativa en una línea diferente.
-`.trim();
-
-    const res = await fetch("/api/public", {
+    const res = await fetch("/api/translation-alternatives", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        task: "translation_alternatives",
-        model: "gpt-4o-mini",
-        temperature: 0,
-        mode: "translation_alternatives",
+        originalText: cleanOriginal,
+        translatedText: cleanTranslation,
         src,
         dst,
-        text: cleanTranslation,
-        messages: [
-          { role: "system", content: prompt },
-          { role: "user", content: cleanTranslation },
-        ],
       }),
     });
 
@@ -546,21 +517,9 @@ Reglas:
     }
 
     const data = await res.json();
-    const raw = String(data?.content ?? data?.translation ?? "").trim();
+    const list = Array.isArray(data?.alternatives) ? data.alternatives : [];
 
-    if (!raw || raw === "NO_ALTERNATIVES") {
-      setAlternatives([]);
-      return;
-    }
-
-    const list = raw
-      .split(/\r?\n/)
-      .map((x) => x.replace(/^[-•\d.)\s]+/, "").trim())
-      .filter(Boolean)
-      .filter((x) => x.toLowerCase() !== cleanTranslation.toLowerCase())
-      .slice(0, 4);
-
-    setAlternatives(list);
+    setAlternatives(list.slice(0, 4));
   } catch (e) {
     if (requestId === alternativesRequestRef.current) {
       console.error("alternatives error:", e);
@@ -572,6 +531,9 @@ Reglas:
     }
   }
 };
+
+  
+
 
   const handleTranslateClick = () => {
     if (sourceMode !== "text") return;
@@ -679,14 +641,14 @@ if (src === "auto") {
 
   setRightText(finalTranslation);
 
-  // getTranslationAlternatives(leftText, finalTranslation);
+  getTranslationAlternatives(leftText, finalTranslation);
 } else {
   const finalTranslation = String(out || "").trim();
 
   setDetectedLangLabel("");
   setRightText(finalTranslation);
 
-  // getTranslationAlternatives(leftText, finalTranslation);
+  getTranslationAlternatives(leftText, finalTranslation);
 }
 
       } catch (e) {
