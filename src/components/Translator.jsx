@@ -1753,9 +1753,9 @@ alternativesRequestRef.current += 1;
 
     {shouldShowAlternatives && alternatives.length > 0 && (
       <div className="mt-24 text-[14px] leading-6 text-slate-600">
-        <div className="mb-2 font-semibold text-slate-500">
-          Alternativas:
-        </div>
+  <div className="mb-2 font-semibold text-slate-500">
+  {t("alternatives_title")}
+</div>
 
         <div className="space-y-1">
           {alternatives.map((alt, index) => (
@@ -1780,8 +1780,8 @@ alternativesRequestRef.current += 1;
 
     {shouldShowAlternatives && alternativesLoading && (
       <div className="mt-5 text-[14px] text-slate-400">
-        Buscando alternativas...
-      </div>
+  {t("searching_alternatives")}
+</div>
     )}
   </>
 )}

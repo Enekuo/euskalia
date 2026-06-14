@@ -4046,6 +4046,9 @@ pro_limit_daily: {
    EN: "You have reached your daily limit for the Pro plan. Come back tomorrow to continue using this tool.",
    FR: "Vous avez atteint votre limite quotidienne du plan Pro. Revenez demain pour continuer à utiliser cet outil."
 },
+alternatives_title: { EUS: "Aukera desberdinak", ES: "Alternativas", EN: "Alternatives", FR: "Alternatives" },
+
+searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando alternativas...", EN: "Searching alternatives...", FR: "Recherche d'alternatives..." },
 
 
 
