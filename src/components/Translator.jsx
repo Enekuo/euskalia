@@ -677,7 +677,7 @@ requestAnimationFrame(() => {
   });
 });
 
-  getTranslationAlternatives(leftText, finalTranslation);
+  
 } else {
   const finalTranslation = String(out || "").trim();
 
@@ -1779,7 +1779,7 @@ alternativesRequestRef.current += 1;
     )}
 
     {shouldShowAlternatives && alternativesLoading && (
-      <div className="mt-5 text-[14px] text-slate-400">
+      <div className="mt-24 mb-2 font-semibold text-slate-500">
   {t("searching_alternatives")}
 </div>
     )}
