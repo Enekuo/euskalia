@@ -123,37 +123,40 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
         max_tokens: 120,
         response_format: { type: "json_object" },
         messages: [
-          {
-            role: "system",
-            content:
-              "You detect the main language of the user's text. Return ONLY valid JSON. Do not correct, translate, summarize, or rewrite the text."
-          },
-          {
-            role: "user",
-            content:
-              `Detect the main language of this text.\n\n` +
-              `UI language for label/button: ${uiLanguage}\n\n` +
-              `Return JSON exactly like this:\n` +
-              `{"code":"zh","label":"chino","buttonText":"Usar chino"}\n\n` +
-              `Rules:\n` +
-`- code: short language code. Use "eus" for Basque, "es" for Spanish, "en" for English, "fr" for French. For other languages use common short codes like "zh", "ja", "ar", "de", "it", "pt", "ru", "ko", "nl", "sv", "ro", "uk".\n` +
-`- label: language name translated to the UI language.\n` +
-`- Detect the dominant language of the text.\n` +
-`- Ignore isolated foreign words if the rest of the text is clearly written in another language.\n` +
-`- If a text contains a few Basque words but the grammar, verbs and majority of vocabulary belong to another language, return the other language.\n` +
-`- Base the detection on the majority of the text, not on individual keywords.\n` +
-`- NEVER return the native language name.\n` +
-              `- Example:\n` +
-`  - German + ES UI -> "alemán"\n` +
-`  - German + EUS UI -> "alemana"\n` +
-`  - German + EN UI -> "German"\n` +
-`  - German + FR UI -> "allemand"\n` +
-`- NEVER return "Deutsch", "Español", "Français", etc. unless that is the UI language itself.\n` +
-`- buttonText: short button text written in the UI language, meaning "Use [language]".\n` +
-`- If unsure, return {"code":"","label":"","buttonText":""}.\n\n` +
-              `TEXT:\n${cleanText.slice(0, 3000)}`
-          }
-        ],
+  {
+    role: "system",
+    content:
+      "You are a strict language detector. Return ONLY valid JSON. Detect the language of the input text itself. Do not translate, correct, explain, or infer from topic words."
+  },
+  {
+    role: "user",
+    content:
+      `Return JSON exactly like this:\n` +
+      `{"code":"eus"}\n\n` +
+      `Allowed codes:\n` +
+      `- "eus" = Basque / Euskara\n` +
+      `- "es" = Spanish / Español\n` +
+      `- "en" = English\n` +
+      `- "fr" = French\n` +
+      `- "de" = German\n` +
+      `- "it" = Italian\n` +
+      `- "pt" = Portuguese\n` +
+      `- "nl" = Dutch\n` +
+      `- "zh" = Chinese\n` +
+      `- "ar" = Arabic\n` +
+      `- "ru" = Russian\n` +
+      `- "ja" = Japanese\n` +
+      `- "sv" = Swedish\n` +
+      `- "ro" = Romanian\n` +
+      `- "uk" = Ukrainian\n\n` +
+      `Important:\n` +
+      `- If the text is Basque/Euskara, return {"code":"eus"}.\n` +
+      `- Do not classify Basque as Spanish just because the text contains words about "euskera", "Euskalia", "idiomas", or other language names.\n` +
+      `- Detect grammar and sentence structure, not the topic.\n` +
+      `- If unsure, return {"code":""}.\n\n` +
+      `Text:\n${cleanText.slice(0, 3000)}`
+  }
+],
       }),
     });
 
@@ -170,12 +173,6 @@ async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", mod
 
     const raw = data?.choices?.[0]?.message?.content || "";
     const parsed = JSON.parse(raw);
-
-    console.log("DETECTOR INPUT:");
-console.log(cleanText);
-
-console.log("DETECTOR OUTPUT:");
-console.log(parsed);
 
 const code = String(parsed?.code || "").trim().toLowerCase();
 
