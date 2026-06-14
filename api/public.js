@@ -107,6 +107,12 @@ function todayKey(date = new Date()) {
 async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", model = "gpt-4o-mini" }) {
   const cleanText = String(text || "").trim();
 
+  console.log("DETECTOR INPUT:");
+console.log(cleanText);
+
+console.log("DETECTOR OUTPUT:");
+console.log(parsed);
+
   if (!cleanText || cleanText.length < 2) return null;
 
   try {
