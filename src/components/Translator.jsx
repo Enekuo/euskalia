@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { Globe, SearchCheck, PenLine, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
+import { Globe, Menu, SearchCheck, PenLine, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
@@ -1296,7 +1297,15 @@ requestAnimationFrame(() => {
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="relative">
-<div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
+ <Link
+  to="/informacion?tool=traductor"
+  className="absolute -right-24 top-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition"
+>
+  <Menu className="w-5 h-5 text-slate-600" />
+</Link>
+
+            <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
+
 
   {/* Traductor */}
   <button

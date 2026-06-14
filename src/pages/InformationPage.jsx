@@ -283,68 +283,128 @@ transition={{
 
 {(!tool || tool === "traductor") && (
   <motion.section
-  id="traductor"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: -100 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
-  transition={{
-    duration: 0.8,
-    delay: 0.1
-  }}
+    id="traductor"
+    className="min-h-screen flex items-center py-24 scroll-mt-28"
+    initial={{ opacity: 0, x: -100 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: false, amount: viewportAmount }}
+    transition={{
+      duration: 0.8,
+      delay: 0.1
+    }}
+  >
+    <div className="grid grid-cols-1 lg:grid-cols-[700px_1fr] gap-16 items-center w-full">
 
->
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-    <div className="max-w-2xl">
-      <div className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm mb-8">
-        {tr("information_translator_badge", "Euskalia · Traductor")}
-      </div>
+      <div className="max-w-none">
 
-      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
-        {tr("information_translator_title", "Traductor")}
-      </h2>
+        <div className="flex items-center gap-6 mb-8">
+          <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+            {tr("information_translator_title", "Traductor")}
+          </h2>
 
-      <p className="text-[22px] leading-[1.9] text-slate-600">
-        {tr(
-          "information_translator_text",
-          "El traductor de Euskalia permite traducir textos entre euskera, castellano, inglés, francés y otros idiomas. Está pensado para ofrecer traducciones claras, naturales y útiles, especialmente cuando el euskera forma parte del proceso."
-        )}
-      </p>
-    </div>
+          <div className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm">
+            {tr("information_translator_badge", "Euskalia · Traductor")}
+          </div>
+        </div>
 
-    <div className="relative h-[620px] flex items-center justify-center">
-      <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
+        <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
 
-      <div className="relative w-[420px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
-        <div className="space-y-6">
-          <div className="bg-[#2563EB] text-white rounded-3xl px-6 py-5 max-w-[280px]">
-            <p className="text-[22px] leading-relaxed font-medium">
-              {tr("information_translator_mockup_basque_text", "Kaixo, zer moduz?")}
+          <div className="flex items-start gap-4">
+            <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
+            <p>
+              {tr("information_translator_point_1_part_1")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_1_highlight_1")}
+              </span>
+              {tr("information_translator_point_1_part_2")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_1_highlight_2")}
+              </span>
+              {tr("information_translator_point_1_part_3")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_1_highlight_3")}
+              </span>
+              {tr("information_translator_point_1_part_4")}
             </p>
           </div>
 
-          <div className="flex justify-end">
-            <div className="bg-slate-100 rounded-3xl px-6 py-5 max-w-[280px]">
-              <p className="text-[20px] leading-relaxed text-slate-700">
-                {tr("information_translator_mockup_spanish_text", "Hola, ¿qué tal?")}
-              </p>
-            </div>
+          <div className="flex items-start gap-4">
+            <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
+            <p>
+              {tr("information_translator_point_2_part_1")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_2_highlight_1")}
+              </span>
+              {tr("information_translator_point_2_part_2")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_2_highlight_2")}
+              </span>
+              {tr("information_translator_point_2_part_3")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_2_highlight_3")}
+              </span>
+              {tr("information_translator_point_2_part_4")}
+            </p>
           </div>
 
-          <div className="pt-6 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-500">
-                {tr("information_translator_mockup_completed", "Traducción completada")}
+          <div className="flex items-start gap-4">
+            <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
+            <p>
+              {tr("information_translator_point_3_part_1")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_3_highlight_1")}
               </span>
+              {tr("information_translator_point_3_part_2")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_3_highlight_2")}
+              </span>
+              {tr("information_translator_point_3_part_3")}
+              <span className="underline text-blue-600 font-semibold">
+                {tr("information_translator_point_3_highlight_3")}
+              </span>
+              {tr("information_translator_point_3_part_4")}
+            </p>
+          </div>
 
-              <div className="w-3 h-3 rounded-full bg-green-500" />
+        </div>
+      </div>
+
+      <div className="relative h-[620px] flex items-center justify-center lg:justify-end">
+        <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
+
+        <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+          <div className="space-y-6">
+
+            <div className="bg-[#2563EB] text-white rounded-3xl px-6 py-5 max-w-[280px]">
+              <p className="text-[22px] leading-relaxed font-medium">
+                {tr("information_translator_mockup_basque_text", "Kaixo, zer moduz?")}
+              </p>
             </div>
+
+            <div className="flex justify-end">
+              <div className="bg-slate-100 rounded-3xl px-6 py-5 max-w-[280px]">
+                <p className="text-[20px] leading-relaxed text-slate-700">
+                  {tr("information_translator_mockup_spanish_text", "Hola, ¿qué tal?")}
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-500">
+                  {tr("information_translator_mockup_completed", "Traducción completada")}
+                </span>
+
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+
     </div>
-  </div>
-</motion.section>
+  </motion.section>
 )}
 
 {/* ======================= */}

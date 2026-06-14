@@ -982,11 +982,151 @@ information_translator_title: {
   FR: "Traducteur",
 },
 
-information_translator_text: {
-  ES: "El traductor de Euskalia permite traducir textos entre euskera, castellano, inglés, francés y otros idiomas. Está pensado para ofrecer traducciones claras, naturales y útiles, especialmente cuando el euskera forma parte del proceso.",
-  EUS: "Euskaliaren itzultzaileak euskararen, gaztelaniaren, ingelesaren, frantsesaren eta beste hizkuntza batzuen arteko itzulpenak egiteko aukera ematen du. Itzulpen argi, natural eta erabilgarriak eskaintzeko diseinatuta dago, bereziki euskara prozesuaren parte denean.",
-  EN: "Euskalia’s translator allows you to translate texts between Basque, Spanish, English, French and other languages. It is designed to provide clear, natural and useful translations, especially when Basque is part of the process.",
-  FR: "Le traducteur de Euskalia permet de traduire des textes entre le basque, l’espagnol, l’anglais, le français et d’autres langues. Il est conçu pour offrir des traductions claires, naturelles et utiles, surtout lorsque le basque fait partie du processus.",
+information_translator_point_1_part_1: {
+  EUS: "Euskaliako itzultzailea ",
+  ES: "El traductor de Euskalia está diseñado principalmente para el público vasco como para extranjeros que necesitan traducir ",
+  EN: "The Euskalia translator is designed both for Basque users and for foreigners who need to translate ",
+  FR: "Le traducteur d’Euskalia est conçu aussi bien pour le public basque que pour les étrangers ayant besoin de traduire ",
+},
+
+information_translator_point_1_highlight_1: {
+  EUS: "euskarara edo euskaratik",
+  ES: "el euskera",
+  EN: "Basque",
+  FR: "le basque",
+},
+
+information_translator_point_1_part_2: {
+  EUS: " itzuli behar duten euskal erabiltzaileentzat zein atzerritarrentzat diseinatuta dago. Euskara eta hautatzailean erabilgarri dauden gainerako hizkuntzen artean itzultzeko aukera ematen du. Emaitza ",
+  ES: ". Permite traducir entre el euskera y todos los demás idiomas disponibles en el selector. Dando el resultado de un ",
+  EN: ". It allows translation between Basque and all other languages available in the selector. The result aims to provide ",
+  FR: ". Il permet de traduire entre le basque et toutes les autres langues disponibles dans le sélecteur. Le résultat vise à fournir un ",
+},
+
+information_translator_point_1_highlight_2: {
+  EUS: "euskara garbi eta jariozkoa",
+  ES: "euskera limpio y fluido",
+  EN: "clear and natural Basque",
+  FR: "basque clair et fluide",
+},
+
+information_translator_point_1_part_3: {
+  EUS: " izatea du helburu. ",
+  ES: ". ",
+  EN: ". ",
+  FR: ". ",
+},
+
+information_translator_point_1_highlight_3: {
+  EUS: "Erabiltzaileek proposatutako edozein hizkuntza",
+  ES: "Cualquier idioma sugerido por los usuarios",
+  EN: "Any language suggested by users",
+  FR: "Toute langue suggérée par les utilisateurs",
+},
+
+information_translator_point_1_part_4: {
+  EUS: " gehitu ahal izango da arazorik gabe.",
+  ES: " se podrá añadir sin ningún problema.",
+  EN: " may be added without any problem.",
+  FR: " pourra être ajoutée sans aucun problème.",
+},
+
+information_translator_point_2_part_1: {
+  EUS: "Jatorrizko hizkuntza eskuz hautatzeaz gain, itzultzaileak ",
+  ES: "Además de seleccionar manualmente el idioma de origen, el traductor incluye un ",
+  EN: "In addition to manually selecting the source language, the translator includes an ",
+  FR: "En plus de la sélection manuelle de la langue source, le traducteur inclut un ",
+},
+
+information_translator_point_2_highlight_1: {
+  EUS: "hizkuntza-detektagailu automatiko",
+  ES: "detector automático de idioma",
+  EN: "automatic language detector",
+  FR: "détecteur automatique de langue",
+},
+
+information_translator_point_2_part_2: {
+  EUS: " bat dauka. Aukera hau aktibatuta dagoenean, erabiltzaileak edozein hizkuntzatan idatzitako testua sar dezake, eta  ",
+  ES: ". Cuando esta opción está activada, el usuario puede introducir texto en cualquier idioma y la herramienta ",
+  EN: ". When this option is enabled, users can enter text in any language and the tool will automatically ",
+  FR: ". Lorsque cette option est activée, l’utilisateur peut saisir un texte dans n’importe quelle langue et l’outil ",
+},
+
+information_translator_point_2_highlight_2: {
+  EUS: " tresnak automatikoki detektatuko du",
+  ES: "detectará automáticamente",
+  EN: "detect",
+  FR: "détectera automatiquement",
+},
+
+information_translator_point_2_part_3: {
+  EUS: " zein hizkuntzatan dagoen itzulpena egin aurretik. Funtzio hau ",
+  ES: " el idioma en el que está escrito antes de realizar la traducción. Esta función puede utilizarse incluso con ",
+  EN: " the language before performing the translation. This feature can also be used with ",
+  FR: " automatiquement la langue avant d’effectuer la traduction. Cette fonction peut également être utilisée avec des ",
+},
+
+information_translator_point_2_highlight_3: {
+  EUS: "hautatzaileetan agertzen ez diren hizkuntzekin",
+  ES: "idiomas que no aparecen en los selectores del traductor",
+  EN: "languages that do not appear in the translator selectors",
+  FR: "langues qui n’apparaissent pas dans les sélecteurs du traducteur",
+},
+
+information_translator_point_2_part_4: {
+  EUS: " ere erabili daiteke.",
+  ES: ".",
+  EN: ".",
+  FR: ".",
+},
+
+information_translator_point_3_part_1: {
+  EUS: "Esaldi laburretan, itzultzaileak ",
+  ES: "Para frases cortas, el traductor puede mostrar ",
+  EN: "For short sentences, the translator may display ",
+  FR: "Pour les phrases courtes, le traducteur peut afficher ",
+},
+
+information_translator_point_3_highlight_1: {
+  EUS: "itzulpen aukera desberdinak",
+  ES: "alternativas de traducción",
+  EN: "translation alternatives",
+  FR: "des alternatives de traduction",
+},
+
+information_translator_point_3_part_2: {
+  EUS: " erakutsi ditzake ideia bera adierazteko hainbat modu baliozko daudenean. Funtzio hau ",
+  ES: " cuando existen varias formas válidas de expresar la misma idea. Esta función solo aparece cuando la frase es ",
+  EN: " when there are several valid ways to express the same idea. This feature only appears when the sentence is ",
+  FR: " lorsqu’il existe plusieurs façons valides d’exprimer la même idée. Cette fonction n’apparaît que lorsque la phrase est ",
+},
+
+information_translator_point_3_highlight_2: {
+  EUS: "esaldi horretarako egokia",
+  ES: "adecuada para ello",
+  EN: "suitable for it",
+  FR: "adaptée à cela",
+},
+
+information_translator_point_3_part_3: {
+  EUS: " denean eta ",
+  ES: " y cuando ",
+  EN: " and when ",
+  FR: " et lorsqu’il existe ",
+},
+
+information_translator_point_3_highlight_3: {
+  EUS: "benetan aukera desberdinak erabilgarriak",
+  ES: "realmente existen alternativas útiles",
+  EN: "genuinely useful alternatives exist",
+  FR: "réellement des alternatives utiles",
+},
+
+information_translator_point_3_part_4: {
+  EUS: " direnean bakarrik agertzen da.",
+  ES: ".",
+  EN: ".",
+  FR: ".",
 },
 
 information_translator_mockup_basque_text: {
