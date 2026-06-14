@@ -107,11 +107,6 @@ function todayKey(date = new Date()) {
 async function detectLanguageForBannerWithAI({ text = "", uiLanguage = "ES", model = "gpt-4o-mini" }) {
   const cleanText = String(text || "").trim();
 
-  console.log("DETECTOR INPUT:");
-console.log(cleanText);
-
-console.log("DETECTOR OUTPUT:");
-console.log(parsed);
 
   if (!cleanText || cleanText.length < 2) return null;
 
@@ -175,6 +170,12 @@ console.log(parsed);
 
     const raw = data?.choices?.[0]?.message?.content || "";
     const parsed = JSON.parse(raw);
+
+    console.log("DETECTOR INPUT:");
+console.log(cleanText);
+
+console.log("DETECTOR OUTPUT:");
+console.log(parsed);
 
 const code = String(parsed?.code || "").trim().toLowerCase();
 
