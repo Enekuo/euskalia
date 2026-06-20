@@ -1681,6 +1681,7 @@ return (
                                 style={{ height: 360, padding: "18px 18px 44px 18px" }}
                               >
                                 <div
+                                 translate="no"
                                   className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
                                   style={{
                                     fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',

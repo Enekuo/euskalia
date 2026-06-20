@@ -268,13 +268,13 @@ export default function CorrectorGramatical() {
         );
       }
 
-      return <p className="whitespace-pre-wrap">{result}</p>;
+      return <p translate="no" className="whitespace-pre-wrap">{result}</p>;
     }
 
     const segments = diffSegments(textValue, result);
 
     return (
-      <p className="whitespace-pre-wrap">
+      <p translate="no" className="whitespace-pre-wrap">
         {segments.map((seg, index) => {
           if (seg.op === -1) {
             return (

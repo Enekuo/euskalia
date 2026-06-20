@@ -1146,7 +1146,7 @@ setDetectedLanguage(null);
         {result && (
           <div className="flex flex-col gap-4">
             <article className="prose prose-slate max-w-none">
-              <p className="whitespace-pre-wrap">{result}</p>
+              <p translate="no" className="whitespace-pre-wrap">{result}</p>
             </article>
           </div>
         )}

@@ -1329,7 +1329,7 @@ return (
 
                           {result && (
                             <article className="prose prose-slate max-w-none mt-14">
-                              <div className="whitespace-pre-line">{result}</div>
+                              <div translate="no" className="whitespace-pre-line">{result}</div>
                             </article>
                           )}
 

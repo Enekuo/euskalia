@@ -992,7 +992,7 @@ return (
                               ) : null}
 
                               <article className="prose prose-slate max-w-none">
-                                <p className="whitespace-pre-wrap">{result}</p>
+                                <p translate="no" className="whitespace-pre-wrap">{result}</p>
                               </article>
                             </div>
 

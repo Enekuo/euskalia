@@ -1755,6 +1755,7 @@ alternativesRequestRef.current += 1;
 
 <div
   ref={translationRef}
+  translate="no"
   className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
 >
   {rightText}
