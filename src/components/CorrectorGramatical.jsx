@@ -22,7 +22,6 @@ import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
-import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
 import { useNavigate } from "react-router-dom";

@@ -8,7 +8,6 @@ import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
-import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";

@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
 import { useLocation, Link } from "react-router-dom";
-import { auth } from "@/lib/firebase";
 
 const NAVBAR_H = 88;
 
 const SupportPage = () => {
   const { t, language } = useTranslation();
   const location = useLocation();
-
-  const isPremium = location.pathname.startsWith("/cuenta-premium");
 
   const langForApi = () => {
     const x = String(language || "").toUpperCase();
@@ -31,29 +28,6 @@ const SupportPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle");
-
-  useEffect(() => {
-    const fromPremiumLimitBanner = location.state?.fromPremiumLimitBanner;
-    const prefill = location.state?.supportPrefill;
-
-    if (!fromPremiumLimitBanner) return;
-
-    const userEmail = auth?.currentUser?.email || "";
-
-    setForm((prev) => ({
-      ...prev,
-      email: userEmail,
-      subject:
-        prefill?.subject ||
-        t("support_prefill_extension_subject", "Solicitud de ampliación"),
-      message:
-        prefill?.message ||
-        t(
-          "support_prefill_extension_message",
-          "Hola, he alcanzado el límite de caracteres de mi plan Premium y quiero solicitar una ampliación. Gracias."
-        ),
-    }));
-  }, [location.state, t]);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -75,7 +49,7 @@ const SupportPage = () => {
           message: form.message,
           lang: langForApi(),
           page: location.pathname,
-          source: isPremium ? "premium" : "free",
+          source: "free",
         }),
       });
 
@@ -95,16 +69,10 @@ const SupportPage = () => {
   };
 
   return (
-    <div
-      className={
-        isPremium
-          ? "w-full bg-gradient-to-b from-[#F6FAFF] to-white"
-          : "min-h-screen w-full bg-gradient-to-b from-[#F6FAFF] to-white"
-      }
-    >
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#F6FAFF] to-white">
       <div
         className="mx-auto max-w-7xl px-5 lg:px-8"
-        style={isPremium ? undefined : { minHeight: `calc(100vh - ${NAVBAR_H}px)` }}
+        style={{ minHeight: `calc(100vh - ${NAVBAR_H}px)` }}
       >
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}

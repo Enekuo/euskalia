@@ -15,8 +15,6 @@ export default function Suggestions() {
     return !val || val === key ? fallback : val;
   };
 
-  const isPremiumPath = location.pathname.startsWith("/cuenta-premium");
-
   const langForApi = () => {
     const x = String(language || "").toUpperCase();
     if (x === "EUS") return "eus";
@@ -62,7 +60,7 @@ export default function Suggestions() {
           email: email.trim() || null,
           lang: langForApi(),
           page: location.pathname,
-          source: isPremiumPath ? "premium" : "free",
+          source: "free",
         }),
       });
 

@@ -251,31 +251,6 @@ translator_daily_limit_reached: {
       FR: "Enregistrer"
     },
 
-    /* === NUEVAS CLAVES: aviso de función premium (prompt) === */
-    premium_prompt_title: {
-      ES: "Función disponible en el plan Premium!",
-      EUS: "Funtzio hau Premium planean bakarrik!",
-      EN: "Feature available in the Premium plan!",
-      FR: "Fonction disponible avec le plan Premium!"
-    },
-    premium_prompt_body: {
-      ES: "El botón «Generar» permite personalizar el resumen según tus preferencias mediante un prompt.",
-      EUS: "«Sortu» botoiak laburpena zure lehentasunen arabera pertsonalizatzeko aukera ematen du prompt baten bidez.",
-      EN: "The “Generate” button lets you personalize the summary according to your preferences using a prompt.",
-      FR: "Le bouton « Générer » permet de personnaliser le résumé selon vos préférences à l’aide d’un prompt."
-    },
-    premium_prompt_cta: {
-      ES: "Probar plan Premium",
-      EUS: "Premium plana probatu",
-      EN: "Try Premium plan",
-      FR: "Essayer le plan Premium"
-    },
-    premium_prompt_close: {
-      ES: "Entendido",
-      EUS: "Ulertuta",
-      EN: "Got it",
-      FR: "Compris"
-    },
 
     /* === NUEVAS CLAVES: aviso de contenido desactualizado === */
     outdated_notice: { ES: "El texto ha cambiado. Actualiza el resumen.", EUS: "Testua aldatu da. Eguneratu laburpena.", EN: "The text has changed. Update the summary.", FR: "Le texte a changé. Mets à jour le résumé." },
@@ -2610,227 +2585,6 @@ registerPage_login: {
 
 
 
-  // =========================
-  //       PRICING PAGE
-  // =========================
-   
-    pricing: {
-  title: {
-    ES: "Elige tu plan",
-    EUS: "Aukeratu zure plana",
-    EN: "Choose your plan",
-    FR: "Choisissez votre offre",
-  },
-  subtitle: {
-    ES: "Empieza con el Plan Pro y pasa a Premium+ cuando necesites más potencia y menos límites.",
-    EUS: "Hasi Pro planarekin eta pasa Premium+ planera potentzia eta muga gutxiago behar dituzunean.",
-    EN: "Start with the Pro Plan and move to Premium+ when you need more power and fewer limits.",
-    FR: "Commencez avec l’offre Pro et passez à Premium+ quand vous aurez besoin de plus de puissance et de moins de limites.",
-  },
-
-  pro_name: {
-    ES: "Plan Pro",
-    EUS: "Pro plana",
-    EN: "Pro Plan",
-    FR: "Offre Pro",
-  },
-  premium_name: {
-    ES: "Plan Premium+",
-    EUS: "Premium+ plana",
-    EN: "Premium+ Plan",
-    FR: "Offre Premium+",
-  },
-
-  perMonth: {
-    ES: "/ mes",
-    EUS: "/ hilean",
-    EN: "/ month",
-    FR: "/ mois",
-  },
-
-  pro_cta: {
-    ES: "Elegir Pro",
-    EUS: "Aukeratu Pro",
-    EN: "Choose Pro",
-    FR: "Choisir Pro",
-  },
-  premium_cta_soon: {
-    ES: "Próximamente",
-    EUS: "Laster eskuragarri",
-    EN: "Coming soon",
-    FR: "Bientôt disponible",
-  },
-
-  badge_popular: {
-    ES: "Más popular",
-    EUS: "Ezagunena",
-    EN: "Most popular",
-    FR: "Le plus populaire",
-  },
-  badge_soon: {
-    ES: "Próximamente",
-    EUS: "Laster",
-    EN: "Coming soon",
-    FR: "Bientôt",
-  },
-
-  features: {
-    // ===== PLAN PRO – TUS FRASES =====
-
-    pro1: {
-      ES: "Límites más amplios para el traductor: 5.000 caracteres por peticion y 30 peticiones diarias.",
-      EUS: "Muga zabalagoak itzultzailearentzat: 5.000 karaktere eskaerako eta 30 eskaera eguneko.",
-      EN: "Higher limits for the translator: 5,000 characters per request and 30 daily requests.",
-      FR: "Limites plus élevées pour le traducteur : 5 000 caractères par demande et 30 demandes par jour.",
-      },
-    pro2: {
-      ES: "Límites más amplios para resumidor: 18.000 caracteres por peticion y 6 peticiones diarias.",
-      EUS: "Muga zabalagoak laburtzailearentzat: 18.000 karaktere eskaerako eta 6 eskaera eguneko.",
-      EN: "Higher limits for the summarizer: 18,000 characters per request and 6 daily requests.",
-      FR: "Limites plus élevées pour le résumeur : 18 000 caractères par demande et 6 demandes par jour."
-    },
-    pro3: {
-      ES: "Cualquier idioma admitidocomo texto de origen en todas las herramientas.",
-      EUS: "Edozein hizkuntza onartzen da jatorrizko testu gisa tresna guztietan.",
-      EN: "Supports any language as the source text across all tools.",
-      FR: "Prend en charge n’importe quelle langue comme texte source dans tous les outils."
-    },
-    pro4: {
-      ES: "Acceso a las 6 herramientas: Corrector, Parafraseador, Detector de IA y Humanizador.",
-      EUS: "6 tresnetarako sarbidea: Zuzentzailea, Parafraseatzailea, IA Detektagailua eta Humanizatzailea.",
-      EN: "Access to all 6 tools: Grammar Corrector, Paraphraser, AI Detector and Humanizer.",
-      FR: "Accès aux 6 outils : Correcteur, Paraphraseur, Détecteur d’IA et Humaniseur."
-    },
-    pro5: {
-    ES: "Experiencia sin anuncios, para trabajar sin distracciones.",
-    EUS: "Iragarkirik gabeko esperientzia, distraziorik gabe lan egiteko.",
-    EN: "Ad-free experience to work without distractions.",
-    FR: "Expérience sans publicité pour travailler sans distractions.",
-  },
-    pro6: {
-      ES: "Mejor calidad de API para un uso más fiable de la inteligencia artificial.",
-      EUS: "API kalitate hobea, adimen artifiziala fidagarriago erabiltzeko.",
-      EN: "Higher-quality API for more reliable AI usage.",
-      FR: "API de meilleure qualité pour une utilisation plus fiable de l’intelligence artificielle.",
-    },
-    pro7: {
-      ES: "Cuenta propia con diferentes modos y biblioteca inteligente con más opciones.",
-      EUS: "Kontu propioa, hainbat modurekin, eta liburutegi adimentsua aukera gehiagorekin.",
-      EN: "Personal account with different modes and a smart library with more options.",
-      FR: "Compte personnel avec différents modes et une bibliothèque intelligente avec plus d’options.",
-    },
-
-    // ===== PLAN PREMIUM+ 
-
-    premium1: {
-  ES: "Hasta 4.000.000 de caracteres mensuales para usar libremente en todas las herramientas.",
-  EUS: "4.000.000 karaktere arte hilean, tresna guztietan erabiltzeko.",
-  EN: "Up to 4,000,000 characters per month to use freely across all tools.",
-  FR: "Jusqu'à 4 000 000 de caractères par mois à utiliser librement dans tous les outils.",
-},
-
-premium2: {
-  ES: "Acceso completo a todas las herramientas de Euskalia.",
-  EUS: "Euskaliako tresna guztietarako sarbide osoa.",
-  EN: "Full access to all Euskalia tools.",
-  FR: "Accès complet à tous les outils Euskalia.",
-},
-
-premium3: {
-  ES: "Herramientas avanzadas: creador de textos y creador de emails.",
-  EUS: "Tresna aurreratuak: testu-sortzailea eta email-sortzailea.",
-  EN: "Advanced tools: text creator and email creator.",
-  FR: "Outils avancés : créateur de textes et créateur d’emails.",
-},
-
-premium4: {
-  ES: "Prompts inteligentes integrados en resumidor para obtener mejores resultados.",
-  EUS: "Prompt adimentsuak esartuta laburbiltzailean emaitza hobeak lortzeko.",
-  EN: "Smart prompts integrated in the summarizer for better results.",
-  FR: "Prompts intelligents intégrés dans le résumeur pour de meilleurs résultats.",
-},
-
-premium5: {
-  ES: "Asistente de inteligencia artificial para ayudarte con cualquier necesidad o problema relacionado.",
-  EUS: "Adimen artifizialeko laguntzailea, edozein behar edo arazoarekin laguntzeko.",
-  EN: "Artificial intelligence assistant to help you with any related need or problem.",
-  FR: "Assistant d'intelligence artificielle pour vous aider avec tout besoin ou problème lié.",
-},
-
-premium6: {
-  ES: "Prioridad en los servidores y máxima velocidad incluso en horas de alta demanda.",
-  EUS: "Lehentasuna zerbitzarietan eta abiadura azkarrena eskari handiko orduetan ere.",
-  EN: "Priority on servers and maximum speed even during high demand.",
-  FR: "Priorité sur les serveurs et vitesse maximale même en période de forte demande.",
-},
-    },
-
-    premium_cta: {
-  ES: "Empezar Premium",
-  EUS: "Hasi Premium",
-  EN: "Start Premium",
-  FR: "Commencer Premium",
-},
-
-badge_premium: {
-  ES: "Más completo",
-  EUS: "Osoena",
-  EN: "Most complete",
-  FR: "Le plus complet",
-},
-  },
-
-
-  // =========================
-  //       PAYING PAGES
-  // =========================
-  paymentSuccess: {
-  title: {
-    ES: "Pago realizado correctamente",
-    EUS: "Ordainketa behar bezala egin da",
-    EN: "Payment successful",
-    FR: "Paiement effectué avec succès",
-  },
-  subtitle: {
-    ES: "Ahora inicia sesión con el mismo email con el que realizaste el pago para activar tu acceso Pro.",
-    EUS: "Orain hasi saioa ordainketa egin duzun email berarekin Pro sarbidea aktibatzeko.",
-    EN: "Now sign in with the same email you used for the payment to activate your Pro access.",
-    FR: "Connectez-vous maintenant avec la même adresse e-mail que celle utilisée lors du paiement pour activer votre accès Pro.",
-  },
-  note: {
-    ES: "Importante: entra con el mismo email con el que realizaste el pago.",
-    EUS: "Garrantzitsua: ordainketa egin duzun email berarekin sartu.",
-    EN: "Important: sign in with the same email you used to pay.",
-    FR: "Important : connecte-toi avec le même e-mail que celui utilisé pour payer.",
-  },
-},
-
-paymentCancel: {
-  title: {
-    ES: "Pago cancelado",
-    EUS: "Ordainketa bertan behera utzi da",
-    EN: "Payment cancelled",
-    FR: "Paiement annulé",
-  },
-  subtitle: {
-    ES: "No se ha realizado ningún cargo. Puedes volver cuando quieras.",
-    EUS: "Ez da kargurik egin. Nahi duzunean itzul zaitezke.",
-    EN: "No charge was made. You can come back anytime.",
-    FR: "Aucun prélèvement n’a été effectué. Tu peux revenir quand tu veux.",
-  },
-  backPricing: {
-    ES: "Volver a planes",
-    EUS: "Planetara itzuli",
-    EN: "Back to plans",
-    FR: "Retour aux offres",
-  },
-  backHome: {
-    ES: "Ir al inicio",
-    EUS: "Hasierara joan",
-    EN: "Go to home",
-    FR: "Aller à l’accueil",
-  },
-},
 
 
 
@@ -3924,13 +3678,6 @@ proHeader_aiDetector: {
   FR: "Détecteur IA",
 },
 
-proHeader_humanizer: {
-  ES: "Humanizador",
-  EUS: "Humanizatzailea",
-  EN: "Humanizer",
-  FR: "Humaniseur",
-},
-
 proSidebar_tools: {
   ES: "Herramientas",
   EUS: "Tresnak",
@@ -4173,19 +3920,7 @@ proTranslator_errorGeneric: {
   EN: "Couldn’t translate right now.",
   FR: "Impossible de traduire pour le moment.",
 },
-pro_limit_chars: {
-  ES: "Has superado el límite máximo de caracteres para tu plan Pro.",
-  EUS: "Zure Pro planeko gehienezko karaktere-muga gainditu duzu.",
-  EN: "You have exceeded the maximum character limit for your Pro plan.",
-  FR: "Vous avez dépassé la limite maximale de caractères de votre plan Pro."
-},
 
-pro_limit_daily: {
-   ES: "Has alcanzado tu límite diario del plan Pro. Vuelve mañana para seguir usando esta herramienta.",
-   EUS: "Zure Pro planeko eguneroko muga gainditu duzu. Itzuli bihar tresna hau erabiltzen jarraitzeko.",
-   EN: "You have reached your daily limit for the Pro plan. Come back tomorrow to continue using this tool.",
-   FR: "Vous avez atteint votre limite quotidienne du plan Pro. Revenez demain pour continuer à utiliser cet outil."
-},
 alternatives_title: { EUS: "Aukera desberdinak:", ES: "Alternativas:", EN: "Alternatives:", FR: "Alternatives:" },
 
 searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando alternativas...", EN: "Searching alternatives...", FR: "Recherche d'alternatives..." },
@@ -4933,15 +4668,6 @@ aiDetector_text_too_short: {
 
 
 // =========================
-//        Pro Humanizer
-// =========================    
-
-proSidebar_humanizer: {
-  ES: "Humanizador",
-  EUS: "Humanizatzailea",
-  EN: "Humanizer",
-  FR: "Humaniseur",
-},
 
 proHumanizer_sources: {
   ES: "Fuentes",
@@ -5432,29 +5158,11 @@ library_create_ai_detector: {
   EN: "Create AI detection",
   FR: "Créer une détection IA",
 },
-library_filter_humanizer: {
-  ES: "Humanizador",
-  EUS: "Humanizatzailea",
-  EN: "Humanizer",
-  FR: "Humaniseur",
-},
-library_create_humanizer: {
-  ES: "Crear humanizado",
-  EUS: "Sortu humanizatua",
-  EN: "Create humanized",
-  FR: "Créer un texte humanisé",
-},
 library_prefix_paraphraser: {
   ES: "Parafraseo:",
   EUS: "Parafraseoa:",
   EN: "Paraphrase:",
   FR: "Paraphrase :",
-},
-library_prefix_humanizer: {
-  ES: "Humanizado:",
-  EUS: "Humanizatua:",
-  EN: "Humanized:",
-  FR: "Humanisé :",
 },
 library_doc_title_label: {
   ES: "Título del documento",
@@ -6152,7 +5860,6 @@ premiumSidebar_summary: { ES: "Resumen", EUS: "Laburpena", EN: "Summary", FR: "R
 premiumSidebar_corrector: { ES: "Corrector", EUS: "Zuzentzailea", EN: "Corrector", FR: "Correcteur" },
 premiumSidebar_paraphraser: { ES: "Parafraseador", EUS: "Parafrasatzailea", EN: "Paraphraser", FR: "Paraphraseur" },
 premiumSidebar_aiDetector: { ES: "Detector de IA", EUS: "IA detektagailua", EN: "AI Detector", FR: "Détecteur IA" },
-premiumSidebar_humanizer: { ES: "Humanizador", EUS: "Humanizatzailea", EN: "Humanizer", FR: "Humaniseur" },
 premiumSidebar_library: { ES: "Biblioteca", EUS: "Liburutegia", EN: "Library", FR: "Bibliothèque" },
 premiumSidebar_chat: { ES: "Asistente de IA", EUS: "IA Asistentea", EN: "AI Assistant", FR: "Assistant IA" },
 premiumSidebar_suggestions: { ES: "Sugerencias", EUS: "Iradokizunak", EN: "Suggestions", FR: "Suggestions" },
@@ -6165,7 +5872,6 @@ premiumHeader_summary: { ES: "Resumen", EUS: "Laburpena", EN: "Summary", FR: "R�
 premiumHeader_corrector: { ES: "Corrector", EUS: "Zuzentzailea", EN: "Corrector", FR: "Correcteur" },
 premiumHeader_paraphraser: { ES: "Parafraseador", EUS: "Parafrasatzailea", EN: "Paraphraser", FR: "Paraphraseur" },
 premiumHeader_aiDetector: { ES: "Detector de IA", EUS: "IA detektagailua", EN: "AI Detector", FR: "Détecteur IA" },
-premiumHeader_humanizer: { ES: "Humanizador", EUS: "Humanizatzailea", EN: "Humanizer", FR: "Humaniseur" },
 premiumHeader_planPremium: { ES: "Premium", EUS: "Premium", EN: "Premium", FR: "Premium" },
 premiumHeader_creatorText: { ES: "Creador de texto", EUS: "Testu sortzailea", EN: "Text creator", FR: "Créateur de texte" },
 premiumHeader_creatorEmail: { ES: "Creador de email", EUS: "Email sortzailea", EN: "Email creator", FR: "Créateur d’email" },
@@ -6554,22 +6260,6 @@ premiumTranslator_errorDocuments: {
   FR: "Impossible de traiter les documents pour le moment.",
 },
 
-// =========================
-//        PREMIUM SUMMERY
-// =========================
-premium_limit_chars: {
-  ES: "Has superado el límite máximo de caracteres para tu plan Premium.",
-  EUS: "Premium planaren karaktere-muga gainditu duzu.",
-  EN: "You’ve exceeded the maximum character limit for your Premium plan.",
-  FR: "Vous avez dépassé la limite maximale de caractères de votre plan Premium.",
-},
-
-premium_limit_daily: {
-  ES: "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.",
-  EUS: "Premium planaren eguneroko muga lortu duzu. Itzuli bihar.",
-  EN: "You’ve reached your Premium plan daily limit. Come back tomorrow.",
-  FR: "Vous avez atteint votre limite quotidienne du plan Premium. Revenez demain.",
-},
 
 premiumSummary: {
   sources_title: { ES: "Fuentes", EUS: "Iturriak", EN: "Sources", FR: "Sources" },
@@ -6733,21 +6423,6 @@ premiumSummary: {
     EN: "Summary",
     FR: "Résumé",
   },
-},
-// =========================
-//        PREMIUM CORRECTOR
-// =========================
-premium_limit_chars: {
-  ES: "Has superado el límite máximo de caracteres para tu plan Premium.",
-  EUS: "Premium planeko gehienezko karaktere-muga gainditu duzu.",
-  EN: "You’ve exceeded the maximum character limit for your Premium plan.",
-  FR: "Vous avez dépassé la limite maximale de caractères de votre plan Premium.",
-},
-premium_limit_daily: {
-  ES: "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.",
-  EUS: "Premium planeko eguneroko muga lortu duzu. Itzuli bihar.",
-  EN: "You’ve reached your Premium daily limit. Come back tomorrow.",
-  FR: "Vous avez atteint votre limite quotidienne Premium. Revenez demain.",
 },
 
 premiumGrammar: {
@@ -7572,18 +7247,6 @@ premiumHumanizer_errorGeneric: {
   FR: "Erreur lors de l’humanisation du texte.",
 },
 
-premium_limit_chars: {
-  ES: "Has superado el límite máximo de caracteres para tu plan Premium.",
-  EUS: "Premium planaren gehienezko karaktere muga gainditu duzu.",
-  EN: "You have exceeded the maximum character limit for your Premium plan.",
-  FR: "Tu as dépassé la limite maximale de caractères de ton offre Premium.",
-},
-premium_limit_daily: {
-  ES: "Has alcanzado tu límite diario del plan Premium. Vuelve mañana.",
-  EUS: "Premium planaren eguneroko muga lortu duzu. Itzuli bihar.",
-  EN: "You have reached your daily Premium limit. Come back tomorrow.",
-  FR: "Tu as atteint ta limite quotidienne Premium. Reviens demain.",
-},
 
 // =========================
 // PREMIUM CREADOR DE TEXTO
@@ -7988,43 +7651,6 @@ library_prefix_gmail_template: {
 },
 
 
-// =========================
-//    PREMIUM LIMITBANNER
-// =========================
-premium_limit_banner_title: {
-  ES: "Has alcanzado el límite de tu plan Premium",
-  EUS: "Zure Premium planaren muga lortu duzu",
-  EN: "You have reached your Premium plan limit",
-  FR: "Vous avez atteint la limite de votre forfait Premium",
-},
-
-premium_limit_banner_badge: {
-  ES: "Premium",
-  EUS: "Premium",
-  EN: "Premium",
-  FR: "Premium",
-},
-
-premium_limit_banner_description: {
-  ES: "Has usado todos los caracteres disponibles. Si necesitas más capacidad, puedes solicitar una ampliación personalizada contactando con soporte.",
-  EUS: "Eskuragarri dituzun karaktere guztiak erabili dituzu. Edukiera handiagoa behar baduzu, laguntzarekin harremanetan jarrita handitze pertsonalizatua eska dezakezu.",
-  EN: "You have used all available characters. If you need more capacity, you can request a custom extension by contacting support.",
-  FR: "Vous avez utilisé tous les caractères disponibles. Si vous avez besoin de plus de capacité, vous pouvez demander une extension personnalisée en contactant le support.",
-},
-
-premium_limit_banner_button: {
-  ES: "Solicitar ampliación",
-  EUS: "Handitzea eskatu",
-  EN: "Request extension",
-  FR: "Demander une extension",
-},
-
-premium_limit_banner_close: {
-  ES: "Cerrar aviso",
-  EUS: "Abisua itxi",
-  EN: "Close notice",
-  FR: "Fermer l’avis",
-},
 
 support_prefill_extension_subject: {
   ES: "Solicitud de ampliación",
