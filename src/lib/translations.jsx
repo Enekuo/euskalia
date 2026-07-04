@@ -7668,6 +7668,8 @@ support_prefill_extension_message: {
 
 }
 
+import { translations } from "./translations-data";
+
 /* ====== i18n runtime ====== */
 export const SUPPORTED_LANGS = ["ES", "EUS"]; // Si en el selector usas "EN", el sistema hace fallback a ES automáticamente.
 export const LanguageContext = React.createContext(null);

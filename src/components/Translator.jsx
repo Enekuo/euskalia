@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { Globe, Menu, SearchCheck, PenLine, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Mail, Volume2 } from "lucide-react";
+import { Menu, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -11,7 +11,7 @@ import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
-import { useNavigate } from "react-router-dom";
+import ToolsSidebar from "@/components/ToolsSidebar";
 import { Link } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
@@ -30,21 +30,12 @@ const speechLangMap = {
 
 export default function Translator() {
   const { t, language } = useTranslation();
-  const navigate = useNavigate();
-
   const tr = (k, f = "") => {
     const val = typeof t === "function" ? t(k) : null;
     if (!val) return f;
     if (val === k) return f;
     return val;
   };
-
-  const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
-  const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
-  const labelToolCorrector = tr("toolsMenu.correctorTitle", "Zuzentzailea");
-  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
-  const labelToolTextCreator = tr("toolsMenu.textCreatorTitle", "Testu-sortzailea");
-  const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
 
 
   const uiLangRaw = (language || "ES").toString().toUpperCase();
@@ -1295,101 +1286,9 @@ requestAnimationFrame(() => {
 
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
-          <div className="relative">
- <Link
-  to="/informacion?tool=traductor"
-  className="absolute -right-24 top-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition"
->
-  <Menu className="w-5 h-5 text-slate-600" />
-</Link>
-
-            <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
-
-
-  {/* Traductor */}
-  <button
-    type="button"
-    aria-current="page"
-    title={labelToolTranslator}
-    className="w-11 h-11 mt-5 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
-  >
-    <Globe className="w-5 h-5 text-blue-600" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolTranslator}
-  </div>
-
-  {/* Resumidor */}
-  <button
-    type="button"
-    onClick={() => navigate("/resumen")}
-    title={labelToolSummarizer}
-    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-  >
-    <FileText className="w-5 h-5 text-slate-700" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolSummarizer}
-  </div>
-
-  {/* Corrector */}
-  <button
-    type="button"
-    onClick={() => navigate("/corrector")}
-    title={labelToolCorrector}
-    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-  >
-    <SearchCheck className="w-5 h-5 text-slate-700" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolCorrector}
-  </div>
-
-  {/* Parafraseador */}
-  <button
-    type="button"
-    onClick={() => navigate("/parafraseador")}
-    title={labelToolParaphraser}
-    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-  >
-    <PenLine className="w-5 h-5 text-slate-700" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolParaphraser}
-  </div>
-
-  {/* Creador de texto */}
-  <button
-    type="button"
-    onClick={() => navigate("/creador-texto")}
-    title={labelToolTextCreator}
-    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-  >
-    <Type className="w-5 h-5 text-slate-700" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolTextCreator}
-  </div>
-
-  {/* Creador de email */}
-  <button
-    type="button"
-    onClick={() => navigate("/creador-email")}
-    title={labelToolEmailCreator}
-    className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-  >
-    <Mail className="w-5 h-5 text-slate-700" />
-  </button>
-
-  <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-    {labelToolEmailCreator}
-  </div>
-  </div>
+          <div className="relative flex items-start gap-3 md:gap-4">
+            <ToolsSidebar />
+            <div className="flex-1 min-w-0">
 
             <motion.section
   className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full"
@@ -1883,6 +1782,15 @@ alternativesRequestRef.current += 1;
 
             </motion.section>
 
+            </div>
+
+            <Link
+              to="/informacion?tool=traductor"
+              className="shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
+              aria-label="Más información"
+            >
+              <Menu className="w-5 h-5 text-slate-600" />
+            </Link>
           </div>
         </div>
       </section>

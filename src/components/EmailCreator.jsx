@@ -2,9 +2,9 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Globe, SearchCheck, PenLine, FileText, Mail, Type, Share2, X, Copy, Trash, Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Type, Share2, X, Copy, Trash, Check } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
+import ToolsSidebar from "@/components/ToolsSidebar";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
@@ -21,19 +21,11 @@ import {
 
 export default function EmailCreator() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const tr = (key, fallback) => {
     const val = t(key);
     return !val || val === key ? fallback : val;
   };
-
-  const labelToolTranslator = tr("toolsMenu.translatorTitle", "Itzultzailea");
-  const labelToolSummarizer = tr("toolsMenu.summaryTitle", "Laburtzailea");
-  const labelToolCorrector = tr("toolsMenu.correctorTitle", "Zuzentzailea");
-  const labelToolParaphraser = tr("toolsMenu.paraphraserTitle", "Parafraseatzailea");
-  const labelToolTextCreator = tr("toolsMenu.textCreatorTitle", "Testu-sortzailea");
-  const labelToolEmailCreator = tr("toolsMenu.emailCreatorTitle", "Email-sortzailea");
 
   const [sourceMode, setSourceMode] = useState(null);
   const [textValue, setTextValue] = useState("");
@@ -1144,95 +1136,10 @@ return (
 
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
-        <div className="relative">
-          <Link
-  to="/informacion?tool=creador-email"
-  className="absolute -right-24 top-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition"
->
-  <Menu className="w-5 h-5 text-slate-600" />
-</Link>
-          <div className="hidden md:flex flex-col items-center gap-2 pt-2 w-14 absolute -left-24 -top-3">
+        <div className="relative flex items-start gap-3 md:gap-4">
+          <ToolsSidebar />
+          <div className="flex-1 min-w-0">
 
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              title={labelToolTranslator}
-              className="w-11 h-11 mt-5 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-            >
-              <Globe className="w-5 h-5 text-slate-700" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolTranslator}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/resumen")}
-              title={labelToolSummarizer}
-              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-            >
-              <FileText className="w-5 h-5 text-slate-700" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolSummarizer}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/corrector")}
-              title={labelToolCorrector}
-              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-            >
-              <SearchCheck className="w-5 h-5 text-slate-700" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolCorrector}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/parafraseador")}
-              title={labelToolParaphraser}
-              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-            >
-              <PenLine className="w-5 h-5 text-slate-700" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolParaphraser}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/creador-texto")}
-              title={labelToolTextCreator}
-              className="w-11 h-11 mt-2 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition shadow-sm"
-            >
-              <Type className="w-5 h-5 text-slate-700" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolTextCreator}
-            </div>
-
-            <button
-              type="button"
-              aria-current="page"
-              title={labelToolEmailCreator}
-              className="w-11 h-11 mt-2 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center shadow-sm"
-            >
-              <Mail className="w-5 h-5 text-blue-600" />
-            </button>
-
-            <div className="text-[11px] font-medium text-slate-700 text-center leading-4">
-              {labelToolEmailCreator}
-            </div>
-          </div>
-        </div>
-   
       <motion.section
             className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
             initial="initial"
@@ -1742,7 +1649,17 @@ return (
               )}
             </section>
           </motion.section>
+          </div>
+
+          <Link
+            to="/informacion?tool=creador-email"
+            className="shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
+            aria-label="Más información"
+          >
+            <Menu className="w-5 h-5 text-slate-600" />
+          </Link>
         </div>
+      </div>
       </section>
 
       {showMissingInfoConfirm && (
