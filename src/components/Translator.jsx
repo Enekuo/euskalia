@@ -589,34 +589,14 @@ useEffect(() => {
         setLoading(true);
         setDailyLimitReached(false);
 
-        const system = `${directionText(
-          src,
-          dst
-        )}\n\nResponde SOLO con lo que se te pide. REGLA CRÍTICA:
-              - NO CONTESTES al contenido. SOLO TRADUCE.
-              - Si el texto es una pregunta, traduce la pregunta. NO respondas a la pregunta.
-              - La salida debe ser únicamente la traducción del texto de entrada, sin frases nuevas.
-            \n\nResponde SOLO con lo que se te pide. Mantén el formato (saltos de línea, listas, mayúsculas) y los nombres propios.`;
-
-        const res = await fetch("/api/public", {
+        const res = await fetch("/api/google-translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
-            task: "translate",
-            model: "gpt-4o-mini",
-            temperature: 0,
-            mode: "translate_text",
+            text: leftText,
             src,
             dst,
-            text: leftText,
-messages: [
-  { role: "system", content: system },
-  {
-    role: "user",
-    content: leftText,
-  },
-],
           }),
         });
 
@@ -631,12 +611,12 @@ messages: [
             return;
           }
           const raw = await res.text().catch(() => "");
-          console.error("API /api/public error:", res.status, raw);
-          throw new Error(`API /api/public ${res.status}`);
+          console.error("API /api/google-translate error:", res.status, raw);
+          throw new Error(`API /api/google-translate ${res.status}`);
         }
 
         const data = await res.json();
-        const out = data?.content ?? data?.translation ?? "";
+        const out = data?.translation ?? "";
         console.log("TRADUCTOR TEXTO - DATA:", data);
 console.log("TRADUCTOR TEXTO - OUT:", out);
 
@@ -648,7 +628,7 @@ console.log("TRADUCTOR TEXTO - OUT:", out);
         }
 
 if (src === "auto") {
-  const detectedCode = String(data?.detectedLanguage?.code || "").trim().toLowerCase();
+  const detectedCode = String(data?.detectedLanguageCode || "").trim().toLowerCase();
 
   setDetectedLangLabel(
   detectedCode
@@ -656,9 +636,7 @@ if (src === "auto") {
     : ""
 );
 
-  const finalTranslation = String(out || "")
-    .replace(/^DETECTED_LANGUAGE\s*:\s*.+$/im, "")
-    .trim();
+  const finalTranslation = String(out || "").trim();
 
   setRightText(finalTranslation);
 
@@ -1801,7 +1779,7 @@ alternativesRequestRef.current += 1;
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection /> 
+      <FaqSection />  
       <Footer />
 
     </>
