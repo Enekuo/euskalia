@@ -155,7 +155,7 @@ const OPTIONS_SRC = [
   sourceMode === "text" &&
   rightText &&
   rightText.trim().length > 0 &&
-  rightText.trim().length <= 350;
+  rightText.trim().length <= 200;
 
   const leftFontClass =
   leftText.length > 500 ? "text-[14px]" : "text-[17px]";
