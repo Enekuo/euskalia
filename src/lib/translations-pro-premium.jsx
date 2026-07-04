@@ -482,12 +482,6 @@ proTranslator_errorGeneric: {
   FR: "Impossible de traduire pour le moment.",
 },
 
-alternatives_title: { EUS: "Aukera desberdinak:", ES: "Alternativas:", EN: "Alternatives:", FR: "Alternatives:" },
-
-searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando alternativas...", EN: "Searching alternatives...", FR: "Recherche d'alternatives..." },
-
-
-
   // =========================
   //        Pro SUMMARY
   // ========================= 

@@ -155,6 +155,10 @@ translator_daily_limit_reached: {
   EN: "You have exceeded the translator’s daily request limit.",
   FR: "Vous avez dépassé la limite quotidienne de requêtes du traducteur.",
 },
+alternatives_title: { EUS: "Aukera desberdinak:", ES: "Alternativas:", EN: "Alternatives:", FR: "Alternatives:" },
+
+searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando alternativas...", EN: "Searching alternatives...", FR: "Recherche d'alternatives..." },
+
 
   // =========================
   //       SUMMARIZER
