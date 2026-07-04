@@ -1451,6 +1451,8 @@ requestAnimationFrame(() => {
       const next = e.target.value;
       setLeftText(next);
 setDirty(true);
+setRightText("");
+setDetectedLangLabel("");
 setAlternatives([]);
 setAlternativesLoading(false);
 alternativesRequestRef.current += 1;
@@ -1467,6 +1469,8 @@ alternativesRequestRef.current += 1;
   onResult={(text) => {
     setLeftText((prev) => `${prev}${prev ? " " : ""}${text}`);
     setDirty(true);
+    setRightText("");
+    setDetectedLangLabel("");
   }}
 />
   </div>
