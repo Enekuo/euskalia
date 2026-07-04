@@ -1801,7 +1801,7 @@ alternativesRequestRef.current += 1;
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection />
+      <FaqSection /> 
       <Footer />
 
     </>
