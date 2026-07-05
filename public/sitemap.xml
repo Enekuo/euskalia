@@ -2,31 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://euskaliaweb.com/</loc>
+    <loc>https://www.euskaliaweb.com/</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/resumen</loc>
+    <loc>https://www.euskaliaweb.com/resumen</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/corrector</loc>
+    <loc>https://www.euskaliaweb.com/corrector</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/parafraseador</loc>
+    <loc>https://www.euskaliaweb.com/parafraseador</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/creador-texto</loc>
+    <loc>https://www.euskaliaweb.com/creador-texto</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/creador-email</loc>
+    <loc>https://www.euskaliaweb.com/creador-email</loc>
   </url>
 
   <url>
-    <loc>https://euskaliaweb.com/chat-ia</loc>
+    <loc>https://www.euskaliaweb.com/chat-ia</loc>
+  </url>
+
+  <url>
+    <loc>https://www.euskaliaweb.com/informacion</loc>
   </url>
 
 </urlset>

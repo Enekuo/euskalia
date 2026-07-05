@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { Lightbulb } from "lucide-react";
 import { Globe, FileText, SearchCheck, PenLine, Type, Mail, File, Link2, ArrowLeftRight, Trash2, Mic, Volume2, Copy, Share2 } from "lucide-react";
@@ -302,9 +302,12 @@ transition={{
             {tr("information_translator_title", "Traductor")}
           </h2>
 
-          <div className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm">
+          <Link
+            to="/"
+            className="inline-flex items-center rounded-full bg-blue-50 px-5 py-2 text-[#2563EB] font-medium text-sm hover:bg-blue-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+          >
             {tr("information_translator_badge", "Euskalia · Traductor")}
-          </div>
+          </Link>
         </div>
 
         <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
@@ -369,10 +372,14 @@ transition={{
         </div>
       </div>
 
-      <div className="relative h-[620px] flex items-center justify-center lg:justify-end">
+      <Link
+        to="/"
+        className="relative h-[620px] flex items-center justify-center lg:justify-end hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+      >
         <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
 
-        <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+        <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8 -ml-0">
+
           <div className="space-y-6">
 
             <div className="bg-[#2563EB] text-white rounded-3xl px-6 py-5 max-w-[280px]">
@@ -401,7 +408,7 @@ transition={{
 
           </div>
         </div>
-      </div>
+      </Link>
 
     </div>
   </motion.section>
@@ -425,7 +432,10 @@ transition={{
 >
 
 <div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-16 items-center w-full">
-    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1">
+    <Link
+      to="/resumen"
+      className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+    >
       <div className="absolute w-[470px] h-[470px] rounded-[60px] bg-[#EEF8F1]" />
 
       <div className="relative w-[400px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
@@ -438,12 +448,15 @@ transition={{
           <div className="h-4 rounded-full bg-green-200 w-[70%]" />
         </div>
       </div>
-    </div>
+    </Link>
 
     <div className="max-w-[780px] order-1 lg:order-2">
-      <div className="inline-flex items-center rounded-full bg-green-50 px-5 py-2 text-green-700 font-medium text-sm mb-8">
+      <Link
+        to="/resumen"
+        className="inline-flex items-center rounded-full bg-green-50 px-5 py-2 text-green-700 font-medium text-sm mb-8 hover:bg-green-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+      >
         {tr("information_summary_badge")}
-      </div>
+      </Link>
 
       <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
         {tr("information_summary_title")}
@@ -510,9 +523,12 @@ transition={{
 
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center w-full">
     <div className="max-w-2xl">
-      <div className="inline-flex items-center rounded-full bg-purple-50 px-5 py-2 text-purple-700 font-medium text-sm mb-8">
+      <Link
+        to="/corrector"
+        className="inline-flex items-center rounded-full bg-purple-50 px-5 py-2 text-purple-700 font-medium text-sm mb-8 hover:bg-purple-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+      >
         {tr("information_corrector_badge")}
-      </div>
+      </Link>
 
       <h2 className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
         {tr("information_corrector_title")}
@@ -551,14 +567,18 @@ transition={{
       </div>
     </div>
 
-    <div className="relative h-[620px] flex items-center justify-center">
+    <Link
+      to="/corrector"
+      className="relative h-[620px] flex items-center justify-center hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+    >
       <div className="absolute w-[430px] h-[430px] rounded-[60px] bg-purple-50 rotate-6" />
 
-      <div className="relative w-[470px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-10">
+      <div className="relative w-[380px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-6">
+
         <div className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="w-5 h-5 rounded-full bg-red-500 flex-shrink-0" />
-            <p className="text-slate-700 line-through text-[22px]">
+            <p className="text-slate-700 line-through text-[18px]">
               {tr(
                 "information_corrector_mockup_wrong",
                 "Texto con errores ortográficos y gramaticales"
@@ -568,7 +588,7 @@ transition={{
 
           <div className="flex items-center gap-4">
             <div className="w-5 h-5 rounded-full bg-green-500 flex-shrink-0" />
-            <p className="text-slate-900 font-medium text-[22px]">
+            <p className="text-slate-900 font-medium text-[18px]">
               {tr(
                 "information_corrector_mockup_right",
                 "Texto corregido sin errores"
@@ -577,7 +597,7 @@ transition={{
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   </div>
 </motion.section>
 )}
@@ -600,7 +620,10 @@ transition={{
 >
 
 <div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-10 items-center w-full">
-    <div className="relative h-[560px] flex items-center justify-center order-2 lg:order-1">
+    <Link
+      to="/parafraseador"
+      className="relative h-[560px] flex items-center justify-center order-2 lg:order-1 hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+    >
       <div className="absolute w-[440px] h-[440px] rounded-[60px] bg-orange-50 -rotate-6" />
 
       <div className="relative w-[360px] rounded-[36px] border border-slate-200 bg-white shadow-2xl p-7">
@@ -622,7 +645,7 @@ transition={{
           </div>
         </div>
       </div>
-    </div>
+    </Link>
 
     <div className="max-w-[760px] order-1 lg:order-2 lg: ml-10">
       <div className="flex items-center gap-6 mb-8">
@@ -630,9 +653,12 @@ transition={{
           {tr("information_paraphraser_title", "Parafraseador")}
         </h2>
 
-        <div className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm">
+        <Link
+          to="/parafraseador"
+          className="inline-flex items-center rounded-full bg-orange-50 px-5 py-2 text-orange-700 font-medium text-sm hover:bg-orange-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+        >
           {tr("information_paraphraser_badge", "Euskalia · Parafraseador")}
-        </div>
+        </Link>
       </div>
 
       <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
@@ -681,7 +707,7 @@ transition={{
 
 {(!tool || tool === "creador-texto") && (
 <motion.section
-  id="corrector"
+  id="creador-texto"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
   initial={{ opacity: 0, x: -100 }}
   whileInView={{ opacity: 1, x: 0 }}
@@ -699,9 +725,12 @@ transition={{
           {tr("information_text_creator_title", "Creador de Texto")}
         </h2>
 
-        <div className="inline-flex items-center rounded-full bg-sky-50 px-5 py-2 text-sky-700 font-medium text-sm">
+        <Link
+          to="/creador-texto"
+          className="inline-flex items-center rounded-full bg-sky-50 px-5 py-2 text-sky-700 font-medium text-sm hover:bg-sky-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+        >
           {tr("information_text_creator_badge", "Euskalia · Creador de Texto")}
-        </div>
+        </Link>
       </div>
 
       <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
@@ -746,7 +775,10 @@ transition={{
       </div>
     </div>
 
-    <div className="relative h-[620px] flex items-start justify-center pt-28">
+    <Link
+      to="/creador-texto"
+      className="relative h-[620px] flex items-start justify-center pt-28 hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+    >
       <div className="absolute w-[520px] h-[460px] rounded-[60px] bg-sky-50 rotate-6" />
 
       <div className="relative w-[520px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
@@ -779,7 +811,7 @@ transition={{
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   </div>
 </motion.section>
 )}
@@ -802,7 +834,10 @@ transition={{
 >
 
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
-    <div className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 lg:-ml-40">
+    <Link
+      to="/creador-email"
+      className="relative h-[620px] flex items-center justify-center order-2 lg:order-1 lg:-ml-40 hover:-translate-y-3 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-transform duration-300 cursor-pointer"
+    >
       <div className="absolute w-[400px] h-[400px] rounded-[60px] bg-indigo-50 -rotate-6" />
 
       <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
@@ -851,7 +886,7 @@ transition={{
           </div>
         </div>
       </div>
-    </div>
+    </Link>
 
     <div className="max-w-2xl order-1 lg:order-2 lg:-ml-28">
       <div className="flex items-center gap-6 mb-10">
@@ -859,9 +894,12 @@ transition={{
           {tr("information_email_creator_title", "Creador de Email")}
         </h2>
 
-        <div className="inline-flex items-center rounded-full bg-indigo-50 px-5 py-2 text-indigo-700 font-medium text-sm">
+        <Link
+          to="/creador-email"
+          className="inline-flex items-center rounded-full bg-indigo-50 px-5 py-2 text-indigo-700 font-medium text-sm hover:bg-indigo-100 hover:scale-105 hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+        >
           {tr("information_email_creator_badge", "Euskalia · Creador de Email")}
-        </div>
+        </Link>
       </div>
 
       <div className="space-y-10 text-[16px] leading-[2] text-slate-600 lg:-ml-16">

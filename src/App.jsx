@@ -38,40 +38,51 @@ function App() {
 
 const path = location.pathname || "/";
 
+useEffect(() => {
+  if (path !== "/informacion") {
+    window.scrollTo(0, 0);
+  }
+}, [path]);
+
 const seoMap = {
   "/": {
-    title: "Traductor de euskera online y gratis | Euskalia",
-    desc: "Traductor de euskera con IA para traducir textos online de forma rápida, natural y precisa.",
+    title: "Traductor de euskera con IA | Euskalia — y mucho más",
+    desc: "Traduce al euskera con IA. Además, resume, corrige y parafrasea textos: todas las herramientas de euskera en un solo sitio.",
   },
 
   "/resumen": {
     title: "Resumidor de textos en euskera con IA | Euskalia",
-    desc: "Resume textos largos en euskera automáticamente con inteligencia artificial de forma clara y rápida.",
+    desc: "Resume textos largos, documentos y páginas web en euskera. Elige entre resumen breve, medio o detallado. Sin registro.",
   },
 
   "/corrector": {
-    title: "Corrector ortográfico y gramatical en euskera | Euskalia",
-    desc: "Corrige textos en euskera con inteligencia artificial. Mejora ortografía, gramática y claridad automáticamente.",
+    title: "Corrector de euskera con IA | Euskalia",
+    desc: "Corrige ortografía y gramática en euskera con inteligencia artificial. Más que un corrector tradicional: entiende el contexto de tu texto.",
   },
 
   "/parafraseador": {
-    title: "Parafraseador de textos en euskera | Euskalia",
-    desc: "Reescribe textos en euskera con IA manteniendo el significado original de forma natural.",
+    title: "Parafraseador de euskera con IA | Euskalia",
+    desc: "Reformula textos en euskera manteniendo el significado, con 7 estilos distintos (formal, académico, creativo...). La única herramienta de parafraseo pensada específicamente para el euskera.",
   },
 
   "/creador-texto": {
-    title: "Generador de textos con IA en euskera | Euskalia",
-    desc: "Crea textos automáticamente en euskera con inteligencia artificial para estudios, trabajo o contenido.",
+    title: "Generador de textos en euskera con IA | Euskalia",
+    desc: "Crea artículos, descripciones y contenido en euskera con IA. Modo normal o por párrafos, con el control que necesitas.",
   },
 
   "/creador-email": {
-    title: "Generador de emails con IA en euskera | Euskalia",
-    desc: "Genera emails profesionales en euskera automáticamente con inteligencia artificial.",
+    title: "Creador de emails en euskera con IA | Euskalia",
+    desc: "Redacta emails profesionales o informales en euskera en segundos. El único generador de correos pensado para el euskera.",
   },
 
   "/chat-ia": {
-    title: "Asistente de IA especializado en euskera | Euskalia",
-    desc: "Asistente de inteligencia artificial especializado en euskera para ayudarte con textos, dudas y contenido.",
+    title: "Asistente de IA en euskera, sin trucos | Euskalia",
+    desc: "Chatea en euskera de forma natural. Resuelve dudas, aprende y trabaja en tu idioma, sin necesidad de trucos para que la IA te entienda.",
+  },
+
+  "/informacion": {
+    title: "Qué es Euskalia | Herramientas de IA en euskera",
+    desc: "Descubre Euskalia: traductor, resumidor, corrector, parafraseador y más herramientas de inteligencia artificial pensadas para el euskera.",
   },
 };
 
@@ -116,22 +127,22 @@ return (
         "@type": "WebSite",
         name: "Euskalia",
         alternateName: "Euskalia",
-        url: "https://euskaliaweb.com",
+        url: "https://www.euskaliaweb.com",
       },
 
       {
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "Euskalia",
-        url: "https://euskaliaweb.com",
-        logo: "https://euskaliaweb.com/og-image.png",
+        url: "https://www.euskaliaweb.com",
+        logo: "https://www.euskaliaweb.com/og-image.png",
       },
 
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: "Euskalia",
-        url: "https://euskaliaweb.com",
+        url: "https://www.euskaliaweb.com",
         applicationCategory: "EducationalApplication",
         operatingSystem: "Web",
         description:
@@ -160,20 +171,20 @@ return (
   
   <link
     rel="canonical"
-    href={`https://euskaliaweb.com${path}`}
+    href={`https://www.euskaliaweb.com${path}`}
   />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Euskalia" />
 <meta property="og:title" content={seo.title} />
 <meta property="og:description" content={seo.desc} />
-<meta property="og:url" content={`https://euskaliaweb.com${path}`} />
-<meta property="og:image" content="https://euskaliaweb.com/og-image.png" />
+<meta property="og:url" content={`https://www.euskaliaweb.com${path}`} />
+<meta property="og:image" content="https://www.euskaliaweb.com/og-image.png" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={seo.title} />
 <meta name="twitter:description" content={seo.desc} />
-<meta name="twitter:image" content="https://euskaliaweb.com/og-image.png" />
+<meta name="twitter:image" content="https://www.euskaliaweb.com/og-image.png" />
 
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
