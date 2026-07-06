@@ -179,8 +179,9 @@ export default function HowItWorks() {
             variants={item}
           >
             <img
-              src="/how-it-works.png"
+              src="/how-it-works.webp"
               alt=""
+              loading="lazy"
               className="w-full max-w-[520px]"
             />
           </motion.div>

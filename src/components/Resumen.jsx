@@ -21,11 +21,6 @@ import HowItWorks from "@/components/HowItWorks";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
-import * as mammoth from "mammoth/mammoth.browser";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
@@ -330,6 +325,7 @@ const tooltipCopied = t("translator.copied");
         if (isDocx) {
           try {
             const arrayBuffer = await file.arrayBuffer();
+            const mammoth = await import("mammoth/mammoth.browser");
             const { value } = await mammoth.extractRawText({ arrayBuffer });
             const clean = String(value || "")
               .replace(/\r/g, "")
@@ -344,6 +340,12 @@ const tooltipCopied = t("translator.copied");
         if (isPdf) {
   try {
     const arrayBuffer = await file.arrayBuffer();
+    const pdfjsLib = await import("pdfjs-dist");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      "pdfjs-dist/build/pdf.worker.min.mjs",
+      import.meta.url
+    ).toString();
+
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
     let fullText = "";

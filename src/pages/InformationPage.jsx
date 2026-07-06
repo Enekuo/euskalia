@@ -794,8 +794,9 @@ transition={{
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 flex-shrink-0">
                 <img
-                  src="/Bombilla.png"
+                  src="/Bombilla.webp"
                   alt="Bombilla"
+                  loading="lazy"
                   className="w-full h-full object-contain"
                   style={{ transform: "scale(2.2)", transformOrigin: "center center" }}
                 />
@@ -869,8 +870,9 @@ transition={{
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 flex-shrink-0">
                 <img
-                  src="/Bombilla morada.png"
+                  src="/Bombilla morada.webp"
                   alt="Bombilla"
+                  loading="lazy"
                   className="w-full h-full object-contain"
                   style={{ transform: "scale(2)", transformOrigin: "center center" }}
                 />

@@ -13,11 +13,6 @@ import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
 import ToolsSidebar from "@/components/ToolsSidebar";
 import { Link } from "react-router-dom";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
- 
 
 const MAX_CHARS = 3000;
 

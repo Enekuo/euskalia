@@ -204,16 +204,7 @@ export default function Header() {
         <div className="flex items-center">
           <Link to="/" className="mr-8 flex items-center">
             <img
-              src="/Favicon imagen.png"
-              alt=""
-              className="h-11 w-11 mr-3"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-
-            <img
-              src="/Imagen favicon.png"
+              src="/Imagen favicon.webp"
               alt="Euskalia"
               className="h-11 mr-2"
               onError={(e) => {

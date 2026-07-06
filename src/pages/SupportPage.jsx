@@ -90,7 +90,7 @@ const SupportPage = () => {
 
                 <div className="md:hidden shrink-0">
                   <img
-                    src="/olondo.mascota.png"
+                    src="/olondo.mascota.webp"
                     alt="Soporte Euskalia"
                     className="h-[96px] w-auto pointer-events-none select-none"
                     draggable={false}
@@ -110,7 +110,7 @@ const SupportPage = () => {
 
             <div className="hidden md:flex mt-6">
               <img
-                src="/olondo.mascota.png"
+                src="/olondo.mascota.webp"
                 alt="Soporte Euskalia"
                 className="h-[260px] w-auto pointer-events-none select-none"
                 draggable={false}

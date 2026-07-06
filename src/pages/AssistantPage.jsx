@@ -273,7 +273,7 @@ CORRECCIÓN DE TEXTO:
                       <div className="mb-5 flex justify-center">
                         {avatarOk ? (
                           <img
-                            src="/olondo-mascota3.png"
+                            src="/olondo-mascota3.webp"
                             alt="Euskalia IA"
                             className="h-36 sm:h-40 md:h-44 w-auto"
                             draggable={false}
@@ -315,7 +315,7 @@ CORRECCIÓN DE TEXTO:
                           <div className="mt-0.5 h-10 w-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center overflow-hidden">
                             {avatarOk ? (
                               <img
-                                src="/olondo-mascota3.png"
+                                src="/olondo-mascota3.webp"
                                 alt=""
                                 className="h-full w-full object-cover scale-[1.35]"
                                 onError={() => setAvatarOk(false)}
