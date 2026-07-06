@@ -35,7 +35,9 @@
       "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\img-tools\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\convert-images.js\")",
       "Bash(xargs ls -la)",
       "Bash(awk '{s+=$1} END {printf \"%.2f MB\\\\n\", s/1024/1024}')",
-      "Bash(awk '/^commit /{c=$2} /-    const detectedLanguage = await detectLanguageForBannerWithAI/{print c}')"
+      "Bash(awk '/^commit /{c=$2} /-    const detectedLanguage = await detectLanguageForBannerWithAI/{print c}')",
+      "Bash(npm run *)",
+      "Bash(node --check api/public.js)"
     ],
     "additionalDirectories": [
       "\\tmp"

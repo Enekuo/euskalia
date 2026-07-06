@@ -785,14 +785,18 @@ REGLA CRÍTICA DE DESTINO:
         .join("\n")
     ).trim();
 
-    const detectedLanguage =
-  tool === "translator" && String(src || "").toLowerCase() === "auto"
-    ? await detectLanguageForBannerWithAI({
-        text: bannerDetectionText,
-        uiLanguage: body?.uiLanguage || "ES",
-        model: "gpt-4o-mini",
-      })
-    : null;
+    const shouldDetectLanguageForBanner =
+      (tool === "translator" && String(src || "").toLowerCase() === "auto") ||
+      tool === "corrector" ||
+      tool === "paraphraser";
+
+    const detectedLanguage = shouldDetectLanguageForBanner
+      ? await detectLanguageForBannerWithAI({
+          text: bannerDetectionText,
+          uiLanguage: body?.uiLanguage || "ES",
+          model: "gpt-4o-mini",
+        })
+      : null;
 
 if (
   tool === "translator" &&
