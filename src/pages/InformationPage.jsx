@@ -64,12 +64,12 @@ const viewportAmount =
 
 <motion.section
   className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5"
-initial={{ opacity: 0, y: 180, scale: 0.96 }}
+initial={{ opacity: 0, y: 45, scale: 0.98 }}
 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-viewport={{ once: false, amount: viewportAmount }}
+viewport={{ once: true, amount: viewportAmount }}
 transition={{
-  duration: 0.8,
-  delay: 0.2
+  duration: 0.55,
+  delay: 0.1
 }}
   >
 
@@ -213,10 +213,10 @@ transition={{
   className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center"
   initial={{ opacity: 0, y: 80 }}
   whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.2
+    duration: 0.55,
+    delay: 0.1
   }}
 >
 
@@ -285,12 +285,12 @@ transition={{
   <motion.section
     id="traductor"
     className="min-h-screen flex items-center py-24 scroll-mt-28"
-    initial={{ opacity: 0, x: -100 }}
+    initial={{ opacity: 0, x: -40 }}
     whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: false, amount: viewportAmount }}
+    viewport={{ once: true, amount: viewportAmount }}
     transition={{
-      duration: 0.8,
-      delay: 0.1
+      duration: 0.55,
+      delay: 0.05
     }}
   >
     <div className="grid grid-cols-1 lg:grid-cols-[700px_1fr] gap-16 items-center w-full">
@@ -422,12 +422,12 @@ transition={{
 <motion.section
   id="resumidor"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 150 }}
+  initial={{ opacity: 0, x: 40 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.5
+    duration: 0.55,
+    delay: 0.05
   }}
 >
 
@@ -512,12 +512,12 @@ transition={{
 <motion.section
   id="corrector"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: -100 }}
+  initial={{ opacity: 0, x: -40 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.5
+    duration: 0.55,
+    delay: 0.05
   }}
 >
 
@@ -610,12 +610,12 @@ transition={{
 <motion.section
   id="parafraseador"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 150 }}
+  initial={{ opacity: 0, x: 40 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.5
+    duration: 0.55,
+    delay: 0.05
   }}
 >
 
@@ -709,12 +709,12 @@ transition={{
 <motion.section
   id="creador-texto"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: -100 }}
+  initial={{ opacity: 0, x: -40 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.5
+    duration: 0.55,
+    delay: 0.05
   }}
 >
 
@@ -825,12 +825,12 @@ transition={{
 <motion.section
   id="creador-email"
   className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 150 }}
+  initial={{ opacity: 0, x: 40 }}
   whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: false, amount: viewportAmount }}
+  viewport={{ once: true, amount: viewportAmount }}
   transition={{
-    duration: 0.8,
-    delay: 0.5
+    duration: 0.55,
+    delay: 0.05
   }}
 >
 

@@ -37,7 +37,8 @@
       "Bash(awk '{s+=$1} END {printf \"%.2f MB\\\\n\", s/1024/1024}')",
       "Bash(awk '/^commit /{c=$2} /-    const detectedLanguage = await detectLanguageForBannerWithAI/{print c}')",
       "Bash(npm run *)",
-      "Bash(node --check api/public.js)"
+      "Bash(node --check api/public.js)",
+      "Bash(grep -n \"id=\\\\\"traductor\\\\\"\\\\|id=\\\\\"resumidor\\\\\"\\\\|id=\\\\\"corrector\\\\\"\\\\|id=\\\\\"parafraseador\\\\\"\\\\|id=\\\\\"creador-texto\\\\\"\\\\|id=\\\\\"creador-email\\\\\"\\\\|initial={{ opacity: 0, y: 40\" src/pages/InformationPage.jsx)"
     ],
     "additionalDirectories": [
       "\\tmp"

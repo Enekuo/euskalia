@@ -2259,7 +2259,7 @@ faq_item7_answer: {
   // 10
   faq_item10_question: {
      ES: "💬 ¿Cómo puedo contactar con Euskalia?",
-  EUS: "💬 Nola jararri dezaket harremanetan Euskaliarekin ?",
+  EUS: "💬 Nola jarri dezaket harremanetan Euskaliarekin ?",
   EN: "💬 How can I contact Euskalia?",
   FR: "💬 Comment puis-je contacter Euskalia ?",
 },
