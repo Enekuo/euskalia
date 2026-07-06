@@ -38,7 +38,23 @@
       "Bash(awk '/^commit /{c=$2} /-    const detectedLanguage = await detectLanguageForBannerWithAI/{print c}')",
       "Bash(npm run *)",
       "Bash(node --check api/public.js)",
-      "Bash(grep -n \"id=\\\\\"traductor\\\\\"\\\\|id=\\\\\"resumidor\\\\\"\\\\|id=\\\\\"corrector\\\\\"\\\\|id=\\\\\"parafraseador\\\\\"\\\\|id=\\\\\"creador-texto\\\\\"\\\\|id=\\\\\"creador-email\\\\\"\\\\|initial={{ opacity: 0, y: 40\" src/pages/InformationPage.jsx)"
+      "Bash(grep -n \"id=\\\\\"traductor\\\\\"\\\\|id=\\\\\"resumidor\\\\\"\\\\|id=\\\\\"corrector\\\\\"\\\\|id=\\\\\"parafraseador\\\\\"\\\\|id=\\\\\"creador-texto\\\\\"\\\\|id=\\\\\"creador-email\\\\\"\\\\|initial={{ opacity: 0, y: 40\" src/pages/InformationPage.jsx)",
+      "Bash(mkdir -p /tmp/pw3)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(NODE_PATH='C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw3\\\\node_modules' node 'C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\mobile-check.js')",
+      "Bash(powershell -Command \"Stop-Process -Id 11600 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(rm -rf /tmp/pw3)",
+      "Bash(NODE_PATH='C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw4\\\\node_modules' node 'C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-fix.js')",
+      "Bash(git stash *)",
+      "Bash(NODE_PATH='C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw4\\\\node_modules' node -e ' *)",
+      "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw4\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\before-check.js\")",
+      "Bash(powershell -Command \"Stop-Process -Id 3992 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(rm -rf /tmp/pw4)",
+      "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw5\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\check-scrollbar.js\")",
+      "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw5\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\check-scrollbar2.js\")",
+      "Bash(powershell -Command \"Stop-Process -Id 13512 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(rm -rf /tmp/pw5)"
     ],
     "additionalDirectories": [
       "\\tmp"

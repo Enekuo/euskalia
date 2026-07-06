@@ -1300,7 +1300,7 @@ return (
 
           <Link
             to="/informacion?tool=resumidor"
-            className="shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
+            className="absolute -right-24 top-0 shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition md:static md:right-auto md:top-auto min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
             aria-label="Más información"
           >
             <Menu className="w-5 h-5 text-slate-600" />

@@ -880,7 +880,7 @@ return (
 
             <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-center gap-0 w-full md:w-auto max-w-full overflow-x-auto md:overflow-visible overflow-y-hidden whitespace-nowrap pb-1 md:pb-0">
+                <div className="flex items-center gap-0 w-full md:w-auto max-w-full overflow-x-auto md:overflow-visible overflow-y-hidden whitespace-nowrap pb-1 md:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
                   <ModeTab active={mode === "formal"} label={modeLabels.formal} onClick={() => setMode("formal")} showDivider />
                   <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
@@ -1113,7 +1113,7 @@ setDetectedLanguage(null);
 
           <Link
             to="/informacion?tool=parafraseador"
-            className="shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
+            className="absolute -right-24 top-0 shrink-0 w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center shadow-sm hover:bg-slate-50 transition md:static md:right-auto md:top-auto min-[1424px]:absolute min-[1424px]:-right-24 min-[1424px]:top-0"
             aria-label="Más información"
           >
             <Menu className="w-5 h-5 text-slate-600" />

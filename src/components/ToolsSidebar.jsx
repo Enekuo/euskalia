@@ -67,7 +67,7 @@ export default function ToolsSidebar() {
       </div>
 
       {/* < md: menú desplegable con icono + nombre de cada herramienta */}
-      <div className="md:hidden shrink-0">
+      <div className="md:hidden shrink-0 absolute -left-24 top-0 md:static md:left-auto">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
