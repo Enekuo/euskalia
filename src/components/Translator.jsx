@@ -98,6 +98,55 @@ function splitTextForSpeech(rawText, maxChars = TTS_CHUNK_MAX_CHARS) {
   return chunks;
 }
 
+// Límite del primer fragmento: deliberadamente corto para que el primer audio se
+// genere rápido en OpenAI y el altavoz arranque antes, en vez de esperar a un
+// fragmento tan grande como los demás (hasta TTS_CHUNK_MAX_CHARS).
+const TTS_FIRST_CHUNK_MAX_CHARS = 400;
+
+// Si hay más de un fragmento, adelanta un primer trozo corto (por frase, o por
+// palabra como último recurso) delante del resto del primer fragmento. Si el texto
+// completo ya cabía en un único fragmento, no se toca: sigue siendo una sola petición.
+function splitFirstChunkForFastStart(chunks, maxFirstChars = TTS_FIRST_CHUNK_MAX_CHARS) {
+  if (!Array.isArray(chunks) || chunks.length < 2) return chunks;
+
+  const [first, ...rest] = chunks;
+  if (first.length <= maxFirstChars) return chunks;
+
+  const takeHeadAndTail = (pieces) => {
+    let head = "";
+    const tailPieces = [];
+    let building = true;
+    for (const piece of pieces) {
+      if (building) {
+        const candidate = head ? `${head} ${piece}` : piece;
+        if (!head || candidate.length <= maxFirstChars) {
+          head = candidate;
+          continue;
+        }
+        building = false;
+      }
+      tailPieces.push(piece);
+    }
+    return { head, tail: tailPieces.join(" ") };
+  };
+
+  const sentences = (first.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g) || [first])
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  let { head, tail } = takeHeadAndTail(sentences);
+
+  if (!tail) {
+    // Ni siquiera la primera frase cabe en el límite corto: corta por palabra.
+    const words = head.split(" ");
+    ({ head, tail } = takeHeadAndTail(words));
+  }
+
+  if (!head || !tail) return chunks; // no se pudo dividir de forma útil, se deja como estaba
+
+  return [head, tail, ...rest];
+}
+
 export default function Translator() {
   const { t, language } = useTranslation();
   const tr = (k, f = "") => {
@@ -202,6 +251,7 @@ const OPTIONS_SRC = [
   const [urlItems, setUrlItems] = useState([]);
 
   const [speaking, setSpeaking] = useState(false);
+  const [ttsLoading, setTtsLoading] = useState(false);
   const audioElRef = useRef(null);
   const audioUrlRef = useRef(null);
   const ttsAbortRef = useRef(null);
@@ -1132,6 +1182,7 @@ requestAnimationFrame(() => {
       audioUrlRef.current = null;
     }
     setSpeaking(false);
+    setTtsLoading(false);
   };
 
   const handleSpeakToggle = async () => {
@@ -1146,12 +1197,15 @@ requestAnimationFrame(() => {
     if (!text) return;
 
     // Trocea el texto en fragmentos que respeten el límite real de la API de TTS,
-    // cortando por párrafo/frase/palabra, nunca en mitad de una palabra.
-    const chunks = splitTextForSpeech(text);
+    // cortando por párrafo/frase/palabra, nunca en mitad de una palabra. El primer
+    // fragmento se adelanta más corto para que el audio arranque antes.
+    const chunks = splitFirstChunkForFastStart(splitTextForSpeech(text));
     if (!chunks.length) return;
 
     const sessionId = ++ttsSessionRef.current;
     setSpeaking(true);
+    setTtsLoading(true);
+    let firstChunkStarted = false;
 
     if (!audioElRef.current) {
       audioElRef.current = new Audio();
@@ -1200,10 +1254,19 @@ requestAnimationFrame(() => {
         el.onerror = () => resolve(false);
 
         const start = () => {
-          el.play().catch((e) => {
-            console.warn("Autoplay blocked:", e);
-            resolve(false);
-          });
+          el.play()
+            .then(() => {
+              // En cuanto el audio realmente empieza a sonar (el primer fragmento),
+              // se quita el indicador de "cargando" — solo la primera vez.
+              if (!firstChunkStarted) {
+                firstChunkStarted = true;
+                if (sessionId === ttsSessionRef.current) setTtsLoading(false);
+              }
+            })
+            .catch((e) => {
+              console.warn("Autoplay blocked:", e);
+              resolve(false);
+            });
         };
 
         if (el.readyState >= 3) start();
@@ -1238,6 +1301,7 @@ requestAnimationFrame(() => {
     } finally {
       if (sessionId === ttsSessionRef.current) {
         setSpeaking(false);
+        setTtsLoading(false);
       }
     }
   };
@@ -1831,16 +1895,34 @@ alternativesRequestRef.current += 1;
                     <button
                       type="button"
                       onClick={handleSpeakToggle}
-                      aria-label={speaking ? t("translator.stop") : t("translator.listen")}
+                      aria-label={
+                        speaking
+                          ? ttsLoading
+                            ? tr("translator.loading", "Preparando audio…")
+                            : t("translator.stop")
+                          : t("translator.listen")
+                      }
                       aria-pressed={speaking}
                       disabled={!hasRealResult}
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${speaking ? "text-slate-900" : ""} ${
                         hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                       }`}
                     >
-                      {speaking ? <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" /> : <Volume2 className="w-5 h-5" />}
+                      {speaking ? (
+                        ttsLoading ? (
+                          <span className="inline-block w-[14px] h-[14px] rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
+                        ) : (
+                          <span className="inline-block w-[10px] h-[10px] rounded-[2px] bg-slate-600" />
+                        )
+                      ) : (
+                        <Volume2 className="w-5 h-5" />
+                      )}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
-                        {speaking ? t("translator.stop") : t("translator.listen")}
+                        {speaking
+                          ? ttsLoading
+                            ? tr("translator.loading", "Preparando audio…")
+                            : t("translator.stop")
+                          : t("translator.listen")}
                       </span>
                     </button>
 
