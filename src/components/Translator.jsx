@@ -23,6 +23,81 @@ const speechLangMap = {
   fr: "fr-FR",
 };
 
+// Límite prudente por fragmento para /api/tts, por debajo del límite real de OpenAI (4096).
+const TTS_CHUNK_MAX_CHARS = 3800;
+
+// Trocea un texto largo en fragmentos aptos para TTS, cortando preferiblemente por
+// final de párrafo, luego por final de frase, y solo como último recurso por palabra.
+// Nunca corta en mitad de una palabra.
+function splitTextForSpeech(rawText, maxChars = TTS_CHUNK_MAX_CHARS) {
+  const trimmed = String(rawText || "").trim();
+  if (!trimmed) return [];
+
+  // Los párrafos se detectan en el texto ORIGINAL (antes de colapsar espacios),
+  // para no perder esa referencia de corte natural.
+  const paragraphs = trimmed
+    .split(/\n\s*\n+/)
+    .map((p) => p.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+
+  if (!paragraphs.length) return [];
+
+  const chunks = [];
+  let current = "";
+
+  const flush = () => {
+    if (current.trim()) chunks.push(current.trim());
+    current = "";
+  };
+
+  const appendOrFlush = (piece) => {
+    const candidate = current ? `${current} ${piece}` : piece;
+    if (candidate.length <= maxChars) {
+      current = candidate;
+      return true;
+    }
+    return false;
+  };
+
+  const splitByWords = (piece) => {
+    const words = piece.split(" ");
+    for (const word of words) {
+      if (!appendOrFlush(word)) {
+        flush();
+        current = word; // una sola palabra más larga que maxChars es prácticamente imposible en la práctica
+      }
+    }
+  };
+
+  const splitBySentences = (piece) => {
+    const sentences = piece.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g) || [piece];
+    for (const raw of sentences) {
+      const sentence = raw.trim();
+      if (!sentence) continue;
+      if (appendOrFlush(sentence)) continue;
+      flush();
+      if (sentence.length <= maxChars) {
+        current = sentence;
+      } else {
+        splitByWords(sentence);
+      }
+    }
+  };
+
+  for (const paragraph of paragraphs) {
+    if (appendOrFlush(paragraph)) continue;
+    flush();
+    if (paragraph.length <= maxChars) {
+      current = paragraph;
+    } else {
+      splitBySentences(paragraph);
+    }
+  }
+
+  flush();
+  return chunks;
+}
+
 export default function Translator() {
   const { t, language } = useTranslation();
   const tr = (k, f = "") => {
@@ -127,9 +202,10 @@ const OPTIONS_SRC = [
   const [urlItems, setUrlItems] = useState([]);
 
   const [speaking, setSpeaking] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
   const audioElRef = useRef(null);
+  const audioUrlRef = useRef(null);
   const ttsAbortRef = useRef(null);
+  const ttsSessionRef = useRef(0);
 
   const [copied, setCopied] = useState(false);
   const copyTimerRef = useRef(null);
@@ -1034,6 +1110,10 @@ requestAnimationFrame(() => {
   };
 
   const stopPlayback = () => {
+    // Invalida cualquier fragmento en curso o en cola: aunque una petición o un
+    // audio en marcha resuelvan después de esto, el bucle de reproducción los ignorará.
+    ttsSessionRef.current += 1;
+
     if (speaking && ttsAbortRef.current) {
       try {
         ttsAbortRef.current.abort();
@@ -1042,13 +1122,14 @@ requestAnimationFrame(() => {
     const el = audioElRef.current;
     if (el) {
       try {
+        el.onended = null;
         el.pause();
         el.currentTime = 0;
       } catch {}
     }
-    if (audioUrl) {
-      URL.revokeObjectURL(audioUrl);
-      setAudioUrl(null);
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current);
+      audioUrlRef.current = null;
     }
     setSpeaking(false);
   };
@@ -1064,25 +1145,30 @@ requestAnimationFrame(() => {
     const text = rightText?.trim();
     if (!text) return;
 
+    // Trocea el texto en fragmentos que respeten el límite real de la API de TTS,
+    // cortando por párrafo/frase/palabra, nunca en mitad de una palabra.
+    const chunks = splitTextForSpeech(text);
+    if (!chunks.length) return;
+
+    const sessionId = ++ttsSessionRef.current;
     setSpeaking(true);
 
     if (!audioElRef.current) {
       audioElRef.current = new Audio();
       audioElRef.current.preload = "auto";
-      audioElRef.current.onended = () => setSpeaking(false);
-      audioElRef.current.onpause = () => {};
     }
+    const el = audioElRef.current;
 
     const ctrl = new AbortController();
     ttsAbortRef.current = ctrl;
 
-    try {
+    const fetchChunkAudioUrl = async (chunkText) => {
       const resp = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
-          text,
+          text: chunkText,
           voice: "alloy",
           format: "wav",
         }),
@@ -1091,36 +1177,68 @@ requestAnimationFrame(() => {
       if (!resp.ok) {
         const raw = await resp.text().catch(() => "");
         console.error("API /api/tts error:", resp.status, raw);
-        setSpeaking(false);
-        return;
+        return null;
       }
 
       const blob = await resp.blob();
-      const url = URL.createObjectURL(blob);
+      return URL.createObjectURL(blob);
+    };
 
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-      setAudioUrl(url);
+    // Reproduce un fragmento ya descargado y resuelve cuando termina (o falla).
+    const playChunkUrl = (url) =>
+      new Promise((resolve) => {
+        if (sessionId !== ttsSessionRef.current) {
+          resolve(false);
+          return;
+        }
 
-      const el = audioElRef.current;
-      el.src = url;
+        if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+        audioUrlRef.current = url;
 
-      const start = () => {
-        el.play().catch((e) => {
-          console.warn("Autoplay blocked:", e);
-        });
-      };
+        el.src = url;
+        el.onended = () => resolve(true);
+        el.onerror = () => resolve(false);
 
-      if (el.readyState >= 3) start();
-      else el.addEventListener("canplay", start, { once: true });
+        const start = () => {
+          el.play().catch((e) => {
+            console.warn("Autoplay blocked:", e);
+            resolve(false);
+          });
+        };
 
-      el.onended = () => {
-        setSpeaking(false);
-      };
+        if (el.readyState >= 3) start();
+        else el.addEventListener("canplay", start, { once: true });
+      });
+
+    try {
+      // Pide ya el primer fragmento, y mientras suena cada uno, va pidiendo el
+      // siguiente por adelantado para que no se note el hueco entre fragmentos.
+      let nextUrlPromise = fetchChunkAudioUrl(chunks[0]);
+
+      for (let i = 0; i < chunks.length; i++) {
+        if (sessionId !== ttsSessionRef.current) break;
+
+        const url = await nextUrlPromise;
+        if (sessionId !== ttsSessionRef.current) {
+          if (url) URL.revokeObjectURL(url);
+          break;
+        }
+        if (!url) break;
+
+        nextUrlPromise =
+          i + 1 < chunks.length ? fetchChunkAudioUrl(chunks[i + 1]) : Promise.resolve(null);
+
+        const finished = await playChunkUrl(url);
+        if (!finished) break;
+      }
     } catch (e) {
       if (e.name !== "AbortError") {
         console.error("tts fetch error:", e);
       }
-      setSpeaking(false);
+    } finally {
+      if (sessionId === ttsSessionRef.current) {
+        setSpeaking(false);
+      }
     }
   };
 

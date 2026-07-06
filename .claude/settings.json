@@ -54,7 +54,11 @@
       "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw5\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\check-scrollbar.js\")",
       "Bash(NODE_PATH=\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\pw5\\\\node_modules\" node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\check-scrollbar2.js\")",
       "Bash(powershell -Command \"Stop-Process -Id 13512 -Force -ErrorAction SilentlyContinue\")",
-      "Bash(rm -rf /tmp/pw5)"
+      "Bash(rm -rf /tmp/pw5)",
+      "Bash(awk '/^commit /{c=$2; msg=\"\"} /^    /{if\\(msg==\"\"\\) msg=$0} /const text = rightText\\\\?\\\\.trim\\\\\\(\\\\\\);/{if\\($0 ~ /^\\\\+/\\) print c, msg}')",
+      "Bash(grep -n \"const stopPlayback\\\\|const handleSpeakToggle\\\\|^  };$\" src/components/Translator.jsx)",
+      "Bash(node --check \"c:\\\\Users\\\\Windows\\\\Desktop\\\\Euskalia Codigo\\\\api\\\\tts.js\")",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-split.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

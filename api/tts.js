@@ -62,11 +62,9 @@ export default async function handler(req) {
       );
     }
 
-    // (opcional) límite prudente para evitar latencias largas
-    const MAX_CHARS = 5000;
-    if (text.length > MAX_CHARS) {
-      text = text.slice(0, MAX_CHARS);
-    }
+    // El frontend (Translator.jsx) ya trocea el texto en fragmentos por debajo del
+    // límite real de la API de OpenAI antes de llamar aquí, así que no truncamos
+    // nada en este endpoint: cortar aquí en silencio perdía el final del texto.
 
     const openai = new OpenAI({ apiKey });
 
