@@ -126,23 +126,22 @@ return (
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "Euskalia",
-        alternateName: "Euskalia",
-        url: "https://www.euskaliaweb.com",
+        url: "https://www.euskaliaweb.com/",
       },
 
       {
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "Euskalia",
-        url: "https://www.euskaliaweb.com",
-        logo: "https://www.euskaliaweb.com/og-image.png",
+        url: "https://www.euskaliaweb.com/",
+        logo: "https://www.euskaliaweb.com/Imagen%20favicon.png",
       },
 
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: "Euskalia",
-        url: "https://www.euskaliaweb.com",
+        url: "https://www.euskaliaweb.com/",
         applicationCategory: "EducationalApplication",
         operatingSystem: "Web",
         description:

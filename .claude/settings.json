@@ -59,7 +59,8 @@
       "Bash(grep -n \"const stopPlayback\\\\|const handleSpeakToggle\\\\|^  };$\" src/components/Translator.jsx)",
       "Bash(node --check \"c:\\\\Users\\\\Windows\\\\Desktop\\\\Euskalia Codigo\\\\api\\\\tts.js\")",
       "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-split.js\")",
-      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-firstchunk.js\")"
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-firstchunk.js\")",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\validate-jsonld.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"
