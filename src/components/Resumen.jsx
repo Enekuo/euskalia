@@ -22,6 +22,33 @@ import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 
+// Los 3 niveles del resumidor escalan de forma PROPORCIONAL a la longitud del texto de
+// entrada (no una extensión fija): ratio = proporción objetivo sobre el nº de palabras de
+// entrada, min/max = límites absolutos (el máximo solo se alcanza con textos muy largos).
+const SUMMARY_LEVELS = {
+  breve: {
+    ratio: 0.10,
+    min: 40,
+    max: 200,
+    structuralNote:
+      "Incluye solo la idea central del texto, lo más esencial, sin matices secundarios.",
+  },
+  medio: {
+    ratio: 0.25,
+    min: 120,
+    max: 750,
+    structuralNote:
+      "Incluye las ideas principales de cada parte del texto, con el contexto necesario para entenderlas, pero SIN detalles secundarios, ejemplos concretos ni datos accesorios.",
+  },
+  detallado: {
+    ratio: 0.45,
+    min: 250,
+    max: 2000,
+    structuralNote:
+      "Incluye todas las ideas relevantes del texto, con sus matices y el contexto que aporte valor, bien organizadas.",
+  },
+};
+
 export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
 
@@ -601,13 +628,30 @@ const handleClearLeft = () => {
     const wordCount = words.length;
     const strictExtractive = onlyText && wordCount <= 120;
 
+    // ===== Nivel de resumen: proporcional a la longitud de entrada (no fijo) =====
+    const levelKey =
+      summaryLength === "breve" ? "breve" : summaryLength === "medio" ? "medio" : "detallado";
+    const level = SUMMARY_LEVELS[levelKey];
+
+    const docsWordCount = (documentsText || []).reduce(
+      (acc, d) => acc + String(d?.text || "").trim().split(/\s+/).filter(Boolean).length,
+      0
+    );
+    const sourceWordCount = wordCount + docsWordCount;
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const targetWords =
+      sourceWordCount > 0
+        ? Math.round(clamp(sourceWordCount * level.ratio, level.min, level.max))
+        : null;
+    const levelPercent = Math.round(level.ratio * 100);
 
 const formattingRules =
   summaryLength === "breve"
-    ? "Devuelve un resumen claro, compacto y profesional en un único párrafo fluido. No uses listas, viñetas, títulos ni numeraciones."
+    ? `${level.structuralNote} Devuélvelo en un único párrafo fluido y natural. No uses listas, viñetas, títulos ni numeraciones.`
     : summaryLength === "medio"
-    ? "Devuelve un resumen claro y profesional usando 2 o 3 párrafos naturales si el contenido lo necesita. No uses listas, viñetas, títulos ni numeraciones."
-    : "Devuelve un resumen claro y profesional usando tantos párrafos naturales como sean necesarios para mantener buena legibilidad. No uses listas, viñetas, títulos ni numeraciones.";
+    ? `${level.structuralNote} Organízalo en los párrafos naturales que el contenido requiera (sin un número fijo). No uses listas, viñetas, títulos ni numeraciones.`
+    : `${level.structuralNote} Organízalo en tantos párrafos naturales como sean necesarios para mantener buena legibilidad. No uses listas, viñetas, títulos ni numeraciones.`;
 
 
 const outputLanguageName =
@@ -623,12 +667,9 @@ const langInstruction =
   `Responde SIEMPRE en ${outputLanguageName}, aunque el contenido de entrada esté en otro idioma. El idioma del resultado lo decide el selector de la herramienta, no el idioma de la fuente.`;
 
 
-    const lengthRule =
-      summaryLength === "breve"
-        ? "Extensión: 2–3 frases, ~70–90 palabras."
-        : summaryLength === "medio"
-        ? "Extensión: 4–6 frases, ~120–180 palabras."
-        : "Extensión: 8–10 frases, ~200–260 palabras.";
+    const lengthRule = targetWords
+      ? `La extensión debe ser PROPORCIONAL a la longitud del texto original (el contenido de entrada tiene aproximadamente ${sourceWordCount} palabras), nunca una longitud fija. Para el nivel ${summaryLength.toUpperCase()} el resumen debe rondar el ${levelPercent}% de esa longitud: aproximadamente ${targetWords} palabras en este caso. Mínimo ~${level.min} palabras, máximo ~${level.max} palabras — el máximo solo debe alcanzarse con textos muy largos (cercanos al límite de 50.000 caracteres); con textos cortos o medianos el resumen debe ser proporcionalmente más breve, nunca fijo en el máximo.`
+      : `La extensión debe ser PROPORCIONAL a la longitud del contenido de entrada, nunca una longitud fija. Para el nivel ${summaryLength.toUpperCase()} el resumen debe rondar el ${levelPercent}% de esa longitud, con un mínimo de ~${level.min} palabras y sin superar ~${level.max} palabras — el máximo solo debe alcanzarse con contenido muy extenso; con contenido corto o mediano el resumen debe ser proporcionalmente más breve.`;
 
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
@@ -658,18 +699,10 @@ const systemBase =
   "1) Detecta automáticamente el idioma del contenido solo para entenderlo correctamente. " +
   `2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. ` +
 
-  (summaryLength === "breve"
-  ? "3) Emaitza paragrafo bakar trinko eta naturalean. "
-  : summaryLength === "medio"
-  ? "3) Erabili 2 edo 3 paragrafo natural edukia luzea bada. "
-  : "3) Erabili behar adina paragrafo natural irakurgarritasun ona mantentzeko. ") +
+  `3) Laburpenaren luzera jatorrizko testuaren luzerarekiko PROPORTZIONALA izan behar da (ez finkoa): maila honetan (${summaryLength.toUpperCase()}) ~${levelPercent}%, gutxienez ~${level.min} hitz eta gehienez ~${level.max} hitz (azken muga hori soilik testu oso luzeekin lortu behar da). Antolatu edukiak eskatzen dituen paragrafo naturaletan, kopuru finkorik gabe. ` +
 
-(summaryLength === "breve"
-  ? "4) Usa un único párrafo compacto y natural. "
-  : summaryLength === "medio"
-  ? "4) Usa 2 o 3 párrafos naturales si el contenido lo necesita. "
-  : "4) Usa tantos párrafos naturales como sean necesarios para mantener buena legibilidad. ") +
-  
+  `4) La extensión del resumen debe ser PROPORCIONAL a la longitud del texto original, nunca fija: en este nivel (${summaryLength.toUpperCase()}) ~${levelPercent}%, con un mínimo de ~${level.min} palabras y un máximo de ~${level.max} palabras (ese máximo solo debe alcanzarse con textos muy largos). Organiza el contenido en los párrafos naturales que requiera, sin imponer un número. ` +
+
   "5) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
   "6) No inventes datos ni añadas información externa. " +
   "7) Zenbakiak eta izen propioak BERE-BEREAN mantendu. " +
