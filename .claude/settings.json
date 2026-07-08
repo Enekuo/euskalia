@@ -60,7 +60,10 @@
       "Bash(node --check \"c:\\\\Users\\\\Windows\\\\Desktop\\\\Euskalia Codigo\\\\api\\\\tts.js\")",
       "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-split.js\")",
       "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\test-firstchunk.js\")",
-      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\validate-jsonld.js\")"
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\validate-jsonld.js\")",
+      "Bash(awk 'NR==654,NR==678{print NR\": \"$0}' src/components/Resumen.jsx)",
+      "Bash(grep -n '\"[^\"]*\\\\${[^}]*}[^\"]*\"' src/components/Resumen.jsx)",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-prompt.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

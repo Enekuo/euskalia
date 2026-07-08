@@ -652,12 +652,12 @@ const langInstruction =
 
 
 const systemBase =
-  "Euskalia zara. Zure lana da emandako edukia laburtzea eta emaitza beti ${outputLanguageName} hizkuntzan ematea. " +
-  "Eres Euskalia. Tu trabajo es resumir el contenido proporcionado y devolver el resultado siempre en ${outputLanguageName}. " +
+  `Euskalia zara. Zure lana da emandako edukia laburtzea eta emaitza beti ${outputLanguageName} hizkuntzan ematea. ` +
+  `Eres Euskalia. Tu trabajo es resumir el contenido proporcionado y devolver el resultado siempre en ${outputLanguageName}. ` +
   "Arau zorrotzak / Reglas estrictas: " +
   "1) Detecta automáticamente el idioma del contenido solo para entenderlo correctamente. " +
-  "2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. " +
-  
+  `2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. ` +
+
   (summaryLength === "breve"
   ? "3) Emaitza paragrafo bakar trinko eta naturalean. "
   : summaryLength === "medio"
