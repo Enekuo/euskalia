@@ -273,6 +273,12 @@ summary_daily_limit_reached: {
   EN: "You have exceeded the summarizer’s daily request limit.",
   FR: "Vous avez dépassé la limite quotidienne de requêtes du résumeur.",
 },
+summary_min_chars_required: {
+  ES: "El texto debe tener al menos {{min}} caracteres para poder resumirlo. Actualmente tiene {{count}}.",
+  EUS: "Testuak gutxienez {{min}} karaktere izan behar ditu laburtu ahal izateko. Momentu honetan {{count}} ditu.",
+  EN: "The text must have at least {{min}} characters to be summarized. It currently has {{count}}.",
+  FR: "Le texte doit contenir au moins {{min}} caractères pour être résumé. Il en contient actuellement {{count}}.",
+},
 // =========================
   //       CORRECTOR 
   // =========================

@@ -22,32 +22,46 @@ import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 
-// Los 3 niveles del resumidor escalan de forma PROPORCIONAL a la longitud del texto de
-// entrada (no una extensión fija): ratio = proporción objetivo sobre el nº de palabras de
-// entrada, min/max = límites absolutos (el máximo solo se alcanza con textos muy largos).
+// Límites de caracteres de ENTRADA del resumidor. Deben coincidir con la validación del
+// servidor (api/public.js: FREE_SUMMARY_MIN_CHARS / FREE_SUMMARY_MAX_CHARS).
+const SUMMARY_INPUT_MIN_CHARS = 5000;
+const SUMMARY_INPUT_MAX_CHARS = 100000;
+
+// Cada nivel escala LINEALMENTE entre minWords (con un texto de entrada de
+// ~SUMMARY_INPUT_MIN_CHARS caracteres) y maxWords (con ~SUMMARY_INPUT_MAX_CHARS
+// caracteres). NO es un porcentaje del original: es una interpolación lineal según dónde
+// cae la longitud real del texto de entrada dentro de ese rango de caracteres.
 const SUMMARY_LEVELS = {
   breve: {
-    ratio: 0.10,
-    min: 40,
-    max: 200,
+    minWords: 80,
+    maxWords: 120,
     structuralNote:
       "Incluye solo la idea central del texto, lo más esencial, sin matices secundarios.",
   },
   medio: {
-    ratio: 0.25,
-    min: 120,
-    max: 750,
+    minWords: 150,
+    maxWords: 300,
     structuralNote:
       "Incluye las ideas principales de cada parte del texto, con el contexto necesario para entenderlas, pero SIN detalles secundarios, ejemplos concretos ni datos accesorios.",
   },
   detallado: {
-    ratio: 0.45,
-    min: 250,
-    max: 2000,
+    minWords: 500,
+    maxWords: 3000,
     structuralNote:
       "Incluye todas las ideas relevantes del texto, con sus matices y el contexto que aporte valor, bien organizadas.",
   },
 };
+
+function interpolateSummaryTargetWords(level, inputChars) {
+  const clampedChars = Math.max(
+    SUMMARY_INPUT_MIN_CHARS,
+    Math.min(SUMMARY_INPUT_MAX_CHARS, inputChars)
+  );
+  const fraction =
+    (clampedChars - SUMMARY_INPUT_MIN_CHARS) /
+    (SUMMARY_INPUT_MAX_CHARS - SUMMARY_INPUT_MIN_CHARS);
+  return Math.round(level.minWords + fraction * (level.maxWords - level.minWords));
+}
 
 export default function Resumen() {
   const { t } = useTranslation?.() || { t: () => null };
@@ -81,7 +95,7 @@ const tr = (k, f) => {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [errorKind, setErrorKind] = useState(null); // null | "limit"
+  const [errorKind, setErrorKind] = useState(null); // null | "limit" | "min"
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
   
 
@@ -114,7 +128,8 @@ const tr = (k, f) => {
   const GRAY_TEXT = "#64748b";
   const GRAY_ICON = "#94a3b8";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 50000;
+  const MIN_CHARS = SUMMARY_INPUT_MIN_CHARS;
+  const MAX_CHARS = SUMMARY_INPUT_MAX_CHARS;
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -510,6 +525,33 @@ const tooltipCopied = t("translator.copied");
     setIsOutdated(false);
   }, [urlItems]);
 
+  // ===== Contador / barra (cuenta texto + documentos + URLs, igual que se muestra) =====
+  const docsChars = (documentsText || []).reduce(
+    (total, d) => total + String(d?.text || "").length,
+    0
+  );
+
+  const urlsChars = (urlItems || []).reduce(
+    (total, u) => total + String(u?.url || "").length,
+    0
+  );
+
+  const charCount =
+    String(textValue || "").length +
+    docsChars +
+    urlsChars;
+
+  const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
+  const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
+  const overLimit = charCount > MAX_CHARS;
+  const underMin = charCount > 0 && charCount < MIN_CHARS;
+
+  const barClass = overLimit || underMin
+    ? "bg-red-500"
+    : nearLimit
+    ? "bg-amber-500"
+    : "bg-sky-500";
+
   // ===== Validación =====
   const textIsValid = useMemo(() => {
     const trimmed = (textValue || "").trim();
@@ -523,7 +565,10 @@ const tooltipCopied = t("translator.copied");
   }, [documents, documentsText]);
 
   // ✅ input válido REAL
-  const hasValidInput = textIsValid || urlItems.length > 0 || docsTextHasAny;
+  const hasValidInput =
+    (textIsValid || urlItems.length > 0 || docsTextHasAny) &&
+    charCount >= MIN_CHARS &&
+    charCount <= MAX_CHARS;
 
   // ===== Acciones barra derecha =====
   const handleCopy = async (flash = false) => {
@@ -596,16 +641,14 @@ const handleClearLeft = () => {
 
     const validNow = textOk || urlItems.length > 0 || docsTextHasAny;
 
-    const docsChars = (documentsText || []).reduce((acc, d) => acc + ((d?.text || "").length), 0);
-
-    if ((textValue || "").length > MAX_CHARS) {
-      setErrorKind("limit");
+    if (charCount < MIN_CHARS) {
+      setErrorKind("min");
       setDailyLimitReached(false);
       setLoading(false);
       return;
     }
 
-    if (docsChars > MAX_CHARS) {
+    if (charCount > MAX_CHARS) {
       setErrorKind("limit");
       setDailyLimitReached(false);
       setLoading(false);
@@ -628,23 +671,18 @@ const handleClearLeft = () => {
     const wordCount = words.length;
     const strictExtractive = onlyText && wordCount <= 120;
 
-    // ===== Nivel de resumen: proporcional a la longitud de entrada (no fijo) =====
+    // ===== Nivel de resumen: escala LINEALMENTE entre el mínimo y el máximo de palabras =====
+    // de cada nivel, según dónde cae la longitud (en caracteres) del texto de entrada dentro
+    // del rango 5.000–100.000 caracteres. NO es un porcentaje del original.
     const levelKey =
       summaryLength === "breve" ? "breve" : summaryLength === "medio" ? "medio" : "detallado";
     const level = SUMMARY_LEVELS[levelKey];
 
-    const docsWordCount = (documentsText || []).reduce(
-      (acc, d) => acc + String(d?.text || "").trim().split(/\s+/).filter(Boolean).length,
-      0
-    );
-    const sourceWordCount = wordCount + docsWordCount;
-
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-    const targetWords =
-      sourceWordCount > 0
-        ? Math.round(clamp(sourceWordCount * level.ratio, level.min, level.max))
-        : null;
-    const levelPercent = Math.round(level.ratio * 100);
+    const targetWords = interpolateSummaryTargetWords(level, charCount);
+    // Rango estrecho alrededor del objetivo (±10%, sin salirse de los límites del nivel)
+    // para darle al modelo algo de margen natural sin desviarse del objetivo.
+    const targetWordsLow = Math.max(level.minWords, Math.round(targetWords * 0.9));
+    const targetWordsHigh = Math.min(level.maxWords, Math.round(targetWords * 1.1));
 
 const formattingRules =
   summaryLength === "breve"
@@ -667,9 +705,8 @@ const langInstruction =
   `Responde SIEMPRE en ${outputLanguageName}, aunque el contenido de entrada esté en otro idioma. El idioma del resultado lo decide el selector de la herramienta, no el idioma de la fuente.`;
 
 
-    const lengthRule = targetWords
-      ? `La extensión debe ser PROPORCIONAL a la longitud del texto original (el contenido de entrada tiene aproximadamente ${sourceWordCount} palabras), nunca una longitud fija. Para el nivel ${summaryLength.toUpperCase()} el resumen debe rondar el ${levelPercent}% de esa longitud: aproximadamente ${targetWords} palabras en este caso. Mínimo ~${level.min} palabras, máximo ~${level.max} palabras — el máximo solo debe alcanzarse con textos muy largos (cercanos al límite de 50.000 caracteres); con textos cortos o medianos el resumen debe ser proporcionalmente más breve, nunca fijo en el máximo.`
-      : `La extensión debe ser PROPORCIONAL a la longitud del contenido de entrada, nunca una longitud fija. Para el nivel ${summaryLength.toUpperCase()} el resumen debe rondar el ${levelPercent}% de esa longitud, con un mínimo de ~${level.min} palabras y sin superar ~${level.max} palabras — el máximo solo debe alcanzarse con contenido muy extenso; con contenido corto o mediano el resumen debe ser proporcionalmente más breve.`;
+    const lengthRule =
+      `La extensión debe rondar las ${targetWords} palabras (entre ${targetWordsLow} y ${targetWordsHigh} aproximadamente) para el nivel ${summaryLength.toUpperCase()}, calculada según la longitud real del texto de entrada (~${charCount.toLocaleString()} caracteres). NO es una longitud fija: escala entre ~${level.minWords} palabras (textos de entrada cortos, cerca de 5.000 caracteres) y ~${level.maxWords} palabras (textos muy largos, cerca de 100.000 caracteres).`;
 
     const docsInline = documentsText?.length
       ? "\nDOCUMENTOS (testu erauzia / texto extraído):\n" +
@@ -699,9 +736,9 @@ const systemBase =
   "1) Detecta automáticamente el idioma del contenido solo para entenderlo correctamente. " +
   `2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. ` +
 
-  `3) Laburpenaren luzera jatorrizko testuaren luzerarekiko PROPORTZIONALA izan behar da (ez finkoa): maila honetan (${summaryLength.toUpperCase()}) ~${levelPercent}%, gutxienez ~${level.min} hitz eta gehienez ~${level.max} hitz (azken muga hori soilik testu oso luzeekin lortu behar da). Antolatu edukiak eskatzen dituen paragrafo naturaletan, kopuru finkorik gabe. ` +
+  `3) Laburpenak ~${targetWords} hitz inguru izan behar ditu (${targetWordsLow}-${targetWordsHigh} artean gutxi gorabehera) [${summaryLength.toUpperCase()}] mailarako, sarrerako testuaren luzeraren arabera kalkulatua (ez kopuru finkoa: gutxienez ~${level.minWords} hitz, gehienez ~${level.maxWords} hitz). Antolatu edukiak eskatzen dituen paragrafo naturaletan, kopuru finkorik gabe. ` +
 
-  `4) La extensión del resumen debe ser PROPORCIONAL a la longitud del texto original, nunca fija: en este nivel (${summaryLength.toUpperCase()}) ~${levelPercent}%, con un mínimo de ~${level.min} palabras y un máximo de ~${level.max} palabras (ese máximo solo debe alcanzarse con textos muy largos). Organiza el contenido en los párrafos naturales que requiera, sin imponer un número. ` +
+  `4) El resumen debe rondar las ${targetWords} palabras (entre ${targetWordsLow} y ${targetWordsHigh} aproximadamente) para el nivel ${summaryLength.toUpperCase()}, calculado según la longitud real del texto de entrada (no es una cifra fija: escala entre ~${level.minWords} y ~${level.maxWords} palabras). Organiza el contenido en los párrafos naturales que requiera, sin imponer un número. ` +
 
   "5) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
   "6) No inventes datos ni añadas información externa. " +
@@ -746,6 +783,7 @@ const systemBase =
           messages,
           length: summaryLength,
           cacheKey,
+          sourceChars: charCount,
         }),
       });
 
@@ -811,32 +849,6 @@ const cleaned = rawText
       setLoading(false);
     }
   };
-
-// ===== Contador / barra =====
-const docsChars = (documentsText || []).reduce(
-  (total, d) => total + String(d?.text || "").length,
-  0
-);
-
-const urlsChars = (urlItems || []).reduce(
-  (total, u) => total + String(u?.url || "").length,
-  0
-);
-
-const charCount =
-  String(textValue || "").length +
-  docsChars +
-  urlsChars;
-
-const pct = Math.min(100, Math.round((charCount / MAX_CHARS) * 100));
-const nearLimit = charCount >= MAX_CHARS * 0.9 && charCount < MAX_CHARS;
-const overLimit = charCount > MAX_CHARS;
-
-const barClass = overLimit
-  ? "bg-red-500"
-  : nearLimit
-  ? "bg-amber-500"
-  : "bg-sky-500";
 
   const canClear =
   (sourceMode === "text" && !!textValue) ||
@@ -908,8 +920,16 @@ return (
                         <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
                           <div className={`h-1 ${barClass}`} style={{ width: `${pct}%` }} />
                         </div>
-                        <div className="mt-1 text-right text-xs">
-                          <span className={overLimit ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
+                        <div className="mt-1 flex items-center justify-between text-xs">
+                          <span className={underMin ? "text-red-600" : "text-slate-400"}>
+                            {underMin
+                              ? tr("summary.min_chars_hint", "Mínimo {{min}} caracteres").replace(
+                                  "{{min}}",
+                                  MIN_CHARS.toLocaleString()
+                                )
+                              : ""}
+                          </span>
+                          <span className={overLimit || underMin ? "text-red-600" : nearLimit ? "text-amber-600" : "text-slate-500"}>
                             {charCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
                           </span>
                         </div>
@@ -1231,6 +1251,17 @@ return (
                                     `Límite máximo: ${MAX_CHARS.toLocaleString()} caracteres.`
                                   ).replace("{{count}}", MAX_CHARS.toLocaleString())}
                             </div>
+                          </div>
+                        </div>
+                      ) : errorKind === "min" ? (
+                        <div className="h-full w-full relative flex items-center justify-center px-3 sm:px-6">
+                          <div className="text-sm text-red-600 text-center max-w-xl mx-auto">
+                            {tr(
+                              "summary_min_chars_required",
+                              `El texto debe tener al menos ${MIN_CHARS.toLocaleString()} caracteres para poder resumirlo. Actualmente tiene ${charCount.toLocaleString()}.`
+                            )
+                              .replace("{{min}}", MIN_CHARS.toLocaleString())
+                              .replace("{{count}}", charCount.toLocaleString())}
                           </div>
                         </div>
                       ) : (

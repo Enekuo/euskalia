@@ -64,7 +64,11 @@
       "Bash(awk 'NR==654,NR==678{print NR\": \"$0}' src/components/Resumen.jsx)",
       "Bash(grep -n '\"[^\"]*\\\\${[^}]*}[^\"]*\"' src/components/Resumen.jsx)",
       "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-prompt.js\")",
-      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-levels.js\")"
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-levels.js\")",
+      "Bash(grep -n \"const MAX_CHARS = 50000\\\\|errorKind\\\\\" \\\\\\\\| \\\\\"limit\\\\\"\\\\|null | \\\\\"limit\\\\\"\" src/components/Resumen.jsx)",
+      "Bash(grep -n \"// ===== Contador / barra =====\\\\|const docsChars = \\(documentsText\\\\|const barClass = overLimit\\\\|const canClear =\" src/components/Resumen.jsx)",
+      "Bash(awk '/^  summary: \\\\{/,/^  \\\\},/' src/lib/translations.jsx)",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-levels2.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

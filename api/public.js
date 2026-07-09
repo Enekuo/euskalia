@@ -12,7 +12,8 @@ const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TO
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
 // Resumidor
-const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 50000);
+const FREE_SUMMARY_MIN_CHARS       = Number(process.env.FREE_SUMMARY_MIN_CHARS || 5000);
+const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 100000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 100000);
 const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
 
@@ -587,7 +588,24 @@ REGLA CRÍTICA DE DESTINO:
       FREE_EMAIL_CREATOR_DAILY_REQUESTS
     });
 
-    // 1) Máx. caracteres por request
+    // 1) Mín. caracteres de entrada (solo Resumidor) — usa el conteo exacto que ya
+    // calculó y mostró el cliente (texto + documentos + URLs), no el contenido final
+    // del prompt (que incluiría las instrucciones del sistema, no solo la entrada real).
+    if (tool === "summary") {
+      const sourceChars = Number(body?.sourceChars);
+      if (Number.isFinite(sourceChars) && sourceChars < FREE_SUMMARY_MIN_CHARS) {
+        return res.status(400).json({
+          ok: false,
+          error: "Input too short",
+          limit: { min_chars: FREE_SUMMARY_MIN_CHARS, tool },
+          message:
+            `El texto debe tener al menos ${FREE_SUMMARY_MIN_CHARS.toLocaleString()} caracteres para poder resumirlo. Actualmente tiene ${sourceChars.toLocaleString()}. ` +
+            `Testuak gutxienez ${FREE_SUMMARY_MIN_CHARS.toLocaleString()} karaktere izan behar ditu laburtu ahal izateko. Momentu honetan ${sourceChars.toLocaleString()} ditu.`
+        });
+      }
+    }
+
+    // 2) Máx. caracteres por request
     const totalChars =
       finalMessages.reduce((n, m) => n + ((m?.content?.length) || 0), 0);
 
@@ -602,7 +620,7 @@ REGLA CRÍTICA DE DESTINO:
       });
     }
 
-    // 2) Rate-limit RPM por IP
+    // 3) Rate-limit RPM por IP
     try {
       const rpmKey = `rl:rpm:${tool}:${ip}`;
       const count = await kv.incr(rpmKey);
@@ -621,7 +639,7 @@ REGLA CRÍTICA DE DESTINO:
       console.log("[KV RPM ERROR]", e?.message || e);
     }
 
-    // 3) Límite de resúmenes por día
+    // 4) Límite de resúmenes por día
     if (tool === "summary") {
       try {
         const dailySummaryKey = `quota:summary:reqs:${day}:${ip}`;
@@ -746,7 +764,7 @@ REGLA CRÍTICA DE DESTINO:
       }
     }
 
-    // 4) Cuota diaria de tokens por IP
+    // 5) Cuota diaria de tokens por IP
     const estTokens = Math.ceil(totalChars * TOKENS_PER_CHAR);
     try {
       const dailyKey = `quota:${tool}:${day}:${ip}`;
