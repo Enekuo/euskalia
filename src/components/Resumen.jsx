@@ -39,14 +39,14 @@ const SUMMARY_LEVELS = {
       "Incluye solo la idea central del texto, lo más esencial, sin matices secundarios.",
   },
   medio: {
-    minWords: 150,
-    maxWords: 300,
+    minWords: 170,
+    maxWords: 350,
     structuralNote:
       "Incluye las ideas principales de cada parte del texto, con el contexto necesario para entenderlas, pero SIN detalles secundarios, ejemplos concretos ni datos accesorios.",
   },
   detallado: {
     minWords: 500,
-    maxWords: 3000,
+    maxWords: 2000,
     structuralNote:
       "Incluye todas las ideas relevantes del texto, con sus matices y el contexto que aporte valor, bien organizadas.",
   },
@@ -688,8 +688,8 @@ const formattingRules =
   summaryLength === "breve"
     ? `${level.structuralNote} Devuélvelo en un único párrafo fluido y natural. No uses listas, viñetas, títulos ni numeraciones.`
     : summaryLength === "medio"
-    ? `${level.structuralNote} Organízalo en los párrafos naturales que el contenido requiera (sin un número fijo). No uses listas, viñetas, títulos ni numeraciones.`
-    : `${level.structuralNote} Organízalo en tantos párrafos naturales como sean necesarios para mantener buena legibilidad. No uses listas, viñetas, títulos ni numeraciones.`;
+    ? `${level.structuralNote} Organízalo en 2-3 párrafos naturales, cada uno dedicado a un bloque de ideas distinto del contenido (la división debe surgir de las ideas del texto, no de un número impuesto) — nunca lo presentes como un único bloque denso. No uses listas, viñetas, títulos ni numeraciones.`
+    : `${level.structuralNote} Organízalo en varios párrafos naturales —tantos como el contenido requiera—, cada uno dedicado a una idea o tema distinto — nunca lo presentes como un único bloque denso. No uses listas, viñetas, títulos ni numeraciones.`;
 
 
 const outputLanguageName =
@@ -729,6 +729,20 @@ const langInstruction =
     ].join("");
 
 
+const paragraphGuidanceEus =
+  summaryLength === "breve"
+    ? "paragrafo bakarrean"
+    : summaryLength === "medio"
+    ? "2-3 paragrafo naturaletan, ideia-blokeka bereizita (paragrafo bat gai-bloke bakoitzeko) — inoiz ez aurkeztu testu-bloke trinko bakar gisa"
+    : "behar adina paragrafo naturaletan, ideia edo gaika bereizita (paragrafo bat gai-bloke bakoitzeko) — inoiz ez aurkeztu testu-bloke trinko bakar gisa";
+
+const paragraphGuidanceEs =
+  summaryLength === "breve"
+    ? "en un único párrafo"
+    : summaryLength === "medio"
+    ? "en 2-3 párrafos naturales, separados por bloques de ideas (un párrafo por bloque temático) — nunca lo presentes como un único bloque denso"
+    : "en varios párrafos naturales, separados por idea o tema (un párrafo por bloque temático) — nunca lo presentes como un único bloque denso";
+
 const systemBase =
   `Euskalia zara. Zure lana da emandako edukia laburtzea eta emaitza beti ${outputLanguageName} hizkuntzan ematea. ` +
   `Eres Euskalia. Tu trabajo es resumir el contenido proporcionado y devolver el resultado siempre en ${outputLanguageName}. ` +
@@ -736,15 +750,17 @@ const systemBase =
   "1) Detecta automáticamente el idioma del contenido solo para entenderlo correctamente. " +
   `2) Responde SIEMPRE en ${outputLanguageName}. El selector de idioma manda sobre el idioma de la fuente. ` +
 
-  `3) Laburpenak ~${targetWords} hitz inguru izan behar ditu (${targetWordsLow}-${targetWordsHigh} artean gutxi gorabehera) [${summaryLength.toUpperCase()}] mailarako, sarrerako testuaren luzeraren arabera kalkulatua (ez kopuru finkoa: gutxienez ~${level.minWords} hitz, gehienez ~${level.maxWords} hitz). Antolatu edukiak eskatzen dituen paragrafo naturaletan, kopuru finkorik gabe. ` +
+  `3) Laburpenak ~${targetWords} hitz inguru izan behar ditu (${targetWordsLow}-${targetWordsHigh} artean gutxi gorabehera) [${summaryLength.toUpperCase()}] mailarako, sarrerako testuaren luzeraren arabera kalkulatua (ez kopuru finkoa: gutxienez ~${level.minWords} hitz, gehienez ~${level.maxWords} hitz). Antolatu edukia ${paragraphGuidanceEus}. ` +
 
-  `4) El resumen debe rondar las ${targetWords} palabras (entre ${targetWordsLow} y ${targetWordsHigh} aproximadamente) para el nivel ${summaryLength.toUpperCase()}, calculado según la longitud real del texto de entrada (no es una cifra fija: escala entre ~${level.minWords} y ~${level.maxWords} palabras). Organiza el contenido en los párrafos naturales que requiera, sin imponer un número. ` +
+  `4) El resumen debe rondar las ${targetWords} palabras (entre ${targetWordsLow} y ${targetWordsHigh} aproximadamente) para el nivel ${summaryLength.toUpperCase()}, calculado según la longitud real del texto de entrada (no es una cifra fija: escala entre ~${level.minWords} y ~${level.maxWords} palabras). Organiza el contenido ${paragraphGuidanceEs}. ` +
 
   "5) Ez asmatu daturik: ez gehitu data, izen edo gertaerarik agertzen ez bada. " +
   "6) No inventes datos ni añadas información externa. " +
   "7) Zenbakiak eta izen propioak BERE-BEREAN mantendu. " +
   "8) Si el idioma detectado es euskera, escribe en euskera natural, correcto y profesional, evitando calcos artificiales. " +
-  "9) Ulermena hobetzeko, sarrerako testuko akats ortografiko/gramatikalak ZUZENDU ISILIK, baina ez aldatu esanahia.";
+  "9) Ulermena hobetzeko, sarrerako testuko akats ortografiko/gramatikalak ZUZENDU ISILIK, baina ez aldatu esanahia. " +
+  "10) INOIZ EZ hasi laburpena testua deskribatzen duten esaldiekin, hala nola 'Testuak azaltzen du...', 'Testuak dio...', 'Testuak kontatzen du...' edo antzekoak (edozein hizkuntzatan). Hasi ZUZENEAN edukiarekin, testu propio eta naturala balitz bezala, ez jatorrizkoaren deskribapen bat balitz bezala. " +
+  "11) NUNCA empieces el resumen con fórmulas que describan el texto en vez de resumirlo, como 'El texto explica que...', 'El texto trata sobre...', 'El texto habla de...' o equivalentes en cualquier idioma. Entra DIRECTO al contenido, como si fuera un texto autónomo y natural, no una descripción del original.";
 
     const systemStrict =
       outputLang === "eus"
