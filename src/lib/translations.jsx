@@ -257,15 +257,26 @@ searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando a
     outdated_notice: { ES: "El texto ha cambiado. Actualiza el resumen.", EUS: "Testua aldatu da. Eguneratu laburpena.", EN: "The text has changed. Update the summary.", FR: "Le texte a changé. Mets à jour le résumé." },
     outdated_update: { ES: "Actualizar", EUS: "Eguneratu", EN: "Update", FR: "Mettre à jour" },
     outdated_close:  { ES: "Ocultar aviso", EUS: "Abisua ezkutatu", EN: "Hide notice", FR: "Masquer l’avertissement" },
+
+    /* === NUEVA CLAVE: aviso de mínimo de caracteres === */
+    min_chars_hint: {
+      ES: "Mínimo {{min}} caracteres",
+      EUS: "Gutxienez {{min}} karaktere",
+      EN: "Minimum {{min}} characters",
+      FR: "Minimum {{min}} caractères",
+    },
+
+    error_generic: { ES: "Error generando el resumen.", EUS: "Errorea laburpena sortzean.", EN: "Error generating the summary.", FR: "Erreur lors de la génération du résumé." },
+    error_need_input: { ES: "Añade texto suficiente, URLs o documentos antes de generar el resumen.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak laburpena sortu aurretik.", EN: "Add enough text, URLs or documents before generating the summary.", FR: "Ajoutez du texte, des URLs ou des documents avant de générer le résumé." },
+    error_no_api_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso APItik.", EN: "No text was received from the API.", FR: "Aucun texte reçu de l’API." },
+    only_one_document: { ES: "Solo se admite un documento por resumen.", EUS: "Laburpen bakoitzeko dokumentu bakarra onartzen da.", EN: "Only one document is allowed per summary.", FR: "Un seul document est autorisé par résumé." },
   },
  /* === NUEVAS CLAVES: aviso límite plan gratis === */
   summary_limit_reached: {
-    summary_limit_reached: {
   ES: "Has superado el límite máximo de caracteres del resumidor.",
   EUS: "Laburtzailearen gehienezko karaktere-muga gainditu duzu.",
   EN: "You have exceeded the summarizer's maximum character limit.",
   FR: "Vous avez dépassé la limite maximale de caractères du résumeur.",
-},
   },
 summary_daily_limit_reached: {
    ES: "Has superado el límite diario de solicitudes del resumidor.",
@@ -416,6 +427,7 @@ summary_min_chars_required: {
     EN: "Great! We didn’t detect any errors.",
     FR: "Parfait ! Nous n’avons détecté aucune erreur.",
   },
+  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
 },
   grammarcorrector_daily_limit_reached: {
   ES: "Has superado el límite diario de solicitudes del corrector.",
@@ -478,6 +490,12 @@ paraphraser_save_to_library_button: { ES: "Guardar", EUS: "Gorde", EN: "Save", F
 paraphraser_saved_to_library: { ES: "Guardado en biblioteca", EUS: "Liburutegian gordeta", EN: "Saved to library", FR: "Enregistré dans la bibliothèque" },
 
 paraphraser_error_need_input: { ES: "Añade texto suficiente, URLs o documentos antes de crear el parafraseo.", EUS: "Gehitu testu nahikoa, URLak edo dokumentuak parafraseoa sortu aurretik.", EN: "Add enough text, URLs or documents before generating the paraphrase.", FR: "Ajoutez du texte, des URLs ou des documents avant de créer la reformulation." },
+paraphraser_error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso APItik.", EN: "No text was received from the API.", FR: "Aucun texte reçu de l’API." },
+paraphraser_copy_result_aria: { ES: "Copiar resultado", EUS: "Kopiatu emaitza", EN: "Copy result", FR: "Copier le résultat" },
+paraphraser_copy_result_title: { ES: "Copiar resultado", EUS: "Kopiatu emaitza", EN: "Copy result", FR: "Copier le résultat" },
+paraphraser_delete_input_aria: { ES: "Eliminar texto de entrada y resultado", EUS: "Ezabatu sarrerako testua eta emaitza", EN: "Delete input text and result", FR: "Supprimer le texte source et le résultat" },
+paraphraser_delete_input_title: { ES: "Eliminar texto de entrada y resultado", EUS: "Ezabatu sarrerako testua eta emaitza", EN: "Delete input text and result", FR: "Supprimer le texte source et le résultat" },
+paraphraser_output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
 paraphraser_error_generic: { ES: "Error creando el parafraseo.", EUS: "Errorea parafraseoa sortzean.", EN: "Error generating paraphrase.", FR: "Erreur lors de la création de la reformulation." },
 paraphraser_error_auth_required: { ES: "Necesitas iniciar sesión para usar Pro.", EUS: "Saioa hasi behar duzu Pro erabiltzeko.", EN: "You need to log in to use Pro.", FR: "Vous devez vous connecter pour utiliser Pro." },
 paraphraser_daily_limit_reached: {
@@ -535,6 +553,18 @@ ES: "Has superado el límite máximo de caracteres del creador de texto.",
   EN: "You have exceeded the text creator's daily request limit.",
   FR: "Vous avez dépassé la limite quotidienne de requêtes du créateur de texte.",
 },
+  error_generic: { ES: "Error generando el texto.", EUS: "Errorea testua sortzean.", EN: "Error generating the text.", FR: "Erreur lors de la génération du texte." },
+  error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso APItik.", EN: "No text was received from the API.", FR: "Aucun texte reçu de l’API." },
+  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+  pdf_title: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  missing_info_title: {
+    ES: "No hay información suficiente",
+    EUS: "Ez dago informazio nahikorik",
+    EN: "There is not enough information",
+    FR: "Il n’y a pas assez d’informations",
+  },
+  missing_info_no: { ES: "Atrás", EUS: "Atzera", EN: "Back", FR: "Retour" },
+  missing_info_yes: { ES: "Crear", EUS: "Sortu", EN: "Create", FR: "Créer" },
 },
 
   // =========================
@@ -627,6 +657,10 @@ limit_chars: {
   EN: "You have exceeded the email creator's daily request limit.",
   FR: "Vous avez dépassé la limite quotidienne de requêtes du créateur d’e-mails.",
 },
+  error_generic: { ES: "Error generando el email.", EUS: "Errorea emaila sortzean.", EN: "Error generating the email.", FR: "Erreur lors de la génération de l’e-mail." },
+  output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
+  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
+  pdf_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "E-mail" },
 },
 
 

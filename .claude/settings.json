@@ -68,7 +68,16 @@
       "Bash(grep -n \"const MAX_CHARS = 50000\\\\|errorKind\\\\\" \\\\\\\\| \\\\\"limit\\\\\"\\\\|null | \\\\\"limit\\\\\"\" src/components/Resumen.jsx)",
       "Bash(grep -n \"// ===== Contador / barra =====\\\\|const docsChars = \\(documentsText\\\\|const barClass = overLimit\\\\|const canClear =\" src/components/Resumen.jsx)",
       "Bash(awk '/^  summary: \\\\{/,/^  \\\\},/' src/lib/translations.jsx)",
-      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-levels2.js\")"
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-levels2.js\")",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-i18n.js\")",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\extract-translations.js\")",
+      "Bash(node audit-keys.js)",
+      "Bash(awk 'NR>=291 && NR<=470 {print NR\": \"$0}' src/lib/translations.jsx)",
+      "Bash(grep -n \"^\\\\s*[0-9]*: },$\\\\|^\\\\s*[0-9]*: }$\")",
+      "Bash(grep -n \"no_errors_message:\\\\|^},$\" src/lib/translations.jsx)",
+      "Bash(node 'C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad/extract2.js')",
+      "Bash(node 'C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad/audit2.js')",
+      "Bash(rm -f \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\extract2.js\" \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\audit2.js\" \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\all-keys2.txt\" \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\translations-check.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

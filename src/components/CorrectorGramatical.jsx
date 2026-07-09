@@ -117,7 +117,7 @@ export default function CorrectorGramatical() {
 
   const tooltipCopy = t("translator.copy") || "Copiar";
   const tooltipCopied = t("translator.copied") || "Copiado";
-  const tooltipPdf = t("translator.pdf") || "PDF";
+  const tooltipPdf = t("grammarcorrector.pdf") || "PDF";
 
   const leftRaw = tr(
     "grammarcorrector.create_help_left",
