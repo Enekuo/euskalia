@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Share2} from "lucide-react";
+import { FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Share2, Maximize2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -122,6 +122,9 @@ const tr = (k, f) => {
 
   // Copia: flash de tic azul
   const [copiedFlash, setCopiedFlash] = useState(false);
+
+  // Modal de ampliar resultado
+  const [expandedOpen, setExpandedOpen] = useState(false);
 
   // ===== Estilos / constantes =====
   const BLUE = "#2563eb";
@@ -331,12 +334,13 @@ const tooltipCopied = t("translator.copied");
           handleCopy(true);
         }
       } else if (e.key === "Escape") {
-        if (urlInputOpen) setUrlInputOpen(false);
+        if (expandedOpen) setExpandedOpen(false);
+        else if (urlInputOpen) setUrlInputOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result, urlInputOpen, textValue, urlItems, documents, summaryLength, outputLang]);
+  }, [loading, result, urlInputOpen, expandedOpen, textValue, urlItems, documents, summaryLength, outputLang]);
 
   // ===== Documentos =====
   const readTextFromFiles = async (items) => {
@@ -1343,6 +1347,20 @@ return (
 
                     <button
                       type="button"
+                      onClick={() => setExpandedOpen(true)}
+                      title={tr("summary.expand", "Ampliar")}
+                      aria-label={tr("summary.expand", "Ampliar")}
+                      className="group relative p-2 rounded-md hover:bg-slate-100"
+                    >
+                      <Maximize2 className="w-5 h-5" />
+
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {tr("summary.expand", "Ampliar")}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => handleCopy(true)}
                       aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
@@ -1377,7 +1395,70 @@ return (
                   </div>
                 )}
 
-            
+                {expandedOpen && result && (
+                  <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-8"
+                    onClick={() => setExpandedOpen(false)}
+                  >
+                    <div
+                      className="relative w-full sm:max-w-3xl h-full sm:h-auto sm:max-h-[85vh] bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 flex flex-col overflow-hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center justify-between px-4 sm:px-6 h-14 border-b border-slate-200 bg-slate-50/60 shrink-0">
+                        <div className="text-sm font-medium text-slate-700">
+                          {summaryLength === "breve" ? LBL_SHORT : summaryLength === "medio" ? LBL_MED : LBL_LONG}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setExpandedOpen(false)}
+                          className="h-9 w-9 flex items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                          aria-label={tr("summary.close", "Cerrar")}
+                          title={tr("summary.close", "Cerrar")}
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto px-5 sm:px-10 py-8">
+                        <article className="prose prose-slate max-w-none">
+                          <div
+                            translate="no"
+                            className="whitespace-pre-line text-[16px] sm:text-[17px] leading-8 text-slate-800"
+                          >
+                            {result}
+                          </div>
+                        </article>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-4 px-4 sm:px-6 h-14 border-t border-slate-200 bg-slate-50/60 shrink-0 text-slate-500">
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(true)}
+                          title={copiedFlash ? tooltipCopied : tooltipCopy}
+                          aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                          className="p-2 rounded-md hover:bg-slate-100"
+                        >
+                          {copiedFlash ? (
+                            <Check className="w-5 h-5" style={{ color: BLUE }} />
+                          ) : (
+                            <Copy className="w-5 h-5" />
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleShare}
+                          title={t("translator.share")}
+                          aria-label={t("translator.share")}
+                          className="p-2 rounded-md hover:bg-slate-100"
+                        >
+                          <Share2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               </section>
             </motion.section>
           </div>

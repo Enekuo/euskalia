@@ -21,6 +21,9 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/:path((?!api/|@vite/|@react-refresh|@id/|@fs/|src/|node_modules/|plugins/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
