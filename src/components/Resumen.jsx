@@ -1401,7 +1401,7 @@ return (
                     onClick={() => setExpandedOpen(false)}
                   >
                     <div
-                      className="relative w-full sm:max-w-3xl h-full sm:h-auto sm:max-h-[85vh] bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 flex flex-col overflow-hidden"
+                      className="relative w-full sm:max-w-6xl h-full sm:h-auto sm:max-h-[85vh] bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 flex flex-col overflow-hidden"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center justify-between px-4 sm:px-6 h-14 border-b border-slate-200 bg-slate-50/60 shrink-0">

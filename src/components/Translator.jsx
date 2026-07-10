@@ -788,7 +788,7 @@ requestAnimationFrame(() => {
         if (e.name !== "AbortError") {
           console.error("translate error:", e);
           const hasPrev = !!(rightText && rightText.trim().length > 0);
-          if (!hasPrev) setErr("No se pudo traducir ahora mismo.");
+          if (!hasPrev) setErr(uiLang === "EUS" ? "Ezin izan da orain itzuli." : "No se pudo traducir ahora mismo.");
         }
       } finally {
         setLoading(false);
