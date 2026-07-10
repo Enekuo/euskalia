@@ -688,8 +688,8 @@ const formattingRules =
   summaryLength === "breve"
     ? `${level.structuralNote} Devuélvelo en un único párrafo fluido y natural. No uses listas, viñetas, títulos ni numeraciones.`
     : summaryLength === "medio"
-    ? `${level.structuralNote} Organízalo en 2-3 párrafos naturales, cada uno dedicado a un bloque de ideas distinto del contenido (la división debe surgir de las ideas del texto, no de un número impuesto) — nunca lo presentes como un único bloque denso. No uses listas, viñetas, títulos ni numeraciones.`
-    : `${level.structuralNote} Organízalo en varios párrafos naturales —tantos como el contenido requiera—, cada uno dedicado a una idea o tema distinto — nunca lo presentes como un único bloque denso. No uses listas, viñetas, títulos ni numeraciones.`;
+    ? `${level.structuralNote} OBLIGATORIO: la respuesta debe tener 2 o 3 párrafos independientes, cada uno dedicado a un bloque de ideas distinto del contenido (la división debe surgir de las ideas del texto, no de un número impuesto). Separa cada párrafo del siguiente con una línea en blanco (un salto de línea doble, \\n\\n) — está PROHIBIDO devolver el resumen como un único bloque de texto corrido. No uses listas, viñetas, títulos ni numeraciones.`
+    : `${level.structuralNote} Organízalo en varios párrafos naturales —tantos como el contenido requiera—, cada uno dedicado a una idea o tema distinto, separados por una línea en blanco entre párrafos — nunca lo presentes como un único bloque denso. No uses listas, viñetas, títulos ni numeraciones.`;
 
 
 const outputLanguageName =
@@ -733,15 +733,15 @@ const paragraphGuidanceEus =
   summaryLength === "breve"
     ? "paragrafo bakarrean"
     : summaryLength === "medio"
-    ? "2-3 paragrafo naturaletan, ideia-blokeka bereizita (paragrafo bat gai-bloke bakoitzeko) — inoiz ez aurkeztu testu-bloke trinko bakar gisa"
-    : "behar adina paragrafo naturaletan, ideia edo gaika bereizita (paragrafo bat gai-bloke bakoitzeko) — inoiz ez aurkeztu testu-bloke trinko bakar gisa";
+    ? "NAHITAEZ 2 edo 3 paragrafotan, ideia-blokeka bereizita (paragrafo bat gai-bloke bakoitzeko), paragrafo bakoitza hurrengotik lerro huts batez bereizita (\\n\\n) — DEBEKATUTA dago laburpena testu-bloke trinko bakar gisa itzultzea"
+    : "behar adina paragrafo naturaletan, ideia edo gaika bereizita (paragrafo bat gai-bloke bakoitzeko), lerro huts batez bereizita — inoiz ez aurkeztu testu-bloke trinko bakar gisa";
 
 const paragraphGuidanceEs =
   summaryLength === "breve"
     ? "en un único párrafo"
     : summaryLength === "medio"
-    ? "en 2-3 párrafos naturales, separados por bloques de ideas (un párrafo por bloque temático) — nunca lo presentes como un único bloque denso"
-    : "en varios párrafos naturales, separados por idea o tema (un párrafo por bloque temático) — nunca lo presentes como un único bloque denso";
+    ? "de forma OBLIGATORIA en 2 o 3 párrafos independientes, separados por bloques de ideas (un párrafo por bloque temático), cada párrafo separado del siguiente por una línea en blanco (\\n\\n) — está PROHIBIDO devolverlo como un único bloque de texto corrido"
+    : "en varios párrafos naturales, separados por idea o tema (un párrafo por bloque temático), separados por una línea en blanco — nunca lo presentes como un único bloque denso";
 
 const systemBase =
   `Euskalia zara. Zure lana da emandako edukia laburtzea eta emaitza beti ${outputLanguageName} hizkuntzan ematea. ` +
@@ -851,8 +851,12 @@ const cleaned = rawText
         return;
       }
 
+      // ⚠️ enforceLength es un recorte heredado del sistema de longitud ANTIGUO (topes fijos
+      // de palabras/frases) y además aplana los saltos de línea (\n -> espacio), destruyendo
+      // los párrafos. Se excluye también a "medio" (como ya se excluía "detallado") para que
+      // conserve su estructura en párrafos y su objetivo real de palabras por interpolación.
       const clipped =
-  summaryLength === "detallado"
+  summaryLength === "detallado" || summaryLength === "medio"
     ? cleaned
     : enforceLength(cleaned, summaryLength);
 
