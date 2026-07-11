@@ -475,6 +475,14 @@ const isTranslator =
       rawTask.includes("crear_correo") || rawMode.includes("crear_correo") ||
       rawTask.includes("creador_correo") || rawMode.includes("creador_correo");
 
+    // ✅ Reintento interno del Creador de Email (corrección cuando el idioma de salida salió
+    // mal). Sigue siendo tool "email_creator" a efectos de límites de caracteres/tokens y de
+    // reglas de euskera, pero NO debe contar como una segunda generación en el contador
+    // diario de peticiones del usuario (si no, el reintento consumiría 2 del cupo por 1
+    // generación real).
+    const isEmailCreatorRetryCall =
+      rawTask === "email_creator_retry" || rawMode === "email_creator_retry";
+
     let tool =
       isSummary ? "summary" :
       isTranslator ? "translator" :
@@ -763,8 +771,8 @@ REGLA CRÍTICA DE DESTINO:
       }
     }
 
-    // 3e) Límite de creaciones de email
-    if (tool === "email_creator") {
+    // 3e) Límite de creaciones de email (el reintento por idioma no cuenta aparte)
+    if (tool === "email_creator" && !isEmailCreatorRetryCall) {
       try {
         const dailyEmailCreatorKey = `quota:email_creator:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyEmailCreatorKey);
@@ -892,6 +900,22 @@ if (tool === "paraphraser" && detectedLanguage?.code === "eus") {
 // idioma lo decide directamente el selector). No se aplica al chequeo previo de "info
 // suficiente" (subtarea interna, no es la generación final).
 if (tool === "text_creator" && !isTextCreatorCheckCall && dstCode === "eus") {
+  const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
+  const rules = euskeraQualityRules();
+  if (sysIdx >= 0) {
+    finalMessages[sysIdx] = {
+      ...finalMessages[sysIdx],
+      content: `${finalMessages[sysIdx].content}\n\n${rules}`,
+    };
+  } else {
+    finalMessages = [{ role: "system", content: rules }, ...finalMessages];
+  }
+}
+
+// ✅ Creador de Email: mismo patrón — aplica SOLO euskeraQualityRules() cuando el idioma de
+// SALIDA elegido por el usuario es euskera. Se aplica tanto a la llamada principal como al
+// reintento por idioma (ambas son intentos reales de producir el email final).
+if (tool === "email_creator" && dstCode === "eus") {
   const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
   const rules = euskeraQualityRules();
   if (sysIdx >= 0) {

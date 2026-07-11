@@ -50,7 +50,6 @@ export default function EmailCreator() {
       ? tr("emailCreator.limit_daily", "Has alcanzado el límite diario. Vuelve mañana.")
       : "";
 
-  const [emailLength, setEmailLength] = useState("breve");
   const [outputLang, setOutputLang] = useState("EUS");
   const [lastEmailSig, setLastEmailSig] = useState(null);
   const [isOutdated, setIsOutdated] = useState(false);
@@ -658,19 +657,22 @@ const handleShare = async () => {
     return ensureParagraphBreaks(body);
   };
 
-  const fetchEmailOnce = async (messages, emailLength, cacheKey) => {
+  const fetchEmailOnce = async (messages, cacheKey, isRetry = false) => {
     const res = await fetch("/api/public", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-  task: "email_creator",
-  mode: "email_creator",
+  // El reintento por idioma incorrecto usa un task/mode distinto para que el servidor
+  // pueda identificarlo y NO contarlo como una segunda generación en el cupo diario.
+  task: isRetry ? "email_creator_retry" : "email_creator",
+  mode: isRetry ? "email_creator_retry" : "email_creator",
   dst: outputLang === "EUS" ? "eus" : outputLang.toLowerCase(),
   lang: outputLang,
   messages,
-  length: emailLength,
+  model: "gpt-5.1",
+  temperature: 0.4,
   cacheKey,
 }),
     });
@@ -758,11 +760,11 @@ const handleShare = async () => {
         : "Tono: formal, claro y profesional.";
 
     const lengthRule =
-      emailLength === "breve"
-        ? "Extensión: email corto."
-        : emailLength === "medio"
-        ? "Extensión: email medio."
-        : "Extensión: email detallado.";
+      "Redacta el email con la longitud que la información aportada requiera: incluye TODA " +
+      "la información específica que el usuario ha dado, desarrollada en frases completas y " +
+      "bien redactadas, sin añadir relleno ni inventar datos, y sin omitir nada de lo " +
+      "aportado. Cuanta más información dé el usuario, más completo será el email; cuanta " +
+      "menos, más conciso. La longitud es consecuencia del contenido, no un objetivo en sí.";
 
     const langInstruction =
       outputLang === "ES"
@@ -881,7 +883,6 @@ const handleShare = async () => {
     const cacheBase = JSON.stringify({
       mode: emailMode,
       creativeInfo,
-      emailLength,
       outputLang,
       chatInput,
       tone: emailTone,
@@ -896,7 +897,7 @@ const handleShare = async () => {
     const cacheKey = shouldUseCache ? await sha256Hex(cacheBase) : null;
 
     try {
-      let r1 = await fetchEmailOnce(messages1, emailLength, cacheKey);
+      let r1 = await fetchEmailOnce(messages1, cacheKey);
       if (r1.kind === "limit") {
         if (r1.type === "chars") setCharsLimit();
         else setDailyLimit();
@@ -1010,8 +1011,8 @@ const handleShare = async () => {
 
         let r2 = await fetchEmailOnce(
           messages2,
-          emailLength,
-          cacheKey ? cacheKey + "-retry" : null
+          cacheKey ? cacheKey + "-retry" : null,
+          true
         );
 
         if (r2.kind === "limit") {
