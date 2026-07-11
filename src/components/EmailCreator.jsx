@@ -83,6 +83,23 @@ export default function EmailCreator() {
 
   const labelSources = tr("emailCreator.sources_title", "Iturriak");
 
+  const labelExtraInstructionsAria = tr(
+    "emailCreator.extra_instructions_aria",
+    "Instrucciones adicionales"
+  );
+  const labelExtraInstructionsTitle = tr(
+    "emailCreator.extra_instructions_title",
+    "Contexto (opcional)"
+  );
+  const labelExtraInstructionsDesc = tr(
+    "emailCreator.extra_instructions_desc",
+    "Añade contexto o instrucciones para un email más concreto: tono, urgencia, detalles a destacar..."
+  );
+  const labelExtraInstructionsPh = tr(
+    "emailCreator.extra_instructions_ph",
+    "Escribe aquí el contexto..."
+  );
+
   const labelGenerateFromSources = tr(
     "emailCreator.generate_from_sources",
     "Emaila sortu"
@@ -1204,37 +1221,58 @@ return (
                   >
                     {labelModeTemplate}
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowInstructions((v) => !v)}
+                    className="h-9 w-9 flex items-center justify-center rounded-full border transition"
+                    style={{
+                      borderColor: showInstructions ? BLUE : "#e2e8f0",
+                      backgroundColor: showInstructions ? "#eff6ff" : "#ffffff",
+                      color: showInstructions ? BLUE : "#334155",
+                    }}
+                    aria-pressed={showInstructions}
+                    aria-label={labelExtraInstructionsAria}
+                    title={labelExtraInstructionsAria}
+                  >
+                    <MessageSquarePlus className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
-                <div className="mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowInstructions((v) => !v)}
-                    className="inline-flex items-center gap-1.5 text-[13px] font-medium hover:opacity-80 transition"
-                    style={{ color: BLUE }}
-                    aria-expanded={showInstructions}
-                  >
-                    <MessageSquarePlus className="w-4 h-4" />
-                    {tr("emailCreator.extra_instructions_toggle", "Instrucciones adicionales")}
-                  </button>
+                {showInstructions && (
+                  <div className="mb-4 rounded-xl border border-sky-200 bg-sky-50/60 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="text-[13px] font-semibold text-slate-800">
+                        {labelExtraInstructionsTitle}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowInstructions(false)}
+                        aria-label={tr("emailCreator.close", "Cerrar")}
+                        title={tr("emailCreator.close", "Cerrar")}
+                        className="shrink-0 h-6 w-6 flex items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
 
-                  {showInstructions && (
+                    <p className="mt-1 text-[12px] leading-5 text-slate-600">
+                      {labelExtraInstructionsDesc}
+                    </p>
+
                     <textarea
                       value={chatInput}
                       onChange={(e) => {
                         setChatInput(e.target.value);
                         clearRight();
                       }}
-                      placeholder={tr(
-                        "emailCreator.extra_instructions_ph",
-                        "Opcional: matices de tono o enfoque (ej. \"que suene urgente\", \"muy educado\", \"añade una posdata\")..."
-                      )}
+                      placeholder={labelExtraInstructionsPh}
                       className="mt-2 w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {emailMode === "creative" ? (
                   <>

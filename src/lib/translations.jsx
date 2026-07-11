@@ -173,6 +173,8 @@ searching_alternatives: { EUS: "Aukera desberdinak bilatzen...", ES: "Buscando a
     copied:               { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié"},
     pdf:                  { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
     clear_input:          { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
+    expand:               { ES: "Ampliar", EUS: "Handitu", EN: "Expand", FR: "Agrandir" },
+    close:                { ES: "Cerrar", EUS: "Itxi", EN: "Close", FR: "Fermer" },
 
     //Texto
      enter_text_here_full:  {
@@ -557,6 +559,9 @@ ES: "Has superado el límite máximo de caracteres del creador de texto.",
   error_no_text: { ES: "No se recibió texto de la API.", EUS: "Ez da testurik jaso APItik.", EN: "No text was received from the API.", FR: "Aucun texte reçu de l’API." },
   pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
   pdf_title: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
+  expand: { ES: "Ampliar", EUS: "Handitu", EN: "Expand", FR: "Agrandir" },
+  close: { ES: "Cerrar", EUS: "Itxi", EN: "Close", FR: "Fermer" },
+  result_title: { ES: "Texto", EUS: "Testua", EN: "Text", FR: "Texte" },
   missing_info_title: {
     ES: "No hay información suficiente",
     EUS: "Ez dago informazio nahikorik",
@@ -661,6 +666,35 @@ limit_chars: {
   output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
   pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
   pdf_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "E-mail" },
+
+  extra_instructions_title: {
+    ES: "Contexto (opcional)",
+    EUS: "Testuingurua (aukerakoa)",
+    EN: "Context (optional)",
+    FR: "Contexte (facultatif)",
+  },
+  extra_instructions_desc: {
+    ES: "Añade contexto o instrucciones para un email más concreto: tono, urgencia, detalles a destacar...",
+    EUS: "Gehitu testuingurua edo argibideak email zehatzago bat lortzeko: tonua, presa, nabarmendu beharreko xehetasunak...",
+    EN: "Add context or instructions for a more specific email: tone, urgency, details to highlight...",
+    FR: "Ajoutez du contexte ou des instructions pour un e-mail plus précis : ton, urgence, détails à souligner...",
+  },
+  extra_instructions_ph: {
+    ES: "Escribe aquí el contexto...",
+    EUS: "Idatzi hemen testuingurua...",
+    EN: "Write the context here...",
+    FR: "Écrivez le contexte ici...",
+  },
+  extra_instructions_aria: {
+    ES: "Instrucciones adicionales",
+    EUS: "Argibide gehigarriak",
+    EN: "Additional instructions",
+    FR: "Instructions supplémentaires",
+  },
+
+  expand: { ES: "Ampliar", EUS: "Handitu", EN: "Expand", FR: "Agrandir" },
+  close: { ES: "Cerrar", EUS: "Itxi", EN: "Close", FR: "Fermer" },
+  result_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "E-mail" },
 },
 
 
