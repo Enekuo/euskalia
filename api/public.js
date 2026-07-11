@@ -905,6 +905,10 @@ if (tool === "text_creator" && !isTextCreatorCheckCall && dstCode === "eus") {
 }
 
     // ====== Llamada a OpenAI ======
+    // ✅ gpt-5-mini (Creador de Texto) NO admite `temperature` personalizada: solo acepta
+    // su valor por defecto (1). Para la generación real de esta herramienta, se omite el
+    // parámetro por completo en vez de enviar un valor que la API rechaza.
+    const shouldOmitTemperature = tool === "text_creator" && !isTextCreatorCheckCall;
     async function callOpenAI(modelToUse) {
       const resp = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -914,7 +918,7 @@ if (tool === "text_creator" && !isTextCreatorCheckCall && dstCode === "eus") {
         },
         body: JSON.stringify({
           model: modelToUse,
-          temperature,
+          ...(shouldOmitTemperature ? {} : { temperature }),
           messages: finalMessages,
           ...(max_tokens ? { max_tokens } : {}),
         }),

@@ -503,7 +503,6 @@ Responde SOLO YES o NO.
           targetChars,
           writeMode,
           model: "gpt-5-mini",
-          temperature: 0.5,
         }),
       });
 
