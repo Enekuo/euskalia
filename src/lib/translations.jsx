@@ -664,8 +664,6 @@ limit_chars: {
 },
   error_generic: { ES: "Error generando el email.", EUS: "Errorea emaila sortzean.", EN: "Error generating the email.", FR: "Erreur lors de la génération de l’e-mail." },
   output_language_aria: { ES: "Idioma de salida", EUS: "Irteerako hizkuntza", EN: "Output language", FR: "Langue de sortie" },
-  pdf: { ES: "PDF", EUS: "PDF", EN: "PDF", FR: "PDF" },
-  pdf_title: { ES: "Email", EUS: "Emaila", EN: "Email", FR: "E-mail" },
 
   extra_instructions_title: {
     ES: "Contexto (opcional)",

@@ -63,8 +63,6 @@ export default function EmailCreator() {
   const [emailSaludo2, setEmailSaludo2] = useState("");
   const [emailNombre, setEmailNombre] = useState("");
 
-  const [spent, setSpent] = useState(0);
-
   const [showMissingInfoConfirm, setShowMissingInfoConfirm] = useState(false);
   const [pendingGenerateMode, setPendingGenerateMode] = useState(null);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -120,7 +118,6 @@ export default function EmailCreator() {
 
   const tooltipCopy = tr("emailCreator.copy", "Copiar");
   const tooltipCopied = tr("emailCreator.copied", "Copiado");
-  const tooltipPdf = tr("emailCreator.pdf", "PDF");
 
   const labelSmall1 = tr("emailCreator.small_1", "1- Saludo");
   const labelSmall2 = tr("emailCreator.small_2", "2- Introducción");
@@ -574,42 +571,6 @@ const handleShare = async () => {
   }
 };
 
-  const handleDownloadPdf = () => {
-    if (!result) return;
-    const win = window.open("", "_blank");
-    if (!win) return;
-
-    const safeSubject = (emailSubject || "")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-    win.document.write(`
-      <html>
-        <head>
-          <title>${tr("emailCreator.pdf_title", "Email")}</title>
-          <meta charset="utf-8" />
-          <style>
-            body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
-            .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
-            .subj { font-weight: 700; margin-bottom: 14px; }
-          </style>
-        </head>
-        <body>
-          <div class="box">
-            <div class="subj">Asunto: ${safeSubject}</div>
-            <div>${safeBody}</div>
-          </div>
-          <script>
-            window.focus();
-            setTimeout(() => window.print(), 200);
-          </script>
-        </body>
-      </html>
-    `);
-    win.document.close();
-  };
-
   const handleClearLeft = () => {
     setEmailSaludo("");
     setEmailIntro("");
@@ -619,7 +580,6 @@ const handleShare = async () => {
     setEmailParagraphs([""]);
     setChatInput("");
     setCreativeInfo("");
-    setSpent(0);
     clearRight();
   };
 
@@ -724,16 +684,7 @@ const handleShare = async () => {
       data?.message?.content ??
       "";
 
-    const usageTotal =
-      typeof data?.usage?.total_tokens === "number"
-        ? data.usage.total_tokens
-        : typeof data?.usage?.totalTokens === "number"
-        ? data.usage.totalTokens
-        : typeof data?.usage?.total === "number"
-        ? data.usage.total
-        : null;
-
-    return { kind: "ok", rawText, usageTotal };
+    return { kind: "ok", rawText };
   };
 
   const handleGenerate = async (forceContinue = false) => {
@@ -1101,12 +1052,6 @@ const handleShare = async () => {
 
           const builtBody2 = buildBodyFromParts(safeParts2);
 
-          const spentNow2 =
-            typeof r2.usageTotal === "number"
-              ? r2.usageTotal
-              : basePrompt.length + raw2.length;
-          setSpent((p) => p + (spentNow2 || 0));
-
           const combined2 = `${subject2}\n${builtBody2}`;
 
 if (languageLooksWrong(combined2, outputLang)) {
@@ -1128,12 +1073,6 @@ if (languageLooksWrong(combined2, outputLang)) {
           return;
         }
       }
-
-      const spentNow1 =
-        typeof r1.usageTotal === "number"
-          ? r1.usageTotal
-          : basePrompt.length + raw1.length;
-      setSpent((p) => p + (spentNow1 || 0));
 
       setEmailSubject(subject1 || (outputLang === "EUS" ? "Kontsulta" : "Consulta"));
       setResult(builtBody1);
