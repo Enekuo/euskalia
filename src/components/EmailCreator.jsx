@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Type, Share2, X, Copy, Trash, Check } from "lucide-react";
+import { Type, Share2, X, Copy, Trash, Check, Maximize2, MessageSquarePlus } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import ToolsSidebar from "@/components/ToolsSidebar";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -67,11 +67,13 @@ export default function EmailCreator() {
 
   const [showMissingInfoConfirm, setShowMissingInfoConfirm] = useState(false);
   const [pendingGenerateMode, setPendingGenerateMode] = useState(null);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [expandedOpen, setExpandedOpen] = useState(false);
 
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
   const DIVIDER = "#e5e7eb";
-  const MAX_CHARS = 18000;
+  const MAX_CHARS = 5000;
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -388,6 +390,15 @@ const languageLooksWrong = (text, lang) => {
     emailNombre,
   ]);
 
+  const inputPct = Math.min(100, Math.round((inputCount / MAX_CHARS) * 100));
+  const inputNearLimit = inputCount >= MAX_CHARS * 0.9 && inputCount < MAX_CHARS;
+  const inputOverLimit = inputCount > MAX_CHARS;
+  const inputBarClass = inputOverLimit
+    ? "bg-red-500"
+    : inputNearLimit
+    ? "bg-amber-500"
+    : "bg-sky-500";
+
   const clearRight = () => {
     setResult("");
     setEmailSubject("");
@@ -395,6 +406,7 @@ const languageLooksWrong = (text, lang) => {
     clearLimit();
     setIsOutdated(false);
     setLoading(false);
+    setExpandedOpen(false);
   };
 
   useEffect(() => {
@@ -422,12 +434,13 @@ const languageLooksWrong = (text, lang) => {
           handleCopy(true);
         }
       } else if (e.key === "Escape") {
-        if (urlInputOpen) setUrlInputOpen(false);
+        if (expandedOpen) setExpandedOpen(false);
+        else if (urlInputOpen) setUrlInputOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result, urlInputOpen]);
+  }, [loading, result, urlInputOpen, expandedOpen]);
 
   const paragraphMinOk = useMemo(() => {
     if (emailMode !== "template") return true;
@@ -1195,6 +1208,34 @@ return (
               </div>
 
               <div className="flex-1 min-h-0 overflow-auto px-4 py-4">
+                <div className="mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowInstructions((v) => !v)}
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium hover:opacity-80 transition"
+                    style={{ color: BLUE }}
+                    aria-expanded={showInstructions}
+                  >
+                    <MessageSquarePlus className="w-4 h-4" />
+                    {tr("emailCreator.extra_instructions_toggle", "Instrucciones adicionales")}
+                  </button>
+
+                  {showInstructions && (
+                    <textarea
+                      value={chatInput}
+                      onChange={(e) => {
+                        setChatInput(e.target.value);
+                        clearRight();
+                      }}
+                      placeholder={tr(
+                        "emailCreator.extra_instructions_ph",
+                        "Opcional: matices de tono o enfoque (ej. \"que suene urgente\", \"muy educado\", \"añade una posdata\")..."
+                      )}
+                      className="mt-2 w-full h-20 resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300"
+                    />
+                  )}
+                </div>
+
                 {emailMode === "creative" ? (
                   <>
                     <div className="mb-4">
@@ -1345,6 +1386,25 @@ return (
                     </div>
                   </>
                 )}
+              </div>
+
+              <div className="px-4 pb-3 shrink-0">
+                <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-1 ${inputBarClass}`} style={{ width: `${inputPct}%` }} />
+                </div>
+                <div className="mt-1 flex items-center justify-end">
+                  <span
+                    className={`text-xs ${
+                      inputOverLimit
+                        ? "text-red-600"
+                        : inputNearLimit
+                        ? "text-amber-600"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {inputCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                  </span>
+                </div>
               </div>
             </aside>
 
@@ -1604,6 +1664,20 @@ return (
                               <div className="flex items-center gap-4 mr-[20px] translate-y-1">
                                                                 <button
                                   type="button"
+                                  onClick={() => setExpandedOpen(true)}
+                                  title={tr("emailCreator.expand", "Ampliar")}
+                                  aria-label={tr("emailCreator.expand", "Ampliar")}
+                                  className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                >
+                                  <Maximize2 className="w-5 h-5" />
+
+                                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                    {tr("emailCreator.expand", "Ampliar")}
+                                  </span>
+                                </button>
+
+                                <button
+                                  type="button"
                                   onClick={() => handleCopy(true)}
                                   aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
@@ -1633,6 +1707,70 @@ return (
                                 </button>
                               </div>
                             </div>
+
+                            {expandedOpen && (
+                              <div
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-8"
+                                onClick={() => setExpandedOpen(false)}
+                              >
+                                <div
+                                  className="relative w-full sm:max-w-6xl h-full sm:h-auto sm:max-h-[85vh] bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 flex flex-col overflow-hidden"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="flex items-center justify-between px-4 sm:px-6 h-14 border-b border-slate-200 bg-slate-50/60 shrink-0">
+                                    <div className="text-sm font-medium text-slate-700">
+                                      {emailSubject || tr("emailCreator.result_title", "Emaila")}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => setExpandedOpen(false)}
+                                      className="h-9 w-9 flex items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                      aria-label={tr("emailCreator.close", "Cerrar")}
+                                      title={tr("emailCreator.close", "Cerrar")}
+                                    >
+                                      <X className="w-5 h-5" />
+                                    </button>
+                                  </div>
+
+                                  <div className="flex-1 overflow-y-auto px-5 sm:px-10 py-8">
+                                    <article className="prose prose-slate max-w-none">
+                                      <div
+                                        translate="no"
+                                        className="whitespace-pre-line text-[16px] sm:text-[17px] leading-8 text-slate-800"
+                                      >
+                                        {result}
+                                      </div>
+                                    </article>
+                                  </div>
+
+                                  <div className="flex items-center justify-end gap-4 px-4 sm:px-6 h-14 border-t border-slate-200 bg-slate-50/60 shrink-0 text-slate-500">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopy(true)}
+                                      title={copiedFlash ? tooltipCopied : tooltipCopy}
+                                      aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
+                                      className="p-2 rounded-md hover:bg-slate-100"
+                                    >
+                                      {copiedFlash ? (
+                                        <Check className="w-5 h-5" style={{ color: BLUE }} />
+                                      ) : (
+                                        <Copy className="w-5 h-5" />
+                                      )}
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={handleShare}
+                                      title={t("translator.share")}
+                                      aria-label={t("translator.share")}
+                                      className="p-2 rounded-md hover:bg-slate-100"
+                                    >
+                                      <Share2 className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </>
                         )}
 

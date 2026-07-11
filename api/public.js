@@ -33,7 +33,7 @@ const FREE_TEXT_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_TEXT_CREATOR_D
 const FREE_TEXT_CREATOR_RPM             = Number(process.env.FREE_TEXT_CREATOR_RPM || 6);
 
 // Creador de email
-const FREE_EMAIL_CREATOR_MAX_CHARS       = Number(process.env.FREE_EMAIL_CREATOR_MAX_CHARS || 12000);
+const FREE_EMAIL_CREATOR_MAX_CHARS       = Number(process.env.FREE_EMAIL_CREATOR_MAX_CHARS || 9000);
 const FREE_EMAIL_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_EMAIL_CREATOR_DAILY_TOKENS || 80000);
 const FREE_EMAIL_CREATOR_RPM             = Number(process.env.FREE_EMAIL_CREATOR_RPM || 6);
 
