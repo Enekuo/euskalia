@@ -24,7 +24,7 @@ export default function Parafraseador() {
   const { t } = useTranslation();
   const tr = (key, fallback = "") => t(key) || fallback;
 
-  const MAX_CHARS = 8000;
+  const MAX_CHARS = 3000;
 
 const [limitType, setLimitType] = useState("");
 
