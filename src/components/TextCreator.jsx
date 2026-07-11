@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Type, Share2, X, Copy, Trash, Check } from "lucide-react";
+import { Type, Share2, X, Copy, Trash, Check, Maximize2 } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
@@ -19,7 +19,7 @@ import {
   DropdownMenuArrow,
 } from "@/components/ui/dropdown-menu";
 
-export default function EmailCreator() {
+export default function TextCreator() {
   const { t } = useTranslation();
 
   const tr = (key, fallback) => {
@@ -58,6 +58,7 @@ export default function EmailCreator() {
   const [outputLang, setOutputLang] = useState("EUS");
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [showMissingInfoConfirm, setShowMissingInfoConfirm] = useState(false);
+  const [expandedOpen, setExpandedOpen] = useState(false);
 
   const normalWrapRef = useRef(null);
   const normalTaRef = useRef(null);
@@ -109,7 +110,6 @@ export default function EmailCreator() {
 
   const tooltipCopy = tr("textCreator.copy", "Copiar");
   const tooltipCopied = tr("textCreator.copied", "Copiado");
-  const tooltipPdf = tr("textCreator.pdf", "PDF");
 
   const normalizeText = (text) =>
     String(text || "")
@@ -240,6 +240,7 @@ Responde SOLO YES o NO.
     setErrorMsg("");
     clearLimit();
     setLoading(false);
+    setExpandedOpen(false);
   };
 
   const handleOutputLangChange = (newLang) => {
@@ -331,46 +332,6 @@ Responde SOLO YES o NO.
   }
 };
 
-  const handleDownloadPdf = () => {
-    if (!result) return;
-    const win = window.open("", "_blank");
-    if (!win) return;
-
-    const safeBody = (result || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const pdfTitle = (titleValue || "").trim() || tr("textCreator.pdf_title", "Texto");
-
-    win.document.write(`
-      <html>
-        <head>
-          <title>${pdfTitle}</title>
-          <meta charset="utf-8" />
-          <style>
-            body { font-family: Arial, sans-serif; padding: 32px; line-height: 1.55; }
-            .box { max-width: 900px; margin: 0 auto; white-space: pre-wrap; }
-            h1 { font-size: 20px; margin: 0 0 16px 0; font-weight: 700; text-transform: uppercase; }
-          </style>
-        </head>
-        <body>
-          <div class="box">
-            ${
-              titleUpper
-                ? `<h1>${titleUpper
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")}</h1>`
-                : ""
-            }
-            ${safeBody.replace(/\n/g, "<br/>")}
-          </div>
-          <script>
-            window.focus();
-            setTimeout(() => window.print(), 200);
-          </script>
-        </body>
-      </html>
-    `);
-    win.document.close();
-  };
-
   const handleClearLeft = () => {
     setTitleValue("");
     setParagraphs([""]);
@@ -403,11 +364,13 @@ Responde SOLO YES o NO.
           e.preventDefault();
           handleCopy(true);
         }
+      } else if (e.key === "Escape") {
+        if (expandedOpen) setExpandedOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result, fullExportText]);
+  }, [loading, result, fullExportText, expandedOpen]);
 
   const handleGenerate = async (forceContinue = false) => {
     setErrorMsg("");
@@ -946,6 +909,20 @@ return (
                               <div className="flex items-center gap-4 mr-[20px] translate-y-1">
                                                                 <button
                                   type="button"
+                                  onClick={() => setExpandedOpen(true)}
+                                  title={tr("textCreator.expand", "Ampliar")}
+                                  aria-label={tr("textCreator.expand", "Ampliar")}
+                                  className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
+                                >
+                                  <Maximize2 className="w-5 h-5" />
+
+                                  <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                                    {tr("textCreator.expand", "Ampliar")}
+                                  </span>
+                                </button>
+
+                                <button
+                                  type="button"
                                   onClick={() => handleCopy(true)}
                                   aria-label={
                                     copiedFlash
@@ -981,6 +958,78 @@ return (
                                 </button>
                               </div>
                             </div>
+
+                            {expandedOpen && (
+                              <div
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-8"
+                                onClick={() => setExpandedOpen(false)}
+                              >
+                                <div
+                                  className="relative w-full sm:max-w-6xl h-full sm:h-auto sm:max-h-[85vh] bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 flex flex-col overflow-hidden"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="flex items-center justify-between px-4 sm:px-6 h-14 border-b border-slate-200 bg-slate-50/60 shrink-0">
+                                    <div className="text-sm font-medium text-slate-700">
+                                      {titleUpper || tr("textCreator.result_title", "Testua")}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => setExpandedOpen(false)}
+                                      className="h-9 w-9 flex items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                      aria-label={tr("textCreator.close", "Cerrar")}
+                                      title={tr("textCreator.close", "Cerrar")}
+                                    >
+                                      <X className="w-5 h-5" />
+                                    </button>
+                                  </div>
+
+                                  <div className="flex-1 overflow-y-auto px-5 sm:px-10 py-8">
+                                    <article className="prose prose-slate max-w-none">
+                                      <div
+                                        translate="no"
+                                        className="whitespace-pre-line text-[16px] sm:text-[17px] leading-8 text-slate-800"
+                                      >
+                                        {result}
+                                      </div>
+                                    </article>
+                                  </div>
+
+                                  <div className="flex items-center justify-end gap-4 px-4 sm:px-6 h-14 border-t border-slate-200 bg-slate-50/60 shrink-0 text-slate-500">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopy(true)}
+                                      title={
+                                        copiedFlash
+                                          ? t("translator.copied")
+                                          : t("translator.copy")
+                                      }
+                                      aria-label={
+                                        copiedFlash
+                                          ? t("translator.copied")
+                                          : t("translator.copy")
+                                      }
+                                      className="p-2 rounded-md hover:bg-slate-100"
+                                    >
+                                      {copiedFlash ? (
+                                        <Check className="w-5 h-5" style={{ color: BLUE }} />
+                                      ) : (
+                                        <Copy className="w-5 h-5" />
+                                      )}
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={handleShare}
+                                      title={t("translator.share")}
+                                      aria-label={t("translator.share")}
+                                      className="p-2 rounded-md hover:bg-slate-100"
+                                    >
+                                      <Share2 className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </>
                         )}
 
