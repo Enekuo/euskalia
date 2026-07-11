@@ -63,7 +63,7 @@ export default function EmailCreator() {
   const normalTaRef = useRef(null);
 
   const BLUE = "#2563eb";
-  const MAX_CHARS = 18000;
+  const MAX_CHARS = 3000;
 
   const pageVariants = {
     initial: { opacity: 0, y: 12 },
@@ -148,6 +148,21 @@ export default function EmailCreator() {
     return !!tTitle || ps;
   }, [titleValue, paragraphs]);
 
+  // Contador de caracteres del brief (título + párrafos), coherente con la validación de
+  // MAX_CHARS que ya usa handleGenerate (misma cadena que build Brief()).
+  const briefCharCount = useMemo(
+    () => buildBrief().length,
+    [titleValue, paragraphs, writeMode]
+  );
+  const briefPct = Math.min(100, Math.round((briefCharCount / MAX_CHARS) * 100));
+  const briefNearLimit = briefCharCount >= MAX_CHARS * 0.9 && briefCharCount < MAX_CHARS;
+  const briefOverLimit = briefCharCount > MAX_CHARS;
+  const briefBarClass = briefOverLimit
+    ? "bg-red-500"
+    : briefNearLimit
+    ? "bg-amber-500"
+    : "bg-sky-500";
+
   const mainTextForCheck = useMemo(() => {
     const tTitle = (titleValue || "").trim();
 
@@ -225,6 +240,12 @@ Responde SOLO YES o NO.
     setErrorMsg("");
     clearLimit();
     setLoading(false);
+  };
+
+  const handleOutputLangChange = (newLang) => {
+    if (newLang === outputLang) return;
+    setOutputLang(newLang);
+    clearRight();
   };
 
   const addParagraph = () => {
@@ -709,6 +730,25 @@ return (
                 )}
               </div>
 
+              <div className="px-4 pb-3 shrink-0">
+                <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-1 ${briefBarClass}`} style={{ width: `${briefPct}%` }} />
+                </div>
+                <div className="mt-1 flex items-center justify-end">
+                  <span
+                    className={`text-xs ${
+                      briefOverLimit
+                        ? "text-red-600"
+                        : briefNearLimit
+                        ? "text-amber-600"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {briefCharCount.toLocaleString()} / {MAX_CHARS.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
               {writeMode === "paragraphs" ? (
                 <div className="flex-1 min-h-0 overflow-hidden" />
               ) : (
@@ -777,16 +817,16 @@ return (
                       align="end"
                       className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
                     >
-                      <DropdownMenuItem onClick={() => setOutputLang("EUS")}>
+                      <DropdownMenuItem onClick={() => handleOutputLangChange("EUS")}>
                         {LBL_EUS}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("ES")}>
+                      <DropdownMenuItem onClick={() => handleOutputLangChange("ES")}>
                         {LBL_ES}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("EN")}>
+                      <DropdownMenuItem onClick={() => handleOutputLangChange("EN")}>
                         {LBL_EN}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setOutputLang("FR")}>
+                      <DropdownMenuItem onClick={() => handleOutputLangChange("FR")}>
                         {LBL_FR}
                       </DropdownMenuItem>
                       <DropdownMenuArrow className="fill-white" />

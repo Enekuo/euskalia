@@ -28,7 +28,7 @@ const FREE_PARAPHRASER_DAILY_TOKENS    = Number(process.env.FREE_PARAPHRASER_DAI
 const FREE_PARAPHRASER_RPM             = Number(process.env.FREE_PARAPHRASER_RPM || 6);
 
 // Creador de texto
-const FREE_TEXT_CREATOR_MAX_CHARS       = Number(process.env.FREE_TEXT_CREATOR_MAX_CHARS || 12000);
+const FREE_TEXT_CREATOR_MAX_CHARS       = Number(process.env.FREE_TEXT_CREATOR_MAX_CHARS || 20000);
 const FREE_TEXT_CREATOR_DAILY_TOKENS    = Number(process.env.FREE_TEXT_CREATOR_DAILY_TOKENS || 80000);
 const FREE_TEXT_CREATOR_RPM             = Number(process.env.FREE_TEXT_CREATOR_RPM || 6);
 
