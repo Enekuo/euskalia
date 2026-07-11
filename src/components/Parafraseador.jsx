@@ -57,6 +57,7 @@ const limitMsg =
   const [textValue, setTextValue] = useState("");
 
 const [result, setResult] = useState("");
+const [lastGeneratedText, setLastGeneratedText] = useState(null);
 const [detectedLanguage, setDetectedLanguage] = useState(null);
 const [loading, setLoading] = useState(false);
 const [errorMsg, setErrorMsg] = useState("");
@@ -221,6 +222,12 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
   setDailyLimitReached(false);
   setLoading(false);
   setCopiedFlash(false);
+  };
+
+  const handleModeChange = (newMode) => {
+    if (newMode === mode) return;
+    setMode(newMode);
+    clearRight();
   };
 
   useEffect(() => {
@@ -609,6 +616,7 @@ setDetectedLanguage(apiDetectedLanguage);
         .trim();
  
       setResult(cleaned);
+      setLastGeneratedText(textValue);
     } catch (err) {
       setErrorMsg(err.message || tr("paraphraser_error_generic", "Error creando el parafraseo."));
     } finally {
@@ -700,9 +708,14 @@ return (
                     <textarea
                       value={textValue}
                       onChange={(e) => {
-                        setTextValue(e.target.value);
-                        if (errorMsg) setErrorMsg("");
-                        if (limitType) clearLimit();
+                        const next = e.target.value;
+                        setTextValue(next);
+                        if (result && next !== lastGeneratedText) {
+                          clearRight();
+                        } else {
+                          if (errorMsg) setErrorMsg("");
+                          if (limitType) clearLimit();
+                        }
                       }}
                       placeholder={labelEnterText}
                       className="w-full flex-1 resize-none outline-none text-[15px] leading-6 bg-transparent placeholder:text-slate-400 text-slate-800"
@@ -881,13 +894,13 @@ return (
             <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
               <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
                 <div className="flex items-center gap-0 w-full md:w-auto max-w-full overflow-x-auto md:overflow-visible overflow-y-hidden whitespace-nowrap pb-1 md:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => setMode("neutral")} showDivider />
-                  <ModeTab active={mode === "formal"} label={modeLabels.formal} onClick={() => setMode("formal")} showDivider />
-                  <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => setMode("informal")} showDivider />
-                  <ModeTab active={mode === "professional"} label={modeLabels.professional} onClick={() => setMode("professional")} showDivider />
-                  <ModeTab active={mode === "academic"} label={modeLabels.academic} onClick={() => setMode("academic")} showDivider />
-                  <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => setMode("fluent")} showDivider />
-                  <ModeTab active={mode === "creative"} label={modeLabels.creative} onClick={() => setMode("creative")} />
+                  <ModeTab active={mode === "neutral"} label={modeLabels.neutral} onClick={() => handleModeChange("neutral")} showDivider />
+                  <ModeTab active={mode === "formal"} label={modeLabels.formal} onClick={() => handleModeChange("formal")} showDivider />
+                  <ModeTab active={mode === "informal"} label={modeLabels.informal} onClick={() => handleModeChange("informal")} showDivider />
+                  <ModeTab active={mode === "professional"} label={modeLabels.professional} onClick={() => handleModeChange("professional")} showDivider />
+                  <ModeTab active={mode === "academic"} label={modeLabels.academic} onClick={() => handleModeChange("academic")} showDivider />
+                  <ModeTab active={mode === "fluent"} label={modeLabels.fluent} onClick={() => handleModeChange("fluent")} showDivider />
+                  <ModeTab active={mode === "creative"} label={modeLabels.creative} onClick={() => handleModeChange("creative")} />
                 </div>
 
                 <div className="flex items-center justify-center gap-1 w-full sm:w-auto shrink-0">
