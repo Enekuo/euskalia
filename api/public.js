@@ -23,7 +23,7 @@ const FREE_CORRECTOR_DAILY_TOKENS    = Number(process.env.FREE_CORRECTOR_DAILY_T
 const FREE_CORRECTOR_RPM             = Number(process.env.FREE_CORRECTOR_RPM || 6);
 
 // Parafraseador
-const FREE_PARAPHRASER_MAX_CHARS       = Number(process.env.FREE_PARAPHRASER_MAX_CHARS || 8000);
+const FREE_PARAPHRASER_MAX_CHARS       = Number(process.env.FREE_PARAPHRASER_MAX_CHARS || 3000);
 const FREE_PARAPHRASER_DAILY_TOKENS    = Number(process.env.FREE_PARAPHRASER_DAILY_TOKENS || 50000);
 const FREE_PARAPHRASER_RPM             = Number(process.env.FREE_PARAPHRASER_RPM || 6);
 

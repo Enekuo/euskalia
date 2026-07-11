@@ -454,56 +454,36 @@ const langInstruction =
       mode === "neutral"
         ? `
 MODO NEUTRAL:
-- Reescribe de forma natural y correcta.
-- Mantén el tono y el nivel del original.
-- Cambia palabras y orden lo justo.
-- No simplifiques, no embellezcas, no hagas más formal ni más informal.
+Reformula el texto con otras palabras manteniendo el mismo tono y registro del original. Versión estándar y equilibrada, sin inclinarse hacia lo formal ni lo informal.
 `.trim()
         : mode === "formal"
         ? `
 MODO FORMAL:
-- Usa un tono formal y elegante.
-- Mantén claridad y naturalidad.
-- Utiliza vocabulario más refinado y estructurado.
-- Evita expresiones coloquiales.
+Eleva el registro. Tratamiento de cortesía, vocabulario cuidado y estructuras propias de un contexto oficial o serio. Evita coloquialismos y expresiones familiares.
 `.trim()
         : mode === "informal"
         ? `
 MODO INFORMAL:
-- Tono cercano y conversacional.
-- Frases más cortas.
-- Vocabulario cotidiano, sin sonar infantil.
-- Evita estructuras formales o académicas.
+Acerca el texto a un registro coloquial y cercano, como una conversación entre conocidos. Expresiones cotidianas y tono relajado, sin vulgaridad.
 `.trim()
         : mode === "professional"
         ? `
 MODO PROFESIONAL:
-- Tono formal y profesional, claro y práctico.
-- Directo, sin adornos emocionales.
-- Léxico neutro de trabajo.
-- Estructura ordenada y precisa.
+Tono de entorno laboral, claro, directo y correcto. Ideal para emails de trabajo y comunicación profesional. Ni tan rígido como el formal ni tan relajado como el informal.
 `.trim()
         : mode === "academic"
         ? `
 MODO ACADÉMICO:
-- Tono riguroso y formal.
-- Vocabulario más técnico.
-- Frases más elaboradas sin perder claridad.
-- Apto para contexto educativo o académico.
+Registro técnico y preciso, con vocabulario especializado y estructuras propias de textos universitarios o científicos. Prioriza el rigor y la exactitud sobre la cercanía.
 `.trim()
         : mode === "fluent"
         ? `
 MODO FLUIDO:
-- Prioriza que el texto se lea de forma continua y agradable.
-- Reordena para mejorar el flujo sin cambiar el significado.
-- Elimina repeticiones.
-- Añade transiciones suaves si encajan.
+Prioriza que el texto se lea con naturalidad y buen ritmo. Mejora las transiciones, evita frases entrecortadas o repetitivas, hace que suene suave al leer, manteniendo el mismo registro.
 `.trim()
         : `
 MODO CREATIVO:
-- Mayor libertad estilística manteniendo el significado.
-- Varía estructura, ritmo y forma.
-- Haz el texto más expresivo sin inventar hechos.
+Reformula con mayor libertad y expresividad. Puede usar imágenes, giros originales y lenguaje más rico, aportando personalidad al texto sin cambiar su significado.
 `.trim();
 
     const userContent = [
@@ -521,7 +501,8 @@ const systemBase =
   "Tu prioridad es producir textos naturales, claros y correctos. " +
   "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. " +
   "No traduzcas el contenido a otro idioma distinto al de la fuente. " +
-  "Si el idioma detectado es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales.";
+  "Si el idioma detectado es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales. " +
+  "Aplica siempre el estilo de parafraseo indicado (tono, registro, libertad expresiva), pero si el idioma es euskera, la corrección y naturalidad del idioma tienen SIEMPRE prioridad sobre la libertad estilística de cualquier modo: ningún estilo, ni siquiera el creativo, debe sacrificar un euskera correcto y natural.";
 
     const messages = [
       { role: "system", content: systemBase },
