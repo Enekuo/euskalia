@@ -502,6 +502,8 @@ Responde SOLO YES o NO.
           cacheKey,
           targetChars,
           writeMode,
+          model: "gpt-5-mini",
+          temperature: 0.5,
         }),
       });
 

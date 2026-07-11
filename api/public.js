@@ -458,6 +458,13 @@ const isTranslator =
       rawTask.includes("crear_texto") || rawMode.includes("crear_texto") ||
       rawTask.includes("creador_texto") || rawMode.includes("creador_texto");
 
+    // ✅ Subtarea interna del Creador de Texto (comprobar si hay info suficiente antes de
+    // generar). Es tool "text_creator" a efectos de límites de caracteres/tokens, pero NO
+    // debe contar como una "generación" más del contador diario de peticiones del usuario
+    // (si no, cada "Generar" consumiría 2 del cupo diario en vez de 1).
+    const isTextCreatorCheckCall =
+      rawTask === "text_creator_check" || rawMode === "text_creator_check";
+
     const isEmailCreator =
       rawTask.includes("email_creator") || rawMode.includes("email_creator") ||
       rawTask.includes("emailcreator") || rawMode.includes("emailcreator") ||
@@ -735,8 +742,8 @@ REGLA CRÍTICA DE DESTINO:
       }
     }
 
-    // 3d) Límite de creaciones de texto
-    if (tool === "text_creator") {
+    // 3d) Límite de creaciones de texto (el chequeo previo de "info suficiente" no cuenta)
+    if (tool === "text_creator" && !isTextCreatorCheckCall) {
       try {
         const dailyTextCreatorKey = `quota:text_creator:reqs:${day}:${ip}`;
         const usedReqs = await kv.incr(dailyTextCreatorKey);
@@ -867,6 +874,24 @@ Devuelve únicamente la traducción final en ${targetName}.
 // de "traducir"), y SOLO cuando el idioma real del texto de entrada (detectado arriba) es
 // euskera. En cualquier otro idioma, el prompt del Parafraseador se queda tal cual.
 if (tool === "paraphraser" && detectedLanguage?.code === "eus") {
+  const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
+  const rules = euskeraQualityRules();
+  if (sysIdx >= 0) {
+    finalMessages[sysIdx] = {
+      ...finalMessages[sysIdx],
+      content: `${finalMessages[sysIdx].content}\n\n${rules}`,
+    };
+  } else {
+    finalMessages = [{ role: "system", content: rules }, ...finalMessages];
+  }
+}
+
+// ✅ Creador de Texto: mismo patrón que el Parafraseador — aplica SOLO
+// euskeraQualityRules() (sin reglas propias de "traducir"), y SOLO cuando el idioma de
+// SALIDA elegido por el usuario es euskera (aquí no hay texto de origen que detectar, el
+// idioma lo decide directamente el selector). No se aplica al chequeo previo de "info
+// suficiente" (subtarea interna, no es la generación final).
+if (tool === "text_creator" && !isTextCreatorCheckCall && dstCode === "eus") {
   const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
   const rules = euskeraQualityRules();
   if (sysIdx >= 0) {
