@@ -91,7 +91,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3050/traductor)",
       "Bash(curl -s http://localhost:3050/traductor)",
       "Bash(powershell -Command 'Get-Process -Name node | Where-Object { $_.MainWindowTitle -eq '\\\\'''\\\\'' } | Stop-Process -Force')",
-      "Bash(netstat -ano)"
+      "Bash(netstat -ano)",
+      "Bash(node \"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Windows-Desktop-Euskalia-Codigo\\\\62fa488c-5886-4385-92ba-bfdaaea59c50\\\\scratchpad\\\\verify-eusguardrail.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

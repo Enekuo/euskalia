@@ -200,15 +200,28 @@ function htmlToText(html) {
   return text.replace(/\s+/g, " ").trim();
 }
 
-// ✅ “guardrail” para EUS
+// ✅ Reglas de CALIDAD DE EUSKERA puras — válidas para cualquier texto en euskera,
+// sea cual sea la herramienta (traducir, parafrasear, etc.). Única fuente de verdad:
+// eusGuardrail() (traductor) las incluye tal cual, y el Parafraseador las reutiliza
+// directamente sin las reglas propias de "traducir".
+function euskeraQualityRules() {
+  return `
+- Idatzi EUSKERA NATURALEAN: ez sartu esaldi arrarorik edo gaztelaniazko kalkorik (adib.: "Nahi izan nuen..." bezalako egiturak debekatuta).
+- Errespetatu euskararen hitz-ordena eta egitura propioak, ez gaztelaniaren ordena hitzez hitz kopiatu. Adibidez, "X urtean, Y izeneko herri batean jaio nintzen" esaldiaren ordena naturala euskaraz "X. urtean Y izeneko herri batean jaio nintzen" da, ez kalko artifizial bat.
+- Zenbakiak (1969, 123, 1.000, 2,5...) mantendu berdin (EZ idatzi hitzez), eta EZ aldatu kokapena modu artifizialean.
+- Ez nahastu hizkuntzak: emaitza %100 euskaraz, salbu eta izen propioak.
+`.trim();
+}
+
+// ✅ “guardrail” para EUS (traducción) = reglas de calidad de euskera (euskeraQualityRules)
+// + reglas propias de TRADUCIR (dar la traducción, responder solo con ella...). El texto
+// exacto cambia respecto a la versión anterior (la naturalidad y el orden ahora viven en
+// euskeraQualityRules, redactados de forma genérica), pero cubre el mismo sentido completo.
 function eusGuardrail() {
   return `
 EUSKERA-ARAUAK (oso garrantzitsua):
-- Eman itzulpena EUSKARA NATURALEAN, eta EZ erantsi esaldi arrarorik (adib.: "Nahi izan nuen..." debekatuta).
-- Itzuli "Nací en el año X en un pueblo llamado Y" moduko egiturak honela, orden naturalarekin:
-  "X. urtean Y izeneko herri batean jaio nintzen."
-- Zenbakiak (1969, 123, 1.000, 2,5...) mantendu berdin (EZ idatzi hitzez), eta EZ aldatu kokapena modu artifizialean.
-- Ez nahastu hizkuntzak: emaitza %100 euskaraz, salbu eta izen propioak.
+- Eman itzulpena euskaraz.
+${euskeraQualityRules()}
 - Erantzun BAKARRIK itzulpenarekin (formatua mantenduz).
 `.trim();
 }
@@ -850,27 +863,58 @@ Devuelve únicamente la traducción final en ${targetName}.
   ];
 }
 
-    // ====== Llamada a OpenAI ======
-    const r = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        temperature,
-        messages: finalMessages,
-        ...(max_tokens ? { max_tokens } : {}),
-      }),
-    });
+// ✅ Parafraseador: aplica SOLO las reglas de calidad de euskera (sin las reglas propias
+// de "traducir"), y SOLO cuando el idioma real del texto de entrada (detectado arriba) es
+// euskera. En cualquier otro idioma, el prompt del Parafraseador se queda tal cual.
+if (tool === "paraphraser" && detectedLanguage?.code === "eus") {
+  const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
+  const rules = euskeraQualityRules();
+  if (sysIdx >= 0) {
+    finalMessages[sysIdx] = {
+      ...finalMessages[sysIdx],
+      content: `${finalMessages[sysIdx].content}\n\n${rules}`,
+    };
+  } else {
+    finalMessages = [{ role: "system", content: rules }, ...finalMessages];
+  }
+}
 
-    const detailText = await r.text().catch(() => "");
-    let data;
-    try {
-      data = detailText ? JSON.parse(detailText) : {};
-    } catch {
-      data = {};
+    // ====== Llamada a OpenAI ======
+    async function callOpenAI(modelToUse) {
+      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: modelToUse,
+          temperature,
+          messages: finalMessages,
+          ...(max_tokens ? { max_tokens } : {}),
+        }),
+      });
+
+      const text = await resp.text().catch(() => "");
+      let parsed;
+      try {
+        parsed = text ? JSON.parse(text) : {};
+      } catch {
+        parsed = {};
+      }
+
+      return { resp, data: parsed, text };
+    }
+
+    let { resp: r, data, text: detailText } = await callOpenAI(model);
+
+    // Red de seguridad SOLO para el Parafraseador: si el modelo principal falla
+    // (p. ej. una caída puntual de OpenAI), reintenta una vez con un modelo de
+    // respaldo real y estable, en vez de devolver el error directamente.
+    const PARAPHRASER_FALLBACK_MODEL = "gpt-4o-mini";
+    if (!r.ok && tool === "paraphraser" && model !== PARAPHRASER_FALLBACK_MODEL) {
+      console.log("[PARAPHRASER FALLBACK]", { model, status: r.status });
+      ({ resp: r, data, text: detailText } = await callOpenAI(PARAPHRASER_FALLBACK_MODEL));
     }
 
     if (!r.ok) {
