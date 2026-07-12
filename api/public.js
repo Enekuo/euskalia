@@ -928,6 +928,26 @@ if (tool === "email_creator" && dstCode === "eus") {
   }
 }
 
+// ✅ Corrector: mismo patrón que el Parafraseador — aplica SOLO euskeraQualityRules(), y SOLO
+// cuando el idioma real del texto de entrada (detectado arriba) es euskera. Se añade además
+// una frase de acotación propia del Corrector: estas reglas ayudan a detectar ERRORES
+// objetivos de euskera (calcos, orden forzado), pero no dan licencia para reformular frases
+// que ya sean correctas — coherente con el principio de "corrector puro" de la Fase 1.
+if (tool === "corrector" && detectedLanguage?.code === "eus") {
+  const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
+  const rules =
+    euskeraQualityRules() +
+    "\n\nAplica estas reglas de euskera únicamente cuando detectes un error objetivo (un calco, una construcción que suene forzada o incorrecta en euskera). No reordenes ni reformules frases que ya sean gramaticalmente correctas en euskera solo porque exista un orden alternativo más habitual.";
+  if (sysIdx >= 0) {
+    finalMessages[sysIdx] = {
+      ...finalMessages[sysIdx],
+      content: `${finalMessages[sysIdx].content}\n\n${rules}`,
+    };
+  } else {
+    finalMessages = [{ role: "system", content: rules }, ...finalMessages];
+  }
+}
+
     // ====== Llamada a OpenAI ======
     // ✅ gpt-5-mini (Creador de Texto) NO admite `temperature` personalizada: solo acepta
     // su valor por defecto (1). Para la generación real de esta herramienta, se omite el
