@@ -533,7 +533,9 @@ setShowDiff(false);
       .join(", ");
 
     const modeInstruction =
-      "Haz una corrección ESTÁNDAR: corrige ortografía, gramática, puntuación y mejora un poco la fluidez, manteniendo el mismo tono y estructura general.";
+      "Haz una corrección ESTRICTA de corrector puro: corrige ÚNICAMENTE errores de ortografía, gramática y puntuación. " +
+      "Mantén intactos el significado, el tono, el estilo, la estructura y las palabras del autor siempre que sean correctas. " +
+      "NO reformules frases que ya son correctas, NO cambies palabras por sinónimos y NO reescribas por preferencia estilística: corrige solo lo que esté objetivamente mal.";
 
     const langInstruction =
       "Detecta automáticamente el idioma principal del texto de entrada y corrige SIEMPRE en ese mismo idioma. " +
@@ -552,8 +554,8 @@ setShowDiff(false);
       : "";
 
     const userContent = [
-      "Quiero que actúes como un corrector gramatical y de estilo.",
-      "\nTarea principal: devuelve el mismo texto, pero corregido y mejorado.",
+      "Quiero que actúes como un corrector ortográfico y gramatical.",
+      "\nTarea principal: devuelve el mismo texto, corrigiendo únicamente los errores objetivos de ortografía, gramática y puntuación.",
       "\nNo resumas, no acortes y no añadas información nueva.",
       modeInstruction,
       "\nTEXTO PRINCIPAL PARA CORREGIR:",
@@ -565,9 +567,10 @@ setShowDiff(false);
     ].join("");
 
     const systemBase =
-      "Eres Euskalia, un corrector gramatical y de estilo. " +
+      "Eres Euskalia, un corrector ortográfico y gramatical. " +
       "Devuelve SIEMPRE el texto completo corregido. " +
       "Si el texto original contiene una lista (numerada o con viñetas), conserva el mismo formato de lista (números/viñetas y saltos de línea). " +
+      "Si el texto original tiene varios párrafos, conserva exactamente la misma estructura de párrafos: mantén los saltos de párrafo y las líneas en blanco tal como están en el original, sin fusionar ni dividir párrafos. " +
       "Si NO es una lista, devuélvelo como texto normal. " +
       "Respeta el significado original y no añadas explicaciones ni comentarios, solo el texto corregido.\n\n" +
       langInstruction;
@@ -593,12 +596,13 @@ setShowDiff(false);
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
            messages,
+  task: "corrector",
   mode: CORRECTION_MODE,
   cacheKey,
   documentsText,
   bannerDetectionText: textValue,
   uiLanguage: "ES",
-          
+
         }),
       });
 
