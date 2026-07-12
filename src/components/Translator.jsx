@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
-import { Menu, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Volume2 } from "lucide-react";
+import { Menu, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Volume2, Maximize2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
 import ToolsSidebar from "@/components/ToolsSidebar";
+import ExpandModal from "@/components/ExpandModal";
 import { Link } from "react-router-dom";
 
 const MAX_CHARS = 3000;
@@ -259,6 +260,15 @@ const OPTIONS_SRC = [
 
   const [copied, setCopied] = useState(false);
   const copyTimerRef = useRef(null);
+  const [expandedOpen, setExpandedOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape" && expandedOpen) setExpandedOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expandedOpen]);
 
   const leftRef = useRef(null);
   const rightRef = useRef(null);
@@ -1318,6 +1328,7 @@ requestAnimationFrame(() => {
     setDailyLimitReached(false);
     setAlternatives([]);
     setAlternativesLoading(false);
+    setExpandedOpen(false);
     alternativesRequestRef.current += 1;
   };
 
@@ -1928,6 +1939,19 @@ alternativesRequestRef.current += 1;
 
                     <button
                       type="button"
+                      onClick={() => setExpandedOpen(true)}
+                      aria-label={t("translator.expand")}
+                      disabled={!hasRealResult}
+                      className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                    >
+                      <Maximize2 className="w-5 h-5" />
+                      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        {t("translator.expand")}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={handleCopy}
                       aria-label={t("translator.copy")}
                       disabled={!hasRealResult}
@@ -1954,6 +1978,16 @@ alternativesRequestRef.current += 1;
 </button>
 
                   </div>
+
+                  <ExpandModal
+                    open={expandedOpen && hasRealResult}
+                    onClose={() => setExpandedOpen(false)}
+                    title={t("translator.result_title")}
+                    content={rightText}
+                    onCopy={handleCopy}
+                    onShare={handleShare}
+                    copiedFlash={copied}
+                  />
                 </div>
               </div>
 

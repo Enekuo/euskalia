@@ -2,11 +2,12 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type } from "lucide-react";
+import { FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import DetectedLanguageBanner from "@/components/DetectedLanguageBanner";
 import ToolsSidebar from "@/components/ToolsSidebar";
+import ExpandModal from "@/components/ExpandModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,6 +78,7 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
   const [urlItems, setUrlItems] = useState([]);
 
   const [copiedFlash, setCopiedFlash] = useState(false);
+  const [expandedOpen, setExpandedOpen] = useState(false);
 
   const BLUE = "#2563eb";
   const GRAY_TEXT = "#64748b";
@@ -138,6 +140,8 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
   const labelDownload = tr("paraphraser_download", "Descargar");
   const labelCopy = tr("paraphraser_copy", "Copiar");
   const labelCopied = tr("paraphraser_copied", "Copiado");
+  const labelExpand = tr("paraphraser_expand", "Ampliar");
+  const labelResultTitle = tr("paraphraser_result_title", "Parafraseoa");
 
   const leftTitle = tr("paraphraser_left_title", "Aquí aparecerán tus textos o documentos subidos.");
   const leftBody = tr("paraphraser_left_body", "Puedes añadir archivos PDF, texto copiado, enlaces web…");
@@ -222,6 +226,7 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
   setDailyLimitReached(false);
   setLoading(false);
   setCopiedFlash(false);
+  setExpandedOpen(false);
   };
 
   const handleModeChange = (newMode) => {
@@ -242,12 +247,13 @@ const [dailyLimitReached, setDailyLimitReached] = useState(false);
           handleCopy(true);
         }
       } else if (e.key === "Escape") {
-        if (urlInputOpen) setUrlInputOpen(false);
+        if (expandedOpen) setExpandedOpen(false);
+        else if (urlInputOpen) setUrlInputOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loading, result, urlInputOpen]);
+  }, [loading, result, urlInputOpen, expandedOpen]);
  
 
   const readTextFromFiles = async (items) => {
@@ -1069,6 +1075,19 @@ setDetectedLanguage(null);
 
     <button
       type="button"
+      onClick={() => setExpandedOpen(true)}
+      aria-label={labelExpand}
+      className="group relative p-2 rounded-md hover:bg-slate-100"
+    >
+      <Maximize2 className="w-5 h-5" />
+
+      <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+        {labelExpand}
+      </span>
+    </button>
+
+    <button
+      type="button"
       onClick={() => handleCopy(true)}
       aria-label={labelCopy}
       className="group relative p-2 rounded-md hover:bg-slate-100"
@@ -1098,6 +1117,16 @@ setDetectedLanguage(null);
     </button>
   </div>
 )}
+
+<ExpandModal
+  open={expandedOpen && !!result}
+  onClose={() => setExpandedOpen(false)}
+  title={labelResultTitle}
+  content={result}
+  onCopy={() => handleCopy(true)}
+  onShare={handleShare}
+  copiedFlash={copiedFlash}
+/>
 </>
 )}
 

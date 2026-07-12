@@ -104,6 +104,9 @@ output_language_uk: { ES: "Ucraniano", EUS: "Ukrainera", EN: "Ukrainian", FR: "U
     copy:       { ES: "Copiar",       EUS: "Kopiatu",     EN: "Copy",          FR: "Copier" },
     copied:     { ES: "Copiado",      EUS: "Kopiatuta",   EN: "Copied",        FR: "Copié" },
     share:      { ES: "Compartir",    EUS: "Partekatu",   EN: "Share",         FR: "Partager" },
+    close:      { ES: "Cerrar",       EUS: "Itxi",        EN: "Close",         FR: "Fermer" },
+    expand:     { ES: "Ampliar",      EUS: "Handitu",      EN: "Expand",        FR: "Agrandir" },
+    result_title: { ES: "Traducción", EUS: "Itzulpena",    EN: "Translation",   FR: "Traduction" },
     clear_left: { ES: "Borrar",       EUS: "Garbitu",     EN: "Clear",         FR: "Effacer" },
     dictate:    { ES: "Dictar",       EUS: "Diktatu",     EN: "Dictate",       FR: "Dicter" },
     listening:  { ES: "Escuchando…",  EUS: "Entzuten…",   EN: "Listening…",    FR: "Écoute…" },
@@ -303,6 +306,8 @@ summary_min_chars_required: {
   copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
   copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
   clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
+  expand: { ES: "Ampliar", EUS: "Handitu", EN: "Expand", FR: "Agrandir" },
+  result_title: { ES: "Corrección", EUS: "Zuzenketa", EN: "Correction", FR: "Correction" },
 
   enter_text_here_full: {
     ES: "Escribe o pega aquí el texto que quieres corregir…",
@@ -470,6 +475,8 @@ paraphraser_remove_button: { ES: "Quitar", EUS: "Kendu", EN: "Remove", FR: "Supp
 paraphraser_copy: { ES: "Copiar", EUS: "Kopiatu", EN: "Copy", FR: "Copier" },
 paraphraser_copied: { ES: "Copiado", EUS: "Kopiatuta", EN: "Copied", FR: "Copié" },
 paraphraser_clear_input: { ES: "Eliminar", EUS: "Ezabatu", EN: "Delete", FR: "Supprimer" },
+paraphraser_expand: { ES: "Ampliar", EUS: "Handitu", EN: "Expand", FR: "Agrandir" },
+paraphraser_result_title: { ES: "Parafraseo", EUS: "Parafraseoa", EN: "Paraphrase", FR: "Reformulation" },
 
 paraphraser_generate_button: { ES: "Crear parafraseo", EUS: "Sortu parafraseoa", EN: "Generate paraphrase", FR: "Créer une reformulation" },
 paraphraser_help_right: { ES: "Selecciona una fuente (texto, documentos o URLs) y pulsa \"Crear parafraseo\".", EUS: "Aukeratu iturri bat (testua, dokumentuak edo URLak) eta sakatu \"Sortu parafraseoa\".", EN: "Select a source (text, documents or URLs) and click \"Generate paraphrase\".", FR: "Sélectionnez une source (texte, documents ou URLs) et cliquez sur \"Créer une reformulation\"." },
