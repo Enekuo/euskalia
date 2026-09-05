@@ -25,7 +25,7 @@ import ExpandModal from "@/components/ExpandModal";
 
 // Límites de caracteres de ENTRADA del resumidor. Deben coincidir con la validación del
 // servidor (api/public.js: FREE_SUMMARY_MIN_CHARS / FREE_SUMMARY_MAX_CHARS).
-const SUMMARY_INPUT_MIN_CHARS = 5000;
+const SUMMARY_INPUT_MIN_CHARS = 3000;
 const SUMMARY_INPUT_MAX_CHARS = 100000;
 
 // Cada nivel escala LINEALMENTE entre minWords (con un texto de entrada de

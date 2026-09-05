@@ -12,10 +12,10 @@ const FREE_TRANSLATOR_DAILY_TOKENS = Number(process.env.FREE_TRANSLATOR_DAILY_TO
 const FREE_TRANSLATOR_RPM          = Number(process.env.FREE_TRANSLATOR_RPM || 6);
 
 // Resumidor
-const FREE_SUMMARY_MIN_CHARS       = Number(process.env.FREE_SUMMARY_MIN_CHARS || 5000);
+const FREE_SUMMARY_MIN_CHARS       = Number(process.env.FREE_SUMMARY_MIN_CHARS || 3000);
 const FREE_SUMMARY_MAX_CHARS       = Number(process.env.FREE_SUMMARY_MAX_CHARS || 100000);
 const FREE_SUMMARY_DAILY_TOKENS    = Number(process.env.FREE_SUMMARY_DAILY_TOKENS || 100000);
-const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6);
+const FREE_SUMMARY_RPM             = Number(process.env.FREE_SUMMARY_RPM || 6); 
 
 // ✅ Corrector
 const FREE_CORRECTOR_MAX_CHARS       = Number(process.env.FREE_CORRECTOR_MAX_CHARS || 12000);
