@@ -1,5 +1,16 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import {
+  IconMotionButton,
+  SheenLayer,
+  SwapIcon,
+  SlideIndicator,
+  SlidingMenuGroup,
+  SlidingMenuItem,
+  primaryButtonMotion,
+  PRIMARY_BUTTON_CLASS,
+} from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Type, Share2, X, Copy, Trash, Check, Maximize2, MessageSquarePlus } from "lucide-react";
@@ -74,11 +85,6 @@ export default function EmailCreator() {
   const DIVIDER = "#e5e7eb";
   const MAX_CHARS = 5000;
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 12 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -12 },
-  };
 
   const labelSources = tr("emailCreator.sources_title", "Iturriak");
 
@@ -143,21 +149,21 @@ export default function EmailCreator() {
     "Escribe aquí toda la información: a quién va dirigido, objetivo, contexto, puntos clave, tono, si quieres CTA, etc..."
   );
 
-  const LengthTab = ({ active, label, onClick, showDivider }) => (
+  const LengthTab = ({ active, label, onClick, showDivider , indicatorId }) => (
     <div className="relative flex items-stretch">
       <button
         type="button"
         onClick={onClick}
-        className="relative inline-flex items-center gap-2 h-[44px] px-3 text-[14px] font-medium"
+        className="relative isolate inline-flex items-center gap-2 h-[44px] px-3 text-[14px] font-medium transition-colors duration-fast ease-state"
         style={{ color: active ? BLUE : GRAY_TEXT }}
         aria-pressed={active}
         aria-label={label}
       >
         <span className="truncate">{label}</span>
         {active && (
-          <span
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full"
-            style={{ backgroundColor: BLUE }}
+          <SlideIndicator
+            layoutId={indicatorId}
+            className="absolute inset-x-0.5 inset-y-1.5 -z-10 rounded-full bg-blue-50 ring-1 ring-blue-100"
           />
         )}
       </button>
@@ -1108,19 +1114,12 @@ return (
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative flex items-start gap-3 md:gap-4">
-          <ToolsSidebar />
+          <ToolsSidebar interactive />
           <div className="flex-1 min-w-0">
 
-      <motion.section
-            className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-          >
-            <aside className="h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+      <section className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6">
+            <aside className={`h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col ${ENTRANCE.card}`}>
+              <div className={`h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}>
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
 
                 <div className="flex items-center gap-2">
@@ -1132,15 +1131,22 @@ return (
                         clearRight();
                       }
                     }}
-                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    className="relative h-9 px-4 rounded-full text-[13px] font-semibold border transition-colors duration-fast ease-state"
                     style={{
-                      borderColor: emailMode === "creative" ? BLUE : "#e2e8f0",
-                      backgroundColor: emailMode === "creative" ? "#eff6ff" : "#ffffff",
+                      borderColor: "#e2e8f0",
+                      backgroundColor: "#ffffff",
                       color: emailMode === "creative" ? BLUE : "#334155",
                     }}
                     aria-pressed={emailMode === "creative"}
                   >
-                    {labelModeCreative}
+                    {/* Píldora activa que se desliza (mismo aspecto que el estado activo anterior) */}
+                    {emailMode === "creative" && (
+                      <SlideIndicator
+                        layoutId="email-mode"
+                        className="absolute -inset-px rounded-full bg-blue-50 ring-1 ring-blue-100"
+                      />
+                    )}
+                    <span className="relative">{labelModeCreative}</span>
                   </button>
 
                   <button
@@ -1151,18 +1157,25 @@ return (
                         clearRight();
                       }
                     }}
-                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    className="relative h-9 px-4 rounded-full text-[13px] font-semibold border transition-colors duration-fast ease-state"
                     style={{
-                      borderColor: emailMode === "template" ? BLUE : "#e2e8f0",
-                      backgroundColor: emailMode === "template" ? "#eff6ff" : "#ffffff",
+                      borderColor: "#e2e8f0",
+                      backgroundColor: "#ffffff",
                       color: emailMode === "template" ? BLUE : "#334155",
                     }}
                     aria-pressed={emailMode === "template"}
                   >
-                    {labelModeTemplate}
+                    {/* Píldora activa que se desliza (mismo aspecto que el estado activo anterior) */}
+                    {emailMode === "template" && (
+                      <SlideIndicator
+                        layoutId="email-mode"
+                        className="absolute -inset-px rounded-full bg-blue-50 ring-1 ring-blue-100"
+                      />
+                    )}
+                    <span className="relative">{labelModeTemplate}</span>
                   </button>
 
-                  <button
+                  <IconMotionButton
                     type="button"
                     onClick={() => setShowInstructions((v) => !v)}
                     className="h-9 w-9 flex items-center justify-center rounded-full border transition"
@@ -1174,9 +1187,10 @@ return (
                     aria-pressed={showInstructions}
                     aria-label={labelExtraInstructionsAria}
                     title={labelExtraInstructionsAria}
-                  >
-                    <MessageSquarePlus className="w-4 h-4" />
-                  </button>
+  icon={<MessageSquarePlus className="w-4 h-4" />}
+>
+                    
+                  </IconMotionButton>
                 </div>
               </div>
 
@@ -1233,14 +1247,17 @@ return (
 
                     <div className="mt-2">
                       <Button
+  asChild
                         type="button"
                         onClick={() => handleGenerate()}
                         disabled={loading || !hasValidInput}
-                        className="h-10 w-full rounded-full text-[14px] font-medium shadow-sm hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                        style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                        className={`${PRIMARY_BUTTON_CLASS} bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state h-10 w-full rounded-full text-[14px] font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
-                        {labelGenerateFromSources}
-                      </Button>
+  <motion.button {...primaryButtonMotion(!(loading || !hasValidInput))}>
+    <SheenLayer />
+    <span className="relative">{labelGenerateFromSources}</span>
+  </motion.button>
+</Button>
                     </div>
                   </>
                 ) : (
@@ -1386,10 +1403,10 @@ return (
               </div>
             </aside>
 
-            <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-              <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
+            <section className={`relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px ${ENTRANCE.output}`} style={entranceDelay(ENTRANCE_DELAY_MS.output)}>
+              <div className={`min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.output + ENTRANCE_DELAY_MS.toolbar)}>
                 <div className="flex items-center justify-center gap-2 min-w-0 w-full sm:w-auto overflow-x-auto sm:overflow-visible">
-                  <LengthTab
+                  <LengthTab indicatorId="email-length-tab"
                     active={emailTone === "formal"}
                     label={LBL_FORMAL}
                     onClick={() => {
@@ -1400,7 +1417,7 @@ return (
                     }}
                     showDivider
                   />
-                  <LengthTab
+                  <LengthTab indicatorId="email-length-tab"
                     active={emailTone === "informal"}
                     label={LBL_INFORMAL}
                     onClick={() => {
@@ -1444,55 +1461,53 @@ return (
                       align="end"
                       className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
                     >
-                      <DropdownMenuItem
+                      <SlidingMenuGroup id="email-lang" selected={outputLang}>
+<SlidingMenuItem value="EUS"
                         onClick={() => {
                           if (outputLang !== "EUS") {
                             setOutputLang("EUS");
                             clearRight();
                           }
                         }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                       >
                         {LBL_EUS}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="ES"
                         onClick={() => {
                           if (outputLang !== "ES") {
                             setOutputLang("ES");
                             clearRight();
                           }
                         }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                       >
                         {LBL_ES}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="EN"
                         onClick={() => {
                           if (outputLang !== "EN") {
                             setOutputLang("EN");
                             clearRight();
                           }
                         }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                       >
                         {LBL_EN}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="FR"
                         onClick={() => {
                           if (outputLang !== "FR") {
                             setOutputLang("FR");
                             clearRight();
                           }
                         }}
-                        className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                       >
                         {LBL_FR}
-                      </DropdownMenuItem>
-                      <DropdownMenuArrow className="fill-white" />
+                      </SlidingMenuItem>
+                      </SlidingMenuGroup>
+<DropdownMenuArrow className="fill-white" />
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  <button
+                  <IconMotionButton
   type="button"
   onClick={() => handleCopy(true)}
   title={
@@ -1500,7 +1515,7 @@ return (
       ? tr("emailCreator.copied", "Copiado")
       : tr("emailCreator.copy", "Copiar")
   }
-  className={`h-8 w-8 flex items-center justify-center translate-x-[-5px] ${
+  className={`h-8 w-8 flex items-center justify-center translate-x-[-5px] rounded-md hover:bg-slate-100 ${
     result
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
@@ -1511,28 +1526,26 @@ return (
       : tr("emailCreator.copy", "Copiar")
   }
   disabled={!result}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
 >
-  {copiedFlash ? (
-    <Check className="w-5 h-5" style={{ color: BLUE }} />
-  ) : (
-    <Copy className="w-5 h-5" />
-  )}
-</button>
+  
+</IconMotionButton>
 
-                  <button
+                  <IconMotionButton
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("emailCreator.clear_input", "Eliminar")}
-                    className={`h-8 w-8 flex items-center justify-center translate-x-[0px] ${
+                    className={`h-8 w-8 flex items-center justify-center translate-x-[0px] rounded-md hover:bg-slate-100 ${
                       canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("emailCreator.clear_input", "Eliminar")}
                     disabled={!canClearLeft}
-                  >
-                    <Trash className="w-5 h-5" />
-                  </button>
+  icon={<Trash className="w-5 h-5" />}
+>
+                    
+                  </IconMotionButton>
                 </div>
               </div>
 
@@ -1557,14 +1570,17 @@ return (
                         style={{ top: "30%" }}
                       >
                         <Button
+  asChild
                           type="button"
                           onClick={() => handleGenerate()}
                           disabled={loading || !hasValidInput}
-                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                          className={`${PRIMARY_BUTTON_CLASS} bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          {labelGenerateFromSources}
-                        </Button>
+  <motion.button {...primaryButtonMotion(!(loading || !hasValidInput))}>
+    <SheenLayer />
+    <span className="relative">{labelGenerateFromSources}</span>
+  </motion.button>
+</Button>
                       </div>
 
                       <div
@@ -1640,49 +1656,48 @@ return (
 
                             <div className="absolute bottom-4 right-6 flex items-center gap-4">
                               <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                                                <button
+                                                                <IconMotionButton
                                   type="button"
                                   onClick={() => setExpandedOpen(true)}
                                   title={tr("emailCreator.expand", "Ampliar")}
                                   aria-label={tr("emailCreator.expand", "Ampliar")}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  <Maximize2 className="w-5 h-5" />
+  icon={<Maximize2 className="w-5 h-5" />}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {tr("emailCreator.expand", "Ampliar")}
                                   </span>
-                                </button>
+                                </IconMotionButton>
 
-                                <button
+                                <IconMotionButton
                                   type="button"
                                   onClick={() => handleCopy(true)}
                                   aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  {copiedFlash ? (
-                                    <Check className="w-5 h-5" style={{ color: BLUE }} />
-                                  ) : (
-                                    <Copy className="w-5 h-5" />
-                                  )}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {copiedFlash ? tooltipCopied : tooltipCopy}
                                   </span>
-                                </button>
+                                </IconMotionButton>
 
-                                <button
+                                <IconMotionButton
                                   type="button"
                                   onClick={handleShare}
                                   aria-label={t("translator.share")}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  <Share2 className="w-5 h-5" />
+  icon={<Share2 className="w-5 h-5" />}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {t("translator.share")}
                                   </span>
-                                </button>
+                                </IconMotionButton>
                               </div>
                             </div>
 
@@ -1711,7 +1726,7 @@ return (
                 </>
               )}
             </section>
-          </motion.section>
+          </section>
           </div>
 
           <Link

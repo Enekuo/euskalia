@@ -1,5 +1,16 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import {
+  IconMotionButton,
+  SheenLayer,
+  SwapIcon,
+  SlideIndicator,
+  SlidingMenuGroup,
+  SlidingMenuItem,
+  primaryButtonMotion,
+  PRIMARY_BUTTON_CLASS,
+} from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Type, Share2, X, Copy, Trash, Check, Maximize2 } from "lucide-react";
@@ -67,11 +78,6 @@ export default function TextCreator() {
   const BLUE = "#2563eb";
   const MAX_CHARS = 3000;
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 12 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -12 },
-  };
 
   const labelSources = tr("textCreator.sources_title", "Fuentes");
 
@@ -563,19 +569,12 @@ return (
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative flex items-start gap-3 md:gap-4">
-          <ToolsSidebar />
+          <ToolsSidebar interactive />
           <div className="flex-1 min-w-0">
 
-      <motion.section
-            className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-          >
-            <aside className="h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+      <section className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6">
+            <aside className={`h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col ${ENTRANCE.card}`}>
+              <div className={`h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}>
                 <div className="text-sm font-medium text-slate-700">{labelSources}</div>
 
                 <div className="flex items-center gap-2">
@@ -589,15 +588,22 @@ return (
                         setTimeout(() => autoGrowNormal(), 0);
                       }
                     }}
-                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    className="relative h-9 px-4 rounded-full text-[13px] font-semibold border transition-colors duration-fast ease-state"
                     style={{
-                      borderColor: writeMode === "normal" ? BLUE : "#e2e8f0",
-                      backgroundColor: writeMode === "normal" ? "#eff6ff" : "#ffffff",
+                      borderColor: "#e2e8f0",
+                      backgroundColor: "#ffffff",
                       color: writeMode === "normal" ? BLUE : "#334155",
                     }}
                     aria-pressed={writeMode === "normal"}
                   >
-                    {labelModeNormal}
+                    {/* Píldora activa que se desliza (mismo aspecto que el estado activo anterior) */}
+                    {writeMode === "normal" && (
+                      <SlideIndicator
+                        layoutId="textcreator-write-mode"
+                        className="absolute -inset-px rounded-full bg-blue-50 ring-1 ring-blue-100"
+                      />
+                    )}
+                    <span className="relative">{labelModeNormal}</span>
                   </button>
 
                   <button
@@ -608,15 +614,22 @@ return (
                         clearRight();
                       }
                     }}
-                    className="h-9 px-4 rounded-full text-[13px] font-semibold border transition"
+                    className="relative h-9 px-4 rounded-full text-[13px] font-semibold border transition-colors duration-fast ease-state"
                     style={{
-                      borderColor: writeMode === "paragraphs" ? BLUE : "#e2e8f0",
-                      backgroundColor: writeMode === "paragraphs" ? "#eff6ff" : "#ffffff",
+                      borderColor: "#e2e8f0",
+                      backgroundColor: "#ffffff",
                       color: writeMode === "paragraphs" ? BLUE : "#334155",
                     }}
                     aria-pressed={writeMode === "paragraphs"}
                   >
-                    {labelModeParagraphs}
+                    {/* Píldora activa que se desliza (mismo aspecto que el estado activo anterior) */}
+                    {writeMode === "paragraphs" && (
+                      <SlideIndicator
+                        layoutId="textcreator-write-mode"
+                        className="absolute -inset-px rounded-full bg-blue-50 ring-1 ring-blue-100"
+                      />
+                    )}
+                    <span className="relative">{labelModeParagraphs}</span>
                   </button>
                 </div>
               </div>
@@ -720,8 +733,8 @@ return (
               )}
             </aside>
 
-            <section className="relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px">
-             <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60">
+            <section className={`relative h-[550px] pb-[100px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px ${ENTRANCE.output}`} style={entranceDelay(ENTRANCE_DELAY_MS.output)}>
+             <div className={`min-h-[44px] sm:h-11 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between px-3 sm:px-4 py-2 sm:py-0 gap-3 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.output + ENTRANCE_DELAY_MS.toolbar)}>
                 <div className="flex items-center justify-center gap-2 sm:gap-3 min-w-0 w-full sm:w-auto overflow-x-auto sm:overflow-visible">
                   <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
                     {labelLength}
@@ -781,23 +794,25 @@ return (
                       align="end"
                       className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]"
                     >
-                      <DropdownMenuItem onClick={() => handleOutputLangChange("EUS")}>
+                      <SlidingMenuGroup id="textcreator-lang" selected={outputLang}>
+<SlidingMenuItem value="EUS" onClick={() => handleOutputLangChange("EUS")}>
                         {LBL_EUS}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleOutputLangChange("ES")}>
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="ES" onClick={() => handleOutputLangChange("ES")}>
                         {LBL_ES}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleOutputLangChange("EN")}>
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="EN" onClick={() => handleOutputLangChange("EN")}>
                         {LBL_EN}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleOutputLangChange("FR")}>
+                      </SlidingMenuItem>
+                      <SlidingMenuItem value="FR" onClick={() => handleOutputLangChange("FR")}>
                         {LBL_FR}
-                      </DropdownMenuItem>
-                      <DropdownMenuArrow className="fill-white" />
+                      </SlidingMenuItem>
+                      </SlidingMenuGroup>
+<DropdownMenuArrow className="fill-white" />
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-<button
+<IconMotionButton
   type="button"
   onClick={() => handleCopy(true)}
   title={
@@ -805,7 +820,7 @@ return (
       ? tr("textCreator.copied", "Copiado")
       : tr("textCreator.copy", "Copiar")
   }
-  className={`h-8 w-8 flex items-center justify-center translate-x-[10px] ${
+  className={`h-8 w-8 flex items-center justify-center translate-x-[10px] rounded-md hover:bg-slate-100 ${
     result
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
@@ -816,28 +831,26 @@ return (
       : tr("textCreator.copy", "Copiar")
   }
   disabled={!result}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
 >
-  {copiedFlash ? (
-    <Check className="w-5 h-5" style={{ color: BLUE }} />
-  ) : (
-    <Copy className="w-5 h-5" />
-  )}
-</button>
+  
+</IconMotionButton>
 
-                  <button
+                  <IconMotionButton
                     type="button"
                     onClick={handleClearLeft}
                     title={tr("textCreator.clear_input", "Eliminar")}
-                    className={`h-8 w-8 flex items-center justify-center translate-x-[15px] ${
+                    className={`h-8 w-8 flex items-center justify-center translate-x-[15px] rounded-md hover:bg-slate-100 ${
                       canClearLeft
                         ? "text-slate-600 hover:text-slate-800"
                         : "text-slate-300 cursor-not-allowed"
                     }`}
                     aria-label={tr("textCreator.clear_input", "Eliminar")}
                     disabled={!canClearLeft}
-                  >
-                    <Trash className="w-5 h-5" />
-                  </button>
+  icon={<Trash className="w-5 h-5" />}
+>
+                    
+                  </IconMotionButton>
                 </div>
               </div>
 
@@ -862,14 +875,17 @@ return (
                         style={{ top: "30%" }}
                       >
                         <Button
+  asChild
                           type="button"
                           onClick={handleGenerate}
                           disabled={loading || !hasValidInput}
-                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                          className={`${PRIMARY_BUTTON_CLASS} bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          {labelGenerate}
-                        </Button>
+  <motion.button {...primaryButtonMotion(!(loading || !hasValidInput))}>
+    <SheenLayer />
+    <span className="relative">{labelGenerate}</span>
+  </motion.button>
+</Button>
                       </div>
 
                       <div
@@ -908,21 +924,22 @@ return (
 
                             <div className="absolute bottom-4 right-6 flex items-center gap-4">
                               <div className="flex items-center gap-4 mr-[20px] translate-y-1">
-                                                                <button
+                                                                <IconMotionButton
                                   type="button"
                                   onClick={() => setExpandedOpen(true)}
                                   title={tr("textCreator.expand", "Ampliar")}
                                   aria-label={tr("textCreator.expand", "Ampliar")}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  <Maximize2 className="w-5 h-5" />
+  icon={<Maximize2 className="w-5 h-5" />}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {tr("textCreator.expand", "Ampliar")}
                                   </span>
-                                </button>
+                                </IconMotionButton>
 
-                                <button
+                                <IconMotionButton
                                   type="button"
                                   onClick={() => handleCopy(true)}
                                   aria-label={
@@ -931,32 +948,30 @@ return (
                                       : t("translator.copy")
                                   }
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  {copiedFlash ? (
-                                    <Check className="w-5 h-5" style={{ color: BLUE }} />
-                                  ) : (
-                                    <Copy className="w-5 h-5" />
-                                  )}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {copiedFlash
                                       ? t("translator.copied")
                                       : t("translator.copy")}
                                   </span>
-                                </button>
+                                </IconMotionButton>
 
-                                <button
+                                <IconMotionButton
                                   type="button"
                                   onClick={handleShare}
                                   aria-label={t("translator.share")}
                                   className="group relative inline-flex items-center justify-center text-slate-500 hover:text-slate-700 p-2 rounded-md hover:bg-slate-100"
-                                >
-                                  <Share2 className="w-5 h-5" />
+  icon={<Share2 className="w-5 h-5" />}
+>
+                                  
 
                                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                                     {t("translator.share")}
                                   </span>
-                                </button>
+                                </IconMotionButton>
                               </div>
                             </div>
 
@@ -985,7 +1000,7 @@ return (
                 </>
               )}
             </section>
-          </motion.section>
+          </section>
           </div>
 
           <Link

@@ -1,5 +1,16 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import {
+  IconMotionButton,
+  SheenLayer,
+  SwapIcon,
+  SlideIndicator,
+  SlidingMenuGroup,
+  SlidingMenuItem,
+  primaryButtonMotion,
+  PRIMARY_BUTTON_CLASS,
+} from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FileText, FileDown, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Share2, Maximize2 } from "lucide-react";
@@ -135,11 +146,6 @@ const tr = (k, f) => {
   const MIN_CHARS = SUMMARY_INPUT_MIN_CHARS;
   const MAX_CHARS = SUMMARY_INPUT_MAX_CHARS;
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 12 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -12 },
-  };
 
   // ===== i18n =====
   const labelSources = tr("summary.sources_title", "Fuentes");
@@ -198,12 +204,12 @@ const tooltipCopied = t("translator.copied");
   }, [leftRaw]);
 
   // ===== Tabs =====
-  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
+  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider , indicatorId }) => (
     <div className="relative flex-1 min-w-0 flex items-stretch">
       <button
         type="button"
         onClick={onClick}
-        className="relative inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
+        className="relative isolate inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
         style={{ color: active ? BLUE : GRAY_TEXT }}
         aria-pressed={active}
         aria-label={label}
@@ -211,7 +217,10 @@ const tooltipCopied = t("translator.copied");
         <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
         <span className="truncate">{label}</span>
         {active && (
-          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
+          <SlideIndicator
+            layoutId={indicatorId}
+            className="absolute inset-x-0.5 inset-y-1.5 -z-10 rounded-full bg-blue-50 ring-1 ring-blue-100"
+          />
         )}
       </button>
       {showDivider && (
@@ -224,19 +233,22 @@ const tooltipCopied = t("translator.copied");
     </div>
   );
 
-  const LengthTab = ({ active, label, onClick, showDivider }) => (
+  const LengthTab = ({ active, label, onClick, showDivider , indicatorId }) => (
     <div className="relative flex items-stretch">
       <button
         type="button"
         onClick={onClick}
-        className="relative inline-flex items-center gap-2 h-[44px] px-3 text-[14px] font-medium"
+        className="relative isolate inline-flex items-center gap-2 h-[44px] px-3 text-[14px] font-medium transition-colors duration-fast ease-state"
         style={{ color: active ? BLUE : GRAY_TEXT }}
         aria-pressed={active}
         aria-label={label}
       >
         <span className="truncate">{label}</span>
         {active && (
-          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
+          <SlideIndicator
+            layoutId={indicatorId}
+            className="absolute inset-x-0.5 inset-y-1.5 -z-10 rounded-full bg-blue-50 ring-1 ring-blue-100"
+          />
         )}
       </button>
       {showDivider && <span aria-hidden className="self-center" style={{ width: 1, height: 22, backgroundColor: DIVIDER }} />}
@@ -891,30 +903,23 @@ return (
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative flex items-start gap-3 md:gap-4">
-          <ToolsSidebar />
+          <ToolsSidebar interactive />
           <div className="flex-1 min-w-0">
 
 
-            <motion.section
-              className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={{ duration: 0.3 }}
-            >
+            <section className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6">
               {/* ===== Panel Fuentes (izquierda) ===== */}
-              <aside className="h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <aside className={`h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col ${ENTRANCE.card}`}>
                 {/* Título */}
-                <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+                <div className={`h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}>
                   <div className="text-sm font-medium text-slate-700">{labelSources}</div>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
-                  <TabBtn active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
-                  <TabBtn active={sourceMode === "document"} icon={FileIcon} label={labelTabDocument} onClick={() => setSourceMode("document")} showDivider />
-                  <TabBtn active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
+                <div className={`flex items-center px-2 border-b ${ENTRANCE.toolbar}`} style={{ borderColor: DIVIDER, ...entranceDelay(ENTRANCE_DELAY_MS.toolbar) }}>
+                  <TabBtn indicatorId="resumen-source-tab" active={sourceMode === "text"} icon={FileText} label={labelTabText} onClick={() => setSourceMode("text")} showDivider />
+                  <TabBtn indicatorId="resumen-source-tab" active={sourceMode === "document"} icon={FileIcon} label={labelTabDocument} onClick={() => setSourceMode("document")} showDivider />
+                  <TabBtn indicatorId="resumen-source-tab" active={sourceMode === "url"} icon={UrlIcon} label={labelTabUrl} onClick={() => setSourceMode("url")} showDivider={false} />
                 </div>
 
                 {/* Contenido */}
@@ -1110,13 +1115,13 @@ return (
               </aside>
 
               {/* ===== Panel Derecho ===== */}
-              <section className="relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
+              <section className={`relative h-[600px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col ${ENTRANCE.output}`} style={entranceDelay(ENTRANCE_DELAY_MS.output)}>
                 {/* Barra superior con tabs + selector + acciones (✅ FIX MÓVIL) */}
-                <div className="min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60">
+                <div className={`min-h-[44px] sm:h-11 flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.output + ENTRANCE_DELAY_MS.toolbar)}>
                   <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible">
-                    <LengthTab active={summaryLength === "breve"} label={LBL_SHORT} onClick={() => handleLengthChange("breve")} showDivider />
-                    <LengthTab active={summaryLength === "medio"} label={LBL_MED} onClick={() => handleLengthChange("medio")} showDivider />
-                    <LengthTab active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
+                    <LengthTab indicatorId="resumen-length-tab" active={summaryLength === "breve"} label={LBL_SHORT} onClick={() => handleLengthChange("breve")} showDivider />
+                    <LengthTab indicatorId="resumen-length-tab" active={summaryLength === "medio"} label={LBL_MED} onClick={() => handleLengthChange("medio")} showDivider />
+                    <LengthTab indicatorId="resumen-length-tab" active={summaryLength === "detallado"} label={LBL_LONG} onClick={() => handleLengthChange("detallado")} />
                   </div>
 
                   <div className="flex items-center justify-end gap-4">
@@ -1140,55 +1145,53 @@ return (
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
-                        <DropdownMenuItem
+                        <SlidingMenuGroup id="resumen-lang" selected={outputLang}>
+<SlidingMenuItem value="eus"
                           onClick={() => {
                             if (outputLang !== "eus") {
                               setOutputLang("eus");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_EUS}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="es"
                           onClick={() => {
                             if (outputLang !== "es") {
                               setOutputLang("es");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_ES}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="en"
                           onClick={() => {
                             if (outputLang !== "en") {
                               setOutputLang("en");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_EN}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="fr"
                           onClick={() => {
                             if (outputLang !== "fr") {
                               setOutputLang("fr");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_FR}
-                        </DropdownMenuItem>
-                        <DropdownMenuArrow className="fill-white" />
+                        </SlidingMenuItem>
+                        </SlidingMenuGroup>
+<DropdownMenuArrow className="fill-white" />
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-<button
+<IconMotionButton
   type="button"
   onClick={() => handleCopy(true)}
   title={
@@ -1196,7 +1199,7 @@ return (
       ? tr("summary.copied", "Copiado")
       : tr("summary.copy", "Copiar")
   }
-  className={`h-9 w-9 flex items-center justify-center translate-x-[5px] ${
+  className={`h-9 w-9 flex items-center justify-center rounded-md hover:bg-slate-100 translate-x-[5px] ${
     result
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
@@ -1207,28 +1210,26 @@ return (
       : tr("summary.copy", "Copiar")
   }
   disabled={!result}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
 >
-  {copiedFlash ? (
-    <Check className="w-5 h-5" style={{ color: BLUE }} />
-  ) : (
-    <Copy className="w-5 h-5" />
-  )}
-</button>
+  
+</IconMotionButton>
 
-<button
+<IconMotionButton
   type="button"
   onClick={handleClearLeft}
   title={tr("summary.clear_input", "Eliminar")}
-  className={`h-9 w-9 flex items-center justify-center ${
+  className={`h-9 w-9 flex items-center justify-center rounded-md hover:bg-slate-100 ${
     canClear
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
   }`}
   aria-label={tr("summary.clear_input", "Eliminar")}
   disabled={!canClear}
+  icon={<Trash className="w-5 h-5" />}
 >
-  <Trash className="w-5 h-5" />
-</button>
+  
+</IconMotionButton>
 
                   </div>
                 </div>
@@ -1239,14 +1240,17 @@ return (
                     <div className="relative h-full">
                       <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                         <Button
+  asChild
                           type="button"
                           onClick={handleGenerate}
                           disabled={loading || !hasValidInput}
-                          className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                          className={`${PRIMARY_BUTTON_CLASS} bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          {labelGenerateFromSources}
-                        </Button>
+  <motion.button {...primaryButtonMotion(!(loading || !hasValidInput))}>
+    <SheenLayer />
+    <span className="relative">{labelGenerateFromSources}</span>
+  </motion.button>
+</Button>
                       </div>
 
                       <div className="absolute left-1/2 -translate-x-1/2 text-center px-3 sm:px-6" style={{ top: "40%" }}>
@@ -1346,52 +1350,51 @@ return (
                 {result && (
                   <div className="absolute bottom-2 right-8 z-20 flex items-center gap-4 text-slate-500">
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={() => setExpandedOpen(true)}
                       title={tr("summary.expand", "Ampliar")}
                       aria-label={tr("summary.expand", "Ampliar")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
-                    >
-                      <Maximize2 className="w-5 h-5" />
+  icon={<Maximize2 className="w-5 h-5" />}
+>
+                      
 
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {tr("summary.expand", "Ampliar")}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={() => handleCopy(true)}
                       aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
-                    >
-                      {copiedFlash ? (
-                        <Check
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check
                           className="w-5 h-5"
                           style={{ color: BLUE }}
-                        />
-                      ) : (
-                        <Copy className="w-5 h-5" />
-                      )}
+                        /> : <Copy className="w-5 h-5" />}</SwapIcon>}
+>
+                      
 
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copiedFlash ? tooltipCopied : tooltipCopy}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={handleShare}
                       aria-label={t("translator.share")}
                       className="group relative p-2 rounded-md hover:bg-slate-100"
-                    >
-                      <Share2 className="w-5 h-5" />
+  icon={<Share2 className="w-5 h-5" />}
+>
+                      
 
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {t("translator.share")}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
                   </div>
                 )}
@@ -1407,7 +1410,7 @@ return (
                 />
 
               </section>
-            </motion.section>
+            </section>
           </div>
 
           <Link

@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { RevealGroup, RevealItem } from "@/components/ui/motion-primitives";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
 import { Lightbulb } from "lucide-react";
@@ -62,19 +64,11 @@ const viewportAmount =
 
     {/* HERO */}
 
-<motion.section
-  className="relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5"
-initial={{ opacity: 0, y: 45, scale: 0.98 }}
-whileInView={{ opacity: 1, y: 0, scale: 1 }}
-viewport={{ once: true, amount: viewportAmount }}
-transition={{
-  duration: 0.55,
-  delay: 0.1
-}}
-  >
+<section
+  className={`relative overflow-hidden rounded-[34px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FAFF] via-[#F5F7FC] to-[#E9F1FF] min-h-screen flex items-center px-6 sm:px-10 py-10 mb-5 ${ENTRANCE.heroBlock}`}>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full relative z-10">
-        <div className="max-w-[520px] pl-1 lg:pl-4 -mt-8">
+        <div className={`max-w-[520px] pl-1 lg:pl-4 -mt-8 ${ENTRANCE.heroFromLeft}`} style={entranceDelay(ENTRANCE_DELAY_MS.heroSides)}>
           <h1 className="text-[42px] sm:text-[58px] leading-[0.98] tracking-[-2px] font-bold text-[#071437] mb-7 break-words">
             {tr("information_title", "Información sobre Euskalia")}
           </h1>
@@ -89,7 +83,7 @@ transition={{
           </p>
         </div>
 
-        <div className="relative flex items-center justify-center min-h-[430px]">
+        <div className={`relative flex items-center justify-center min-h-[430px] ${ENTRANCE.heroFromRight}`} style={entranceDelay(ENTRANCE_DELAY_MS.heroSides)}>
           <div className="relative w-[760px] h-[420px] rounded-[34px] bg-white border border-[#E1E8F5] shadow-[0_28px_80px_rgba(37,99,235,0.16)] overflow-hidden rotate-[-2deg]">
             <div className="h-[50px] bg-[#F8FAFF] border-b border-[#E8EEF7] flex items-center px-6">
               <div className="flex items-center gap-3">
@@ -202,26 +196,18 @@ transition={{
           </div>
         </div>
       </div>
-    </motion.section>
+    </section>
 
 {/* ======================= */}
 {/* QUÉ ES EUSKALIA */}
 {/* ======================= */}
 
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="que-es-euskalia"
-  className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center"
-  initial={{ opacity: 0, y: 80 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.1
-  }}
->
+  className="relative overflow-hidden rounded-[26px] border border-[#E7ECF5] bg-gradient-to-br from-[#F8FBFF] via-[#FDFEFF] to-[#F3F7FF] px-8 sm:px-12 py-16 scroll-mt-28 min-h-screen flex items-center">
 
-  <div className="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full bg-[#DCE9FF] opacity-50" />
-  <div className="absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full bg-[#DCE9FF] opacity-40" />
+  <RevealItem variant="bloom" className="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full bg-[#DCE9FF] opacity-50" />
+  <RevealItem variant="bloom" className="absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full bg-[#DCE9FF] opacity-40" />
 
   <div className="absolute top-16 right-16 grid grid-cols-6 gap-3 opacity-30">
     {Array.from({ length: 36 }).map((_, i) => (
@@ -236,43 +222,43 @@ transition={{
   </div>
 
   <div className="relative z-10 max-w-[1000px] mx-auto text-center">
-    <h2 className="text-[46px] leading-[1.05] tracking-[-1px] font-bold text-[#071437] mb-5">
+    <RevealItem as="h2" variant="rise" className="text-[46px] leading-[1.05] tracking-[-1px] font-bold text-[#071437] mb-5">
       {tr("information_about_title", "¿Qué es Euskalia?")}
-    </h2>
+    </RevealItem>
 
-    <div className="w-[56px] h-[6px] rounded-full bg-[#3B82F6] mb-10 mx-auto" />
+    <RevealItem variant="grow" className="w-[56px] h-[6px] rounded-full bg-[#3B82F6] mb-10 mx-auto" />
 
     <div className="space-y-8 text-[#334155] leading-[1.9] text-[18px] text-left">
-      <p>
+      <RevealItem as="p" variant="rise">
         {tr(
           "information_about_paragraph_1",
           "Euskalia es una plataforma digital creada con un objetivo claro: contribuir al crecimiento y la presencia del euskera en el entorno tecnológico actual. Nace con la idea de acercar la innovación y la inteligencia artificial a todas las personas que utilizan el euskera, facilitando que puedan trabajar, aprender y comunicarse en su propio idioma dentro del entorno digital."
         )}
-      </p>
+      </RevealItem>
 
-      <p>
+      <RevealItem as="p" variant="rise">
         {tr(
           "information_about_paragraph_2",
           "Euskalia nace con la voluntad de construir un ecosistema digital centrado en el euskera, adaptado a las necesidades reales de la comunidad vasca y preparado para evolucionar junto a los avances tecnológicos. Más allá de ofrecer servicios digitales, el proyecto busca reforzar la presencia del euskera en Internet y contribuir a que siga teniendo un papel relevante en la sociedad digital del futuro."
         )}
-      </p>
+      </RevealItem>
 
-      <p>
+      <RevealItem as="p" variant="rise">
         {tr(
           "information_about_paragraph_3",
           "Nuestra visión es construir un proyecto de referencia para la comunidad vasca, impulsando la innovación lingüística y demostrando que el euskera también puede formar parte activa de los avances tecnológicos del presente y del futuro. Euskalia no busca únicamente ofrecer soluciones digitales, sino contribuir a que el idioma siga creciendo, evolucionando y ocupando el lugar que merece en la era digital."
         )}
-      </p>
+      </RevealItem>
 
-      <p className="font-semibold text-[#071437] text-center pt-4 text-[22px]">
+      <RevealItem as="p" variant="rise" className="font-semibold text-[#071437] text-center pt-4 text-[22px]">
         {tr(
           "information_about_tools",
           "Estas son las herramientas que ofrece Euskalia."
         )}
-      </p>
+      </RevealItem>
     </div>
   </div>
-</motion.section>
+</RevealGroup>
 
 </>
 )}
@@ -282,25 +268,17 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "traductor") && (
-  <motion.section
+  <RevealGroup as="section" kind="showcase" delay={0.3}
     id="traductor"
-    className="min-h-screen flex items-center py-24 scroll-mt-28"
-    initial={{ opacity: 0, x: -40 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true, amount: viewportAmount }}
-    transition={{
-      duration: 0.55,
-      delay: 0.05
-    }}
-  >
+    className="min-h-screen flex items-center py-24 scroll-mt-28">
     <div className="grid grid-cols-1 lg:grid-cols-[700px_1fr] gap-16 items-center w-full">
 
       <div className="max-w-none">
 
         <div className="flex items-center gap-6 mb-8">
-          <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+          <RevealItem as="h2" variant="rise" className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
             {tr("information_translator_title", "Traductor")}
-          </h2>
+          </RevealItem>
 
           <Link
             to="/"
@@ -312,7 +290,7 @@ transition={{
 
         <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
 
-          <div className="flex items-start gap-4">
+          <RevealItem variant="fromLeft" className="flex items-start gap-4">
             <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
             <p>
               {tr("information_translator_point_1_part_1")}
@@ -329,9 +307,9 @@ transition={{
               </span>
               {tr("information_translator_point_1_part_4")}
             </p>
-          </div>
+          </RevealItem>
 
-          <div className="flex items-start gap-4">
+          <RevealItem variant="fromLeft" className="flex items-start gap-4">
             <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
             <p>
               {tr("information_translator_point_2_part_1")}
@@ -348,9 +326,9 @@ transition={{
               </span>
               {tr("information_translator_point_2_part_4")}
             </p>
-          </div>
+          </RevealItem>
 
-          <div className="flex items-start gap-4">
+          <RevealItem variant="fromLeft" className="flex items-start gap-4">
             <div className="w-3 h-3 rounded-full bg-blue-500 mt-[14px] flex-shrink-0" />
             <p>
               {tr("information_translator_point_3_part_1")}
@@ -367,7 +345,7 @@ transition={{
               </span>
               {tr("information_translator_point_3_part_4")}
             </p>
-          </div>
+          </RevealItem>
 
         </div>
       </div>
@@ -378,7 +356,7 @@ transition={{
       >
         <div className="absolute w-[520px] h-[520px] rounded-[60px] bg-blue-50 rotate-12" />
 
-        <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8 -ml-0">
+        <RevealItem variant="pop" className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8 -ml-0">
 
           <div className="space-y-6">
 
@@ -407,11 +385,11 @@ transition={{
             </div>
 
           </div>
-        </div>
+        </RevealItem>
       </Link>
 
     </div>
-  </motion.section>
+  </RevealGroup>
 )}
 
 {/* ======================= */}
@@ -419,17 +397,9 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "resumidor") && (
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="resumidor"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 40 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.05
-  }}
->
+  className="min-h-screen flex items-center py-24 scroll-mt-28">
 
 <div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-16 items-center w-full">
     <Link
@@ -438,7 +408,7 @@ transition={{
     >
       <div className="absolute w-[470px] h-[470px] rounded-[60px] bg-[#EEF8F1]" />
 
-      <div className="relative w-[400px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+      <RevealItem variant="pop" className="relative w-[400px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
         <div className="space-y-4">
           <div className="h-4 rounded-full bg-slate-200 w-full" />
           <div className="h-4 rounded-full bg-slate-200 w-[90%]" />
@@ -447,7 +417,7 @@ transition={{
           <div className="h-4 rounded-full bg-green-200 w-[60%] mt-8" />
           <div className="h-4 rounded-full bg-green-200 w-[70%]" />
         </div>
-      </div>
+      </RevealItem>
     </Link>
 
     <div className="max-w-[780px] order-1 lg:order-2">
@@ -458,12 +428,12 @@ transition={{
         {tr("information_summary_badge")}
       </Link>
 
-      <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
+      <RevealItem as="h2" variant="rise" className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 mb-8">
         {tr("information_summary_title")}
-      </h2>
+      </RevealItem>
 
       <div className="space-y-10 text-[20px] leading-[1.9] text-slate-600">
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
           <p>
             {tr(
@@ -471,9 +441,9 @@ transition={{
               "El resumidor de Euskalia permite convertir textos largos, documentos y contenido web en versiones más breves y fáciles de consultar. Su función es identificar las ideas principales de un contenido y presentarlas de forma más clara y condensada, manteniendo la información más relevante."
             )}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
           <p>
             {tr("information_summary_point_2_part_1")}
@@ -482,9 +452,9 @@ transition={{
             </span>
             {tr("information_summary_point_2_part_2")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-green-500 mt-[14px] flex-shrink-0" />
           <p>
             {tr("information_summary_point_3_part_1")}
@@ -497,11 +467,11 @@ transition={{
             </span>
             {tr("information_summary_point_3_part_3")}
           </p>
-        </div>
+        </RevealItem>
       </div>
     </div>
   </div>
-  </motion.section>
+  </RevealGroup>
 )}
 
 {/* ======================= */}
@@ -509,17 +479,9 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "corrector") && (
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="corrector"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: -40 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.05
-  }}
->
+  className="min-h-screen flex items-center py-24 scroll-mt-28">
 
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center w-full">
     <div className="max-w-2xl">
@@ -530,12 +492,12 @@ transition={{
         {tr("information_corrector_badge")}
       </Link>
 
-      <h2 className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
+      <RevealItem as="h2" variant="rise" className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
         {tr("information_corrector_title")}
-      </h2>
+      </RevealItem>
 
       <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromLeft" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-purple-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_corrector_point_1_part_1", "El corrector revisa ")}
@@ -548,9 +510,9 @@ transition={{
             </span>
             {tr("information_corrector_point_1_part_3", ", manteniendo el contenido y la intención del autor.")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromLeft" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-purple-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_corrector_point_2_part_1", "El ")}
@@ -563,7 +525,7 @@ transition={{
             </span>
             {tr("information_corrector_point_2_part_3", " en el selector. Si se detecta que el contenido está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes de realizar la corrección.")}
           </p>
-        </div>
+        </RevealItem>
       </div>
     </div>
 
@@ -573,7 +535,7 @@ transition={{
     >
       <div className="absolute w-[430px] h-[430px] rounded-[60px] bg-purple-50 rotate-6" />
 
-      <div className="relative w-[380px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-6">
+      <RevealItem variant="pop" className="relative w-[380px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-6">
 
         <div className="space-y-8">
           <div className="flex items-center gap-4">
@@ -596,10 +558,10 @@ transition={{
             </p>
           </div>
         </div>
-      </div>
+      </RevealItem>
     </Link>
   </div>
-</motion.section>
+</RevealGroup>
 )}
 
 {/* ======================= */}
@@ -607,17 +569,9 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "parafraseador") && (
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="parafraseador"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 40 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.05
-  }}
->
+  className="min-h-screen flex items-center py-24 scroll-mt-28">
 
 <div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-10 items-center w-full">
     <Link
@@ -626,7 +580,7 @@ transition={{
     >
       <div className="absolute w-[440px] h-[440px] rounded-[60px] bg-orange-50 -rotate-6" />
 
-      <div className="relative w-[360px] rounded-[36px] border border-slate-200 bg-white shadow-2xl p-7">
+      <RevealItem variant="pop" className="relative w-[360px] rounded-[36px] border border-slate-200 bg-white shadow-2xl p-7">
         <div className="space-y-5">
           <div className="rounded-3xl bg-slate-100 px-6 py-5">
             <p className="text-[18px] text-slate-600 leading-relaxed">
@@ -644,14 +598,14 @@ transition={{
             </p>
           </div>
         </div>
-      </div>
+      </RevealItem>
     </Link>
 
     <div className="max-w-[760px] order-1 lg:order-2 lg: ml-10">
       <div className="flex items-center gap-6 mb-8">
-        <h2 className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
+        <RevealItem as="h2" variant="rise" className="text-[36px] sm:text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900 break-words">
           {tr("information_paraphraser_title", "Parafraseador")}
-        </h2>
+        </RevealItem>
 
         <Link
           to="/parafraseador"
@@ -662,7 +616,7 @@ transition={{
       </div>
 
       <div className="space-y-10 text-[18px] leading-[2] text-slate-600">
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-orange-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_paraphraser_point_1_part_1", "El parafraseador permite ")}
@@ -671,9 +625,9 @@ transition={{
             </span>
             {tr("information_paraphraser_point_1_part_2", " manteniendo su significado original. Su función es expresar las mismas ideas utilizando palabras o estructuras diferentes. Euskalia ofrece distintos estilos de parafraseo: Neutral, Formal, Informal, Profesional, Académico, Fluido y Creativo, permitiendo adaptar el resultado a diferentes contextos y necesidades.")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-orange-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_paraphraser_point_2_part_1", "El ")}
@@ -694,11 +648,11 @@ transition={{
             </span>
             {tr("information_paraphraser_point_2_part_5", ". El idioma seleccionado en el selector debe coincidir con el idioma del contenido añadido. Si se detecta que el texto está escrito en otro idioma, se mostrará un aviso ofreciendo cambiar el selector al idioma detectado antes de realizar el parafraseo.")}
           </p>
-        </div>
+        </RevealItem>
       </div>
     </div>
   </div>
-</motion.section>
+</RevealGroup>
 )}
 
 {/* ======================= */}
@@ -706,24 +660,16 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "creador-texto") && (
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="creador-texto"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: -40 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.05
-  }}
->
+  className="min-h-screen flex items-center py-24 scroll-mt-28">
 
 <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center w-full">
     <div className="max-w-[900px] -mt-10">
       <div className="flex items-center gap-6 mb-10">
-        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+        <RevealItem as="h2" variant="rise" className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
           {tr("information_text_creator_title", "Creador de Texto")}
-        </h2>
+        </RevealItem>
 
         <Link
           to="/creador-texto"
@@ -734,7 +680,7 @@ transition={{
       </div>
 
       <div className="space-y-10 text-[16px] leading-[2] text-slate-600">
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromLeft" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr(
@@ -742,9 +688,9 @@ transition={{
               "El creador de texto permite generar contenido nuevo a partir de la información proporcionada por el usuario. Puede utilizarse para redactar artículos, descripciones, publicaciones, textos informativos y otros tipos de contenido. Si la información añadida no es suficiente, la inteligencia artificial mostrará un mensaje indicando que se necesita más contexto antes de continuar."
             )}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromLeft" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
           <p>
             <span className="underline text-sky-600 font-semibold">
@@ -756,9 +702,9 @@ transition={{
             </span>
             {tr("information_text_creator_point_2_part_2", ", mientras que el texto generado se mostrará en el idioma seleccionado en el selector.")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromLeft" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-sky-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_text_creator_point_3_part_1", "La herramienta dispone de dos modos de creación. En el modo ")}
@@ -771,7 +717,7 @@ transition={{
             </span>
             {tr("information_text_creator_point_3_part_3", ", el usuario tiene un mayor control sobre el resultado, pudiendo indicar cuántos párrafos desea generar y qué contenido o función debe tener cada uno de ellos.")}
           </p>
-        </div>
+        </RevealItem>
       </div>
     </div>
 
@@ -781,7 +727,7 @@ transition={{
     >
       <div className="absolute w-[520px] h-[460px] rounded-[60px] bg-sky-50 rotate-6" />
 
-      <div className="relative w-[520px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+      <RevealItem variant="pop" className="relative w-[520px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
         <div className="space-y-5">
           <div className="h-5 rounded-full bg-sky-200 w-[60%]" />
           <div className="h-4 rounded-full bg-slate-200 w-full" />
@@ -811,10 +757,10 @@ transition={{
             </div>
           </div>
         </div>
-      </div>
+      </RevealItem>
     </Link>
   </div>
-</motion.section>
+</RevealGroup>
 )}
 
 {/* ======================= */}
@@ -822,17 +768,9 @@ transition={{
 {/* ======================= */}
 
 {(!tool || tool === "creador-email") && (
-<motion.section
+<RevealGroup as="section" kind="showcase" delay={0.3}
   id="creador-email"
-  className="min-h-screen flex items-center py-24 scroll-mt-28"
-  initial={{ opacity: 0, x: 40 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: viewportAmount }}
-  transition={{
-    duration: 0.55,
-    delay: 0.05
-  }}
->
+  className="min-h-screen flex items-center py-24 scroll-mt-28">
 
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center w-full">
     <Link
@@ -841,7 +779,7 @@ transition={{
     >
       <div className="absolute w-[400px] h-[400px] rounded-[60px] bg-indigo-50 -rotate-6" />
 
-      <div className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
+      <RevealItem variant="pop" className="relative w-[460px] rounded-[40px] border border-slate-200 bg-white shadow-2xl p-8">
         <div className="space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 pb-5">
             <span className="text-sm text-slate-500">
@@ -887,14 +825,14 @@ transition={{
             </div>
           </div>
         </div>
-      </div>
+      </RevealItem>
     </Link>
 
     <div className="max-w-2xl order-1 lg:order-2 lg:-ml-28">
       <div className="flex items-center gap-6 mb-10">
-        <h2 className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
+        <RevealItem as="h2" variant="rise" className="text-[58px] leading-[1.02] tracking-tight font-bold text-slate-900">
           {tr("information_email_creator_title", "Creador de Email")}
-        </h2>
+        </RevealItem>
 
         <Link
           to="/creador-email"
@@ -905,7 +843,7 @@ transition={{
       </div>
 
       <div className="space-y-10 text-[16px] leading-[2] text-slate-600 lg:-ml-16">
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_email_creator_point_1_part_1", "El creador de email permite generar correos electrónicos a partir de la información proporcionada por el usuario, independientemente del ")}
@@ -922,9 +860,9 @@ transition={{
             </span>
             {tr("information_email_creator_point_1_part_4", ", para mensajes más cercanos y naturales.")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_email_creator_point_2_part_1", "En modo ")}
@@ -937,9 +875,9 @@ transition={{
             </span>
             {tr("information_email_creator_point_2_part_3", ", el resultado es más literal y el usuario tiene un mayor control sobre el contenido, pudiendo definir la información de cada párrafo.")}
           </p>
-        </div>
+        </RevealItem>
 
-        <div className="flex items-start gap-4">
+        <RevealItem variant="fromRight" className="flex items-start gap-4">
           <div className="w-3 h-3 rounded-full bg-indigo-500 mt-[12px] flex-shrink-0" />
           <p>
             {tr("information_email_creator_point_3_part_1", "Cuanto más contexto, información y detalles proporcione el usuario, ")}
@@ -948,11 +886,11 @@ transition={{
             </span>
             {tr("information_email_creator_point_3_part_2", " será el resultado generado.")}
           </p>
-        </div>
+        </RevealItem>
       </div>
     </div>
   </div>
-</motion.section>
+</RevealGroup>
 )}
 
       </section>

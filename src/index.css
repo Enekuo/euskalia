@@ -58,3 +58,23 @@
     font-family: 'Inter', sans-serif;
   }
 }
+
+/* ===== Sistema de movimiento: reducir movimiento =====
+   Anula SOLO los bucles del sistema de movimiento (opt-in), no las
+   animaciones existentes (p. ej. spinners de carga, que deben seguir
+   indicando actividad). Toda animación en bucle nueva debe usar
+   animate-sheen / animate-orb o la clase .motion-loop.
+   Las animaciones de framer-motion las gestiona <MotionConfig
+   reducedMotion="user"> en main.jsx. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-sheen,
+  .animate-orb,
+  .motion-loop {
+    animation: none !important;
+  }
+
+  /* El barrido de luz desaparece en vez de quedarse congelado a medio camino. */
+  .animate-sheen {
+    opacity: 0 !important;
+  }
+}

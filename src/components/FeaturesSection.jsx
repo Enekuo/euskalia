@@ -1,34 +1,17 @@
 import React from "react";
 import { useTranslation } from "@/lib/translations";
-import { motion } from "framer-motion";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/motion-primitives";
 
 export default function FeaturesSection() {
   const { t } = useTranslation();
   const tr = (key, fallback) => t(key) || fallback;
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 28 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 2.2, // más lento
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
-
   return (
     <section className="w-full bg-[#F4F8FF] py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12 md:space-y-16">
         {/* BLOQUE TITULAR + PÁRRAFO + IMAGEN */}
-        <motion.div
-          className="flex flex-col lg:flex-row items-center gap-10 lg:gap-14"
-          variants={cardVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.25 }}
-        >
+        <Reveal
+          className="flex flex-col lg:flex-row items-center gap-10 lg:gap-14">
           {/* TEXTO */}
           <div className="w-full lg:basis-6/12 text-left">
             <h2 className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] font-extrabold text-slate-900 leading-tight mb-5">
@@ -58,21 +41,16 @@ export default function FeaturesSection() {
               />
             </div>
           </div>
-        </motion.div>
+        </Reveal>
 
         {/* TARJETA DE CARACTERÍSTICAS (IZQUIERDA + DERECHA) */}
-        <motion.div
+        <Reveal
           className="
             bg-white rounded-3xl border border-slate-100
             shadow-[0_18px_60px_rgba(15,23,42,0.08)]
             px-4 sm:px-6 md:px-8 lg:px-10
             py-6 sm:py-7 md:py-8
-          "
-          variants={cardVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.25 }}
-        >
+          ">
           <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-10">
             {/* Columna izquierda: 6 filas pequeñas (más ancha) */}
             <div className="w-full lg:w-7/12 space-y-4 md:space-y-5">
@@ -194,7 +172,7 @@ export default function FeaturesSection() {
               />
             </div>
           </div>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

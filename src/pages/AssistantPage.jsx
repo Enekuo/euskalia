@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Sparkles, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
+import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay, scaleIn } from "@/lib/motion";
+import { IconMotionButton, SheenLayer, primaryButtonMotion } from "@/components/ui/motion-primitives";
 
 export default function AssistantPage() {
   const { t } = useTranslation();
@@ -242,8 +245,13 @@ CORRECCIÓN DE TEXTO:
   return (
     <div className="w-full min-h-[calc(100vh-64px)] px-3 sm:px-6 py-6 sm:py-10 bg-slate-50">
       <div className="mx-auto w-full max-w-[1100px]">
-        <div className="w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100">
-          <div className="flex items-start justify-between px-6 pt-6">
+        {/* Entrada en cascada (ENTRANCE, CSS). Tarjeta y zona de chat solo se
+            desplazan (sin opacidad 0) para no retrasar el LCP. */}
+        <div className={`w-full bg-white rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] overflow-hidden border border-slate-100 ${ENTRANCE.card}`}>
+          <div
+            className={`flex items-start justify-between px-6 pt-6 ${ENTRANCE.toolbar}`}
+            style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}
+          >
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
@@ -254,18 +262,21 @@ CORRECCIÓN DE TEXTO:
               </div>
             </div>
 
-            <button
+            <IconMotionButton
               type="button"
               onClick={newChat}
-              className="h-9 px-4 rounded-full text-sm font-semibold border bg-white border-slate-200 text-slate-900 shadow-sm inline-flex items-center gap-2 hover:bg-slate-50"
+              className="h-9 px-4 rounded-full text-sm font-semibold border bg-white border-slate-200 text-slate-900 shadow-sm inline-flex items-center gap-2 hover:bg-slate-50 transition-colors duration-fast ease-state"
+              icon={<span className="text-[18px] leading-none">+</span>}
             >
-              <span className="text-[18px] leading-none">+</span>
               {tr("assistant_new_chat", "Nuevo chat")}
-            </button>
+            </IconMotionButton>
           </div>
 
           <div className="px-6 pt-3 pb-0">
-            <div className="mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col">
+            <div
+              className={`mt-5 h-[480px] rounded-2xl bg-white overflow-hidden flex flex-col ${ENTRANCE.input}`}
+              style={entranceDelay(ENTRANCE_DELAY_MS.input)}
+            >
               <div ref={listRef} className="relative flex-1 overflow-auto px-4 py-4">
                 {messages.length === 0 ? (
                   <div className="h-full w-full flex items-center justify-center">
@@ -302,16 +313,28 @@ CORRECCIÓN DE TEXTO:
 
                       if (isUser) {
                         return (
-                          <div key={idx} className="w-full flex justify-end">
+                          <motion.div
+                            key={idx}
+                            variants={scaleIn}
+                            initial="hidden"
+                            animate="visible"
+                            className="w-full flex justify-end origin-bottom-right"
+                          >
                             <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-sky-100 text-slate-900 border border-sky-200 whitespace-pre-wrap">
                               {m.text}
                             </div>
-                          </div>
+                          </motion.div>
                         );
                       }
 
                       return (
-                        <div key={idx} className="w-full flex justify-start items-start gap-3">
+                        <motion.div
+                          key={idx}
+                          variants={scaleIn}
+                          initial="hidden"
+                          animate="visible"
+                          className="w-full flex justify-start items-start gap-3 origin-top-left"
+                        >
                           <div className="mt-0.5 h-10 w-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center overflow-hidden">
                             {avatarOk ? (
                               <img
@@ -326,9 +349,21 @@ CORRECCIÓN DE TEXTO:
                           </div>
 
                           <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-slate-100 text-slate-900 border border-slate-200 whitespace-pre-wrap">
-                            {m.text}
+                            {m.text || (
+                              // "Escribiendo": tres puntos con pulso (animate-orb; se
+                              // detiene con reducir movimiento).
+                              <span className="inline-flex items-center gap-1.5 h-6" aria-label="...">
+                                {[0, 160, 320].map((d) => (
+                                  <span
+                                    key={d}
+                                    className="h-2 w-2 rounded-full bg-slate-400 animate-orb"
+                                    style={{ animationDelay: `${d}ms` }}
+                                  />
+                                ))}
+                              </span>
+                            )}
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -343,7 +378,10 @@ CORRECCIÓN DE TEXTO:
                 </div>
               )}
 
-              <div className="px-4 pb-4">
+              <div
+                className={`px-4 pb-4 ${ENTRANCE.output}`}
+                style={entranceDelay(ENTRANCE_DELAY_MS.output)}
+              >
                 <div className="relative rounded-[18px] border-2 border-slate-900/90 bg-white h-12 flex items-center">
                   <input
                     ref={inputRef}
@@ -354,18 +392,22 @@ CORRECCIÓN DE TEXTO:
                     className="w-full h-full bg-transparent outline-none text-[14px] text-slate-900 placeholder:text-slate-400 pl-4 pr-12"
                   />
 
-                  <button
-                    type="button"
-                    onClick={send}
-                    disabled={!input.trim() || isSending}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full inline-flex items-center justify-center transition ${
-                      input.trim() && !isSending
-                        ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                        : "bg-slate-100 text-slate-300 cursor-not-allowed"
-                    }`}
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <motion.button
+                      type="button"
+                      onClick={send}
+                      disabled={!input.trim() || isSending}
+                      {...primaryButtonMotion(!!input.trim() && !isSending)}
+                      className={`relative isolate overflow-hidden h-8 w-8 rounded-full inline-flex items-center justify-center transition-colors duration-fast ease-state ${
+                        input.trim() && !isSending
+                          ? "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                          : "bg-slate-100 text-slate-300 cursor-not-allowed"
+                      }`}
+                    >
+                      <SheenLayer />
+                      <ArrowUp className="relative w-3.5 h-3.5" />
+                    </motion.button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -2,6 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/translations";
 import { Menu, FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Trash2, Check, Type, Volume2, Maximize2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import {
+  IconMotionButton,
+  SheenLayer,
+  SwapIcon,
+  SlideIndicator,
+  primaryButtonMotion,
+  PRIMARY_BUTTON_CLASS,
+} from "@/components/ui/motion-primitives";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
@@ -147,6 +156,62 @@ function splitFirstChunkForFastStart(chunks, maxFirstChars = TTS_FIRST_CHUNK_MAX
 
   return [head, tail, ...rest];
 }
+
+// ===== Selector de idiomas (desplegable) =====
+// Definidos fuera de Translator para que no se vuelvan a montar en cada render
+// (necesario para que la píldora deslizante conserve su posición).
+// La píldora azul (slideIndicator + layoutId) sigue al ratón/foco por la
+// lista y descansa en el idioma activo.
+const Item = ({ active, label, onClick, onHover, pillId, showPill }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    onMouseEnter={onHover}
+    onFocus={onHover}
+    className={`relative w-full px-3 py-2.5 text-left text-[14px] rounded-md transition-colors duration-fast ease-state ${
+      active ? "text-blue-700 font-medium" : "text-slate-800"
+    }`}
+  >
+    {showPill && (
+      <SlideIndicator layoutId={pillId} className="absolute inset-0 rounded-md bg-blue-50 ring-1 ring-blue-100" />
+    )}
+    <span className="relative">{label}</span>
+  </button>
+);
+
+const Dropdown = ({ id, open, selected, onSelect, align = "left", options = [] }) => {
+  const [hovered, setHovered] = useState(null);
+  if (!open) return null;
+  const pillAt = hovered ?? selected;
+  const pillId = `translator-lang-pill-${id}`;
+  return (
+    <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0 translate-x-6" : "left-0"}`}>
+      <div className="relative">
+        <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
+          <path d="M0,10 L10,0 L20,10" className="fill-white" />
+          <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
+        </svg>
+        <motion.div
+          layoutScroll
+          onMouseLeave={() => setHovered(null)}
+          className="w-48 max-h-96 overflow-y-auto bg-white rounded-xl shadow-lg border border-slate-200 p-2"
+        >
+          {options.map((opt) => (
+            <Item
+              key={opt.value}
+              label={opt.label}
+              active={selected === opt.value}
+              onClick={() => onSelect(opt.value)}
+              onHover={() => setHovered(opt.value)}
+              pillId={pillId}
+              showPill={pillAt === opt.value}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
 
 export default function Translator() {
   const { t, language } = useTranslation();
@@ -1111,42 +1176,6 @@ requestAnimationFrame(() => {
     };
   }, [sourceMode, src, dst, documents, language]);
 
-  const Item = ({ active, label, onClick }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`w-full px-3 py-2.5 text-left text-[14px] rounded-md transition ${
-        active ? "bg-slate-100" : "hover:bg-slate-100"
-      } text-slate-800`}
-    >
-      {label}
-    </button>
-  );
-
-  const Dropdown = ({ open, selected, onSelect, align = "left", options = [] }) => {
-    if (!open) return null;
-    return (
-      <div className={`absolute top-full mt-2 z-50 ${align === "right" ? "right-0 translate-x-6" : "left-0"}`}>
-        <div className="relative">
-          <svg width="20" height="10" viewBox="0 0 20 10" className="mx-auto block">
-            <path d="M0,10 L10,0 L20,10" className="fill-white" />
-            <path d="M0,10 L10,0 L20,10" className="fill-none stroke-slate-200" />
-          </svg>
-          <div className="w-48 max-h-96 overflow-y-auto bg-white rounded-xl shadow-lg border border-slate-200 p-2">
-            {options.map((opt) => (
-              <Item
-                key={opt.value}
-                label={opt.label}
-                active={selected === opt.value}
-                onClick={() => onSelect(opt.value)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const labelTabText = tr("summary.sources_tab_text", "Testua");
   const labelTabDocument = tr("summary.sources_tab_document", "Dokumentua");
   const labelTabUrl = tr("summary.sources_tab_url", "URLa");
@@ -1163,11 +1192,6 @@ requestAnimationFrame(() => {
   const labelRemove = tr("summary.remove", "Quitar");
 
 
-  const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  in: { opacity: 1, y: 0 },
-  out: { opacity: 0, y: -12 },
-  };
 
   const stopPlayback = () => {
     // Invalida cualquier fragmento en curso o en cola: aunque una petición o un
@@ -1453,30 +1477,36 @@ requestAnimationFrame(() => {
       <section className="w-full bg-[#F4F8FF] pt-10 pb-24 md:pb-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="relative flex items-start gap-3 md:gap-4">
-            <ToolsSidebar />
+            <ToolsSidebar interactive />
             <div className="flex-1 min-w-0">
 
-            <motion.section
-  className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full"
-  initial="initial"
-  animate="in"
-  exit="out"
-  variants={pageVariants}
-  transition={{ duration: 0.3 }}
+            {/* Entrada en cascada (ENTRANCE, motion.js — CSS en el compositor). La tarjeta
+                y el panel de entrada solo se desplazan (sin opacidad 0) para no retrasar el LCP. */}
+            <section
+  className={`rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full ${ENTRANCE.card}`}
 >
 
-              <div className="relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0">
+              <div
+                className={`relative border-b border-slate-200 h-auto sm:h-12 py-2 sm:py-0 ${ENTRANCE.toolbar}`}
+                style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center h-full px-3 sm:px-6 gap-2 sm:gap-0">
                   <div className="flex items-center text-[13px] sm:text-sm font-medium text-slate-600">
                     <button
                       type="button"
                       onClick={() => setSourceMode("text")}
-                      className={`inline-flex items-center gap-2 ${
+                      className={`relative inline-flex items-center gap-2 transition-colors duration-fast ease-state ${
                         sourceMode === "text" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <FileText className={`w-4 h-4 ${sourceMode === "text" ? "text-blue-600" : "text-slate-500"}`} />
-                      <span>{labelTabText}</span>
+                      {sourceMode === "text" && (
+                        <SlideIndicator
+                          layoutId="translator-source-tab-pill"
+                          className="absolute -inset-x-2.5 -inset-y-1.5 rounded-full bg-blue-50 ring-1 ring-blue-100"
+                        />
+                      )}
+                      <FileText className={`relative w-4 h-4 transition-colors duration-fast ease-state ${sourceMode === "text" ? "text-blue-600" : "text-slate-500"}`} />
+                      <span className="relative">{labelTabText}</span>
                     </button>
 
                     <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
@@ -1484,12 +1514,18 @@ requestAnimationFrame(() => {
                     <button
                       type="button"
                       onClick={() => setSourceMode("document")}
-                      className={`inline-flex items-center gap-2 ${
+                      className={`relative inline-flex items-center gap-2 transition-colors duration-fast ease-state ${
                         sourceMode === "document" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <FileIcon className={`w-4 h-4 ${sourceMode === "document" ? "text-blue-600" : "text-slate-500"}`} />
-                      <span>{labelTabDocument}</span>
+                      {sourceMode === "document" && (
+                        <SlideIndicator
+                          layoutId="translator-source-tab-pill"
+                          className="absolute -inset-x-2.5 -inset-y-1.5 rounded-full bg-blue-50 ring-1 ring-blue-100"
+                        />
+                      )}
+                      <FileIcon className={`relative w-4 h-4 transition-colors duration-fast ease-state ${sourceMode === "document" ? "text-blue-600" : "text-slate-500"}`} />
+                      <span className="relative">{labelTabDocument}</span>
                     </button>
 
                     <span className="mx-2 sm:mx-4 h-5 w-px bg-slate-200" />
@@ -1497,22 +1533,27 @@ requestAnimationFrame(() => {
                     <button
                       type="button"
                       onClick={() => setSourceMode("url")}
-                      className={`inline-flex items-center gap-2 ${
+                      className={`relative inline-flex items-center gap-2 transition-colors duration-fast ease-state ${
                         sourceMode === "url" ? "text-blue-600" : "text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      <UrlIcon className={`w-4 h-4 ${sourceMode === "url" ? "text-blue-600" : "text-slate-500"}`} />
-                      <span>{labelTabUrl}</span>
+                      {sourceMode === "url" && (
+                        <SlideIndicator
+                          layoutId="translator-source-tab-pill"
+                          className="absolute -inset-x-2.5 -inset-y-1.5 rounded-full bg-blue-50 ring-1 ring-blue-100"
+                        />
+                      )}
+                      <UrlIcon className={`relative w-4 h-4 transition-colors duration-fast ease-state ${sourceMode === "url" ? "text-blue-600" : "text-slate-500"}`} />
+                      <span className="relative">{labelTabUrl}</span>
                     </button>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={handleClearLeft}
                       aria-label={t("translator.clear_left")}
                       className="sm:hidden ml-3 p-2 rounded-md hover:bg-slate-100"
-                    >
-                      <Trash2 className="w-5 h-5 text-slate-500" />
-                    </button>
+                      icon={<Trash2 className="w-5 h-5 text-slate-500" />}
+                    />
 
                     <span className="ml-4 h-5 w-px bg-slate-200" />
                   </div>
@@ -1535,6 +1576,7 @@ requestAnimationFrame(() => {
                         </button>
 
                         <Dropdown
+                          id="src"
                           open={openLeft}
                           selected={src}
                           onSelect={(val) => {
@@ -1547,17 +1589,16 @@ requestAnimationFrame(() => {
                         />
                       </div>
 
-                      <button
+                      <IconMotionButton
                         type="button"
                         aria-label="Intercambiar idiomas"
                         onClick={swap}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 transition-colors duration-fast ease-state justify-self-center sm:absolute sm:left-1/2 sm:-translate-x-1/2"
+                        icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                           <path d="M7 7h11M7 7l3-3M7 7l3 3" stroke="#475569" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                           <path d="M17 17H6M17 17l-3-3M17 17l-3 3" stroke="#475569" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
+                        </svg>}
+                      />
 
                       <div className="relative justify-self-start sm:ml-16" ref={rightRef}>
                         <button
@@ -1577,6 +1618,7 @@ requestAnimationFrame(() => {
                         </button>
 
                         <Dropdown
+                          id="dst"
                           open={openRight}
                           selected={dst}
                           onSelect={(val) => {
@@ -1591,21 +1633,24 @@ requestAnimationFrame(() => {
                   </div>
                 </div>
 
-                <button
+                <IconMotionButton
                   type="button"
                   onClick={handleClearLeft}
                   aria-label={t("translator.clear_left")}
                   className="group hidden sm:block absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-md hover:bg-slate-100"
+                  icon={<Trash2 className="w-5 h-5 text-slate-500" />}
                 >
-                  <Trash2 className="w-5 h-5 text-slate-500" />
                   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                     {t("translator.clear_left")}
                   </span>
-                </button>
+                </IconMotionButton>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-                <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
+                <div
+                  className={`p-8 md:p-10 border-b md:border-b-0 md:border-r border-slate-200 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col ${ENTRANCE.input}`}
+                  style={entranceDelay(ENTRANCE_DELAY_MS.input)}
+                >
                   {sourceMode === "text" && (
                     <>
                       <div className="min-h-0 h-[400px] w-[calc(100%+24px)] pr-6">
@@ -1802,7 +1847,10 @@ alternativesRequestRef.current += 1;
                   )}
                 </div>
 
-                <div className="p-8 md:p-10 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col">
+                <div
+                  className={`p-8 md:p-10 relative h-[260px] sm:h-[500px] overflow-hidden flex flex-col ${ENTRANCE.output}`}
+                  style={entranceDelay(ENTRANCE_DELAY_MS.output)}
+                >
 
 <div className="h-[400px] overflow-y-auto w-[calc(100%+24px)] pr-6">
   <div className="w-full">
@@ -1869,18 +1917,21 @@ alternativesRequestRef.current += 1;
 
                   {sourceMode === "text" && !loading && !err && !hasRealResult && (
                     <div className="absolute left-6 md:left-8 right-6 md:right-8 top-[42%] -translate-y-1/2 z-10 flex items-center justify-center">
-                      <button
+                      <motion.button
                         type="button"
                         onClick={handleTranslateClick}
                         disabled={!leftText.trim() || leftText.length > MAX_CHARS}
-                        className={`h-12 px-10 rounded-full text-white font-semibold shadow-sm transition ${
+                        {...primaryButtonMotion(!(!leftText.trim() || leftText.length > MAX_CHARS))}
+                        className={`${PRIMARY_BUTTON_CLASS} h-12 px-10 rounded-full text-white font-semibold shadow-sm transition-colors duration-fast ease-state ${
                           !leftText.trim() || leftText.length > MAX_CHARS
                             ? "bg-blue-600 opacity-50 cursor-not-allowed"
                             : "bg-blue-600 hover:bg-blue-700"
                         }`}
                       >
-                        {labelTranslateBtn}
-                      </button>
+                        {/* Barrido de luz azul → azul cielo (solo transform) */}
+                        <SheenLayer />
+                        <span className="relative">{labelTranslateBtn}</span>
+                      </motion.button>
                     </div>
                   )}
 
@@ -1903,7 +1954,7 @@ alternativesRequestRef.current += 1;
                   )}
 
                   <div className="absolute bottom-2 right-6 flex items-center gap-4 text-slate-500">
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={handleSpeakToggle}
                       aria-label={
@@ -1918,8 +1969,7 @@ alternativesRequestRef.current += 1;
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${speaking ? "text-slate-900" : ""} ${
                         hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                       }`}
-                    >
-                      {speaking ? (
+                      icon={speaking ? (
                         ttsLoading ? (
                           <span className="inline-block w-[14px] h-[14px] rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
                         ) : (
@@ -1928,6 +1978,7 @@ alternativesRequestRef.current += 1;
                       ) : (
                         <Volume2 className="w-5 h-5" />
                       )}
+                    >
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {speaking
                           ? ttsLoading
@@ -1935,47 +1986,52 @@ alternativesRequestRef.current += 1;
                             : t("translator.stop")
                           : t("translator.listen")}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={() => setExpandedOpen(true)}
                       aria-label={t("translator.expand")}
                       disabled={!hasRealResult}
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                      icon={<Maximize2 className="w-5 h-5" />}
                     >
-                      <Maximize2 className="w-5 h-5" />
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {t("translator.expand")}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={handleCopy}
                       aria-label={t("translator.copy")}
                       disabled={!hasRealResult}
                       className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+                      icon={
+                        // Copiar → ✓ con muelle: ambos iconos apilados en la misma celda
+                        <SwapIcon swapKey={copied ? "check" : "copy"}>
+                          {copied ? <Check className="w-5 h-5 text-blue-600" /> : <Copy className="w-5 h-5" />}
+                        </SwapIcon>
+                      }
                     >
-                      {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                       <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                         {copied ? t("translator.copied") : t("translator.copy")}
                       </span>
-                    </button>
+                    </IconMotionButton>
 
-<button
+<IconMotionButton
   type="button"
   onClick={handleShare}
   aria-label={t("translator.share")}
   disabled={!hasRealResult}
   className={`group relative p-2 rounded-md hover:bg-slate-100 ${hasRealResult ? "" : "opacity-40 cursor-not-allowed"}`}
+  icon={<Share2 className="w-5 h-5" />}
 >
-  <Share2 className="w-5 h-5" />
 
   <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
     {t("translator.share")}
   </span>
-</button>
+</IconMotionButton>
 
                   </div>
 
@@ -1991,7 +2047,7 @@ alternativesRequestRef.current += 1;
                 </div>
               </div>
 
-            </motion.section>
+            </section>
 
             </div>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/motion-primitives";
 import { useTranslation } from "@/lib/translations";
 import { FileText, CheckCircle2, Sparkles, Search, Globe, Brain } from "lucide-react";
 
@@ -80,11 +81,11 @@ export default function ToolsSection() {
   ];
 
   return (
-    <section className="w-full bg-slate-50">
+    <RevealGroup as="section" className="w-full bg-slate-50">
       <div className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-center text-4xl md:text-5xl font-extrabold text-slate-900">
+        <RevealItem as="h2" className="text-center text-4xl md:text-5xl font-extrabold text-slate-900">
           {tr("toolsSection_title", "Herramientas de Euskalia")}
-        </h2>
+        </RevealItem>
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* IZQUIERDA: VIDEO + PALOS (sin tocar nada) */}
@@ -141,6 +142,6 @@ export default function ToolsSection() {
 
         </div>
       </div>
-    </section>
+    </RevealGroup>
   );
 }

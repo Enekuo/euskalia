@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/motion-primitives";
 import { useTranslation } from "@/lib/translations";
 
 const FAQ_ITEMS = [
@@ -73,32 +73,21 @@ export default function FaqSection() {
 
       <div className="container mx-auto px-4 md:px-6">
         {/* TÍTULO + SUBTÍTULO */}
-        <motion.div
-          className="text-center max-w-3xl mx-auto mb-12"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ amount: 0.3 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-        >
+        <Reveal className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
             {tr("faq_title", "")}
           </h2>
           <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
             {tr("faq_subtitle", "")}
           </p>
-        </motion.div>
+        </Reveal>
 
         {/* LISTA DE PREGUNTAS (acordeón simple) */}
-        <motion.div
+        <RevealGroup
           className="
             max-w-3xl mx-auto
             border-t border-b border-slate-200 dark:border-slate-700
-          "
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ amount: 0.3 }}
-          transition={{ duration: 0.9, delay: 0.25, ease: "easeOut" }}
-        >
+          ">
           {FAQ_ITEMS.map(({ id }, index) => {
             const question = tr(`faq_item${id}_question`, "");
             const answer = tr(`faq_item${id}_answer`, "");
@@ -106,18 +95,9 @@ export default function FaqSection() {
             const isOpen = openItem === id;
 
             return (
-              <motion.div
+              <RevealItem
                 key={id}
-                className="border-b last:border-b-0 border-slate-200 dark:border-slate-700"
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.25 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.15 + index * 0.08,
-                  ease: "easeOut",
-                }}
-              >
+                className="border-b last:border-b-0 border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => handleToggle(id)}
@@ -145,10 +125,10 @@ export default function FaqSection() {
                     <div className="space-y-3">{renderAnswer(answer)}</div>
                   </div>
                 )}
-              </motion.div>
+              </RevealItem>
             );
           })}
-        </motion.div>
+        </RevealGroup>
       </div>
     </section>
   );

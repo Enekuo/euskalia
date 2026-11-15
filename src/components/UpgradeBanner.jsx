@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/lib/translations";
+import { Reveal } from "@/components/ui/motion-primitives";
 
 function ButtonSparklesIcon({ className = "" }) {
   return (
@@ -56,7 +57,7 @@ export default function UpgradeBanner({
   };
 
   return (
-    <div
+    <Reveal
       className={
         "w-full rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden " +
         className
@@ -82,6 +83,6 @@ export default function UpgradeBanner({
           </Link>
         </div>
       </div>
-    </div>
+    </Reveal>
   );
 }

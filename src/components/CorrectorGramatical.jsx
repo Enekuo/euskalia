@@ -1,5 +1,16 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import {
+  IconMotionButton,
+  SheenLayer,
+  SwapIcon,
+  SlideIndicator,
+  SlidingMenuGroup,
+  SlidingMenuItem,
+  primaryButtonMotion,
+  PRIMARY_BUTTON_CLASS,
+} from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FileText, Share2, File as FileIcon, Link2 as UrlIcon, Plus, X, Copy, Trash, Check, Type, Maximize2 } from "lucide-react";
@@ -76,11 +87,6 @@ export default function CorrectorGramatical() {
 
   const hasRealResult = !!(result && result.trim().length > 0);
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 12 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -12 },
-  };
 
   const labelSources = tr("grammarcorrector.sources_title", "Fuentes");
   const labelTabText = tr("grammarcorrector.sources_tab_text", "Texto");
@@ -135,12 +141,12 @@ export default function CorrectorGramatical() {
     return [first.endsWith(".") ? first : `${first}.`, rest];
   }, [leftRaw]);
 
-  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider }) => (
+  const TabBtn = ({ active, icon: Icon, label, onClick, showDivider , indicatorId }) => (
     <div className="relative flex-1 min-w-0 flex items-stretch">
       <button
         type="button"
         onClick={onClick}
-        className="relative inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
+        className="relative isolate inline-flex w-full items-center gap-2 h-[44px] px-3 text-[14px] font-medium justify-start"
         style={{ color: active ? BLUE : GRAY_TEXT }}
         aria-pressed={active}
         aria-label={label}
@@ -148,7 +154,10 @@ export default function CorrectorGramatical() {
         <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: active ? BLUE : GRAY_ICON }} />
         <span className="truncate">{label}</span>
         {active && (
-          <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full" style={{ backgroundColor: BLUE }} />
+          <SlideIndicator
+            layoutId={indicatorId}
+            className="absolute inset-x-0.5 inset-y-1.5 -z-10 rounded-full bg-blue-50 ring-1 ring-blue-100"
+          />
         )}
       </button>
       {showDivider && (
@@ -696,24 +705,17 @@ return (
     <section className="w-full bg-[#F4F8FF] pt-10 pb-24">
       <div className="max-w-7xl mx-auto w-full px-6">
         <div className="relative flex items-start gap-3 md:gap-4">
-          <ToolsSidebar />
+          <ToolsSidebar interactive />
           <div className="flex-1 min-w-0">
 
-            <motion.section
-              className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6"
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={{ duration: 0.3 }}
-            >
-              <aside className="h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+            <section className="grid grid-cols-1 lg:grid-cols-[480px_1fr] gap-6">
+              <aside className={`h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden flex flex-col ${ENTRANCE.card}`}>
+                <div className={`h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.toolbar)}>
                   <div className="text-sm font-medium text-slate-700">{labelSources}</div>
                 </div>
 
-                <div className="flex items-center px-2 border-b" style={{ borderColor: DIVIDER }}>
-                  <TabBtn
+                <div className={`flex items-center px-2 border-b ${ENTRANCE.toolbar}`} style={{ borderColor: DIVIDER, ...entranceDelay(ENTRANCE_DELAY_MS.toolbar) }}>
+                  <TabBtn indicatorId="corrector-source-tab"
                     active={sourceMode === "text"}
                     icon={FileText}
                     label={labelTabText}
@@ -928,8 +930,8 @@ return (
                 </div>
               </aside>
 
-              <section className="relative h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col">
-                <div className="h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60">
+              <section className={`relative h-[550px] rounded-2xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden -ml-px flex flex-col ${ENTRANCE.output}`} style={entranceDelay(ENTRANCE_DELAY_MS.output)}>
+                <div className={`h-11 flex items-center justify-between px-4 border-b border-slate-200 bg-slate-50/60 ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.output + ENTRANCE_DELAY_MS.toolbar)}>
                   <div className="flex items-center">
                     {hasDiff && (
                       <button
@@ -972,55 +974,53 @@ return (
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent align="end" className="rounded-xl border border-slate-200 shadow-lg bg-white p-1 w-[200px]">
-                        <DropdownMenuItem
+                        <SlidingMenuGroup id="corrector-lang" selected={outputLang}>
+<SlidingMenuItem value="EUS"
                           onClick={() => {
                             if (outputLang !== "EUS") {
                               setOutputLang("EUS");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_EUS}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="ES"
                           onClick={() => {
                             if (outputLang !== "ES") {
                               setOutputLang("ES");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_ES}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="EN"
                           onClick={() => {
                             if (outputLang !== "EN") {
                               setOutputLang("EN");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_EN}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
+                        </SlidingMenuItem>
+                        <SlidingMenuItem value="FR"
                           onClick={() => {
                             if (outputLang !== "FR") {
                               setOutputLang("FR");
                               clearRight();
                             }
                           }}
-                          className="cursor-pointer rounded-lg text-[14px] px-3 py-2"
                         >
                           {LBL_FR}
-                        </DropdownMenuItem>
-                        <DropdownMenuArrow className="fill-white" />
+                        </SlidingMenuItem>
+                        </SlidingMenuGroup>
+<DropdownMenuArrow className="fill-white" />
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-<button
+<IconMotionButton
   type="button"
   onClick={() => handleCopy(true)}
   title={
@@ -1028,7 +1028,7 @@ return (
       ? tr("grammarcorrector.copied", "Copiado")
       : tr("grammarcorrector.copy", "Copiar")
   }
-  className={`h-8 w-8 flex items-center justify-center translate-x-[-10px] ${
+  className={`h-8 w-8 flex items-center justify-center translate-x-[-10px] rounded-md hover:bg-slate-100 ${
     result
       ? "text-slate-600 hover:text-slate-800"
       : "text-slate-300 cursor-not-allowed"
@@ -1039,26 +1039,24 @@ return (
       : tr("grammarcorrector.copy", "Copiar")
   }
   disabled={!result}
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check className="w-5 h-5" style={{ color: BLUE }} /> : <Copy className="w-5 h-5" />}</SwapIcon>}
 >
-  {copiedFlash ? (
-    <Check className="w-5 h-5" style={{ color: BLUE }} />
-  ) : (
-    <Copy className="w-5 h-5" />
-  )}
-</button>
+  
+</IconMotionButton>
 
-                    <button
+                    <IconMotionButton
                       type="button"
                       onClick={handleClearLeft}
                       title={tr("grammarcorrector.clear_input", "Eliminar")}
-                      className={`h-8 w-8 flex items-center justify-center ${
+                      className={`h-8 w-8 flex items-center justify-center rounded-md hover:bg-slate-100 ${
                         sourceMode === "text" && textValue ? "text-slate-600 hover:text-slate-800" : "text-slate-300 cursor-not-allowed"
                       }`}
                       aria-label={tr("grammarcorrector.clear_input", "Eliminar")}
                       disabled={!(sourceMode === "text" && textValue)}
-                    >
-                      <Trash className="w-5 h-5" />
-                    </button>
+  icon={<Trash className="w-5 h-5" />}
+>
+                      
+                    </IconMotionButton>
                   </div>
                 </div>
 
@@ -1088,14 +1086,17 @@ return (
                       <>
                         <div className="absolute left-1/2 -translate-x-1/2 z-10" style={{ top: "30%" }}>
                           <Button
+  asChild
                             type="button"
                             onClick={handleGenerate}
                             disabled={loading || !hasValidInput}
-                            className="h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                            style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+                            className={`${PRIMARY_BUTTON_CLASS} bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state h-10 md:h-11 w-[220px] md:w-[240px] rounded-full text-[14px] md:text-[15px] font-medium shadow-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
-                            {labelGenerateFromSources}
-                          </Button>
+  <motion.button {...primaryButtonMotion(!(loading || !hasValidInput))}>
+    <SheenLayer />
+    <span className="relative">{labelGenerateFromSources}</span>
+  </motion.button>
+</Button>
                         </div>
 
                         <div className="absolute left-1/2 -translate-x-1/2 text-center px-6" style={{ top: "43%" }}>
@@ -1188,40 +1189,38 @@ return (
                     {hasRealResult && (
                       <div className="absolute bottom-4 right-6 flex items-center gap-4 text-slate-500">
 
-                        <button
+                        <IconMotionButton
                           type="button"
                           onClick={() => setExpandedOpen(true)}
                           aria-label={tooltipExpand}
                           className="group relative p-2 rounded-md hover:bg-slate-100"
-                        >
-                          <Maximize2 className="w-5 h-5" />
+  icon={<Maximize2 className="w-5 h-5" />}
+>
+                          
 
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                             {tooltipExpand}
                           </span>
-                        </button>
+                        </IconMotionButton>
 
-                        <button
+                        <IconMotionButton
                           type="button"
                           onClick={() => handleCopy(true)}
                           aria-label={copiedFlash ? tooltipCopied : tooltipCopy}
                           className="group relative p-2 rounded-md hover:bg-slate-100"
-                        >
-                          {copiedFlash ? (
-                            <Check
+  icon={<SwapIcon swapKey={copiedFlash ? "check" : "copy"}>{copiedFlash ? <Check
                               className="w-5 h-5"
                               style={{ color: BLUE }}
-                            />
-                          ) : (
-                            <Copy className="w-5 h-5" />
-                          )}
+                            /> : <Copy className="w-5 h-5" />}</SwapIcon>}
+>
+                          
 
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                             {copiedFlash ? tooltipCopied : tooltipCopy}
                           </span>
-                        </button>
+                        </IconMotionButton>
 
-                        <button
+                        <IconMotionButton
                           type="button"
                           onClick={handleShare}
                           aria-label={t("translator.share")}
@@ -1229,13 +1228,14 @@ return (
                           className={`group relative p-2 rounded-md hover:bg-slate-100 ${
                             hasRealResult ? "" : "opacity-40 cursor-not-allowed"
                           }`}
-                        >
-                          <Share2 className="w-5 h-5" />
+  icon={<Share2 className="w-5 h-5" />}
+>
+                          
 
                           <span className="pointer-events-none absolute -top-9 right-1 px-2 py-1 rounded bg-slate-800 text-white text-xs opacity-0 group-hover:opacity-100 transition">
                             {t("translator.share")}
                           </span>
-                        </button>
+                        </IconMotionButton>
 
                       </div>
                     )}
@@ -1252,7 +1252,7 @@ return (
                   </>
                 )}
               </section>
-            </motion.section>
+            </section>
           </div>
 
           <Link

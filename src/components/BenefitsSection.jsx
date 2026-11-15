@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "@/lib/translations";
-import { motion, useAnimation } from "framer-motion";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/motion-primitives";
 import {
   FileText,
   Clock,
@@ -55,39 +55,18 @@ export default function BenefitsSection() {
     },
   ];
 
-  const controls = useAnimation();
-
   return (
-    <motion.section
-      className="w-full bg-white pt-20 pb-24 md:pt-24 md:pb-28"
-      initial={{ opacity: 0 }}
-      animate={controls}
-      viewport={{ amount: 0.3 }}
-      onViewportEnter={() => {
-        controls.start({
-          opacity: 1,
-          transition: {
-            duration: 0.8, // aparece un poco más lento
-            ease: "easeOut",
-            delay: 0.2,    // tarda un poco en empezar
-          },
-        });
-      }}
-      onViewportLeave={() => {
-        // cuando sale de pantalla, lo dejamos otra vez oculto
-        controls.set({ opacity: 0 });
-      }}
-    >
+    <RevealGroup as="section" className="w-full bg-white pt-20 pb-24 md:pt-24 md:pb-28">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         {/* Título */}
-        <h2 className="text-[28px] md:text-[40px] font-extrabold text-slate-900 text-center mb-12 md:mb-16">
+        <RevealItem as="h2" className="text-[28px] md:text-[40px] font-extrabold text-slate-900 text-center mb-12 md:mb-16">
           {title}
-        </h2>
+        </RevealItem>
 
         {/* Grid de 6 cajas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {benefits.map(({ id, titleKey, descKey, Icon }) => (
-            <div
+            <RevealItem
               key={id}
               className="
                 rounded-3xl border border-slate-200 bg-[#F4F8FF]
@@ -117,10 +96,10 @@ export default function BenefitsSection() {
                   </p>
                 </div>
               </div>
-            </div>
+            </RevealItem>
           ))}
         </div>
       </div>
-    </motion.section>
+    </RevealGroup>
   );
 }
