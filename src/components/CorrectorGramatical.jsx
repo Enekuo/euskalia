@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay } from "@/lib/motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay, success } from "@/lib/motion";
 import {
   IconMotionButton,
   SheenLayer,
@@ -1173,18 +1173,36 @@ return (
                             {hasRealResult && (
                               <>
                                 {!hasDiff ? (
-                                  <div className="mt-6 flex flex-col items-center text-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                      <span className="text-lg">✅</span>
+                                  <motion.div
+                                    variants={success.group}
+                                    initial="hidden"
+                                    animate="visible"
+                                    className="mt-6 flex flex-col items-center text-center gap-2"
+                                  >
+                                    {/* Celebración: el círculo salta, la onda se expande y el ✅ hace pop */}
+                                    <div className="relative w-10 h-10">
+                                      <motion.span
+                                        aria-hidden="true"
+                                        variants={success.ripple}
+                                        className="absolute inset-0 rounded-full border-2 border-emerald-300"
+                                      />
+                                      <motion.div
+                                        variants={success.badge}
+                                        className="relative w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center"
+                                      >
+                                        <motion.span variants={success.check} className="text-lg inline-block">
+                                          ✅
+                                        </motion.span>
+                                      </motion.div>
                                     </div>
 
-                                    <p className="text-sm font-medium text-emerald-800">
+                                    <motion.p variants={success.text} className="text-sm font-medium text-emerald-800">
                                       {tr(
                                         "grammarcorrector.no_errors_message",
                                         "¡Muy bien! No hemos detectado errores."
                                       )}
-                                    </p>
-                                  </div>
+                                    </motion.p>
+                                  </motion.div>
                                 ) : (
                                   <article className="prose prose-slate max-w-none mt-14">
                                     {renderResult()}

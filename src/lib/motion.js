@@ -356,3 +356,36 @@ export const orbFade = {
   visible: { opacity: 1, transition: { duration: DURATION.fast, ease: EASE.state } },
   exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE.state } },
 };
+
+// -----------------------------------------------------------------------------
+// ÉXITO ("¡Muy bien! No hay errores"): pequeña celebración, una sola vez
+// -----------------------------------------------------------------------------
+//   badge   el círculo salta desde 0 con giro y rebote elástico
+//   check   el icono hace pop (0 → 1.3 → 1) justo después
+//   ripple  una onda sale del círculo y se desvanece
+//   text    el mensaje sube como una línea de resultado
+// Con reducir movimiento: sin escala ni giro, solo fundidos.
+export const success = {
+  group: { hidden: {}, visible: { transition: { staggerChildren: STAGGER.brand } } },
+  badge: {
+    hidden: { opacity: 0, scale: 0, rotate: -35 },
+    visible: { opacity: 1, scale: 1, rotate: 0, transition: { ...SPRING_POP, opacity: { duration: DURATION.fast } } },
+  },
+  check: {
+    hidden: { opacity: 0, scale: 0 },
+    visible: {
+      opacity: 1,
+      scale: [0, 1.3, 1],
+      transition: { duration: DURATION.slow, ease: EASE.enter, delay: DURATION.fast },
+    },
+  },
+  ripple: {
+    hidden: { opacity: 0, scale: 1 },
+    visible: {
+      opacity: [0.55, 0],
+      scale: [1, 2.4],
+      transition: { duration: DURATION.hero, ease: EASE.enter, delay: DURATION.fast },
+    },
+  },
+  text: resultLine,
+};
