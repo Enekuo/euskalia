@@ -10,6 +10,10 @@ import {
   SlidingMenuItem,
   primaryButtonMotion,
   PRIMARY_BUTTON_CLASS,
+  LoadingOrb,
+  Cascade,
+  CascadeItem,
+  CascadeText,
 } from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -1330,17 +1334,11 @@ return (
 
                           {result && (
                             <article className="prose prose-slate max-w-none mt-14">
-                              <div translate="no" className="whitespace-pre-line">{result}</div>
+                              <CascadeText translate="no" className="whitespace-pre-line" text={result} />
                             </article>
                           )}
 
-                          {loading && !result && (
-                            <div className="space-y-3 animate-pulse">
-                              <div className="h-4 bg-slate-200 rounded" />
-                              <div className="h-4 bg-slate-200 rounded w-11/12" />
-                              <div className="h-4 bg-slate-200 rounded w-10/12" />
-                            </div>
-                          )}
+                          <LoadingOrb show={loading && !result} label={t("translator.loading")} className="flex justify-center py-10" />
                         </div>
                       )}
                     </>

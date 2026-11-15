@@ -10,6 +10,8 @@ import {
   SlideIndicator,
   primaryButtonMotion,
   PRIMARY_BUTTON_CLASS,
+  LoadingOrb,
+  CascadeText,
 } from "@/components/ui/motion-primitives";
 import { Button } from "@/components/ui/button";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -1852,13 +1854,13 @@ alternativesRequestRef.current += 1;
                   style={entranceDelay(ENTRANCE_DELAY_MS.output)}
                 >
 
+{/* Orbe de carga: solo mientras traduce; se desvanece al llegar el resultado o si hay error. */}
+<div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
+  <LoadingOrb show={loading && !rightText && !isLimitReached} label={t("translator.loading")} />
+</div>
+
 <div className="h-[400px] overflow-y-auto w-[calc(100%+24px)] pr-6">
   <div className="w-full">
-    {loading && !rightText && (
-      <p className="text-[17px] leading-8 text-slate-500 font-medium italic">
-        {t("translator.loading")}
-      </p>
-    )}
 
     {!loading && !rightText && (
       <p className="text-[17px] leading-8 text-slate-500 font-medium">
@@ -1869,13 +1871,13 @@ alternativesRequestRef.current += 1;
 {rightText && (
   <>
 
-<div
+{/* Resultado en cascada por líneas (mismo contenedor, ref y clases). */}
+<CascadeText
   ref={translationRef}
   translate="no"
   className={`whitespace-pre-wrap ${rightFontClass} leading-8 text-slate-700 font-medium`}
->
-  {rightText}
-</div>
+  text={rightText}
+/>
 
     {shouldShowAlternatives && alternatives.length > 0 && (
       <div className="mt-24 text-[14px] leading-6 text-slate-600">

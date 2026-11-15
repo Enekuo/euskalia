@@ -10,6 +10,10 @@ import {
   SlidingMenuItem,
   primaryButtonMotion,
   PRIMARY_BUTTON_CLASS,
+  LoadingOrb,
+  Cascade,
+  CascadeItem,
+  CascadeText,
 } from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -1061,18 +1065,12 @@ setDetectedLanguage(null);
         {result && (
           <div className="flex flex-col gap-4">
             <article className="prose prose-slate max-w-none">
-              <p translate="no" className="whitespace-pre-wrap">{result}</p>
+              <CascadeText as="p" translate="no" className="whitespace-pre-wrap" text={result} />
             </article>
           </div>
         )}
 
-        {loading && !result && (
-          <div className="space-y-3 animate-pulse">
-            <div className="h-4 bg-slate-200 rounded" />
-            <div className="h-4 bg-slate-200 rounded w-11/12" />
-            <div className="h-4 bg-slate-200 rounded w-10/12" />
-          </div>
-        )}
+        <LoadingOrb show={loading && !result} label={t("translator.loading")} className="flex justify-center py-10" />
       </div>
     </>
   )}

@@ -328,3 +328,31 @@ export const brandReveal = {
     visible: { scale: 1, transition: { duration: DURATION.hero * 1.6, ease: EASE.enter } },
   },
 };
+
+// -----------------------------------------------------------------------------
+// LLEGADA DEL RESULTADO (cascada por líneas / párrafos)
+// -----------------------------------------------------------------------------
+// Cada línea sube 8px y aparece. Escalonado de 40 ms, pero limitado para que la
+// cascada completa no pase de ~600 ms aunque el texto sea muy largo. Empieza
+// tras un `fast` (180 ms) para que el orbe de carga se desvanezca antes.
+// NO es máquina de escribir: el texto completo ya está, solo entra por líneas.
+const RESULT_STAGGER_MAX = 0.04;
+const RESULT_LAST_START = 0.6 - DURATION.base; // la última línea empieza a ≤ 280 ms
+
+export const resultLine = rise({ distance: DISTANCE.element / 2 });
+
+export function resultCascade(count = 1) {
+  const n = Math.max(1, count);
+  const staggerChildren = n > 1 ? Math.min(RESULT_STAGGER_MAX, RESULT_LAST_START / (n - 1)) : 0;
+  return {
+    hidden: {},
+    visible: { transition: { delayChildren: DURATION.fast, staggerChildren } },
+  };
+}
+
+/** Desvanecimiento del orbe de carga (entra y sale solo con opacidad). */
+export const orbFade = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: DURATION.fast, ease: EASE.state } },
+  exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE.state } },
+};

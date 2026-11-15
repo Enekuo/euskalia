@@ -3,7 +3,8 @@ import { Sparkles, ArrowUp } from "lucide-react";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
 import { ENTRANCE, ENTRANCE_DELAY_MS, entranceDelay, scaleIn } from "@/lib/motion";
-import { IconMotionButton, SheenLayer, primaryButtonMotion } from "@/components/ui/motion-primitives";
+import { IconMotionButton, SheenLayer, primaryButtonMotion, CascadeText } from "@/components/ui/motion-primitives";
+import EuskaliaOrb from "@/components/ui/EuskaliaOrb";
 
 export default function AssistantPage() {
   const { t } = useTranslation();
@@ -349,17 +350,13 @@ CORRECCIÓN DE TEXTO:
                           </div>
 
                           <div className="max-w-[75%] px-4 py-2.5 rounded-[18px] bg-slate-100 text-slate-900 border border-slate-200 whitespace-pre-wrap">
-                            {m.text || (
-                              // "Escribiendo": tres puntos con pulso (animate-orb; se
-                              // detiene con reducir movimiento).
-                              <span className="inline-flex items-center gap-1.5 h-6" aria-label="...">
-                                {[0, 160, 320].map((d) => (
-                                  <span
-                                    key={d}
-                                    className="h-2 w-2 rounded-full bg-slate-400 animate-orb"
-                                    style={{ animationDelay: `${d}ms` }}
-                                  />
-                                ))}
+                            {m.text ? (
+                              // Respuesta en cascada por líneas (cada línea nueva entra al aparecer).
+                              <CascadeText as="span" className="block" text={m.text} />
+                            ) : (
+                              // Esperando respuesta: orbe de carga pequeño.
+                              <span className="flex items-center h-6 px-1">
+                                <EuskaliaOrb size={22} label={tr("assistant_typing", "...")} />
                               </span>
                             )}
                           </div>

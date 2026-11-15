@@ -10,6 +10,10 @@ import {
   SlidingMenuItem,
   primaryButtonMotion,
   PRIMARY_BUTTON_CLASS,
+  LoadingOrb,
+  Cascade,
+  CascadeItem,
+  CascadeText,
 } from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -251,34 +255,41 @@ export default function CorrectorGramatical() {
       if (parsed) {
         if (parsed.type === "ol") {
           return (
-            <ol className="list-decimal pl-6 space-y-2">
+            <Cascade as="ol" count={parsed.items.length} className="list-decimal pl-6 space-y-2">
               {parsed.items.map((item, idx) => (
-                <li key={idx} className="whitespace-pre-wrap">
+                <CascadeItem as="li" key={idx} className="whitespace-pre-wrap">
                   {item}
-                </li>
+                </CascadeItem>
               ))}
-            </ol>
+            </Cascade>
           );
         }
         return (
-          <ul className="list-disc pl-6 space-y-2">
+          <Cascade as="ul" count={parsed.items.length} className="list-disc pl-6 space-y-2">
             {parsed.items.map((item, idx) => (
-              <li key={idx} className="whitespace-pre-wrap">
+              <CascadeItem as="li" key={idx} className="whitespace-pre-wrap">
                 {item}
-              </li>
+              </CascadeItem>
             ))}
-          </ul>
+          </Cascade>
         );
       }
 
-      return <p translate="no" className="whitespace-pre-wrap">{result}</p>;
+      return <CascadeText as="p" translate="no" className="whitespace-pre-wrap" text={result} />;
     }
 
     const segments = diffSegments(textValue, result);
 
-    return (
-      <p translate="no" className="whitespace-pre-wrap">
-        {segments.map((seg, index) => {
+    // Cascada por PÁRRAFO sin romper el resaltado: los tramos del diff se
+    // reparten en párrafos según los saltos de línea; cada tramo conserva su op.
+    const diffParagraphs = [[]];
+    segments.forEach((seg, i) => {
+      String(seg.text).split("\n").forEach((part, j) => {
+        if (j > 0) diffParagraphs.push([]);
+        if (part) diffParagraphs[diffParagraphs.length - 1].push({ ...seg, text: part, _k: `${i}-${j}` });
+      });
+    });
+    const renderSeg = (seg, index) => {
           if (seg.op === -1) {
             return (
               <span
@@ -299,8 +310,16 @@ export default function CorrectorGramatical() {
           }
 
           return <span key={index}>{seg.text}</span>;
-        })}
-      </p>
+    };
+
+    return (
+      <Cascade as="p" count={diffParagraphs.length} translate="no" className="whitespace-pre-wrap">
+        {diffParagraphs.map((para, p) => (
+          <CascadeItem key={p}>
+            {para.length ? para.map((seg) => renderSeg(seg, seg._k)) : <br />}
+          </CascadeItem>
+        ))}
+      </Cascade>
     );
   };
 
@@ -1174,13 +1193,7 @@ return (
                               </>
                             )}
 
-                            {loading && !hasRealResult && (
-                              <div className="space-y-3 animate-pulse">
-                                <div className="h-4 bg-slate-200 rounded" />
-                                <div className="h-4 bg-slate-200 rounded w-11/12" />
-                                <div className="h-4 bg-slate-200 rounded w-10/12" />
-                              </div>
-                            )}
+                            <LoadingOrb show={loading && !hasRealResult} label={t("translator.loading")} className="flex justify-center py-10" />
                           </div>
                         </>
                       )}

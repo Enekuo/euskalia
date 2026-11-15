@@ -11,7 +11,7 @@
 // `whileTap` dependen de si el botón está habilitado.
 // =============================================================================
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   press,
   sheen,
@@ -25,7 +25,11 @@ import {
   DISTANCE,
   TRANSITION,
   brandReveal,
+  resultLine,
+  resultCascade,
+  orbFade,
 } from "@/lib/motion";
+import EuskaliaOrb from "@/components/ui/EuskaliaOrb";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 /**
@@ -215,3 +219,77 @@ export const RevealItem = ({ as = "div", variant, children, ...rest }) => {
     </C>
   );
 };
+
+// -----------------------------------------------------------------------------
+// CARGA Y LLEGADA DEL RESULTADO
+// -----------------------------------------------------------------------------
+/**
+ * Orbe de carga que aparece/desaparece con un fundido. Debe estar SIEMPRE
+ * montado y recibir `show` (así puede desvanecerse al llegar el resultado).
+ * `className` posiciona el envoltorio (p. ej. centrado absoluto o en flujo).
+ */
+export const LoadingOrb = ({ show, label, size, className = "" }) => (
+  <AnimatePresence>
+    {show && (
+      <motion.div
+        key="loading-orb"
+        variants={orbFade}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className={className}
+      >
+        <EuskaliaOrb label={label} size={size} />
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+/**
+ * Contenedor de cascada: sus hijos <CascadeItem> entran uno tras otro
+ * (resultCascade). Con reducir movimiento NO hay cascada: aparece directo.
+ */
+export const Cascade = React.forwardRef(({ as = "div", count, children, ...rest }, ref) => {
+  const reduce = useReducedMotion();
+  const C = motion[as];
+  if (reduce) {
+    return (
+      <C ref={ref} {...rest}>
+        {children}
+      </C>
+    );
+  }
+  return (
+    <C ref={ref} variants={resultCascade(count)} initial="hidden" animate="visible" {...rest}>
+      {children}
+    </C>
+  );
+});
+Cascade.displayName = "Cascade";
+
+export const CascadeItem = ({ as = "span", className = "block", children, ...rest }) => {
+  const C = motion[as];
+  return (
+    <C variants={resultLine} className={className} {...rest}>
+      {children}
+    </C>
+  );
+};
+
+/**
+ * Texto que llega en cascada por líneas. Conserva el elemento y las clases
+ * originales (p. ej. <p className="whitespace-pre-wrap">); cada línea es un
+ * <span class="block"> (válido dentro de <p>). Las líneas vacías mantienen
+ * su altura con <br />.
+ */
+export const CascadeText = React.forwardRef(({ text, as = "div", ...rest }, ref) => {
+  const lines = String(text ?? "").split("\n");
+  return (
+    <Cascade ref={ref} as={as} count={lines.length} {...rest}>
+      {lines.map((line, i) => (
+        <CascadeItem key={i}>{line === "" ? <br /> : line}</CascadeItem>
+      ))}
+    </Cascade>
+  );
+});
+CascadeText.displayName = "CascadeText";

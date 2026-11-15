@@ -10,6 +10,10 @@ import {
   SlidingMenuItem,
   primaryButtonMotion,
   PRIMARY_BUTTON_CLASS,
+  LoadingOrb,
+  Cascade,
+  CascadeItem,
+  CascadeText,
 } from "@/components/ui/motion-primitives";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -1642,15 +1646,14 @@ return (
                                 className="w-full rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)] overflow-y-auto"
                                 style={{ height: 360, padding: "18px 18px 44px 18px" }}
                               >
-                                <div
-                                 translate="no"
+                                <CascadeText
+                                  translate="no"
                                   className="text-[15px] leading-6 text-slate-800 whitespace-pre-wrap"
                                   style={{
                                     fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
                                   }}
-                                >
-                                  {result}
-                                </div>
+                                  text={result}
+                                />
                               </div>
                             </div>
 
@@ -1713,13 +1716,7 @@ return (
                           </>
                         )}
 
-                        {loading && !result && (
-                          <div className="space-y-3 animate-pulse">
-                            <div className="h-4 bg-slate-200 rounded" />
-                            <div className="h-4 bg-slate-200 rounded w-11/12" />
-                            <div className="h-4 bg-slate-200 rounded w-10/12" />
-                          </div>
-                        )}
+                        <LoadingOrb show={loading && !result} label={t("translator.loading")} className="flex justify-center py-10" />
                       </div>
                     )}
                   </div>
