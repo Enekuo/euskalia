@@ -3,8 +3,14 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
-        { "key": "Cross-Origin-Embedder-Policy", "value": "unsafe-none" }
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "unsafe-none"
+        }
       ]
     }
   ],
@@ -12,15 +18,59 @@
     {
       "source": "/:path*",
       "has": [
-        { "type": "host", "value": "euskaliaweb.com" }
+        {
+          "type": "host",
+          "value": "euskaliaweb.com"
+        }
       ],
       "destination": "https://www.euskaliaweb.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cuenta-pro/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/cuenta-premium/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/crear-cuenta",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/iniciar-sesion",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pago-correcto",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pago-cancelado",
+      "destination": "/",
+      "statusCode": 301
     }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
-    { "source": "/robots.txt", "destination": "/robots.txt" },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
+    },
     {
       "source": "/:path((?!api/|@vite/|@react-refresh|@id/|@fs/|src/|node_modules/|plugins/).*)",
       "destination": "/index.html"
