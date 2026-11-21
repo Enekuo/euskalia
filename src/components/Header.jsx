@@ -6,14 +6,35 @@ import {
   X,
   Globe,
   ChevronDown,
-  Languages,
   FileText,
   LifeBuoy,
-  SpellCheck,
+  SearchCheck,
   PenLine,
   Mail,
   Type,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme, toggleTheme, isThemeExcluded } from "@/lib/theme";
+import { IconMotionButton, SwapIcon, SlidingMenuGroup, SlidingMenuItem, SlideIndicator } from "@/components/ui/motion-primitives";
+import { iconButton, iconHover, textHover } from "@/lib/motion";
+
+// Mismo efecto que el botón claro/oscuro para TODOS los botones de la cabecera:
+// fondo redondeado al pasar el ratón, el icono sube/crece/gira con muelle
+// (iconHover) y todo se hunde al pulsar. En los que solo tienen texto, el texto
+// hace lo mismo pero sin girar (textHover).
+const MotionLink = motion(Link);
+const HOVER_BG = "rounded-full hover:bg-slate-100 transition-colors duration-fast ease-state";
+const HoverIcon = ({ children }) => (
+  <motion.span variants={iconHover} className="inline-flex">
+    {children}
+  </motion.span>
+);
+const HoverText = ({ children }) => (
+  <motion.span variants={textHover} className="inline-block">
+    {children}
+  </motion.span>
+);
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/translations";
 import {
@@ -31,6 +52,94 @@ const languages = [
   { code: "EN", name: "English" },
   { code: "FR", name: "Français" },
 ];
+
+// Botón claro/oscuro: el icono se transforma (sol ↔ luna) con el mismo muelle
+// que el resto de iconos. No se muestra en las páginas de información, que
+// siempre van en claro.
+function ThemeToggle({ t }) {
+  const theme = useTheme();
+  const { pathname } = useLocation();
+  if (isThemeExcluded(pathname)) return null;
+  const isDark = theme === "dark";
+  const label = isDark ? t("header.theme_to_light") : t("header.theme_to_dark");
+  return (
+    <IconMotionButton
+      type="button"
+      onClick={toggleTheme}
+      aria-label={label}
+      title={label}
+      aria-pressed={isDark}
+      className="h-9 w-9 flex items-center justify-center rounded-full text-slate-700 hover:bg-slate-100 transition-colors duration-fast ease-state"
+      icon={
+        <SwapIcon swapKey={isDark ? "moon" : "sun"}>
+          {isDark ? <Moon size={18} /> : <Sun size={18} />}
+        </SwapIcon>
+      }
+    />
+  );
+}
+
+// Lista de los desplegables "Tresnak" y "Baliabideak": mismo comportamiento que
+// los selectores del Traductor. Una píldora azul (SlideIndicator) sigue al
+// ratón/foco por la lista y descansa en la página actual, que se marca en azul.
+// Al pulsar cualquier opción se llama a onNavigate (cierra el desplegable).
+// `compact`: filas más bajas, icono sin círculo (Recursos).
+function PillMenuList({ items, pathname, pillId, onNavigate, inMobileMenu, compact = false }) {
+  const [hovered, setHovered] = useState(null);
+  const activePath = items.some((it) => it.path === pathname) ? pathname : null;
+  const pillAt = hovered ?? activePath;
+  const width = inMobileMenu ? "w-full" : compact ? "w-48" : "w-56";
+
+  return (
+    <div className={`p-1 ${width}`} onMouseLeave={() => setHovered(null)}>
+      {items.map((item) => {
+        const Icon = item.icon;
+        const active = item.path === activePath;
+        const iconColor = active ? "text-blue-600" : "text-slate-500";
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            aria-current={active ? "page" : undefined}
+            className={`relative w-full text-left flex items-center p-2 font-medium rounded-lg ${
+              compact ? "text-sm text-slate-700" : "text-[14px] text-slate-800"
+            }`}
+            onClick={onNavigate}
+            onMouseEnter={() => setHovered(item.path)}
+            onFocus={() => setHovered(item.path)}
+          >
+            {pillAt === item.path && (
+              <SlideIndicator
+                layoutId={`${pillId}${inMobileMenu ? "-mobile" : ""}`}
+                className="absolute inset-0 rounded-lg bg-blue-50 ring-1 ring-blue-100"
+              />
+            )}
+            {compact ? (
+              <Icon
+                size={item.iconSize || 16}
+                className={`relative mr-2 transition-colors duration-fast ease-state ${item.iconClass || ""} ${iconColor}`}
+              />
+            ) : (
+              <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 shrink-0 mr-3">
+                <Icon size={16} className={`transition-colors duration-fast ease-state ${iconColor}`} />
+              </span>
+            )}
+            <div className="relative flex flex-col">
+              <span
+                className={`transition-colors duration-fast ease-state ${
+                  compact ? "" : "font-semibold text-[15px] leading-5"
+                } ${active ? "text-blue-700" : ""}`}
+              >
+                {item.name}
+              </span>
+              {!compact && item.subtitle && <span className="text-xs text-slate-500 leading-4">{item.subtitle}</span>}
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
 
 function HelpBulbIcon({ size = 16, className = "" }) {
   return (
@@ -94,104 +203,85 @@ export default function Header() {
     {
       name: t("toolsMenu.translatorTitle"),
       subtitle: t("toolsMenu.translatorSubtitle"),
-      icon: <Languages size={16} className="text-slate-500" />,
+      icon: Globe,
       path: "/",
     },
     {
       name: t("toolsMenu.summaryTitle"),
       subtitle: t("toolsMenu.summarySubtitle"),
-      icon: <FileText size={16} className="text-slate-500" />,
+      icon: FileText,
       path: "/resumen",
     },
     {
       name: t("toolsMenu.correctorTitle"),
       subtitle: t("toolsMenu.correctorSubtitle"),
-      icon: <SpellCheck size={16} className="text-slate-500" />,
+      icon: SearchCheck,
       path: "/corrector",
     },
     {
       name: t("toolsMenu.paraphraserTitle"),
       subtitle: t("toolsMenu.paraphraserSubtitle"),
-      icon: <PenLine size={16} className="text-slate-500" />,
+      icon: PenLine,
       path: "/parafraseador",
     },
     {
       name: t("toolsMenu.textCreatorTitle"),
       subtitle: t("toolsMenu.textCreatorSubtitle"),
-      icon: <Type size={16} className="text-slate-500" />,
+      icon: Type,
       path: "/creador-texto",
     },
     {
       name: t("toolsMenu.emailCreatorTitle"),
       subtitle: t("toolsMenu.emailCreatorSubtitle"),
-      icon: <Mail size={16} className="text-slate-500" />,
+      icon: Mail,
       path: "/creador-email",
     },
   ];
 
+  // Al pulsar cualquier opción de un desplegable, se cierran los dos
+  // desplegables y el menú móvil (antes se quedaban abiertos al navegar).
+  const closeMenus = () => {
+    setIsToolsMenuOpen(false);
+    setIsResourcesMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
   const ToolsDropdownContent = ({ inMobileMenu = false }) => (
-    <div className={`p-1 ${inMobileMenu ? "w-full" : "w-56"}`}>
-      {tools.map((item, idx) => (
-        <Link
-          key={idx}
-          to={item.path}
-          className="w-full text-left flex items-center p-2 text-[14px] font-medium text-slate-800 rounded-lg hover:bg-slate-100"
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 shrink-0 mr-3">
-            {item.icon}
-          </span>
-          <div className="flex flex-col">
-            <span className="font-semibold text-[15px] leading-5">{item.name}</span>
-            {item.subtitle && (
-              <span className="text-xs text-slate-500 leading-4">{item.subtitle}</span>
-            )}
-          </div>
-        </Link>
-      ))}
-    </div>
+    <PillMenuList
+      items={tools}
+      pathname={location.pathname}
+      pillId="header-tools-pill"
+      inMobileMenu={inMobileMenu}
+      onNavigate={closeMenus}
+    />
   );
 
   const resources = [
     {
       name: t("resourcesMenu.support"),
-      icon: <LifeBuoy size={16} className="mr-2 text-slate-500" />,
+      icon: LifeBuoy,
       isLink: true,
       path: "/soporte",
     },
     {
       name: t("resourcesMenu.suggestions"),
-      icon: <HelpBulbIcon size={20} className="-ml-1 mr-2 text-slate-500" />,
+      icon: HelpBulbIcon,
+      iconSize: 20,
+      iconClass: "-ml-1",
       isLink: true,
       path: "/sugerencias",
     },
   ];
 
   const ResourcesDropdownContent = ({ inMobileMenu = false }) => (
-    <div className={`p-1 ${inMobileMenu ? "w-full" : "w-48"}`}>
-      {resources.map((item, idx) =>
-        item.isLink ? (
-          <Link
-            key={idx}
-            to={item.path}
-            className="w-full text-left flex items-center p-2 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-100"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            {item.icon}
-            {item.name}
-          </Link>
-        ) : (
-          <button
-            key={idx}
-            className="w-full text-left flex items-center p-2 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-100"
-            onClick={handleFeatureClick}
-          >
-            {item.icon}
-            {item.name}
-          </button>
-        )
-      )}
-    </div>
+    <PillMenuList
+      items={resources}
+      pathname={location.pathname}
+      pillId="header-resources-pill"
+      inMobileMenu={inMobileMenu}
+      onNavigate={closeMenus}
+      compact
+    />
   );
 
   return (
@@ -219,15 +309,20 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-1">
             <DropdownMenu open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0">
+                <motion.button
+                  {...iconButton}
+                  className={`flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 ${HOVER_BG} focus:outline-none focus-visible:outline-none focus-visible:ring-0`}
+                >
                   {t("header.tools")}
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform ${
-                      isToolsMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                  <HoverIcon>
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform ${
+                        isToolsMenuOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </HoverIcon>
+                </motion.button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="bg-white rounded-xl shadow-lg border border-slate-200 mt-2"
@@ -248,15 +343,20 @@ export default function Header() {
               onOpenChange={setIsResourcesMenuOpen}
             >
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md focus:outline-none focus-visible:outline-none focus-visible:ring-0">
+                <motion.button
+                  {...iconButton}
+                  className={`flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 ${HOVER_BG} focus:outline-none focus-visible:outline-none focus-visible:ring-0`}
+                >
                   {t("header.resources")}
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform ${
-                      isResourcesMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                  <HoverIcon>
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform ${
+                        isResourcesMenuOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </HoverIcon>
+                </motion.button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="bg-white rounded-xl shadow-lg border border-slate-200 mt-2"
@@ -272,12 +372,13 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link
+            <MotionLink
               to="/chat-ia"
-              className="flex items-center text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 rounded-md"
+              {...iconButton}
+              className={`flex items-center text-sm font-medium text-slate-700 hover:text-slate-900 h-10 px-3 ${HOVER_BG}`}
             >
-              {t("header.assistant")}
-            </Link>
+              <HoverText>{t("header.assistant")}</HoverText>
+            </MotionLink>
           </nav>
         </div>
 
@@ -289,86 +390,104 @@ export default function Header() {
           ) : null}
         </div>
 
-        <div className="hidden lg:flex items-center gap-4ml-6">
+        {/* Claro/oscuro, idioma, contacto y más información: separación uniforme
+            (~28px entre textos: px-3 + gap-1 + px-3) y el grupo desplazado un
+            poco a la derecha (-mr-6). */}
+        <div className="hidden lg:flex items-center gap-1 ml-6 -mr-6">
+          <ThemeToggle t={t} />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-slate-900">
-                <Globe size={16} />
+              <motion.button
+                {...iconButton}
+                className={`flex items-center gap-1.5 h-9 px-3 text-sm font-medium text-slate-700 hover:text-slate-900 ${HOVER_BG}`}
+              >
+                <HoverIcon>
+                  <Globe size={16} />
+                </HoverIcon>
                 {language}
                 <ChevronDown size={16} className="opacity-70" />
-              </button>
+              </motion.button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
               className="w-40 bg-white rounded-lg shadow-lg border border-slate-200 mt-2"
             >
-              {languages.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  onSelect={() => setLanguage(lang.code)}
-                  className="px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 cursor-pointer"
-                >
-                  {lang.name}
-                </DropdownMenuItem>
-              ))}
+              <SlidingMenuGroup id="header-lang-desktop" selected={language}>
+                {languages.map((lang) => (
+                  <SlidingMenuItem
+                    key={lang.code}
+                    value={lang.code}
+                    onSelect={() => setLanguage(lang.code)}
+                  >
+                    {lang.name}
+                  </SlidingMenuItem>
+                ))}
+              </SlidingMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link
+          <MotionLink
             to="/soporte"
-            className="text-sm font-medium text-slate-700 hover:text-slate-900 ml-6"
+            {...iconButton}
+            className={`flex items-center h-9 px-3 text-sm font-medium text-slate-700 hover:text-slate-900 ${HOVER_BG}`}
           >
-            {t("header.contact")}
-          </Link>
+            <HoverText>{t("header.contact")}</HoverText>
+          </MotionLink>
 
-          <Link
-  to="/informacion"
-  className="text-sm font-medium text-slate-700 hover:text-slate-900 ml-8"
->
-  {t("header.more_information")}
-</Link>
+          <MotionLink
+            to="/informacion"
+            {...iconButton}
+            className={`flex items-center h-9 px-3 text-sm font-medium text-slate-700 hover:text-slate-900 ${HOVER_BG}`}
+          >
+            <HoverText>{t("header.more_information")}</HoverText>
+          </MotionLink>
 
         </div>
         <div className="lg:hidden flex items-center gap-2">
+          <ThemeToggle t={t} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button
+              <motion.button
+                {...iconButton}
                 className="h-9 px-3 rounded-full border border-transparent bg-white
                            flex items-center gap-1.5 text-sm font-medium text-slate-700
-                           hover:bg-slate-50"
+                           hover:bg-slate-100 transition-colors duration-fast ease-state"
                 aria-label="Language"
                 title="Language"
               >
-                <Globe size={16} />
+                <HoverIcon>
+                  <Globe size={16} />
+                </HoverIcon>
                 <span>{language}</span>
                 <ChevronDown size={14} className="opacity-70" />
-              </button>
+              </motion.button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
               align="end"
               className="w-44 bg-white rounded-lg shadow-lg border border-slate-200 mt-2"
             >
-              {languages.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  onSelect={() => setLanguage(lang.code)}
-                  className="px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 cursor-pointer"
-                >
-                  {lang.name}
-                </DropdownMenuItem>
-              ))}
+              <SlidingMenuGroup id="header-lang-mobile" selected={language}>
+                {languages.map((lang) => (
+                  <SlidingMenuItem
+                    key={lang.code}
+                    value={lang.code}
+                    onSelect={() => setLanguage(lang.code)}
+                  >
+                    {lang.name}
+                  </SlidingMenuItem>
+                ))}
+              </SlidingMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button
+          <IconMotionButton
             onClick={() => setIsMobileMenuOpen(true)}
-            className="text-slate-800 p-1"
+            className={`text-slate-800 p-1.5 ${HOVER_BG}`}
             aria-label="Menu"
-          >
-            <Menu size={24} />
-          </button>
+            icon={<Menu size={24} />}
+          />
         </div>
       </div>
 
@@ -433,15 +552,17 @@ export default function Header() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="center" className="w-56 bg-white">
-                    {languages.map((lang) => (
-                      <DropdownMenuItem
-                        key={lang.code}
-                        onSelect={() => setLanguage(lang.code)}
-                        className="text-base py-2.5 px-4 hover:bg-slate-100 cursor-pointer"
-                      >
-                        {lang.name}
-                      </DropdownMenuItem>
-                    ))}
+                    <SlidingMenuGroup id="header-lang-menu" selected={language}>
+                {languages.map((lang) => (
+                  <SlidingMenuItem
+                    key={lang.code}
+                    value={lang.code}
+                    onSelect={() => setLanguage(lang.code)}
+                  >
+                    {lang.name}
+                  </SlidingMenuItem>
+                ))}
+              </SlidingMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
 

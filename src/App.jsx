@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect } from "react";
 import { pageview } from "@/lib/analytics";
+import { useTheme, applyTheme } from "@/lib/theme";
 import { Helmet } from 'react-helmet';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -37,6 +38,13 @@ function App() {
   const showHeader = true;
 
 const path = location.pathname || "/";
+
+// Tema claro/oscuro: se reaplica al cambiar de tema o de ruta
+// (las páginas de información se quedan siempre en claro).
+const theme = useTheme();
+useEffect(() => {
+  applyTheme(theme, path);
+}, [theme, path]);
 
 useEffect(() => {
   if (path !== "/informacion") {

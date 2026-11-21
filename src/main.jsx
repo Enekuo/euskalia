@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { MotionConfig } from "framer-motion";
 import App from "@/App";
 import "@/index.css";
+import "@/styles/dark.css";
 
 // ⬇️ importa del archivo único
 import { LanguageProvider } from "@/lib/translations";

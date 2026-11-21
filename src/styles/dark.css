@@ -1,0 +1,297 @@
+/* =============================================================================
+   Euskalia — MODO OSCURO (capa de traducción de colores)
+   -----------------------------------------------------------------------------
+   Se activa con la clase `dark` en <html> (src/lib/theme.js). Las páginas de
+   información nunca la reciben, así que esta capa no les afecta.
+
+   Paleta:
+     Fondo            #000000 (negro completo, sin degradado ni aurora)
+     Tarjetas / input #1E1F20 (gris oscuro)
+     Acento / botones #8AB4F8 (azul claro)
+     Texto            #E3E3E3 (blanco suave)
+
+   En lugar de añadir `dark:` a cientos de clases, esta capa traduce los
+   colores CLAROS de la web a los oscuros. Las reglas llevan `html.dark`
+   delante, así ganan a las utilidades claras (y a sus :hover) sin !important.
+   Solo los estilos en línea (style="…") necesitan !important.
+
+   Los fondos "de página" (secciones, contenedor raíz) pasan a TRANSPARENTE
+   para que se vea el fondo negro; las tarjetas usan #1E1F20.
+   ========================================================================== */
+
+html.dark {
+  color-scheme: dark;
+
+  --d-bg-top: #000000;     /* fondo: negro completo */
+  --d-bg-bottom: #000000;  /* (antes degradado #131314 → #151B28) */
+  --d-glow: 66, 133, 244;  /* #4285F4 (aurora) en RGB */
+
+  --d-surface: #1e1f20;    /* tarjetas, paneles, inputs */
+  --d-subtle: #232426;     /* barras de cabecera de panel */
+  --d-muted: #2a2b2d;      /* hover y fondos suaves */
+  --d-strong: #333537;     /* fondos marcados */
+  --d-border: #2e2f31;     /* bordes y divisores */
+  --d-border-2: #3c3d40;   /* bordes marcados */
+
+  --d-accent: #8ab4f8;     /* acento / botones */
+  --d-accent-hover: #aecbfa;
+  --d-on-accent: #131314;  /* texto sobre el acento */
+  --d-accent-soft: rgba(138, 180, 248, 0.14);
+  --d-accent-line: rgba(138, 180, 248, 0.38);
+
+  --d-t1: #e3e3e3;         /* texto principal */
+  --d-t2: #cacbcd;         /* texto */
+  --d-t3: #a9abaf;         /* texto secundario */
+  --d-t4: #8e9196;         /* texto suave */
+  --d-t5: #6f7378;         /* placeholder / apagado */
+  --d-t6: #4f5357;         /* deshabilitado */
+
+  --d-sky-soft: rgba(138, 180, 248, 0.12);
+  --d-red-soft: rgba(242, 139, 130, 0.14);
+  --d-red-line: rgba(242, 139, 130, 0.4);
+  --d-green-soft: rgba(129, 201, 149, 0.14);
+  --d-green-line: rgba(129, 201, 149, 0.4);
+  --d-amber-soft: rgba(253, 214, 99, 0.12);
+  --d-amber-line: rgba(253, 214, 99, 0.38);
+
+  /* Degradado de fondo, fijo a la ventana */
+  background: linear-gradient(180deg, var(--d-bg-top) 0%, var(--d-bg-bottom) 100%) fixed;
+  min-height: 100%;
+}
+
+/* ------------------------------------------------------------- Fondo -- */
+html.dark body {
+  background: transparent;
+  color: var(--d-t1);
+}
+
+/* Aurora desactivada: el fondo es negro completo. (Para recuperarla, ver
+   historial: capa body::before con brillos de #4285F4 animada con transform.) */
+
+/* ------------------------------------------- Fondos de página: transparentes */
+/* (Las tarjetas escritas como <section> llevan rounded-*: esas NO se vuelven
+   transparentes, mantienen su gris de tarjeta.) */
+html.dark #root > div.bg-white,
+html.dark section.bg-white:not([class*="rounded"]),
+html.dark section.bg-\[\#F4F8FF\],
+html.dark section.bg-\[\#eef4ff\],
+html.dark section.bg-slate-50,
+html.dark footer.bg-white,
+html.dark .min-h-\[calc\(100vh-64px\)\].bg-slate-50 {
+  background-color: transparent;
+}
+
+/* Cabecera: carbón opaco (el contenido no debe transparentarse al hacer scroll) */
+html.dark header.bg-white { background-color: var(--d-bg-top); }
+
+/* ------------------------------------------------- Tarjetas y superficies */
+html.dark .bg-white,
+html.dark .bg-white\/40,
+html.dark .focus\:bg-white:focus,
+html.dark .bg-\[\#F4F8FF\],
+html.dark .bg-\[\#F7F8FC\],
+html.dark .bg-slate-50 { background-color: var(--d-surface); }
+
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/70 { background-color: var(--d-subtle); }
+
+html.dark .bg-slate-100,
+html.dark .bg-slate-200\/70,
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover { background-color: var(--d-muted); }
+
+html.dark .bg-slate-200,
+html.dark .hover\:bg-slate-200:hover { background-color: var(--d-strong); }
+
+/* Tooltips */
+html.dark .bg-slate-800 { background-color: var(--d-border-2); }
+
+/* ------------------------------------------------- Acento (#8AB4F8) --
+   Botones principales azules → azul claro con texto oscuro. */
+html.dark .bg-blue-600,
+html.dark .bg-\[\#2563eb\],
+html.dark .bg-\[\#1e78ff\],
+html.dark .bg-sky-500,
+html.dark .bg-sky-600 {
+  background-color: var(--d-accent);
+  color: var(--d-on-accent);
+}
+html.dark .hover\:bg-blue-700:hover,
+html.dark .hover\:bg-sky-700:hover { background-color: var(--d-accent-hover); }
+
+/* Fondos azulados suaves (píldoras activas, iconos, chips) */
+html.dark .bg-blue-50,
+html.dark .bg-blue-50\/80,
+html.dark .bg-indigo-50,
+html.dark .bg-\[\#E0EBFF\],
+html.dark .bg-\[\#E0EAFF\],
+html.dark .bg-\[\#C7D2FE\] { background-color: var(--d-accent-soft); }
+
+html.dark .bg-sky-50,
+html.dark .bg-sky-50\/60,
+html.dark .bg-sky-100,
+html.dark .hover\:bg-sky-100:hover { background-color: var(--d-sky-soft); }
+
+/* Estados (error, éxito, aviso) */
+html.dark .bg-red-50,
+html.dark .bg-red-50\/90,
+html.dark .bg-red-100 { background-color: var(--d-red-soft); }
+
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/90,
+html.dark .bg-emerald-100,
+html.dark .bg-\[\#ECFDF3\],
+html.dark .bg-\[\#DCFCE7\],
+html.dark .hover\:bg-emerald-50\/60:hover { background-color: var(--d-green-soft); }
+
+html.dark .bg-amber-50,
+html.dark .bg-\[\#FEF3C7\],
+html.dark .bg-\[\#FED7AA\],
+html.dark .hover\:bg-amber-100:hover { background-color: var(--d-amber-soft); }
+
+/* Degradados que se funden con blanco o con el fondo claro */
+html.dark .from-white {
+  --tw-gradient-from: var(--d-surface) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(30 31 32 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+html.dark .from-white\/95 {
+  --tw-gradient-from: rgb(30 31 32 / 0.95) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(30 31 32 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+html.dark .via-white {
+  --tw-gradient-to: rgb(30 31 32 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--d-surface) var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+html.dark .to-white { --tw-gradient-to: var(--d-surface) var(--tw-gradient-to-position); }
+html.dark .from-\[\#F4F8FF\],
+html.dark .from-\[\#F6FAFF\] {
+  --tw-gradient-from: rgb(19 19 20 / 0) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(19 19 20 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+html.dark .to-\[\#F4F8FF\]\/85 { --tw-gradient-to: rgb(19 19 20 / 0) var(--tw-gradient-to-position); }
+/* Resplandor azul de la FAQ: desactivado (fondo negro completo) */
+html.dark .from-blue-400\/35 {
+  --tw-gradient-from: transparent var(--tw-gradient-from-position);
+  --tw-gradient-to: transparent var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* ----------------------------------------------------------------- Textos -- */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .hover\:text-slate-900:hover,
+html.dark .hover\:text-slate-800:hover,
+html.dark .focus\:text-slate-800:focus { color: var(--d-t1); }
+
+html.dark .text-slate-700,
+html.dark .text-gray-700,
+html.dark .hover\:text-slate-700:hover { color: var(--d-t2); }
+
+html.dark .text-slate-600 { color: var(--d-t3); }
+html.dark .text-slate-500,
+html.dark .text-gray-500 { color: var(--d-t4); }
+html.dark .text-slate-400 { color: var(--d-t5); }
+html.dark .text-slate-300 { color: var(--d-t6); }
+
+html.dark .placeholder\:text-slate-400::placeholder { color: var(--d-t5); }
+html.dark .placeholder\:text-slate-500::placeholder { color: var(--d-t4); }
+
+/* Acento en texto */
+html.dark .text-blue-600,
+html.dark .text-blue-500,
+html.dark .text-\[\#2563eb\],
+html.dark .text-sky-600,
+html.dark .text-sky-500,
+html.dark .text-indigo-600,
+html.dark .group:hover .group-hover\:text-blue-600 { color: var(--d-accent); }
+html.dark .text-blue-700,
+html.dark .text-sky-700,
+html.dark .focus\:text-blue-700:focus,
+html.dark .hover\:text-sky-800:hover { color: var(--d-accent-hover); }
+
+/* Estados */
+html.dark .text-red-600,
+html.dark .text-red-500 { color: #f28b82; }
+html.dark .text-red-700,
+html.dark .text-red-900 { color: #f6aea9; }
+html.dark .text-emerald-600,
+html.dark .text-green-600 { color: #81c995; }
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-emerald-900,
+html.dark .hover\:text-emerald-800:hover { color: #a8dab5; }
+html.dark .text-amber-600 { color: #fdd663; }
+html.dark .text-amber-700,
+html.dark .text-amber-800 { color: #fde293; }
+
+/* ---------------------------------------------------- Bordes y divisores -- */
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .ring-slate-200,
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--d-border); }
+
+html.dark .ring-slate-200 { --tw-ring-color: var(--d-border); }
+
+html.dark .border-slate-300,
+html.dark .hover\:border-slate-400:hover,
+html.dark .border-slate-900\/90 { border-color: var(--d-border-2); }
+
+html.dark .border-blue-100,
+html.dark .border-blue-200,
+html.dark .hover\:border-blue-200:hover,
+html.dark .border-sky-200,
+html.dark .border-sky-300 { border-color: var(--d-accent-line); }
+html.dark .ring-blue-100,
+html.dark .ring-blue-300 { --tw-ring-color: var(--d-accent-line); }
+
+html.dark .border-red-100,
+html.dark .border-red-200,
+html.dark .border-red-300 { border-color: var(--d-red-line); }
+html.dark .border-emerald-100,
+html.dark .border-emerald-300,
+html.dark .hover\:border-emerald-300:hover { border-color: var(--d-green-line); }
+html.dark .border-amber-200 { border-color: var(--d-amber-line); }
+
+/* SVG (flechas de desplegables, etc.) */
+html.dark .fill-white { fill: var(--d-surface); }
+html.dark .stroke-slate-200 { stroke: var(--d-border); }
+
+/* -------------------------------------------- Estilos en línea (style="") --
+   Algunos componentes ponen colores con `style`. Se traducen por su valor. */
+html.dark [style*="background-color: rgb(255, 255, 255)"] { background-color: var(--d-surface) !important; }
+html.dark [style*="background-color: rgb(229, 231, 235)"] { background-color: var(--d-border) !important; }
+html.dark [style*="border-color: rgb(226, 232, 240)"],
+html.dark [style*="border-color: rgb(229, 231, 235)"] { border-color: var(--d-border) !important; }
+/* Azul de marca #2563eb usado como color de texto/icono → acento */
+html.dark [style^="color: rgb(37, 99, 235)"],
+html.dark [style*="; color: rgb(37, 99, 235)"] { color: var(--d-accent) !important; }
+html.dark [style*="border-color: rgb(37, 99, 235)"] { border-color: var(--d-accent) !important; }
+/* Botones con fondo azul en línea → acento con texto oscuro */
+html.dark [style*="background-color: rgb(37, 99, 235)"] {
+  background-color: var(--d-accent) !important;
+  color: var(--d-on-accent) !important;
+}
+/* Texto gris de pestañas inactivas (GRAY_TEXT #64748b) */
+html.dark [style^="color: rgb(100, 116, 139)"],
+html.dark [style*="; color: rgb(100, 116, 139)"] { color: var(--d-t3) !important; }
+
+/* ------------------------------------------------- FAQ (réplica .na-faq) --
+   Sus colores van en variables propias; --na-bg llega en línea → !important. */
+html.dark .na-faq {
+  --na-bg: transparent !important;
+  --na-ink: var(--d-t1);
+  --na-muted: var(--d-t3);
+  --na-muted-2: var(--d-t3);
+  --na-line: var(--d-border);
+  --na-hover-bg: rgba(138, 180, 248, 0.06);
+  --na-accent: var(--d-accent);
+  --na-focus: var(--d-accent);
+  border-top-color: var(--d-border) !important;
+}
+
+/* ------------------------------------------------- Selección de texto -- */
+html.dark ::selection { background: rgba(138, 180, 248, 0.35); }

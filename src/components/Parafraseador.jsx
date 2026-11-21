@@ -33,7 +33,7 @@ import {
 import { useTranslation } from "@/lib/translations";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 
 export default function Parafraseador() {
@@ -1162,7 +1162,7 @@ setDetectedLanguage(null);
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection />
+      <ToolFaq />
       <Footer />
     </>
   );

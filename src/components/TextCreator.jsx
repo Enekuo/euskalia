@@ -24,7 +24,7 @@ import UpgradeBanner from "@/components/UpgradeBanner";
 import ToolsSidebar from "@/components/ToolsSidebar";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 import ExpandModal from "@/components/ExpandModal";
 import {
@@ -1053,7 +1053,7 @@ return (
         
           <BenefitsSection />
           <HowItWorks />
-          <FaqSection />
+          <ToolFaq />
           <Footer />
         </>
   );

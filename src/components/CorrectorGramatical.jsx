@@ -37,7 +37,7 @@ import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 import ToolsSidebar from "@/components/ToolsSidebar";
 
@@ -1299,7 +1299,7 @@ return (
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection />
+      <ToolFaq />
       <Footer />
 
     </>

@@ -33,7 +33,7 @@ import ToolsSection from "@/components/ToolsSection";
 import ToolsSidebar from "@/components/ToolsSidebar";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import ExpandModal from "@/components/ExpandModal";
@@ -1424,7 +1424,7 @@ return (
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection />
+      <ToolFaq />
       <Footer />
     </>
   );

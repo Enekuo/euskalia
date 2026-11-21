@@ -22,7 +22,7 @@ import { useTranslation } from "@/lib/translations";
 import ToolsSidebar from "@/components/ToolsSidebar";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import UpgradeBanner from "@/components/UpgradeBanner";
@@ -1784,7 +1784,7 @@ return (
         
           <BenefitsSection />
           <HowItWorks />
-          <FaqSection />
+          <ToolFaq />
           <Footer />
         </>
   );

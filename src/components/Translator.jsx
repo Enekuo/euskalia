@@ -18,7 +18,7 @@ import BenefitsSection from "@/components/BenefitsSection";
 import ToolsSection from "@/components/ToolsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import FaqSection from "@/components/FaqSection";
+import ToolFaq from "@/components/faq/ToolFaq";
 import Footer from "@/components/Footer";
 import UpgradeBanner from "@/components/UpgradeBanner";
 import SpeechInputButton from "@/components/SpeechInputButton";
@@ -2066,7 +2066,7 @@ alternativesRequestRef.current += 1;
 
       <BenefitsSection />
       <HowItWorks />
-      <FaqSection />  
+      <ToolFaq />  
       <Footer />
 
     </>

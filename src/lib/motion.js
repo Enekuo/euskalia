@@ -283,6 +283,8 @@ export const ENTRANCE = {
   // (64px + escala 0.96 + fundido, 900 ms), un poco después que el bloque.
   heroFromLeft: "motion-safe:animate-enter-block-left motion-reduce:animate-enter-fade-slow",
   heroFromRight: "motion-safe:animate-enter-block-right motion-reduce:animate-enter-fade-slow",
+  // Elemento secundario que sube 16px y aparece (campos de formulario, etc.)
+  item: "motion-safe:animate-enter-rise motion-reduce:animate-enter-fade",
 };
 
 export const ENTRANCE_DELAY_MS = {
@@ -417,5 +419,47 @@ export const modal = {
       y: DISTANCE.element / 2,
       transition: { duration: DURATION.fast, ease: EASE.state },
     },
+  },
+};
+
+/**
+ * text-hover — como iconHover pero SIN giro (girar texto queda raro): el texto
+ * de un botón/enlace sube 2px y crece al pasar el ratón, y se hunde al pulsar.
+ * Se usa con los mismos estados que iconButton (rest / hover / tap).
+ */
+export const textHover = {
+  rest: { scale: 1, y: 0, transition: SPRING },
+  hover: { scale: 1.06, y: -DISTANCE.micro / 2, transition: SPRING },
+  tap: { scale: 0.94, y: 0, transition: TRANSITION.press },
+};
+
+/**
+ * icon-nudge — icono dentro de un botón principal (estados hidden/visible del
+ * barrido): al pasar el ratón se "impulsa" hacia arriba-derecha con un giro
+ * (p. ej. el avión de papel de "Enviar"). Solo transform.
+ */
+export const iconNudge = {
+  hidden: { x: 0, y: 0, rotate: 0, transition: SPRING },
+  visible: { x: 3, y: -3, rotate: -12, transition: SPRING },
+};
+
+/** shake — sacudida horizontal corta para avisos de error (solo transform). */
+export const shake = {
+  hidden: { opacity: 0, x: 0 },
+  visible: {
+    opacity: 1,
+    x: [0, -8, 8, -6, 6, -3, 0],
+    transition: { duration: DURATION.slow, ease: EASE.state, opacity: { duration: DURATION.fast } },
+  },
+};
+
+/** success-box — aviso de éxito que salta con rebote (escala + subida). */
+export const successBox = {
+  hidden: { opacity: 0, scale: 0.9, y: DISTANCE.element },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { ...SPRING_POP, opacity: { duration: DURATION.fast } },
   },
 };

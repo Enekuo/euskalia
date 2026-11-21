@@ -16,6 +16,26 @@ export const translations = {
     assistant: { ES: "Asistente de IA", EUS: "IA laguntzailea", EN: "AI Assistant", FR: "Assistant IA" },
     contact:   { ES: "Contacto",      EUS: "Kontaktua",      EN: "Contact",      FR: "Contact" },
     more_information: { ES: "Más información", EUS: "Informazio gehiago", EN: "More information", FR: "Plus d'informations" },
+    theme_to_dark:  { ES: "Cambiar a modo oscuro", EUS: "Modu ilunera aldatu", EN: "Switch to dark mode", FR: "Passer en mode sombre" },
+    theme_to_light: { ES: "Cambiar a modo claro",  EUS: "Modu argira aldatu",  EN: "Switch to light mode", FR: "Passer en mode clair" },
+  },
+
+  // FAQ de la página de información (réplica del paquete exportar-faq).
+  // Textos provisionales.
+  infoFaq: {
+    title:    { ES: "Preguntas frecuentes", EUS: "Ohiko galderak", EN: "Frequently asked questions", FR: "Questions fréquentes" },
+    subtitle: {
+      ES: "Todo lo que necesitas saber sobre Euskalia y sus herramientas de IA para el euskera.",
+      EUS: "Euskaliari eta euskararako bere IA tresnei buruz jakin behar duzun guztia.",
+      EN: "Everything you need to know about Euskalia and its AI tools for Basque.",
+      FR: "Tout ce que vous devez savoir sur Euskalia et ses outils d'IA pour le basque.",
+    },
+    q1: { ES: "¿Qué es Euskalia?", EUS: "Zer da Euskalia?", EN: "What is Euskalia?", FR: "Qu'est-ce qu'Euskalia ?" },
+    q2: { ES: "¿Es gratis usar Euskalia?", EUS: "Doakoa al da Euskalia erabiltzea?", EN: "Is Euskalia free to use?", FR: "Euskalia est-il gratuit ?" },
+    q3: { ES: "¿Qué herramientas ofrece Euskalia?", EUS: "Zer tresna eskaintzen ditu Euskaliak?", EN: "What tools does Euskalia offer?", FR: "Quels outils propose Euskalia ?" },
+    q4: { ES: "¿Cómo cuida Euskalia la calidad del euskera?", EUS: "Nola zaintzen du Euskaliak euskararen kalitatea?", EN: "How does Euskalia ensure the quality of Basque?", FR: "Comment Euskalia veille-t-il à la qualité du basque ?" },
+    q5: { ES: "¿Necesito crear una cuenta para usarla?", EUS: "Kontu bat sortu behar al dut erabiltzeko?", EN: "Do I need to create an account to use it?", FR: "Dois-je créer un compte pour l'utiliser ?" },
+    more: { ES: "Ver todas las preguntas", EUS: "Galdera guztiak ikusi", EN: "See all questions", FR: "Voir toutes les questions" },
   },
 
   toolsMenu: {

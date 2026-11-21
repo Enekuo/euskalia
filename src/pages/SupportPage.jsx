@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/translations";
 import { motion } from "framer-motion";
+import { ENTRANCE, ENTRANCE_DELAY_MS, STAGGER_MS, entranceDelay, resultLine } from "@/lib/motion";
+import { SheenLayer, primaryButtonMotion, PRIMARY_BUTTON_CLASS } from "@/components/ui/motion-primitives";
+
+// Animaciones (mismo lenguaje que las herramientas, ver motion.js):
+// - Entrada en cascada al cargar (CSS en el compositor): tarjeta "Kontaktua"
+//   sube SIN opacidad (contiene el título / LCP), texto de ayuda cae y se
+//   funde, la mascota entra desde su lado, el formulario sube y sus campos
+//   aparecen uno tras otro.
+// - Botón "Bidali": barrido de luz + press.
+// - Mensaje de enviado / error: sube y aparece como un resultado.
+// Con "reducir movimiento": sin desplazamientos (solo fundidos o directo).
+const FIELD_DELAY = (i) => ENTRANCE_DELAY_MS.output + ENTRANCE_DELAY_MS.toolbar + i * STAGGER_MS.tool;
+const FIELD_CLASS =
+  "w-full rounded-xl border px-4 py-3 transition-shadow duration-fast ease-state focus:outline-none focus:ring-2 focus:ring-blue-100";
 import { useLocation, Link } from "react-router-dom";
 
 const NAVBAR_H = 88;
@@ -77,7 +91,7 @@ const SupportPage = () => {
         <div className="grid gap-8 md:grid-cols-2 items-start py-6">
           {/* ===== IZQUIERDA ===== */}
           <div>
-            <section className="rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6">
+            <section className={`rounded-2xl border border-slate-200 bg-[#F7F8FC] p-6 ${ENTRANCE.card}`}>
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h2 className="text-4xl font-extrabold text-slate-900">
@@ -99,7 +113,7 @@ const SupportPage = () => {
               </div>
             </section>
 
-            <div className="hidden md:block">
+            <div className={`hidden md:block ${ENTRANCE.toolbar}`} style={entranceDelay(ENTRANCE_DELAY_MS.input)}>
               <p className="mt-6 text-sm font-semibold tracking-wider text-blue-600">
                 {t("support_kicker", "Nola lagun diezazukegu?")}
               </p>
@@ -108,7 +122,7 @@ const SupportPage = () => {
               </p>
             </div>
 
-            <div className="hidden md:flex mt-6">
+            <div className={`hidden md:flex mt-6 ${ENTRANCE.heroFromLeft}`} style={entranceDelay(ENTRANCE_DELAY_MS.heroSides)}>
               <img
                 src="/olondo.mascota.webp"
                 alt="Soporte Euskalia"
@@ -119,10 +133,9 @@ const SupportPage = () => {
           </div>
 
           {/* ===== FORMULARIO ===== */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border bg-white p-6 shadow border-slate-200"
+          <div
+            className={`rounded-2xl border bg-white p-6 shadow border-slate-200 ${ENTRANCE.output}`}
+            style={entranceDelay(ENTRANCE_DELAY_MS.output)}
           >
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
               <input
@@ -133,7 +146,7 @@ const SupportPage = () => {
                 className="hidden"
               />
 
-              <div>
+              <div className={ENTRANCE.item} style={entranceDelay(FIELD_DELAY(0))}>
                 <label className="text-sm font-medium">
                   {t("support_form_email_label", "Posta elektronikoa")}
                 </label>
@@ -144,11 +157,11 @@ const SupportPage = () => {
                   onChange={onChange}
                   required
                   placeholder={t("support_form_email_placeholder", "Zure posta elektronikoa")}
-                  className="w-full rounded-xl border px-4 py-3"
+                  className={FIELD_CLASS}
                 />
               </div>
 
-              <div>
+              <div className={ENTRANCE.item} style={entranceDelay(FIELD_DELAY(1))}>
                 <label className="text-sm font-medium">
                   {t("support_form_subject_label", "Gaia")}
                 </label>
@@ -158,11 +171,11 @@ const SupportPage = () => {
                   value={form.subject}
                   onChange={onChange}
                   placeholder={t("support_form_subject_placeholder", "Zerri buruz behar duzu laguntza?")}
-                  className="w-full rounded-xl border px-4 py-3"
+                  className={FIELD_CLASS}
                 />
               </div>
 
-              <div>
+              <div className={ENTRANCE.item} style={entranceDelay(FIELD_DELAY(2))}>
                 <label className="text-sm font-medium">
                   {t("support_form_message_label", "Mezua")}
                 </label>
@@ -173,19 +186,35 @@ const SupportPage = () => {
                   required
                   rows={5}
                   placeholder={t("support_form_message_placeholder", "Esaguzu nola lagundu diezazukegun")}
-                  className="w-full rounded-xl border px-4 py-3 resize-none"
+                  className={`${FIELD_CLASS} resize-none`}
                 />
               </div>
 
-              <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
-                {loading ? t("support_form_sending", "Bidaltzen...") : t("support_form_submit", "Bidali")}
-              </Button>
+              <div className={ENTRANCE.item} style={entranceDelay(FIELD_DELAY(3))}>
+                <Button
+                  asChild
+                  type="submit"
+                  disabled={loading}
+                  className={`${PRIMARY_BUTTON_CLASS} w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-fast ease-state`}
+                >
+                  <motion.button {...primaryButtonMotion(!loading)}>
+                    <SheenLayer />
+                    <span className="relative">
+                      {loading ? t("support_form_sending", "Bidaltzen...") : t("support_form_submit", "Bidali")}
+                    </span>
+                  </motion.button>
+                </Button>
+              </div>
 
               {status === "ok" && (
-                <p className="text-sm text-emerald-600">{t("support_status_ok", "✅ Enviado")}</p>
+                <motion.p variants={resultLine} initial="hidden" animate="visible" className="text-sm text-emerald-600">
+                  {t("support_status_ok", "✅ Enviado")}
+                </motion.p>
               )}
               {status === "error" && (
-                <p className="text-sm text-red-600">{t("support_status_error", "❌ Error")}</p>
+                <motion.p variants={resultLine} initial="hidden" animate="visible" className="text-sm text-red-600">
+                  {t("support_status_error", "❌ Error")}
+                </motion.p>
               )}
 
               <p className="text-xs text-slate-500">
@@ -195,7 +224,7 @@ const SupportPage = () => {
                 </Link>
               </p>
             </form>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

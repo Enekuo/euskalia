@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Sección «Preguntas frecuentes» (FAQ) — réplica exacta del paquete
+   exportar-faq (origen: landing de NeuroAudio). Autónoma: todo va bajo
+   .na-faq, así que no afecta al resto de la web.
+
+   ADAPTACIÓN A EUSKALIA: única diferencia con el original → las fuentes.
+   Se usa Inter (la fuente de Euskalia, ya cargada en App.jsx con pesos
+   400–800) en lugar de Poppins 600 / DM Sans 400-500. El «+» pide peso 300,
+   que Inter no tiene cargado → se ve con el 400, igual que en el original.
+
+   Prefijo .na-: comprobado que no colisiona con ninguna clase de Euskalia.
+
+   El orden de las reglas importa (ver «Aparición al hacer scroll»): no lo
+   cambies.
+   ========================================================================== */
+
+/* ----- Contenedor de la sección ----- */
+.na-faq {
+  --na-bg: #ffffff;
+  --na-accent: #3461ff;
+  --na-ink: #202124;
+  --na-muted: #5f6368;
+  --na-muted-2: #5f6368;
+  --na-line: #dadce0;
+  --na-hover-bg: #f8f9fa;
+  --na-focus: #0047ff;
+
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 90px clamp(20px, 4vw, 48px) 80px;
+  border-top: 1px solid #dadce0;
+  background: var(--na-bg);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.na-faq *,
+.na-faq *::before,
+.na-faq *::after {
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Foco de teclado (en el original viene de una regla global). */
+.na-faq :focus {
+  outline: none;
+}
+
+.na-faq :focus-visible {
+  outline: 2px solid var(--na-focus);
+  outline-offset: 2px;
+}
+
+/* ----- Aparición al hacer scroll -----
+   Al entrar en pantalla, JS añade .is-visible (una sola vez).
+   OJO, comportamiento real del original que hay que conservar:
+   - El TÍTULO y el SUBTÍTULO aparecen con fundido + subida de 8 px
+     (700 ms, ease), el subtítulo 90 ms después del título.
+   - Las PREGUNTAS y el ENLACE «ver todas» aparecen DE GOLPE (sin fundido):
+     sus propias reglas `transition` (más abajo, con la misma
+     especificidad) sustituyen a la de .na-reveal. Por eso esta regla va
+     ANTES que las de .na-faq__item y .na-faq__more. */
+.na-faq .na-reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 700ms ease, transform 700ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.na-faq .na-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----- Título ----- */
+.na-faq .na-faq__title {
+  margin: 0 0 18px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(28px, 3.9vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--na-ink);
+  text-align: center;
+}
+
+/* ----- Subtítulo ----- */
+.na-faq .na-faq__lead {
+  max-width: 50ch;
+  margin: 0 0 56px;
+  font-size: clamp(16px, 1.7vw, 19px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--na-muted);
+  text-align: center;
+}
+
+/* ----- Lista de preguntas ----- */
+.na-faq .na-faq__list {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cada pregunta: una fila (botón) con la pregunta a la izquierda y el «+»
+   a la derecha, separada por una línea. */
+.na-faq .na-faq__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 26px 4px;
+  border: none;
+  border-bottom: 1px solid var(--na-line);
+  border-radius: 0;
+  background: none;
+  color: #000000;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+  /* Sustituye a la transición de .na-reveal (aparece de golpe; ver arriba). */
+  transition: background-color 200ms ease, padding-left 200ms ease;
+}
+
+.na-faq .na-faq__q {
+  font-size: clamp(16px, 1.6vw, 18px);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--na-ink);
+}
+
+.na-faq .na-faq__plus {
+  flex-shrink: 0;
+  font-size: 22px;
+  font-weight: 300; /* se ve como 400: Inter 300 no está cargado (ver arriba) */
+  line-height: 1;
+  color: var(--na-accent);
+  transition: transform 220ms ease;
+}
+
+/* Al pasar el ratón: fondo gris muy claro, la fila se desplaza 8 px a la
+   derecha (padding-left 4 → 12 px), la pregunta se vuelve azul y el «+»
+   gira 45° y crece (se convierte en «×»). */
+.na-faq .na-faq__item:hover {
+  background: var(--na-hover-bg);
+  padding-left: 12px;
+}
+
+.na-faq .na-faq__item:hover .na-faq__q {
+  color: var(--na-accent);
+}
+
+.na-faq .na-faq__item:hover .na-faq__plus {
+  transform: rotate(45deg) scale(1.2);
+}
+
+/* Al pulsar no encoge (en el original, la transformación de la aparición
+   gana a la del :active). No añadas efecto de pulsación. */
+
+/* ----- Enlace «ver todas» ----- */
+.na-faq .na-faq__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--na-muted-2);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Sustituye a la transición de .na-reveal (aparece de golpe; ver arriba). */
+  transition: color 180ms ease, gap 180ms ease;
+}
+
+.na-faq .na-faq__more svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Al pasar el ratón: se vuelve azul y la flecha se separa (7 → 11 px). */
+.na-faq .na-faq__more:hover {
+  color: var(--na-accent);
+  gap: 11px;
+}
+
+/* ----- Movimiento reducido (ajuste del sistema) -----
+   Todo aparece ya visible y sin transiciones. Como las preguntas y el
+   enlace también llevan .na-reveal, pierden además sus transiciones de
+   hover (el cambio es instantáneo), igual que en el original. */
+@media (prefers-reduced-motion: reduce) {
+  .na-faq .na-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

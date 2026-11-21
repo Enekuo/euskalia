@@ -1,0 +1,90 @@
+/* ==========================================================================
+   FAQ de Euskalia — variante de aparición INTENSA (.na-faq--intense)
+   --------------------------------------------------------------------------
+   Capa aparte que se suma a faq.css SIN modificarlo (faq.css sigue siendo la
+   réplica exacta del paquete). Solo afecta a la sección con .na-faq--intense.
+
+   Valores alineados con los tokens de movimiento de Euskalia
+   (src/lib/motion-tokens.js): hero 900 ms, curva de entrada
+   cubic-bezier(0.16, 1, 0.3, 1), distancias 48/64 px.
+
+   - Título y subtítulo: suben 48 px desde escala 0.96 (900 ms).
+   - Preguntas: entran 64 px desde la izquierda + fundido, escalonadas
+     (retraso del paquete × 1.6 + 250 ms).
+   - «+»: pop girando desde -180° con rebote, tras su pregunta.
+   - Enlace final: sube 24 px + fundido.
+   - Los hovers mantienen sus transiciones originales y SIN retraso.
+
+   Todo va dentro de prefers-reduced-motion: no-preference → con «reducir
+   movimiento» manda la regla del paquete (todo visible, sin transiciones).
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ----- Título y subtítulo ----- */
+  .na-faq.na-faq--intense .na-faq__title.na-reveal,
+  .na-faq.na-faq--intense .na-faq__lead.na-reveal {
+    transform: translateY(48px) scale(0.96);
+    transition:
+      opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--reveal-delay, 0ms) * 1.6);
+  }
+
+  /* ----- Preguntas: desde la izquierda (antes aparecían de golpe) ----- */
+  .na-faq.na-faq--intense .na-faq__item.na-reveal {
+    opacity: 0;
+    transform: translateX(-64px);
+    transition:
+      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 200ms ease,
+      padding-left 200ms ease;
+    /* El retraso solo afecta a la entrada (opacity/transform), no al hover. */
+    transition-delay:
+      calc(var(--reveal-delay, 0ms) * 1.6 + 250ms),
+      calc(var(--reveal-delay, 0ms) * 1.6 + 250ms),
+      0ms,
+      0ms;
+  }
+
+  /* ----- Enlace / botón final -----
+     Rápido: sin el escalonado de las preguntas (antes esperaba ~0,9 s y
+     tardaba otros 0,9 s). Ahora ~0,2 s de espera y 600 ms de entrada. */
+  .na-faq.na-faq--intense .na-faq__more.na-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 180ms ease,
+      gap 180ms ease;
+    transition-delay:
+      calc(var(--reveal-delay, 0ms) * 0.5),
+      calc(var(--reveal-delay, 0ms) * 0.5),
+      0ms,
+      0ms;
+  }
+
+  /* Estado visible (va DESPUÉS: misma especificidad, gana por orden). */
+  .na-faq.na-faq--intense .na-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ----- «+»: pop girando con rebote, tras su pregunta ----- */
+  .na-faq.na-faq--intense .na-faq__item.is-visible .na-faq__plus {
+    animation: na-faq-plus-pop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: calc(var(--reveal-delay, 0ms) * 1.6 + 550ms);
+  }
+}
+
+@keyframes na-faq-plus-pop {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

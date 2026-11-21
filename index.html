@@ -17,6 +17,21 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Tema: aplica el modo oscuro ANTES del primer pintado (sin destello blanco).
+       Misma regla que src/lib/theme.js: las páginas de información siempre en claro. -->
+  <script>
+    (function () {
+      try {
+        var p = location.pathname;
+        var info = p === "/informacion" || p.indexOf("/informacion/") === 0;
+        if (localStorage.getItem("euskalia_theme") === "dark" && !info) {
+          document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = "dark";
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <title>Euskalia</title>
 
   <meta
