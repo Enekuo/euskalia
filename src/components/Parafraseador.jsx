@@ -469,8 +469,19 @@ setCopiedFlash(false);
           .join("\n\n")
       : "";
 
+// El idioma del resultado lo decide el selector "Idioma de salida" (mismo criterio
+// que el Resumidor). Antes se forzaba el idioma de la fuente y el selector se ignoraba.
+const outputLanguageName =
+  outputLang === "eus"
+    ? "euskera"
+    : outputLang === "es"
+    ? "español"
+    : outputLang === "en"
+    ? "inglés"
+    : "francés";
+
 const langInstruction =
-  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. No traduzcas el contenido a otro idioma distinto al de la fuente.";
+  `Escribe el resultado SIEMPRE en ${outputLanguageName}, aunque el contenido de entrada esté en otro idioma: en ese caso, parafraséalo directamente en ${outputLanguageName} manteniendo el significado. El idioma del resultado lo decide el selector de la herramienta, no el idioma de la fuente.`;
 
     const modeRule =
       mode === "neutral"
@@ -521,10 +532,9 @@ Reformula con mayor libertad y expresividad. Puede usar imágenes, giros origina
 const systemBase =
   "Eres Euskalia, un asistente experto en reescritura y parafraseo. " +
   "Tu prioridad es producir textos naturales, claros y correctos. " +
-  "Detecta automáticamente el idioma principal del contenido de entrada y responde SIEMPRE en ese mismo idioma. " +
-  "No traduzcas el contenido a otro idioma distinto al de la fuente. " +
-  "Si el idioma detectado es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales. " +
-  "Aplica siempre el estilo de parafraseo indicado (tono, registro, libertad expresiva), pero si el idioma es euskera, la corrección y naturalidad del idioma tienen SIEMPRE prioridad sobre la libertad estilística de cualquier modo: ningún estilo, ni siquiera el creativo, debe sacrificar un euskera correcto y natural.";
+  "Escribe SIEMPRE en el idioma de salida que indica el usuario, aunque la fuente esté en otro idioma. " +
+  "Si el idioma de salida es euskera, escribe en euskera natural, evitando calcos del castellano y estructuras artificiales. " +
+  "Aplica siempre el estilo de parafraseo indicado (tono, registro, libertad expresiva), pero si el idioma de salida es euskera, la corrección y naturalidad del idioma tienen SIEMPRE prioridad sobre la libertad estilística de cualquier modo: ningún estilo, ni siquiera el creativo, debe sacrificar un euskera correcto y natural.";
 
     const messages = [
       { role: "system", content: systemBase },

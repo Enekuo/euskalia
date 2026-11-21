@@ -879,9 +879,15 @@ Devuelve únicamente la traducción final en ${targetName}.
 }
 
 // ✅ Parafraseador: aplica SOLO las reglas de calidad de euskera (sin las reglas propias
-// de "traducir"), y SOLO cuando el idioma real del texto de entrada (detectado arriba) es
-// euskera. En cualquier otro idioma, el prompt del Parafraseador se queda tal cual.
-if (tool === "paraphraser" && detectedLanguage?.code === "eus") {
+// de "traducir"), y SOLO cuando el idioma de SALIDA elegido es euskera (como el Creador
+// de Texto y el de Email). Antes miraba el idioma de ENTRADA: con texto en euskera y
+// salida en francés, estas reglas empujaban al modelo a responder en euskera.
+// Si el cliente no envía outputLang (versiones antiguas), se mantiene el criterio anterior.
+const paraphraserOutLang = String(body?.outputLang || "").toLowerCase();
+if (
+  tool === "paraphraser" &&
+  (paraphraserOutLang ? paraphraserOutLang === "eus" : detectedLanguage?.code === "eus")
+) {
   const sysIdx = finalMessages.findIndex((m) => m?.role === "system");
   const rules = euskeraQualityRules();
   if (sysIdx >= 0) {
