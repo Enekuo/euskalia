@@ -389,3 +389,33 @@ export const success = {
   },
   text: resultLine,
 };
+
+// -----------------------------------------------------------------------------
+// MODAL (ventana de "Ampliar" resultado)
+// -----------------------------------------------------------------------------
+//   backdrop  el fondo oscuro se funde
+//   panel     la ventana sube 32px y crece desde 0.92 con muelle; al cerrar se
+//             encoge un poco y se desvanece rápido
+// Con reducir movimiento: solo fundidos.
+export const modal = {
+  backdrop: {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: DURATION.base, ease: EASE.state } },
+    exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE.state } },
+  },
+  panel: {
+    hidden: { opacity: 0, scale: 0.92, y: DISTANCE.section },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { ...SPRING, opacity: { duration: DURATION.fast, ease: EASE.state } },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.96,
+      y: DISTANCE.element / 2,
+      transition: { duration: DURATION.fast, ease: EASE.state },
+    },
+  },
+};
